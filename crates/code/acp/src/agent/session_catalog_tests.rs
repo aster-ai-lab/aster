@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 
 fn request(value: &Value) -> acp::ExtRequest {
     acp::ExtRequest::new(
-        "x.ai/session/list",
+        "a3s/session/list",
         serde_json::value::to_raw_value(value)
             .expect("request")
             .into(),
@@ -42,7 +42,7 @@ async fn list_reads_workspace_facts_without_initializing_an_agent_or_store() {
         "修复列表中的会话\n完整原文"
     );
     assert_eq!(body["sessions"][0]["numMessages"], 1);
-    assert_eq!(body["_meta"]["x.ai/listScope"], "cwd");
+    assert_eq!(body["_meta"]["a3s/listScope"], "cwd");
     assert!(agent.core_agent.lock().await.is_none());
     assert!(agent.sessions.lock().await.is_empty());
     assert!(agent.config_mcp.lock().await.is_none());
@@ -194,7 +194,7 @@ async fn invalid_fields_closed_sets_and_bounds_are_rejected() {
         json!({"allowRelax":"true"}),
         json!({"extra":true}),
         json!({"query":"x".repeat(4097)}),
-        json!({"_meta":{"x.ai/facetFilters":{"kind":["invented"]}}}),
+        json!({"_meta":{"a3s/facetFilters":{"kind":["invented"]}}}),
         json!({"_meta":{"unknown":true}}),
     ] {
         assert!(
@@ -266,7 +266,7 @@ async fn chat_facet_does_not_read_or_mislabel_code_sessions() {
     std::fs::write(root.path().join(".a3s/sessions"), b"not a directory").expect("bad state");
     let body = list(
         &agent_at(root.path()),
-        json!({"_meta":{"x.ai/facetFilters":{"kind":["chat"]}}}),
+        json!({"_meta":{"a3s/facetFilters":{"kind":["chat"]}}}),
     )
     .await;
     assert_eq!(body["sessions"], json!([]));
@@ -303,7 +303,7 @@ async fn acp_wire_initialize_then_list_returns_persisted_facts() {
                 ),
                 (
                     2,
-                    "_x.ai/session/list",
+                    "_a3s/session/list",
                     json!({"cwd":root.path(),"limit":30,"headless":"include"}),
                 ),
             ] {

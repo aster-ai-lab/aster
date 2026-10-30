@@ -1,0 +1,122 @@
+export const meta = {
+  title: 'ACP 长期目标与无人值守停止',
+  description: '显式目标、类型化方法、有限续跑、默认上限、结果记录与终态证据。',
+  label: '目标与无人值守内部', updated: '2026-10-28',
+};
+
+## 显式目标沿原始执行路径推进
+
+普通消息不会自动变成长任务。
+`/goal <目标>` 明确创建并唤醒目标。
+`/goal resume` 支持继续已暂停的原目标。
+ACP 使用 Core 的目标接口接纳切片。
+每个切片仍经过原有权限和完成检查。
+
+## 三种入口分别适合什么场景
+
+| 入口 | 用途 | 关键边界 |
+| --- | --- | --- |
+| `/goal` 命令 | 面向终端用户的目标操作 | 使用代理公布的命令与参数 |
+| `a3s/goal/*` | 宿主的类型化集成 | 携带 schema、身份、修订与序列 |
+| `--unattended` | 有限期限内的无交互执行 | 仍检查准入、权限、终态与证据 |
+
+类型化接口分别处理定义、计划、控制和等待。
+导入还有预览与提交两个步骤。
+来源变化后，旧预览不能直接接纳新内容。
+
+完整方法参见[工程目标接口](../../goals/)。
+Core 机制参见[长期任务设计](../../../../code/9.1.6/internals/long-running/)。
+
+## ACP 的续跑循环在哪里停止
+
+`handle_goal` 先应用明确目标操作。
+需要执行时，适配器读取当前推进决定。
+只有 Advance 进入 `stream_goal_tick`。
+本轮事件与结算沿原 turn 路径处理。
+下一轮再次读取当前目标与边界。
+
+出现 Complete、Wait 或 NeedsInput 时停止续跑。
+Paused、BudgetExhausted 和 Reconcile 也会停止。
+这些停止原因应分别显示给用户。
+源码：<SourceRef path="crates/code/acp/src/agent/goal_ext.rs" match="pub(super) async fn handle_goal(">目标唤醒与续跑</SourceRef>。
+
+该循环位于唤醒目标的 turn 内。
+它没有安装独立的后台调度器。
+因此，客户端断开和取消仍需核对原运行状态。
+
+## 有限默认值与可信覆盖
+
+| 宿主路径 | 缺少可信声明时的默认值 | 期限 |
+| --- | --- | --- |
+| Core / Rust SDK | 自动续跑关闭 | 宿主显式提供 |
+| 普通 ACP | 最多 8 个切片，停滞上限 2 个 | 宿主初始化后 24 小时 |
+| ACP 无人值守 | 最多 1000 个切片，停滞上限 3 个 | 本次执行的截止时间 |
+
+可信 `goal_control` 声明覆盖默认值。
+声明中的四个字段都必须提供。
+工作区 ACL 不能提高宿主权限或上限。
+已用额度来自原目标历史。
+暂停、恢复和重新打开会话都保留额度。
+
+默认值入口见 <SourceRef path="crates/code/manual/HOST_GOAL_CONTROL.md" match="The declaration is optional.">宿主续跑合同</SourceRef>。
+当前进展依据见[Core 长任务章节](../../../../code/9.1.6/internals/long-running/)。
+
+## 无人值守为什么还需要动作证据
+
+<PeleAtlasDiagram name="unattended" />
+
+无人值守 turn 持有原来的执行许可。
+重试期间也保留该许可，避免其他 prompt 插入。
+执行结束后，适配器检查动作证据。
+缺少成功工具动作时，结果标记为失败。
+
+这项检查不等于整个目标的完成证明。
+成功调用只说明存在动作证据。
+修改验证与目标步骤仍按 Core 的原规则处理。
+源码：<SourceRef path="crates/code/acp/src/agent/unattended_turn.rs" match="if failure.is_none() &amp;&amp; !progress.has_action_evidence() {">动作证据检查</SourceRef>。
+
+## 结果文件记录什么
+
+| 字段 | 含义 | 排查用途 |
+| --- | --- | --- |
+| `outcome` | 总体执行结果 | 区分成功与失败 |
+| `reason` | 具体停止原因 | 定位期限、断流或证据缺失 |
+| `terminalEvent` | 是否观察到终态事件 | 识别静默断流 |
+| `toolCalls` / `successfulToolCalls` | 工具调用计数 | 检查是否存在动作 |
+| `artifactEvidenceCount` | 工件证据数量 | 对照实际输出 |
+| `providerStatus` / `lastError` | 可用的服务与错误信息 | 区分服务拒绝与执行失败 |
+
+具体字段由
+<SourceRef path="crates/code/acp/src/unattended/result.rs" match="pub(crate) struct TerminalBenchRunResultV1 {">结果记录类型</SourceRef>
+定义。
+写入结果文件失败时，适配器也保留失败。
+文件存在本身不能证明任务成功。
+
+## 怎样区分三类常见停止
+
+| 现象 | 应核对的依据 | 后续动作 |
+| --- | --- | --- |
+| 目标等待输入 | Goal 的决定与打开的等待 | 获取匹配回答或新来源 |
+| 额度或期限耗尽 | 历史计数与可信策略 | 显示原额度，等待明确调整 |
+| 流关闭且缺少终态 | `terminalEvent` 与停止原因 | 保留故障，核对原运行 |
+
+临时故障不自动等于用户暂停。
+一次取消也不自动等于清除长期目标。
+完成与取消的目标保留原始历史。
+切换到另一项工作时，按产品规则建立新会话。
+
+## 接入验收顺序
+
+1. 创建一个明确的目标。
+2. 提出并接受对应计划。
+3. 执行一个切片。
+4. 声明一个来源等待。
+5. 提交匹配的新来源证据。
+6. 核对下一轮的推进决定。
+7. 暂停原目标。
+8. 核对暂停后的迟到事件。
+9. 恢复并读取原历史额度。
+10. 检查目标的全局完成条件。
+
+反例还应覆盖旧修订、重复操作身份和缺失终态。
+协议接入结果以原始记录与真实输出为准。

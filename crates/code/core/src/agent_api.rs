@@ -55,7 +55,6 @@ pub(crate) use conversation_runtime::{
 };
 #[cfg(test)]
 pub(crate) use run_lifecycle::RunControlState;
-#[cfg(test)]
 pub(crate) use session_persistence::SessionPersistenceContext;
 #[cfg(test)]
 pub(crate) use session_sandbox::select_default_local_sandbox;
@@ -64,15 +63,18 @@ pub(crate) use tests::test_config;
 mod direct_tool_facade;
 mod direct_tools;
 mod execution_coordinator;
+mod follow_up_runtime;
 mod goal_facade;
 mod governance_facade;
 mod hook_control;
+mod migration;
 mod project_instructions;
 #[cfg(feature = "dynamic-workflow")]
 mod projected_flow;
 mod projected_host_capability;
 mod projected_ui;
 mod run_admission;
+mod session_title_runtime;
 pub(crate) use run_admission::OriginalModelCallPort;
 pub(crate) use run_admission::RunCancelPin;
 mod run_facade;
@@ -101,12 +103,15 @@ mod session_sandbox;
 mod session_save;
 mod session_verification;
 mod session_view;
+mod structured_output_runtime;
+mod transcript;
 mod workflow_facade;
 pub use agent_facade::{Agent, SessionBuilder};
 #[cfg(test)]
 pub(crate) use direct_tools::DirectToolRuntime;
 #[cfg(not(test))]
 use direct_tools::DirectToolRuntime;
+pub use follow_up_runtime::FollowUpSuggestions;
 use hook_control::HookControl;
 #[cfg(feature = "dynamic-workflow")]
 pub use projected_flow::ProjectedFlowHandle;
@@ -123,6 +128,7 @@ use session_queue::QueueControl;
 use session_runs::RunControl;
 use session_verification::VerificationRuntime;
 use session_view::SessionView;
+pub use structured_output_runtime::validate_output_schema;
 
 /// Canonicalize a path, stripping the Windows `\\?\` UNC prefix to avoid
 /// polluting workspace strings throughout the system (prompts, session data, etc.).
@@ -275,12 +281,14 @@ pub struct SessionOptions {
     pub llm_client: Option<Arc<dyn crate::llm::LlmClient>>,
     /// Optional context providers for RAG
     pub context_providers: Vec<Arc<dyn crate::context::ContextProvider>>,
-    /// One exact-generation cognitive package supplied by the embedding host.
+    /// Exclude skills, discovered instructions and persistent memory from this session.
+    pub isolated_context: bool,
+    /// One exact-generation package supplied by the embedding host.
     ///
     /// This is separate from general-purpose RAG providers: Code persists the
     /// immutable package binding and treats provider failure as fatal. The host
     /// retains A3S Use lease, Registry, installation, and lifecycle authority.
-    pub cognitive_context: Option<crate::cognitive_context::CognitiveContextSession>,
+    pub package_context: Option<crate::package_context::PackageContextSession>,
     /// Optional confirmation manager for HITL
     pub confirmation_manager: Option<Arc<dyn crate::hitl::ConfirmationProvider>>,
     /// Optional confirmation policy (will be used to create ConfirmationManager if confirmation_manager is not set)
@@ -639,7 +647,7 @@ pub struct AgentSession {
     config: AgentConfig,
     tool_result_transform_policy: crate::tools::ToolResultTransformPolicyV1,
     /// Host provider plus the durable exact-generation package binding.
-    cognitive_context: Option<crate::cognitive_context::CognitiveContextSession>,
+    package_context: Option<crate::package_context::PackageContextSession>,
     /// General-purpose providers supplied by the embedding host before Code
     /// adds its own workspace-instruction and Skill-catalog providers.
     /// Projected Knowledge must not silently compose with this ambient RAG

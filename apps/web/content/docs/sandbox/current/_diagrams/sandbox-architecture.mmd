@@ -1,0 +1,10 @@
+flowchart TB
+  accTitle: Aster Sandbox 的组件边界
+  accDescr: a3s-sandbox 处理不可信命令并返回有界输出。a3s-box 从 OCI 镜像创建执行，通过统一生命周期管理选择 MicroVM 或共享内核 Sandbox。
+  command["不可信命令"] --> native["a3s-sandbox<br/>策略与生命周期"]
+  native --> os["原生 OS 边界<br/>Seatbelt / bwrap / AppContainer"]
+  os --> output["有界输出<br/>退出状态与截断信息"]
+  image["OCI 镜像与任务"] --> box["a3s-box CLI / Rust SDK"]
+  box --> manager["Box 生命周期管理<br/>执行记录与代际"]
+  manager --> isolation["隔离后端<br/>MicroVM 默认<br/>Linux Sandbox 显式选择"]
+  isolation --> records["命令与文件<br/>日志 / 事件 / 快照"]

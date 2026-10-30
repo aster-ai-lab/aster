@@ -20,7 +20,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, Weak};
 
 mod fork;
-pub(super) use fork::fork_session_async;
+pub(super) use fork::{fork_session_async, fork_session_prefix_async};
 
 /// Agent-owned registry state guarded by `Agent::sessions`.
 ///
@@ -893,6 +893,18 @@ async fn build_resumed_session(
         })?;
 
     let snapshot = session_persistence::load_session_snapshot(&store, session_id).await?;
+    if let Some(workspace) = &workspace_override {
+        let requested = super::safe_canonicalize(std::path::Path::new(workspace));
+        let persisted =
+            super::safe_canonicalize(std::path::Path::new(&snapshot.session.config.workspace));
+        if requested != persisted {
+            return Err(CodeError::Session(format!(
+                "Refusing foreign workspace for persisted session {session_id}: requested {}, persisted {}",
+                requested.display(),
+                persisted.display()
+            )));
+        }
+    }
     options = options.with_session_store(Arc::clone(&store));
     build_session_from_snapshot(agent, snapshot, options, workspace_override).await
 }

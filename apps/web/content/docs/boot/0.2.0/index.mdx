@@ -1,0 +1,51 @@
+export const meta = {
+  title: 'Aster Boot 产品概览',
+  description: 'a3s-boot 的模块、类型化 Provider、协议中立管线和适配器边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-boot` 是模块化 Rust 异步服务框架。当前版本为 `0.2.0`。模块组织应用，Provider 提供依赖，Controller 暴露路由，协议中立管线处理请求。
+
+Boot 不是 Axum 包装器。请求、响应、路由和执行上下文属于 Boot 核心。Axum 是默认 HTTP 适配器。
+
+<BootArchitectureDiagram />
+
+## 核心合同
+
+<DocTable caption="Boot 的应用组成" headers={['对象', '职责', '边界']} rows={[
+  ['Module', '组织导入、Provider、Controller、Gateway 和生命周期', '通过可见性规则组合功能边界'],
+  ['Provider', '按类型或名称提供依赖', '支持 singleton、request 和 transient 作用域'],
+  ['Controller / Gateway', '声明 HTTP、WebSocket 和消息处理器', '协议细节交由适配器处理'],
+  ['Execution Pipeline', '执行 middleware、guard、interceptor、pipe 和 filter', '重试不会回滚外部副作用'],
+  ['Adapter / Transport', '连接 HTTP、WebSocket 和消息后端', '外部服务仍需独立部署与验证'],
+]} />
+
+属性宏在编译期生成普通 Boot 定义。动态注册仍使用显式 Builder API，不依赖运行时 decorator 元数据。
+
+## Feature 边界
+
+默认 feature 是 `axum`、`macros` 和 `shutdown-hooks`。其他集成按需启用。
+
+<DocTable caption="常用可选 Feature" headers={['领域', 'Feature', '说明']} rows={[
+  ['配置与安全', 'config、auth、security、session', 'ACL、认证、安全策略和会话抽象'],
+  ['数据与任务', 'database、cache、queue、queue-postgres', '后端抽象与 PostgreSQL 持久队列'],
+  ['事件与调度', 'events、cqrs、schedule', '事件、命令查询和定时任务'],
+  ['协议', 'tcp、redis、nats、mqtt、rabbitmq、kafka、grpc 对应 feature', '共享 MessageTransport 合同'],
+  ['HTTP 辅助', 'openapi-schemas、file-upload、static、compression', 'Schema、上传、静态文件和压缩'],
+]} />
+
+Feature 只暴露对应集成。Database、Cache、Session 和 Queue 抽象不代表所有生产后端都已交付。
+
+## 文档入口
+
+- [应用与管线](./application/)：模块、Provider、Controller、生命周期和协议。
+- [运行与验证](./operations/)：Feature、PostgreSQL 队列、安全和测试。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Boot 架构与 Feature 矩阵](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)
+- [Boot crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/Cargo.toml)
+- [成熟度路线图](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/ROADMAP.md)

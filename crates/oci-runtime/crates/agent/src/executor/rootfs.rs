@@ -9,6 +9,7 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 
+use super::mount::{MOVE_MOUNT_F_EMPTY_PATH, MOVE_MOUNT_T_EMPTY_PATH};
 use a3s_oci_sdk::{Error, ErrorCode, Result};
 
 const CURRENT_DIRECTORY: &[u8] = b".\0";
@@ -417,7 +418,7 @@ fn cleanup_staged_rootfs(path: &Path, mounted: bool) -> Result<()> {
 }
 
 fn attach_rootfs_mount(detached: &impl AsRawFd, destination: &File) -> Result<()> {
-    let flags = libc::MOVE_MOUNT_F_EMPTY_PATH | libc::MOVE_MOUNT_T_EMPTY_PATH;
+    let flags = MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH;
     // SAFETY: both descriptors are live, both paths are empty NUL-terminated
     // strings selected by the EMPTY_PATH flags, and move_mount retains none.
     let moved = unsafe {

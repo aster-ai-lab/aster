@@ -26,11 +26,7 @@ fn pin_test_model(launch: &mut LaunchConfig) {
     if raw.is_empty() {
         return;
     }
-    let model = if raw == "boyue/bailian/deepseek-v4-flash" {
-        "boyue/bailian/deepseek-v4.1-flash".to_string()
-    } else {
-        raw.to_string()
-    };
+    let model = raw.to_string();
     launch.model_id = model.clone();
     launch.config.default_model = Some(model);
 }

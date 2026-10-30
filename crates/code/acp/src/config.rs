@@ -26,8 +26,6 @@ use anyhow::{anyhow, Context, Result};
 #[cfg(feature = "account-import")]
 use crate::cc_switch;
 #[cfg(feature = "account-import")]
-use crate::codex_account;
-#[cfg(feature = "account-import")]
 use crate::cursor_account;
 #[cfg(feature = "account-import")]
 use crate::grok_account;
@@ -243,7 +241,9 @@ fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) ->
                 AccountImport::CcSwitch => cc_switch::merge_into_config(config),
                 AccountImport::Grok => grok_account::merge_into_config(config),
                 AccountImport::Cursor => cursor_account::merge_into_config(config),
-                AccountImport::Codex => codex_account::merge_into_config(config),
+                AccountImport::Codex => {
+                    a3s_code_core::llm::CodexLoginClient::import_local_account(config)
+                }
             };
             match merged {
                 Ok(merged) => imported |= merged,
@@ -1155,6 +1155,52 @@ sandbox {
                 }
             }
         }
+    }
+
+    #[cfg(feature = "account-import")]
+    #[test]
+    fn a_trusted_acl_opt_in_imports_codex_through_the_core_client() {
+        env_locked(|| {
+            let profile = tempfile::tempdir().unwrap();
+            let workspace = hermetic_workspace();
+            let account = profile.path().join("codex-home");
+            std::fs::create_dir(&account).unwrap();
+            std::fs::write(account.join("auth.json"), serde_json::json!({
+                "tokens": {"access_token":"synthetic-codex-access", "account_id":"synthetic-account"}
+            }).to_string()).unwrap();
+            std::fs::write(
+                account.join("models_cache.json"),
+                serde_json::json!({
+                    "models": [{"slug":"synthetic-model", "display_name":"Fixture model"}]
+                })
+                .to_string(),
+            )
+            .unwrap();
+            let config = profile.path().join("codex.acl");
+            std::fs::write(&config, "import_accounts = [\"codex\"]\n").unwrap();
+            std::env::set_var("HOME", profile.path());
+            std::env::remove_var("A3S_DEFAULT_MODEL");
+            let _account_env = RestoreEnv::set(&[
+                ("A3S_CODEX_HOME", Some(account.to_str().unwrap())),
+                ("A3S_DISABLE_CODEX_ACCOUNT", None),
+                ("A3S_PREFER_CODEX", None),
+            ]);
+            let (launch, _) =
+                load_launch_config_with_imports(workspace.path().to_owned(), Some(config), &[])
+                    .unwrap();
+            let provider = launch
+                .config
+                .providers
+                .iter()
+                .find(|provider| provider.name == "codex")
+                .unwrap();
+            assert_eq!(provider.models.len(), 1);
+            assert!(provider.base_url.is_none());
+            assert_eq!(
+                launch.config.default_model.as_deref(),
+                Some("codex/synthetic-model")
+            );
+        });
     }
 
     fn cursor_fixture(root: &std::path::Path) -> RestoreEnv {

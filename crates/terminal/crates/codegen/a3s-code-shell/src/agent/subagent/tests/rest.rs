@@ -1287,7 +1287,7 @@ fn drain_cancelled_finish_broadcasts(
         let a3s_acp_lib::AcpClientMessage::ExtNotification(args) = msg else {
             continue;
         };
-        assert_eq!(args.request.method.as_ref(), "x.ai/session_notification");
+        assert_eq!(args.request.method.as_ref(), "a3s/session_notification");
         let notification: SessionNotification = serde_json::from_str(
                 args.request.params.get(),
             )

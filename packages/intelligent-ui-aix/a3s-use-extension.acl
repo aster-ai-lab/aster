@@ -16,7 +16,7 @@ extension "a3s/intelligent-ui" {
 
   ui "message" {
     title = "Intelligent UI"
-    description = "OpenUI Lang interactions inside conversation messages"
+    description = "JSON Render interactions inside conversation messages"
     entry = "ui/message/index.html"
     root = "ui/message"
     skill = "intelligent-ui"

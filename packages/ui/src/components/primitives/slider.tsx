@@ -65,7 +65,7 @@ const sliderValueLabelVariants = cva(
   cn(
     'pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-full',
     'rounded-[6px] bg-neutral-900 px-1.5 py-0.5 text-white dark:bg-neutral-100 dark:text-neutral-900',
-    'scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100'
+    'opacity-0 motion-safe:scale-0 motion-safe:transition-[scale,opacity] motion-safe:duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100'
   ),
   {
     variants: {

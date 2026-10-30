@@ -45,7 +45,7 @@ Rust host may inject `SessionCheckpointExportSink` through `SessionOptions`.
 At each completed Tool-round boundary, an internal acknowledgement channel
 joins the loop-owned logical state to the event-materialized Session view after
 capability effects and prior events settle. The exported Session binding is
-the source Run's frozen cognitive authority even if the Session catalog has
+the source Run's frozen package authority even if the Session catalog has
 already advanced. Code awaits the host sink before the loop continues, but a
 sink failure is logged and does not fail the Run. No public event variant,
 Cloud checkpoint identity, object authorization, retention rule, approval, or
@@ -146,9 +146,8 @@ tool/session setup failures therefore fail before activation.
 
 `ServeDaemonHandle::stop` cancels sleepers and in-flight schedule turns, closes
 daemon-owned sessions, and joins the task within a 30-second default deadline.
-Terminal failures expose stable `SERVE_*` codes. Node.js, Python, and Go SDK
-serve calls wait for readiness before returning and expose status through their
-serve handles.
+Terminal failures expose stable `SERVE_*` codes. Rust hosts must wait for
+readiness and inspect the returned daemon handle for lifecycle status.
 
 This is a lifecycle primitive, not the v1 release runtime. It does not read or
 bind `.a3s/asset.acl`, listen on the declared readiness/liveness paths, accept a

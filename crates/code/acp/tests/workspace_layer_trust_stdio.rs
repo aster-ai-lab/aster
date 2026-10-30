@@ -6,6 +6,9 @@
 //! process the repository declared until the user trusts that exact
 //! declaration, and an edited declaration must lose that trust.
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::time::Duration;
@@ -71,7 +74,7 @@ mcp_servers "repo-tools" {{
     }
 
     fn command(&self) -> tokio::process::Command {
-        let mut command = tokio::process::Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"));
+        let mut command = tokio::process::Command::new(binaries::acp_binary());
         command
             .current_dir(&self.workspace)
             .env_clear()

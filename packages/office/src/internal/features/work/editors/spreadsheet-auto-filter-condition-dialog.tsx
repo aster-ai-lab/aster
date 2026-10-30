@@ -201,6 +201,7 @@ export function SpreadsheetAutoFilterConditionDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.autoFilter.title')}
       description={`${source.sheetName}!${source.columnLabel}`}
       className="work-spreadsheet-auto-filter-dialog"

@@ -99,7 +99,10 @@ async fn native_registration_failure_closes_and_settles_the_open_session() {
                     workspace: workspace.clone(),
                     model_id: &model,
                     effort: None,
-                    host: Default::default(),
+                    host: crate::host_context::StudioHost {
+                        office_tools: true,
+                        ..Default::default()
+                    },
                     components: &[],
                     mcp_servers: Vec::new(),
                 },

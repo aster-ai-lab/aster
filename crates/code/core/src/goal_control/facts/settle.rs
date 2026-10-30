@@ -9,6 +9,14 @@ closed_set!(GoalSliceOutcomeV1 {
     Completed => "completed", Interrupted => "interrupted",
 });
 
+/// Advisory judgment data; the enclosing settlement binds goal and plan revisions.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct GoalStepFeedback {
+    pub(crate) step_id: String,
+    pub(crate) remaining_criteria: Vec<String>,
+}
+
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct SettledBody {
@@ -25,6 +33,8 @@ struct SettledBody {
     /// written before the field existed: those settle mutation-only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     progress: Option<crate::harness_loop::TurnProgressDelta>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    feedback: Option<GoalStepFeedback>,
 }
 
 type SettledFact = GoalFact<SettledBody>;
@@ -112,6 +122,7 @@ pub(crate) fn prepare_settlement(
     run_id: &str,
     usage: Option<TokenUsage>,
     progress: Option<crate::harness_loop::TurnProgressDelta>,
+    feedback: Option<GoalStepFeedback>,
 ) -> Result<Option<NewFact>, GoalControlError> {
     let Some(view) = definition_from_facts(facts, session_id, workspace, policy_digest)? else {
         return Ok(None);
@@ -126,6 +137,19 @@ pub(crate) fn prepare_settlement(
     };
     if settled(facts, goal_id, run_id) {
         return Ok(None);
+    }
+    if let Some(feedback) = &feedback {
+        let admission = facts
+            .iter()
+            .find(|fact| fact.seq == run_sequence)
+            .and_then(|fact| run::RunFact::deserialize(&fact.payload).ok())
+            .ok_or_else(|| refused(GoalRefusal::Conflict, "judgment admission is absent"))?;
+        if feedback.step_id != admission.body.step_id {
+            return Err(refused(
+                GoalRefusal::Conflict,
+                "judgment feedback differs from its original step",
+            ));
+        }
     }
     if crate::fact_control::has_unsettled_effects(facts) {
         return Err(refused(
@@ -146,6 +170,7 @@ pub(crate) fn prepare_settlement(
         step_sequence,
         usage,
         progress,
+        feedback,
     };
     let operation_id = operation_id(run_id);
     let stored = SettledFact {
@@ -184,6 +209,7 @@ pub(crate) fn reconcile_slices(
             &run_id,
             None,
             None,
+            None,
         )? {
             pending.push(fact);
         }
@@ -200,6 +226,7 @@ pub(super) fn fold_settle(
     session_id: &str,
     workspace: &WorkspaceRef,
     policy_digest: Option<&str>,
+    continuation: &mut run::ContinuationUsage,
 ) -> Result<(String, String, DurableGoalDefinitionV1, bool), GoalControlError> {
     let current = current.ok_or_else(|| refused(GoalRefusal::NotFound, "goal is absent"))?;
     let stored = SettledFact::deserialize(&fact.payload)
@@ -246,21 +273,51 @@ pub(super) fn fold_settle(
             "slice settlement differs from its original Run",
         ));
     }
-    let mutated = crate::fact_control::goal_slice_made_progress(
+    let (legacy_mutated, changes) = crate::fact_control::goal_slice_workspace_evidence(
         prefix,
         body.run_sequence,
         session_id,
         &body.run_id,
     );
-    // A slice with any nonzero turn dimension made progress even without a
-    // workspace mutation — the read-only task's lifeline (specs/010 P2).
-    // Facts predating the field carry None and stay mutation-only.
+    let admission = run::RunFact::deserialize(&slice.payload)
+        .map_err(|_| refused(GoalRefusal::Conflict, "invalid settled slice admission"))?;
+    if body
+        .feedback
+        .as_ref()
+        .is_some_and(|feedback| feedback.step_id != admission.body.step_id)
+    {
+        return Err(refused(
+            GoalRefusal::Conflict,
+            "judgment feedback differs from its original step",
+        ));
+    }
+    let basis = admission
+        .body
+        .continuation
+        .as_ref()
+        .and_then(|source| source.progress_basis);
+    let strict = basis == Some(run::ProgressBasis::TurnProgressDeltaV3);
+    let net_progress = continuation.observe_workspace_changes(changes)?;
+    let mutated = if strict { net_progress } else { legacy_mutated };
+    let reduction_only = admission.body.continuation.as_ref().is_some_and(|source| {
+        matches!(
+            source.progress_basis,
+            Some(run::ProgressBasis::TurnProgressDeltaV2 | run::ProgressBasis::TurnProgressDeltaV3)
+        )
+    });
+    // Preserve historical admissions; new slices cannot earn retries by growing debt.
     let progressed = mutated
+        || (strict && body.step_sequence.is_some())
         || body.progress.is_some_and(|delta| {
+            let uncertainty_progress = if reduction_only {
+                delta.uncertainty_delta > 0
+            } else {
+                delta.uncertainty_delta != 0
+            };
             delta.information_delta > 0
-                || delta.mutation_delta > 0
-                || delta.uncertainty_delta != 0
-                || delta.plan_delta > 0
+                || (!strict && delta.mutation_delta > 0)
+                || uncertainty_progress
+                || (!strict && delta.plan_delta > 0)
         });
     Ok((
         stored.operation_id,
@@ -268,4 +325,47 @@ pub(super) fn fold_settle(
         current.clone(),
         progressed,
     ))
+}
+
+/// Replayed operations retain their original input cut, excluding their own judgment.
+pub(crate) fn tick_feedback(
+    facts: &[Fact],
+    command: &crate::goal_control::GoalControlCommandV1,
+    step_id: &str,
+) -> Result<Option<GoalStepFeedback>, GoalControlError> {
+    let replay = run::matches_tick_run(facts, command)?;
+    let cutoff = if replay {
+        facts
+            .iter()
+            .find(|fact| {
+                fact.kind == GoalFactKindV1::SliceAdmitted.as_str()
+                    && fact.payload["body"]["run_id"].as_str() == Some(&command.operation_id)
+            })
+            .map_or(u64::MAX, |fact| fact.seq)
+    } else {
+        u64::MAX
+    };
+    for fact in facts
+        .iter()
+        .rev()
+        .filter(|fact| fact.seq < cutoff && fact.kind == GoalFactKindV1::SliceSettled.as_str())
+    {
+        let stored = SettledFact::deserialize(&fact.payload)
+            .map_err(|_| refused(GoalRefusal::Conflict, "invalid judgment feedback source"))?;
+        if stored.session_id == command.session_id
+            && stored.goal_id == command.goal_id
+            && stored.goal_revision == command.expected_goal_revision
+            && stored.plan_revision == command.expected_plan_revision
+            && stored.work_policy_digest == command.work_policy_digest
+        {
+            if let Some(feedback) = stored
+                .body
+                .feedback
+                .filter(|feedback| feedback.step_id == step_id)
+            {
+                return Ok(Some(feedback));
+            }
+        }
+    }
+    Ok(None)
 }

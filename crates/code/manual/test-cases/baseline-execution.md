@@ -53,7 +53,7 @@ model calls share this path.
 - **Stimulus:** any governed tool.
 - **Oracle:** typed budget error; tool not executed; counter stays 0.
 - **Fail:** the tool runs and the budget goes negative.
-- **Home:** `core/src/budget.rs`; `sdk/python/tests/test_budget_guard_fail_closed.py`; `sdk/node/test_budget_guard.mjs`.
+- **Home:** `core/src/budget.rs` and the Core budget/guard tests.
 
 ### I-GT-01
 

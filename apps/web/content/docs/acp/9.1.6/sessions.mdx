@@ -7,11 +7,11 @@ export const meta = {
 
 ## 会话目录与删除
 
-`x.ai/session/list` 读取 Code 事实投影，不创建新的 AgentSession。参数支持 cwd、limit、query、headless，以及宿主使用的 facet 元数据。headless 只接受 include、exclude、only，kind facet 只接受 build、chat。
+`a3s/session/list` 读取 Code 事实投影，不创建新的 AgentSession。参数支持 cwd、limit、query、headless，以及宿主使用的 facet 元数据。headless 只接受 include、exclude、only，kind facet 只接受 build、chat。
 
 cwd 仍受启动工作区范围约束，allowRelax 兼容字段不能扩大宿主范围。查询不到或无权访问时按资源不可用处理，不通过错误细节泄露其他工作区。
 
-`x.ai/session/info` 查询指定会话，`x.ai/session/delete` 是实际删除操作。客户端应在用户明确要求删除该会话后使用真实 ID 和 cwd；不要把“关闭标签页”接到删除接口。删除过程中还需关闭活动 Session 并清理相关记录，失败不能伪装成成功。
+`a3s/session/info` 查询指定会话，`a3s/session/delete` 是实际删除操作。客户端应在用户明确要求删除该会话后使用真实 ID 和 cwd；不要把“关闭标签页”接到删除接口。删除过程中还需关闭活动 Session 并清理相关记录，失败不能伪装成成功。
 
 ## 查询实际工具清单
 
@@ -43,9 +43,9 @@ cwd 仍受启动工作区范围约束，allowRelax 兼容字段不能扩大宿�
 
 `a3s/workspace/search/v1` 使用 `a3s.acp.workspace-search.v1`，参数含 sessionId、operationId、cwd、query。当前实现调用受控 search 的 hybrid 模式，最多八条结果，因此需要混合检索路线可用；它不是任意文件系统搜索。
 
-`x.ai/compact_conversation` 接收 sessionId 和可选 userContext，压缩供模型使用的上下文。完整转录仍按 store 读取。压缩后不能删除 UI 中的重要工具与验证记录来假装从未发生。
+`a3s/compact_conversation` 接收 sessionId 和可选 userContext，压缩供模型使用的上下文。完整转录仍按 store 读取。压缩后不能删除 UI 中的重要工具与验证记录来假装从未发生。
 
-`x.ai/interject` 接收 sessionId 和 text，对活动 Run 追加输入；后续应用状态遵守 Core 的运行控制回执。空闲、新 generation 和取消竞争要分别处理。
+`a3s/interject` 接收 sessionId 和 text，对活动 Run 追加输入；后续应用状态遵守 Core 的运行控制回执。空闲、新 generation 和取消竞争要分别处理。
 
 ## 验收
 

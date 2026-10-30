@@ -22,7 +22,7 @@ use a3s_acp_lib::{AcpAgentTx, AcpClientMessageBox, AcpClientRx, acp_send};
 use a3s_code_shell::agent::auth_method::AuthMethodKind;
 use a3s_code_shell::agent::config::Config as AgentConfig;
 use a3s_code_shell::extensions::memory::MemoryFlushResponse;
-use a3s_code_shell::extensions::task::{CancelSubagentRequest, KillTaskRequest};
+use a3s_code_shell::extensions::task::KillTaskRequest;
 use a3s_code_shell::sampling::error::{
     RATE_LIMITED_ERROR_CODE, error_detail_from_data, format_rate_limited_user_message,
 };
@@ -39,6 +39,8 @@ use std::time::{Duration, Instant};
 use tokio_util::sync::CancellationToken;
 mod ext_protocol;
 mod mcp_init;
+mod persistence;
+use persistence::HeadlessPersistence;
 mod prompt_ack;
 mod reducer;
 mod signals;
@@ -88,7 +90,7 @@ pub struct HeadlessOptions {
     pub wait_for_background: bool,
     /// Max time to wait for background work to finish after the first turn ends.
     pub background_wait_timeout: Duration,
-    /// After the prompt (or instead of one when resuming), run `x.ai/memory/flush`.
+    /// After the prompt (or instead of one when resuming), run `a3s/memory/flush`.
     pub memory_flush: bool,
     /// CLI `--experimental-memory` / `--no-memory` override for the headless agent.
     pub memory_enabled_override: Option<bool>,
@@ -101,6 +103,7 @@ struct HeadlessEmitter {
     /// Schema-validated output read from the prompt-response `_meta`.
     structured_output: Option<Result<serde_json::Value, String>>,
     usage: Option<serde_json::Value>,
+    persistence: Option<HeadlessPersistence>,
     /// Reducer for the streaming formats; `None` for `plain`/`json`.
     reducer: Option<Box<dyn Reducer>>,
     /// Set when the prompt is sent; `result.duration_ms` on the terminal line is measured from it.
@@ -120,6 +123,7 @@ impl HeadlessEmitter {
             thought_buffer: String::new(),
             structured_output: None,
             usage: None,
+            persistence: None,
             reducer: reducer_for(format),
             prompt_started: None,
             out: std::io::stdout(),
@@ -189,7 +193,7 @@ impl HeadlessEmitter {
             self.emit_line(&line);
         }
     }
-    /// Render an `x.ai/*` lifecycle notification for the active format.
+    /// Render an `a3s/*` lifecycle notification for the active format.
     fn on_lifecycle(&mut self, event: Lifecycle) {
         match self.format {
             OutputFormat::Plain => eprint_line(&event.plain_message()),
@@ -535,7 +539,7 @@ async fn open_session(
                     let mut m = acp::Meta::new();
                     m.insert("noReplay".into(), serde_json::Value::Bool(true));
                     if let Some(rc) = restore_code {
-                        m.insert("x.ai/restore_code".into(), serde_json::Value::Bool(rc));
+                        m.insert("a3s/restore_code".into(), serde_json::Value::Bool(rc));
                     }
                     Some(m)
                 }),
@@ -601,6 +605,7 @@ async fn fork_then_open(
     parent_cwd: Option<&Path>,
     new_id: Option<&str>,
     restore_code: Option<bool>,
+    is_a3s_code: bool,
 ) -> anyhow::Result<OpenedSession> {
     use crate::app::session_startup::{
         effective_fork_new_cwd, ensure_session_id_available, fork_response_error,
@@ -609,6 +614,16 @@ async fn fork_then_open(
     let launch_cwd_str = launch_cwd.to_string_lossy().into_owned();
     let new_cwd_str = effective_fork_new_cwd(&launch_cwd_str, parent_cwd);
     let write_cwd = PathBuf::from(&new_cwd_str);
+    if is_a3s_code {
+        open_session(acp_tx, &write_cwd, Some(parent_id), restore_code).await?;
+        let child =
+            crate::acp::prefix_fork::fork(acp_tx, parent_id, &write_cwd, new_id, None).await?;
+        return open_session(acp_tx, &write_cwd, Some(&child), restore_code)
+            .await
+            .map_err(|error| {
+                anyhow::anyhow!("fork succeeded as {child} but load failed: {error}")
+            });
+    }
     if let Some(nid) = new_id {
         ensure_session_id_available(nid, &new_cwd_str)?;
     }
@@ -622,7 +637,7 @@ async fn fork_then_open(
     }
     let fork_params = serde_json::value::to_raw_value(&payload)
         .map_err(|e| anyhow::anyhow!("serialize fork params: {e}"))?;
-    let req = acp::ExtRequest::new("x.ai/session/fork", fork_params.into());
+    let req = acp::ExtRequest::new("a3s/session/fork", fork_params.into());
     let resp = acp_send(req, acp_tx).await?;
     if let Some(err) = fork_response_error(resp.0.get()) {
         anyhow::bail!("fork failed: {err}");
@@ -870,6 +885,13 @@ pub async fn run_single_turn(
         None,
         a3s_code_shell::util::config::PermissionMode::Ask,
     );
+    let permission_posture = crate::app::effects::SessionFlags {
+        plan_mode: options.permission_mode_flag.as_deref() == Some("plan"),
+        yolo_mode: options.yolo,
+        auto_mode: agent_config.default_auto_mode,
+        ..Default::default()
+    }
+    .effective_permission_posture();
     apply_agent_flag(&options.agent, &mut agent_config);
     if let Some(ref json) = options.agents_json {
         agent_config.cli_agents = parse_cli_agents(json)?;
@@ -948,6 +970,12 @@ pub async fn run_single_turn(
         .meta
         .as_ref()
         .and_then(|meta| meta.get("grokShell"))
+        .and_then(serde_json::Value::as_bool)
+        .unwrap_or(false);
+    let is_a3s_code = init_resp
+        .meta
+        .as_ref()
+        .and_then(|meta| meta.get("a3sCode"))
         .and_then(serde_json::Value::as_bool)
         .unwrap_or(false);
     let is_api_key_auth = match authenticate(
@@ -1075,6 +1103,7 @@ pub async fn run_single_turn(
                 parent_cwd.as_deref(),
                 new_session_id.as_deref(),
                 restore_code,
+                is_a3s_code,
             )
             .await
         }
@@ -1183,14 +1212,48 @@ pub async fn run_single_turn(
         emitter.on_error(&msg, None);
         anyhow::bail!("{msg}");
     }
+    if is_a3s_code {
+        let model = options
+            .model
+            .as_deref()
+            .and_then(|name| session_models.resolve_by_name_or_id(name))
+            .or_else(|| session_models.current.clone())
+            .ok_or_else(|| anyhow::anyhow!("session has no current model"))?;
+        emitter.persistence = Some(
+            HeadlessPersistence::open(
+                a3s_code_shell::util::grok_home::grok_home(),
+                a3s_code_shell::session::info::Info {
+                    id: session_id.clone(),
+                    cwd: session_cwd.to_string_lossy().into_owned(),
+                },
+                model,
+            )
+            .await?,
+        );
+    }
+    let mut pending_bg: HashSet<BackgroundWork> = HashSet::new();
+    let mut background_lifecycle = BackgroundLifecycleState::default();
+    let mut ttf_logged = false;
+    drain_pending_acp_messages(
+        &mut acp_rx,
+        &mut emitter,
+        Instant::now(),
+        &mut ttf_logged,
+        options.yolo,
+        &mut pending_bg,
+        &mut background_lifecycle,
+    )
+    .await?;
     let t_prompt = Instant::now();
     emitter.mark_prompt_started();
-    let mut ttf_logged = false;
     let ack_deadlines = PromptAckDeadlines::from_process_env();
     let (prompt_fut, mut prompt_ack) = match prompt {
         Some(prompt) => {
             let prompt_blocks = prompt.into_content_blocks();
             let mut meta = serde_json::Map::new();
+            if is_a3s_code {
+                meta.insert("permissionPosture".into(), permission_posture.into());
+            }
             if verbatim {
                 meta.insert("verbatim".to_string(), serde_json::Value::Bool(true));
             }
@@ -1201,11 +1264,18 @@ pub async fn run_single_turn(
                 "screenMode".to_string(),
                 serde_json::Value::String("headless".to_string()),
             );
+            // Schema automation keeps generation limited to the requested output and its repairs.
+            if is_a3s_code && options.json_schema.is_none() {
+                meta.insert("generateTitle".into(), true.into());
+            }
             let prompt_id = uuid::Uuid::new_v4().to_string();
             meta.insert(
                 "promptId".to_string(),
                 serde_json::Value::String(prompt_id.clone()),
             );
+            if let Some(storage) = emitter.persistence.as_mut() {
+                storage.begin_prompt(&prompt_id, &prompt_blocks).await?;
+            }
             let request =
                 acp::PromptRequest::new(session_id.clone(), prompt_blocks).meta(Some(meta));
             (
@@ -1216,8 +1286,7 @@ pub async fn run_single_turn(
         None => (None, None),
     };
     let mut prompt_result = None;
-    let mut pending_bg: HashSet<BackgroundWork> = HashSet::new();
-    let mut background_lifecycle = BackgroundLifecycleState::default();
+
     let mut prompt_done_at: Option<Instant> = None;
     let mut connection_closed = false;
     let mut prompt_unacknowledged = false;
@@ -1238,7 +1307,8 @@ pub async fn run_single_turn(
                     options.yolo,
                     &mut pending_bg,
                     &mut background_lifecycle,
-                );
+                )
+                .await?;
                 if pending_bg.is_empty() {
                     tracing::debug!("headless: no pending background tasks, exiting");
                     break;
@@ -1299,7 +1369,7 @@ pub async fn run_single_turn(
                         options.yolo,
                         &mut pending_bg,
                         &mut background_lifecycle,
-                    );
+                    ).await?;
                 }
                 res = &mut prompt_fut, if prompt_result.is_none() => {
                     prompt_ack = None;
@@ -1316,7 +1386,7 @@ pub async fn run_single_turn(
                             &mut pending_bg,
                             &mut background_lifecycle,
                         )
-                        .await;
+                        .await?;
                         break;
                     }
                     // Drain now so a task_backgrounded around completion is recorded before the empty-check.
@@ -1328,7 +1398,7 @@ pub async fn run_single_turn(
                         options.yolo,
                         &mut pending_bg,
                         &mut background_lifecycle,
-                    );
+                    ).await?;
                 }
                 _ = tokio::time::sleep(timeout_deadline), if options.wait_for_background
                     && prompt_result.is_some()
@@ -1363,7 +1433,8 @@ pub async fn run_single_turn(
             options.yolo,
             &mut pending_bg,
             &mut background_lifecycle,
-        );
+        )
+        .await?;
         if !pending_bg.is_empty() {
             tracing::warn!(
                 pending_bg = pending_bg.len(),
@@ -1395,6 +1466,9 @@ pub async fn run_single_turn(
             let stop_reason = stop_reason_wire(resp.stop_reason);
             emitter.set_structured_output_from_meta(resp.meta.as_ref());
             emitter.set_usage_from_meta(resp.meta.as_ref());
+            if let Some(storage) = &emitter.persistence {
+                storage.finish(resp.meta.as_ref()).await?;
+            }
             let sid = resp
                 .meta
                 .as_ref()
@@ -1483,7 +1557,7 @@ pub async fn run_single_turn(
     }
     outcome
 }
-/// Invoke `x.ai/memory/flush` and wait for the flush LLM to finish.
+/// Invoke `a3s/memory/flush` and wait for the flush LLM to finish.
 async fn run_headless_memory_flush(
     acp_tx: &AcpAgentTx,
     acp_rx: &mut AcpClientRx,
@@ -1494,7 +1568,7 @@ async fn run_headless_memory_flush(
     let params = serde_json::json!({ "session_id": session_id.0.to_string() });
     let raw = serde_json::value::to_raw_value(&params)
         .map_err(|e| anyhow::anyhow!("serialize memory flush params: {e}"))?;
-    let request = acp::ExtRequest::new("x.ai/memory/flush", raw.into());
+    let request = acp::ExtRequest::new("a3s/memory/flush", raw.into());
     let mut flush_fut = Box::pin(acp_send(request, acp_tx));
     let t0 = Instant::now();
     let mut ttf_logged = true;
@@ -1515,7 +1589,7 @@ async fn run_headless_memory_flush(
                     yolo,
                     &mut pending_bg,
                     &mut background_lifecycle,
-                );
+                ).await?;
             }
             res = &mut flush_fut => break res,
         }
@@ -1528,7 +1602,8 @@ async fn run_headless_memory_flush(
         yolo,
         &mut pending_bg,
         &mut background_lifecycle,
-    );
+    )
+    .await?;
     let response = response.map_err(|e| anyhow::anyhow!("memory flush failed: {e}"))?;
     let response = serde_json::from_str::<MemoryFlushResponse>(response.0.get())
         .map_err(|e| anyhow::anyhow!("memory flush returned an unreadable response: {e}"))?;
@@ -1555,13 +1630,14 @@ fn reap_request_for_work(
 ) -> serde_json::Result<acp::ExtRequest> {
     let (method, params) = match work {
         BackgroundWork::Subagent(id) => (
-            "x.ai/subagent/cancel",
-            serde_json::value::to_raw_value(&CancelSubagentRequest {
-                subagent_id: id.clone(),
-            })?,
+            "a3s/subagent/cancel",
+            serde_json::value::to_raw_value(&serde_json::json!({
+                "sessionId": session_id.0.as_ref(),
+                "subagentId": id,
+            }))?,
         ),
         BackgroundWork::Task(id) => (
-            "x.ai/task/kill",
+            "a3s/task/kill",
             serde_json::value::to_raw_value(&KillTaskRequest {
                 session_id: session_id.0.to_string(),
                 task_id: id.clone(),
@@ -1703,7 +1779,7 @@ fn track_background_lifecycle(
 /// Non-blocking drain-to-empty of `acp_rx`.
 /// Background work buffered around prompt completion is recorded in `pending_bg` before the empty-check decides whether to exit.
 #[allow(clippy::too_many_arguments)]
-fn drain_pending_acp_messages(
+async fn drain_pending_acp_messages(
     acp_rx: &mut AcpClientRx,
     emitter: &mut HeadlessEmitter,
     t_prompt: Instant,
@@ -1711,7 +1787,7 @@ fn drain_pending_acp_messages(
     yolo: bool,
     pending_bg: &mut HashSet<BackgroundWork>,
     background_lifecycle: &mut BackgroundLifecycleState,
-) {
+) -> Result<()> {
     while let Ok(msg) = acp_rx.try_recv() {
         handle_headless_acp_message(
             msg.boxed(),
@@ -1721,8 +1797,10 @@ fn drain_pending_acp_messages(
             yolo,
             pending_bg,
             background_lifecycle,
-        );
+        )
+        .await?;
     }
+    Ok(())
 }
 #[allow(clippy::too_many_arguments)]
 async fn drain_acp_with_grace(
@@ -1734,7 +1812,7 @@ async fn drain_acp_with_grace(
     yolo: bool,
     pending_bg: &mut HashSet<BackgroundWork>,
     background_lifecycle: &mut BackgroundLifecycleState,
-) {
+) -> Result<()> {
     let deadline = Instant::now() + grace;
     loop {
         while let Ok(msg) = acp_rx.try_recv() {
@@ -1746,7 +1824,8 @@ async fn drain_acp_with_grace(
                 yolo,
                 pending_bg,
                 background_lifecycle,
-            );
+            )
+            .await?;
         }
         let remaining = deadline.saturating_duration_since(Instant::now());
         if remaining.is_zero() {
@@ -1764,17 +1843,18 @@ async fn drain_acp_with_grace(
                     yolo,
                     pending_bg,
                     background_lifecycle,
-                );
+                ).await?;
             }
             _ = tokio::time::sleep(remaining) => {
                 break;
             }
         }
     }
+    Ok(())
 }
 /// Process one inbound ACP client message; shared by `recv()` and `try_recv()`.
 #[allow(clippy::too_many_arguments)]
-fn handle_headless_acp_message(
+async fn handle_headless_acp_message(
     msg: AcpClientMessageBox,
     emitter: &mut HeadlessEmitter,
     t_prompt: Instant,
@@ -1782,9 +1862,23 @@ fn handle_headless_acp_message(
     yolo: bool,
     pending_bg: &mut HashSet<BackgroundWork>,
     background_lifecycle: &mut BackgroundLifecycleState,
-) {
+) -> Result<()> {
     match msg {
         AcpClientMessageBox::SessionNotification(boxed) => {
+            if let Some(storage) = &emitter.persistence {
+                storage.record(&boxed.request).await?;
+            }
+            if boxed
+                .request
+                .meta
+                .as_ref()
+                .and_then(|meta| meta.get("isReplay"))
+                .and_then(serde_json::Value::as_bool)
+                == Some(true)
+            {
+                let _ = boxed.response_tx.send(Ok(()));
+                return Ok(());
+            }
             match &boxed.request.update {
                 acp::SessionUpdate::AgentMessageChunk(chunk) => {
                     if let acp::ContentBlock::Text(text) = &chunk.content
@@ -1866,6 +1960,7 @@ fn handle_headless_acp_message(
         AcpClientMessageBox::ExtMethod(args) => reply_headless_ext_method(args),
         _ => {}
     }
+    Ok(())
 }
 #[cfg(test)]
 #[path = "headless/background_lifecycle_tests.rs"]

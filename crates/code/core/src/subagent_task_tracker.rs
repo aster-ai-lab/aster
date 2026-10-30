@@ -230,6 +230,16 @@ impl InMemorySubagentTaskTracker {
                     status: status.clone(),
                     metadata: metadata.clone(),
                 });
+                let cancelled = entry.status == SubagentStatus::Running
+                    && metadata.get("disposition").and_then(|value| value.as_str())
+                        == Some("cancelled");
+                if cancelled {
+                    entry.status = SubagentStatus::Cancelled;
+                }
+                drop(tasks);
+                if cancelled {
+                    self.mark_terminal_and_evict(task_id).await;
+                }
             }
             AgentEvent::SubagentEnd {
                 task_id,

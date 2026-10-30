@@ -216,6 +216,7 @@ pub struct ToolContext {
     /// Latest clear user-script language for tool prose the user can see.
     /// Clones share the cell so a turn can publish it before tools run.
     reply_language: std::sync::Arc<std::sync::Mutex<Option<String>>>,
+    reply_language_is_inherited: bool,
     /// Run identity for the invocation that owns this context. This is kept
     /// separate from `session_id` so detached work from different runs cannot
     /// accidentally share an admission scope.
@@ -408,6 +409,7 @@ impl ToolContext {
             workspace: canonical_workspace,
             session_id: None,
             reply_language: std::sync::Arc::new(std::sync::Mutex::new(None)),
+            reply_language_is_inherited: false,
             run_id: None,
             event_tx: None,
             agent_event_tx: None,
@@ -455,6 +457,15 @@ impl ToolContext {
     }
 
     /// Language published for this turn, when the user text showed one.
+    pub(crate) fn inherit_reply_language(&mut self, language: Option<&str>) {
+        self.reply_language_is_inherited = language.is_some();
+        self.set_reply_language(language);
+    }
+
+    pub(crate) fn preserves_parent_reply_language(&self) -> bool {
+        self.reply_language_is_inherited || self.has_open_invocation()
+    }
+
     pub(crate) fn reply_language(&self) -> Option<String> {
         self.reply_language
             .lock()
@@ -600,10 +611,30 @@ impl ToolContext {
         permission_checker: Option<Arc<dyn crate::permissions::PermissionChecker>>,
         confirmation_manager: Option<Arc<dyn crate::hitl::ConfirmationProvider>>,
     ) -> Self {
+        self.apply_execution_policy(permission_checker.as_deref());
         self.run_permission_checker = permission_checker;
         self.run_confirmation_manager = confirmation_manager;
         self.run_governance_bound = true;
         self
+    }
+
+    pub(crate) fn apply_execution_policy(
+        &mut self,
+        checker: Option<&dyn crate::permissions::PermissionChecker>,
+    ) {
+        if checker.is_some_and(|checker| checker.allows_unsandboxed_execution())
+            && self.workspace_services.local_root().is_some()
+            && self
+                .sandbox
+                .as_ref()
+                .is_some_and(|sandbox| sandbox.allows_host_execution_override())
+        {
+            if let Some(runner) = self.workspace_services.command_runner() {
+                self.sandbox = Some(Arc::new(crate::sandbox::host_access::HostAccessSandbox {
+                    runner,
+                }));
+            }
+        }
     }
 
     pub(crate) fn has_run_governance(&self) -> bool {

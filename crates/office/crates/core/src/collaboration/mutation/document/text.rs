@@ -6,8 +6,7 @@ use super::super::super::{
     collaboration_error, NativeOfficeCollaborationDocumentTextFindResult,
     NativeOfficeCollaborationDocumentTextMatch, NativeOfficeCollaborationManifest,
 };
-use super::super::is_utf16_boundary;
-use super::super::utf16_len;
+use super::super::{is_utf16_boundary, utf16_len, utf16_slice};
 use super::identity::{
     ancestor_table_rows, document_identity_attribute, paragraph_text_id_rotations,
     table_row_text_id_rotations, PARAGRAPH_ID_ATTRIBUTE, ROW_TEXT_ID_ATTRIBUTE, TEXT_ID_ATTRIBUTE,
@@ -512,30 +511,6 @@ fn typing_attributes(runs: &[PlainTextRun], index_utf16: u32, delete_utf16: u32)
         }
     }
     None
-}
-
-fn utf16_slice(value: &str, start: u32, end: u32) -> Option<&str> {
-    let mut utf16 = 0_u32;
-    let mut start_byte = None;
-    let mut end_byte = None;
-    for (byte, character) in value.char_indices() {
-        if utf16 == start {
-            start_byte = Some(byte);
-        }
-        if utf16 == end {
-            end_byte = Some(byte);
-            break;
-        }
-        utf16 = utf16.saturating_add(character.len_utf16() as u32);
-    }
-    if end_byte.is_none() && utf16 == end {
-        end_byte = Some(value.len());
-    }
-    if start == end {
-        let byte = start_byte.or(end_byte)?;
-        return Some(&value[byte..byte]);
-    }
-    Some(&value[start_byte?..end_byte?])
 }
 
 fn invalid_document_splice_range(

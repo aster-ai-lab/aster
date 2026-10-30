@@ -56,10 +56,11 @@ pub(crate) fn decode_image(bytes: &[u8]) -> UseResult<RgbImage> {
 pub(crate) fn detection_input(
     image: &RgbImage,
     config: &DetectionConfig,
+    max_side: u32,
 ) -> UseResult<DetectionInput> {
     let original_width = image.width();
     let original_height = image.height();
-    let (width, height) = detection_dimensions(original_width, original_height)?;
+    let (width, height) = detection_dimensions(original_width, original_height, max_side)?;
     let resized = if width == original_width && height == original_height {
         image.clone()
     } else {
@@ -149,7 +150,12 @@ pub(crate) fn recognition_input(
     })
 }
 
-fn detection_dimensions(width: u32, height: u32) -> UseResult<(u32, u32)> {
+fn detection_dimensions(width: u32, height: u32, max_limit: u32) -> UseResult<(u32, u32)> {
+    if !(736..=DETECTION_MAX_SIDE).contains(&max_limit) || max_limit % 32 != 0 {
+        return Err(image_error(
+            "Detection limit must be a stride-aligned size from 736 through 4000.",
+        ));
+    }
     if width == 0 || height == 0 {
         return Err(image_error("OCR image has zero width or height."));
     }
@@ -159,8 +165,8 @@ fn detection_dimensions(width: u32, height: u32) -> UseResult<(u32, u32)> {
     if min_side < DETECTION_MIN_SIDE {
         ratio = f64::from(DETECTION_MIN_SIDE) / f64::from(min_side);
     }
-    if f64::from(max_side) * ratio > f64::from(DETECTION_MAX_SIDE) {
-        ratio = f64::from(DETECTION_MAX_SIDE) / f64::from(max_side);
+    if f64::from(max_side) * ratio > f64::from(max_limit) {
+        ratio = f64::from(max_limit) / f64::from(max_side);
     }
     let resized_width = round_stride(f64::from(width) * ratio, 32);
     let resized_height = round_stride(f64::from(height) * ratio, 32);
@@ -182,11 +188,19 @@ mod tests {
 
     #[test]
     fn detection_dimensions_are_bounded_stride_multiples() {
-        assert_eq!(detection_dimensions(10, 20).unwrap(), (736, 1_472));
-        assert_eq!(detection_dimensions(4_000, 1_000).unwrap(), (4_000, 992));
+        assert_eq!(detection_dimensions(10, 20, 4000).unwrap(), (736, 1_472));
         assert_eq!(
-            detection_dimensions(20_000, 10_000).unwrap(),
+            detection_dimensions(4_000, 1_000, 4000).unwrap(),
+            (4_000, 992)
+        );
+        assert_eq!(
+            detection_dimensions(20_000, 10_000, 4000).unwrap(),
             (4_000, 1_984)
         );
+        assert_eq!(
+            detection_dimensions(2480, 3508, 1536).unwrap(),
+            (1088, 1536)
+        );
+        assert!(detection_dimensions(2480, 3508, 0).is_err());
     }
 }

@@ -85,9 +85,9 @@ pub mod budget;
 pub mod capability;
 pub(crate) mod child_run;
 pub mod code_intelligence;
-pub mod cognitive_context;
 pub mod commands;
 pub(crate) mod compaction;
+pub mod package_context;
 #[doc(hidden)]
 pub use compaction::{compaction_system_prompt, render_message_for_summary};
 pub(crate) mod compaction_carry;
@@ -160,6 +160,7 @@ pub mod retention;
 pub(crate) mod retry;
 pub mod rl_trajectory;
 pub mod run;
+pub use run::schedule;
 pub mod run_control;
 pub(crate) mod safety_gate;
 pub mod sandbox;
@@ -211,36 +212,34 @@ pub mod workspace;
 // module path. Aliases are removed no earlier than 10.0 and may only shrink
 // (`tests/crate_root_surface.rs`).
 #[doc(hidden)]
-pub use agent::{
-    context_window_for_model, documented_context_tokens, hostable_context_window,
-    AgentExecutionFailure,
-};
-pub use agent::{AgentEvent, AgentResult, ModelMiddlewareHealthSnapshot};
+pub use agent::{context_window_for_model, documented_context_tokens, AgentExecutionFailure};
+pub use agent::{hostable_context_window, AgentEvent, AgentResult, ModelMiddlewareHealthSnapshot};
 #[cfg(feature = "dynamic-workflow")]
 #[doc(hidden)]
 pub use agent_api::ProjectedFlowHandle;
 pub use agent_api::{
-    Agent, AgentRunSpawn, AgentRunStream, AgentSession, GoalTickAdmission, GoalTickStream,
-    ReadFileOptions, SessionOptions, ToolCallResult,
+    validate_output_schema, Agent, AgentRunSpawn, AgentRunStream, AgentSession,
+    FollowUpSuggestions, GoalTickAdmission, GoalTickStream, ReadFileOptions, SessionOptions,
+    ToolCallResult,
 };
 #[doc(hidden)]
 pub use agent_api::{HeavyToolResult, ProjectedUiHandle, SessionBuilder, SessionContextReport};
+pub use agent_protocol::AgentProtocolModelPinV1;
 #[doc(hidden)]
 pub use agent_protocol::{
     AgentProtocolChangeSetRequestV1, AgentProtocolChangeSetV1, AgentProtocolCommandActionV1,
     AgentProtocolCommandReceiptV1, AgentProtocolCommandV1, AgentProtocolError,
     AgentProtocolEventPageRequestV1, AgentProtocolEventPageV1, AgentProtocolEventRecordV1,
-    AgentProtocolModelPinV1, AgentProtocolRunCancelV1, AgentProtocolRunIdentityV1,
-    AgentProtocolRunRecoverExactV1, AgentProtocolRunRecoverV1, AgentProtocolRunStartV1,
-    AgentProtocolRunStateV1, AGENT_PROTOCOL_CHANGE_SET_ENCODING_V1,
-    AGENT_PROTOCOL_CHANGE_SET_FORMAT_V1, AGENT_PROTOCOL_CHANGE_SET_HTTP_PATH_V1,
-    AGENT_PROTOCOL_COMMAND_HTTP_PATH_V1, AGENT_PROTOCOL_EVENT_PAGE_HTTP_PATH_V1,
-    AGENT_PROTOCOL_MAX_CHANGE_SET_BYTES, AGENT_PROTOCOL_MAX_CHANGE_SET_RESPONSE_BYTES,
-    AGENT_PROTOCOL_MAX_EVENTS_PER_PAGE, AGENT_PROTOCOL_MAX_EVENT_METADATA_BYTES,
-    AGENT_PROTOCOL_MAX_EVENT_PAGE_BYTES, AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES,
-    AGENT_PROTOCOL_MAX_EVENT_RECORD_BYTES, AGENT_PROTOCOL_MAX_EVENT_TYPE_BYTES,
-    AGENT_PROTOCOL_MAX_ID_BYTES, AGENT_PROTOCOL_MAX_PROMPT_BYTES, AGENT_PROTOCOL_MAX_REASON_BYTES,
-    AGENT_PROTOCOL_V1,
+    AgentProtocolRunCancelV1, AgentProtocolRunIdentityV1, AgentProtocolRunRecoverExactV1,
+    AgentProtocolRunRecoverV1, AgentProtocolRunStartV1, AgentProtocolRunStateV1,
+    AGENT_PROTOCOL_CHANGE_SET_ENCODING_V1, AGENT_PROTOCOL_CHANGE_SET_FORMAT_V1,
+    AGENT_PROTOCOL_CHANGE_SET_HTTP_PATH_V1, AGENT_PROTOCOL_COMMAND_HTTP_PATH_V1,
+    AGENT_PROTOCOL_EVENT_PAGE_HTTP_PATH_V1, AGENT_PROTOCOL_MAX_CHANGE_SET_BYTES,
+    AGENT_PROTOCOL_MAX_CHANGE_SET_RESPONSE_BYTES, AGENT_PROTOCOL_MAX_EVENTS_PER_PAGE,
+    AGENT_PROTOCOL_MAX_EVENT_METADATA_BYTES, AGENT_PROTOCOL_MAX_EVENT_PAGE_BYTES,
+    AGENT_PROTOCOL_MAX_EVENT_PAYLOAD_BYTES, AGENT_PROTOCOL_MAX_EVENT_RECORD_BYTES,
+    AGENT_PROTOCOL_MAX_EVENT_TYPE_BYTES, AGENT_PROTOCOL_MAX_ID_BYTES,
+    AGENT_PROTOCOL_MAX_PROMPT_BYTES, AGENT_PROTOCOL_MAX_REASON_BYTES, AGENT_PROTOCOL_V1,
 };
 #[doc(hidden)]
 pub use agent_protocol_harness::{
@@ -258,17 +257,6 @@ pub use code_intelligence::{
     CodeIntelligenceStatus, CodeLocation, CodePosition, CodeQueryResult, CodeRange, CodeSymbolKind,
     DocumentRevision, DocumentSnapshot, DocumentSymbol, LanguageId, LocalCodeIntelligence,
     NavigationKind, SymbolInformation, WorkspaceCodeIntelligence,
-};
-#[doc(hidden)]
-pub use cognitive_context::{
-    CognitiveContextDocumentV1, CognitiveContextError, CognitiveContextLimits,
-    CognitiveContextProvider, CognitiveContextRequestV1, CognitiveContextResponseV1,
-    CognitiveContextResult, CognitiveContextSession, CognitiveKnowledgeBindingV1,
-    CognitiveKnowledgeCitationV1, CognitivePackageBindingV1,
-    COGNITIVE_CONTEXT_REQUEST_DIGEST_DOMAIN, COGNITIVE_CONTEXT_REQUEST_SCHEMA,
-    COGNITIVE_CONTEXT_RESPONSE_SCHEMA, COGNITIVE_KNOWLEDGE_BINDING_SCHEMA,
-    COGNITIVE_PACKAGE_BINDING_SCHEMA, OKF_KNOWLEDGE_CITATION_SCHEMA,
-    OKF_KNOWLEDGE_READ_REQUEST_SCHEMA, OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA,
 };
 #[doc(hidden)]
 pub use completion_attestor::{merge_attested_report, CompletionAttestor, MutatedPathRecord};
@@ -430,6 +418,16 @@ pub use orchestration::{
     WorkflowStepRecord, WORKFLOW_CHECKPOINT_SCHEMA_VERSION,
 };
 pub use orchestration::{execute_steps_parallel_resumable, AgentStepSpec};
+#[doc(hidden)]
+pub use package_context::{
+    PackageBindingV1, PackageContextDocumentV1, PackageContextError, PackageContextLimits,
+    PackageContextProvider, PackageContextRequestV1, PackageContextResponseV1,
+    PackageContextResult, PackageContextSession, PackageKnowledgeBindingV1,
+    PackageKnowledgeCitationV1, OKF_KNOWLEDGE_CITATION_SCHEMA, OKF_KNOWLEDGE_READ_REQUEST_SCHEMA,
+    OKF_KNOWLEDGE_SEARCH_REQUEST_SCHEMA, PACKAGE_BINDING_SCHEMA,
+    PACKAGE_CONTEXT_REQUEST_DIGEST_DOMAIN, PACKAGE_CONTEXT_REQUEST_SCHEMA,
+    PACKAGE_CONTEXT_RESPONSE_SCHEMA, PACKAGE_KNOWLEDGE_BINDING_SCHEMA,
+};
 #[doc(hidden)]
 pub use prompts::{
     infer_user_reply_language, output_language_contract, resolve_product_output_language,

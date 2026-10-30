@@ -1,5 +1,5 @@
 export const meta = {
-  "title": "把获准的插件能力交给会话",
+  "title": "插件能力与会话接入",
   "description": "受管理发布、选择 generation、工具进程、Skills 和资产根。",
   "label": "插件、MCP 与本地资料",
   "updated": "2026-10-26"
@@ -9,13 +9,13 @@ export const meta = {
 
 启动器通过 plugin store 与受管理 selection 提供插件。ACP 元数据可以引用宿主已提供的选择，不能自选文件系统根来装载任意代码。selection 绑定 ID、generation、revision 与 lease，已撤回发布不能继续当作可用。
 
-一次发布可提供 Tool、MCP、Skill、Agent、工作流或 UI 等宿主能力面，具体以准入成功的投影为准。包目录有文件不代表所有能力都已执行。客户端通过 tooling 清单显示可用项和拒绝原因。
+一次发布可提供 Tool、MCP、Skill、Agent、工作流或 UI 能力，具体以准入成功的投影为准。包目录有文件不代表所有能力都已执行。客户端通过 tooling 清单显示可用项和拒绝原因。
 
 ## 原生工具与 MCP 的差别
 
 原生插件工具运行受管理入口，核对包内路径、工作区绑定、参数和进程结果。MCP stdio 的命令必须与受管理入口一致；依赖包外 runtime 的声明进入 ExternalRuntime 状态，不会仅凭声明启动外部命令。
 
-stdio、HTTP 等 MCP 路线按当前配置和发布合同准入。session/new 的 mcpServers 仍受宿主信任与范围检查，不能通过会话消息恢复一个启动时明确拒绝的服务器。
+stdio 或 HTTP MCP 路线按当前配置和发布合同准入。session/new 的 mcpServers 仍受宿主信任与范围检查，不能通过会话消息恢复一个启动时明确拒绝的服务器。
 
 ## Skills、Agents 与本地资产
 

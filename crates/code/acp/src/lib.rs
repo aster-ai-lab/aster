@@ -1,4 +1,4 @@
-//! ACP stdio agent over a3s-code-core 9.1.4.
+//! ACP stdio agent over a3s-code-core 9.1.6.
 //!
 //! Desktop hosts start this process for a session. The Aster terminal
 //! binary links `a3s-code-pager` and `a3s-code-shell` in-process.
@@ -9,8 +9,6 @@ pub mod approval_learning;
 mod artifact_image;
 #[cfg(feature = "account-import")]
 mod cc_switch;
-#[cfg(feature = "account-import")]
-mod codex_account;
 mod config;
 #[cfg(feature = "account-import")]
 mod cursor_account;
@@ -22,8 +20,10 @@ mod goal;
 mod grok_account;
 mod harness_assemble;
 mod host_context;
+mod knowledge_compile;
 mod local_assets;
 pub mod log_file;
+mod memory_search;
 mod office_file;
 mod office_read;
 mod output_check;

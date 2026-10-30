@@ -176,6 +176,89 @@ async fn test_session_routes_agents_md_through_context_provider() {
 }
 
 #[tokio::test]
+async fn isolated_session_omits_discovered_context_and_prior_memory() {
+    use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore};
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(
+        root.path().join("AGENTS.md"),
+        "Ambient instruction sentinel",
+    )
+    .unwrap();
+    let skills = root.path().join("skills");
+    std::fs::create_dir(&skills).unwrap();
+    std::fs::write(
+        skills.join("ambient.md"),
+        "---\nname: ambient-sentinel\ndescription: Ambient skill sentinel\n---\nAmbient content",
+    )
+    .unwrap();
+    let mut config = test_config();
+    config.skill_dirs = vec![skills.clone()];
+    let prior = Arc::new(InMemoryStore::new());
+    prior
+        .store(MemoryItem::new("ambient memory sentinel"))
+        .await
+        .unwrap();
+    let agent = Agent::from_config(config).await.unwrap();
+    let ordinary = agent
+        .session_async(
+            root.path().display().to_string(),
+            Some(SessionOptions::new().with_memory(prior.clone())),
+        )
+        .await
+        .unwrap();
+    assert!(ordinary
+        .config
+        .skill_registry
+        .as_ref()
+        .unwrap()
+        .get("ambient-sentinel")
+        .is_some());
+    assert!(ordinary
+        .config
+        .context_providers
+        .iter()
+        .any(|provider| provider.name() == "agents_md"));
+    assert_eq!(
+        ordinary
+            .memory()
+            .unwrap()
+            .recall_similar("ambient memory sentinel", 5)
+            .await
+            .unwrap()
+            .len(),
+        1
+    );
+    let isolated = agent
+        .session_async(
+            root.path().display().to_string(),
+            Some(
+                SessionOptions::new()
+                    .with_skill_dirs([skills])
+                    .with_isolated_context()
+                    .with_memory(prior.clone()),
+            ),
+        )
+        .await
+        .unwrap();
+    assert!(isolated.config.skill_registry.as_ref().unwrap().is_empty());
+    assert!(!isolated
+        .config
+        .context_providers
+        .iter()
+        .any(|provider| matches!(provider.name(), "agents_md" | "skills_catalog")));
+    assert!(isolated
+        .memory()
+        .unwrap()
+        .recall_similar("ambient memory sentinel", 5)
+        .await
+        .unwrap()
+        .is_empty());
+    assert_eq!(prior.count().await.unwrap(), 1);
+    ordinary.close().await;
+    isolated.close().await;
+}
+
+#[tokio::test]
 async fn test_session_initializes_without_legacy_agentic_tools() {
     let agent = Agent::from_config(test_config()).await.unwrap();
     let _session = agent

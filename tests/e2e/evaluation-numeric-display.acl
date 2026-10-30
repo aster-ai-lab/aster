@@ -1,0 +1,24 @@
+// Host precondition: attach the admitted GUI engine to Aster with the numeric
+// import fixture open and D2 selected through the normal editor navigation.
+// Fixture: tests/fixtures/office/evaluation-numeric-display.xlsx
+// The fixture has a General-format numeric D2 value of 12000, not text.
+suite "aster-evaluation-numeric-display" {
+  version = 1
+
+  scenario "grid-and-formula-bar" {
+    surface = "gui"
+    timeout_ms = 30000
+
+    snapshot "numeric-cell" {}
+    expect "grid-shows-complete-number" {
+      visible = text("D2, 12000", true)
+    }
+    expect "formula-bar-keeps-numeric-value" {
+      target = label("当前单元格输入")
+      value = "12000"
+    }
+    screenshot "numeric-display-evidence" {
+      path = "numeric-display.png"
+    }
+  }
+}

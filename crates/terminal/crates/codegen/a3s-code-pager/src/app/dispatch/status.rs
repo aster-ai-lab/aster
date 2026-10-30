@@ -445,7 +445,7 @@ pub(super) fn dispatch_manage_billing(app: &mut AppView) -> Vec<Effect> {
         return vec![];
     }
     super::router::dispatch(
-        crate::app::actions::Action::OpenUrl("https://github.com/A3S-Lab/a3s".to_string()),
+        crate::app::actions::Action::OpenUrl(super::UPSELL_URL_PAYG.to_string()),
         app,
     )
 }

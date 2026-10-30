@@ -1,0 +1,84 @@
+export const meta = {
+  title: 'ACL 语法与 Rust 接入',
+  description: '块、标签、类型化值、有界解析、Schema 校验和文本生成。',
+  label: '语法与接入',
+  updated: '2026-10-30',
+};
+
+从文本解析得到 AST，再按拥有该配置的组件定义校验结构。通过校验后，才交给宿主进行语义和权限检查。
+
+## 在工作区接入
+
+仓库内的 A3S 依赖使用本地路径，不需要从注册表下载另一份 ACL。对于位于 `apps/<宿主>/` 的 crate，可使用：
+
+```toml
+[dependencies]
+a3s-acl = { path = "../../crates/acl" }
+```
+
+路径相对于宿主的 `Cargo.toml`。保留根工作区和现有锁文件。
+
+## 语法与类型
+
+<DocTable caption="ACL 的基本结构" headers={['结构', '示例', '含义']} rows={[
+  ['属性', 'enabled = true', '一个键和值'],
+  ['带标签的块', 'providers "example" { ... }', '块名与标签分别保留'],
+  ['列表', 'models = ["small", "large"]', '有序的值序列'],
+  ['对象', 'limits = { tools = 4 }', '对象字段与值'],
+  ['函数调用', 'api_key = env("EXAMPLE_API_KEY")', '保留调用名与参数，不执行取值'],
+]} />
+
+`"42"` 是字符串，`42` 是数字，`true` 是布尔值，`null` 是空值。不要在宿主里根据显示文本重新猜测类型，应读取 `Value` 的对应变体或访问方法。
+
+## 最小解析与校验
+
+下面的完整示例只接纳一个必需的字符串 `name`。它使用显式解析限制，并在 Schema 拒绝输入时停止。
+
+```rust
+use a3s_acl::{
+    canonical_digest, generate, parse_with_limits, validate_document_with_limits,
+    AttributeSchema, ParseLimits, Schema, ValueSchema,
+};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let limits = ParseLimits {
+        max_document_bytes: 64 * 1024,
+        max_diagnostics: 20,
+        ..ParseLimits::default()
+    };
+    let schema = Schema::new().attribute(
+        "name",
+        AttributeSchema::required(ValueSchema::string()),
+    );
+    let document = parse_with_limits("name = \"Aster\"", limits)?;
+    let report = validate_document_with_limits(&document, &schema, limits);
+    if !report.is_empty() {
+        return Err("ACL schema admission failed".into());
+    }
+    let output = generate(&document);
+    assert!(output.contains("\"Aster\""));
+    assert!(canonical_digest(&document)?.starts_with("sha256:"));
+    println!("{output}");
+    Ok(())
+}
+```
+
+<SourceRef path="crates/acl/src/parser.rs" match="pub fn parse_with_limits(input: &str, limits: ParseLimits)">有界解析</SourceRef> 在递归解析前应用限制。<SourceRef path="crates/acl/src/schema/validator.rs" match="pub fn validate_document_with_limits(">Schema 校验</SourceRef> 返回独立的诊断报告，不会自动激活配置。
+
+`SchemaReport::is_empty()` 同时检查诊断列表与截断标记。不能只判断 `diagnostics.len() == 0`；零诊断预算下，非法输入可能没有返回具体诊断，但 `truncated` 仍为真。
+
+## 声明嵌套结构
+
+使用 `BlockSchema` 声明嵌套块与标签数量，使用 `Cardinality` 限制出现次数。`ValueSchema` 可以声明列表、对象、调用参数和 `OneOf` 等组合。
+
+Schema 只校验形状。例如，数字类型正确并不证明它在宿主允许的预算范围内；一个字符串也不自动成为可信路径。宿主应在接纳边界完成这些检查，再把类型化数据传入内部组件。
+
+## 生成文本
+
+`generate` 生成 ACL 语法，`DocumentBuilder` 与 `BlockBuilder` 用于程序化构造 AST。需要签名或跨实现比较内容时，使用[规范字节与摘要](../operations/)，不要对任意格式化文本直接计算配置身份。
+
+## 实现依据
+
+- [AST 与值访问](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/ast.rs)
+- [Schema 与 Cardinality](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/schema.rs)
+- [Builder API](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/lib.rs)

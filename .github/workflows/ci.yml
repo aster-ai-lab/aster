@@ -28,26 +28,53 @@ jobs:
       - name: Install macOS build tools
         if: runner.os == 'macOS'
         run: brew install protobuf just
+      - name: Install pinned toolchain
+        run: rustup show active-toolchain
       - name: Desktop launcher
         if: runner.os == 'macOS'
         run: python3 tests/just_work.py
-      - name: Install pinned toolchain
-        run: rustup show active-toolchain
+      - name: Restore Rust dependency cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          shared-key: product-${{ runner.os }}
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: Format
         run: cargo fmt --all -- --check
+      - name: Install static guest targets
+        run: rustup target add aarch64-unknown-linux-musl x86_64-unknown-linux-musl
+      - name: Static guest linker hardening
+        run: python3 tests/musl_linker_flags.py
+      - name: Compile current static guest agents
+        run: |
+          rust_host="$(rustc -vV | sed -n 's/^host: //p')"
+          rust_lld="$(rustc --print sysroot)/lib/rustlib/$rust_host/bin/rust-lld"
+          test -x "$rust_lld"
+          for guest_target in aarch64-unknown-linux-musl x86_64-unknown-linux-musl; do
+            CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="$rust_lld" \
+            CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER="$rust_lld" \
+              cargo build --locked --release --target "$guest_target" -p a3s-oci-agent --bin a3s-oci-agent
+          done
       - name: Internal dependency boundary
         run: python3 tests/workspace_dependencies.py
+      - name: Pinned Studio checkout ownership
+        run: python3 tests/studio_checkout.py
       - name: CLI pair delivery
-        run: python3 tests/cli_pair_delivery.py
-      - name: Kylin CLI glibc baseline and channel selection
-        run: python3 tests/aster_cli_kylin.py
+        run: |
+          python3 tests/cli_pair_delivery.py
+          python3 tests/cli_sandbox.py
+          python3 tests/cli_sandbox_smoke_test.py
+          python3 tests/cli_pair_identity.py
+      - name: Linux CLI glibc baseline and installer
+        run: python3 tests/aster_cli_linux.py
       - name: Kylin input method launcher
         run: |
           python3 tests/kylin_input_method.py
           python3 tests/progress_bench.py
           python3 apps/studio/scripts/kylin-flatpak/test_delivery.py
       - name: Desktop package generation contracts
-        run: python3 -m unittest apps/studio/scripts/tests/studio_delivery_test.py apps/studio/scripts/tests/studio_product_test.py
+        run: |
+          python3 -m unittest apps/studio/scripts/tests/studio_delivery_test.py apps/studio/scripts/tests/studio_product_test.py apps/studio/scripts/tests/test_document_assets.py
+          python3 tests/desktop_channel_manifest.py
       - name: App icon ladder and desktop identity
         run: python3 tests/app_icon_assets.py
       - name: Shared-crate drift ratchet
@@ -68,8 +95,14 @@ jobs:
             export A3S_TENANT_SLUG="$tenant"
             TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$tenant" tauri-config)"
             export TAURI_CONFIG
+            target_dir="$(cargo metadata --locked --offline --no-deps --format-version 1 | python3 -c 'import sys,json;print(json.load(sys.stdin)["target_directory"])')"
+            TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$tenant" tauri-config --target-dir "$target_dir")"
+            export TAURI_CONFIG STUDIO_COMPANIONS_STAGED=1
             feature="$(python3 apps/studio/scripts/studio_product.py "$tenant" feature)"
-            cargo build --locked -p a3s-studio --no-default-features --features "$feature"
+            build_args=(build --locked -p a3s-studio -p a3s-code-acp -p a3s-office-cli --no-default-features --features "a3s-studio/$feature,a3s-code-acp/default,a3s-code-acp/headless-search,a3s-office-cli/default")
+            cargo "${build_args[@]}" --bin a3s-code-acp --bin a3s-office
+            python3 apps/studio/scripts/studio_product.py "$tenant" stage-companions
+            cargo "${build_args[@]}" --bin Studio
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" tenant:: -- --test-threads=1
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" app_updater:: -- --test-threads=1
             cargo test --locked -p a3s-studio --lib --no-default-features --features "$feature" bundled_skills:: -- --test-threads=1
@@ -80,10 +113,24 @@ jobs:
         run: cargo test --locked -p a3s-studio-data-sqlite -p a3s-studio-desktop-contract
       - name: ACP integration
         run: cargo test --locked -p a3s-code-acp --test v912_seam
+      - name: Core long-task ownership and consent contracts
+        run: |
+          cargo test --locked -p a3s-code-core --lib -- agent_api::goal_facade::tests fact_control:: goal_control:: hitl:: tool_confirmation:: --test-threads=4
+      - name: ACP long-task foundation contracts
+        run: |
+          cargo test --locked -p a3s-code-acp --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
+          cargo test --locked -p a3s-code-acp --features headless-search --test long_horizon_contracts --test long_horizon_preflight --test long_horizon_real_llm --test long_horizon_rust_stdio
+      - name: macOS ACP wire conformance
+        if: runner.os == 'macOS'
+        run: cargo test --locked -p a3s-code-acp --test acp_conformance_stdio
+      - name: Search feature contracts
+        run: |
+          cargo test --locked -p a3s-code-core --lib tools::builtin::web_search::tests
+          cargo test --locked -p a3s-code-core --features headless-search --lib tools::builtin::web_search::tests
       - name: Workspace retrieval contracts
         run: |
           cargo test --locked -p a3s-code-core --lib -- tools::builtin::search workspace::retrieval::tests::hybrid_query agent_api::retrieval_tests permissions:: --test-threads=4
-          cargo test --locked -p a3s-code-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities --test-threads=4
+          cargo test --locked -p a3s-code-acp --lib -- local_embedding retrieval_seam session_setup execution_capabilities host_context registration_cleanup --test-threads=4
           cargo test --locked -p a3s-code-acp --test shipped_tui_e2e retrieval::shipped_retrieval_stdio -- --test-threads=1
       - name: Logo cache and rendering
         run: cargo test --locked -p a3s-code-pager --lib views::welcome

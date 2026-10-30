@@ -9,7 +9,7 @@ use zip::ZipArchive;
 
 use crate::SkipReason;
 
-pub const PARSER_GENERATION: &str = "builtin:1";
+pub const PARSER_GENERATION: &str = "builtin:2";
 const MAX_ZIP_ENTRIES: usize = 64;
 const MAX_ZIP_RATIO: u64 = 100;
 const MAX_PDF_PAGES: usize = 40;
@@ -186,15 +186,15 @@ pub fn extract_document(name: &str, bytes: &[u8], policy: &ExtractPolicy<'_>) ->
     if let Some(delimiter) =
         matches!(ext.as_str(), "csv" | "tsv").then(|| if ext == "tsv" { '\t' } else { ',' })
     {
-        if let Some(table) = crate::markdown_table(&text, delimiter) {
-            return table_block(&table, policy.max_output);
+        if let Some((table, row_cut)) = crate::markdown_table(&text, delimiter) {
+            return table_block(&table, policy.max_output, row_cut);
         }
     }
     blocks_from_plain(&text, policy.max_output)
 }
 
-fn table_block(table: &str, max_output: usize) -> Extracted {
-    let truncated = table.len() > max_output;
+fn table_block(table: &str, max_output: usize, row_cut: bool) -> Extracted {
+    let truncated = row_cut || table.len() > max_output;
     let mut text = table.to_string();
     if truncated {
         let mut end = max_output.min(text.len());
@@ -488,6 +488,7 @@ fn extract_office(bytes: &[u8], policy: &ExtractPolicy<'_>) -> Extracted {
     }
     names.sort();
     let mut blocks = Vec::new();
+    let mut source_truncated = false;
     for (_, name) in names {
         if policy.deadline <= Instant::now() {
             return Extracted::Failed("timeout".into());
@@ -495,6 +496,8 @@ fn extract_office(bytes: &[u8], policy: &ExtractPolicy<'_>) -> Extracted {
         let Ok(mut file) = archive.by_name(&name) else {
             continue;
         };
+        let declared_bytes = file.size();
+        let mut captured_bytes = 0;
         let mut xml = String::new();
         let mut chunk = [0u8; 8192];
         loop {
@@ -509,11 +512,13 @@ fn extract_office(bytes: &[u8], policy: &ExtractPolicy<'_>) -> Extracted {
             }
             let room = policy.max_output.saturating_sub(xml.len());
             let take = read.min(room);
+            captured_bytes += take;
             xml.push_str(&String::from_utf8_lossy(&chunk[..take]));
             if take < read {
                 break;
             }
         }
+        source_truncated |= (captured_bytes as u64) < declared_bytes;
         let text = markup_text(&xml);
         if text.trim().is_empty() {
             continue;
@@ -526,7 +531,8 @@ fn extract_office(bytes: &[u8], policy: &ExtractPolicy<'_>) -> Extracted {
             });
         }
         if text.contains('\t') {
-            if let Some(table) = crate::markdown_table(&text, '\t') {
+            if let Some((table, row_cut)) = crate::markdown_table(&text, '\t') {
+                source_truncated |= row_cut;
                 blocks.push(ExtractedBlock {
                     kind: BlockKind::Table,
                     level: 0,
@@ -544,7 +550,13 @@ fn extract_office(bytes: &[u8], policy: &ExtractPolicy<'_>) -> Extracted {
     if blocks.is_empty() {
         Extracted::Unparsed(SkipReason::Empty)
     } else {
-        cap_blocks(blocks, policy.max_output)
+        match cap_blocks(blocks, policy.max_output) {
+            Extracted::Parsed { blocks, truncated } => Extracted::Parsed {
+                blocks,
+                truncated: truncated || source_truncated,
+            },
+            other => other,
+        }
     }
 }
 
@@ -807,3 +819,7 @@ fn extension(name: &str) -> String {
         .unwrap_or("")
         .to_ascii_lowercase()
 }
+
+#[cfg(test)]
+#[path = "extract_tests.rs"]
+mod tests;

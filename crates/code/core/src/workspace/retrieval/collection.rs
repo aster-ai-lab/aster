@@ -154,6 +154,7 @@ struct Cursors {
 /// A host retains this object while paging and replaces it when admitting a new generation.
 pub struct WorkspaceCollectionQuery {
     snapshot: ChunkCatalogSnapshot,
+    metadata: BTreeMap<String, Option<Metadata>>,
     scope: String,
     cursors: Mutex<Cursors>,
 }
@@ -163,13 +164,37 @@ impl WorkspaceCollectionQuery {
         snapshot: ChunkCatalogSnapshot,
         scope: String,
     ) -> Result<Self, WorkspaceCollectionError> {
+        Self::new_cancellable(snapshot, scope, || false)
+    }
+
+    pub fn new_cancellable(
+        snapshot: ChunkCatalogSnapshot,
+        scope: String,
+        cancelled: impl Fn() -> bool,
+    ) -> Result<Self, WorkspaceCollectionError> {
         if scope.is_empty() || scope.len() > 256 || scope.contains('\0') {
             return Err(WorkspaceCollectionError::InvalidRequest(
                 "collection scope must be a nonempty bounded owner identity",
             ));
         }
+        let mut documents = BTreeMap::new();
+        for path in snapshot.state.files.keys() {
+            if cancelled() {
+                return Err(WorkspaceIndexError::Cancelled.into());
+            }
+            let source = snapshot
+                .source_text(&WorkspacePath::from_normalized(path))?
+                .ok_or(WorkspaceCollectionError::InvalidRequest(
+                    "catalog source disappeared from an immutable snapshot",
+                ))?;
+            documents.insert(path.clone(), metadata(path, &source));
+        }
+        if cancelled() {
+            return Err(WorkspaceIndexError::Cancelled.into());
+        }
         Ok(Self {
             snapshot,
+            metadata: documents,
             scope,
             cursors: Mutex::default(),
         })
@@ -188,13 +213,46 @@ impl WorkspaceCollectionQuery {
         request: &WorkspaceCollectionRequest,
         max_page_bytes: usize,
     ) -> Result<WorkspaceCollectionPage, WorkspaceCollectionError> {
+        self.query_matching(request, max_page_bytes, true, &[])
+    }
+
+    /// Search only stored titles and paths, with admitted recent paths ranked first.
+    pub fn query_names_with_budget(
+        &self,
+        request: &WorkspaceCollectionRequest,
+        max_page_bytes: usize,
+        recent_paths: &[String],
+    ) -> Result<WorkspaceCollectionPage, WorkspaceCollectionError> {
+        Self::validate_recent_paths(recent_paths)?;
+        self.query_matching(request, max_page_bytes, false, recent_paths)
+    }
+
+    pub fn validate_recent_paths(paths: &[String]) -> Result<(), WorkspaceCollectionError> {
+        if paths.len() > 20
+            || paths.iter().any(|path| !safe_folder(path))
+            || paths.iter().collect::<BTreeSet<_>>().len() != paths.len()
+        {
+            return Err(WorkspaceCollectionError::InvalidRequest(
+                "recent paths require at most 20 unique relative stored identities",
+            ));
+        }
+        Ok(())
+    }
+
+    fn query_matching(
+        &self,
+        request: &WorkspaceCollectionRequest,
+        max_page_bytes: usize,
+        match_body: bool,
+        recent_paths: &[String],
+    ) -> Result<WorkspaceCollectionPage, WorkspaceCollectionError> {
         request.validate()?;
         if !(32 * 1024..=MAX_PAGE_BYTES).contains(&max_page_bytes) {
             return Err(WorkspaceCollectionError::InvalidRequest(
                 "collection page budget must be between 32 and 256 KiB",
             ));
         }
-        let query = fingerprint(request);
+        let query = fingerprint(request, match_body, recent_paths);
         let offset = match &request.cursor {
             None => 0,
             Some(value) => {
@@ -221,22 +279,7 @@ impl WorkspaceCollectionQuery {
         let mut tag_bytes = 0;
         let mut tags_capped = false;
         for (path, file) in &self.snapshot.state.files {
-            if request
-                .folder
-                .as_ref()
-                .is_some_and(|folder| !path.starts_with(&format!("{folder}/")))
-            {
-                continue;
-            }
-            let source = self
-                .snapshot
-                .source_text(&WorkspacePath::from_normalized(path))?
-                .ok_or_else(|| {
-                    WorkspaceCollectionError::InvalidRequest(
-                        "catalog source disappeared from an immutable snapshot",
-                    )
-                })?;
-            let Some(metadata) = metadata(path, &source) else {
+            let Some(metadata) = self.metadata.get(path).and_then(Option::as_ref) else {
                 skipped_count += 1;
                 let size = json_size(path)? + 1;
                 if skipped.len() < 20 && skipped_bytes + size <= MAX_SKIPPED_PATH_BYTES {
@@ -245,6 +288,13 @@ impl WorkspaceCollectionQuery {
                 }
                 continue;
             };
+            if request
+                .folder
+                .as_ref()
+                .is_some_and(|folder| !path.starts_with(&format!("{folder}/")))
+            {
+                continue;
+            }
             for tag in &metadata.tags {
                 if tags.contains(tag) {
                     continue;
@@ -264,6 +314,7 @@ impl WorkspaceCollectionQuery {
             {
                 continue;
             }
+            let source;
             let (matched_field, matched, text, source_range) = if search.is_empty() {
                 (
                     WorkspaceCollectionMatch::Title,
@@ -280,7 +331,18 @@ impl WorkspaceCollectionQuery {
                 )
             } else if let Some(range) = literal_match(path, &search) {
                 (WorkspaceCollectionMatch::Path, range, path.as_str(), None)
-            } else if let Some(range) = literal_match(&source, &search) {
+            } else if !match_body {
+                continue;
+            } else {
+                source = self
+                    .snapshot
+                    .source_text(&WorkspacePath::from_normalized(path))?
+                    .ok_or(WorkspaceCollectionError::InvalidRequest(
+                        "catalog source disappeared from an immutable snapshot",
+                    ))?;
+                let Some(range) = literal_match(&source, &search) else {
+                    continue;
+                };
                 let source_range = Some(WorkspaceCollectionTextRange {
                     start: range.start,
                     end: range.end,
@@ -291,13 +353,11 @@ impl WorkspaceCollectionQuery {
                     source.as_str(),
                     source_range,
                 )
-            } else {
-                continue;
             };
             let (context, context_range) = context(text, matched);
             matches.push(WorkspaceCollectionHit {
                 path: path.clone(),
-                title: metadata.title,
+                title: metadata.title.clone(),
                 content_digest: file.content_digest.to_string(),
                 modified_ms: file.manifest.modified_ms,
                 matched_field,
@@ -307,6 +367,16 @@ impl WorkspaceCollectionQuery {
             });
         }
         matches.sort_by(|a, b| {
+            let recent = |path: &str| {
+                recent_paths
+                    .iter()
+                    .position(|value| value == path)
+                    .unwrap_or(usize::MAX)
+            };
+            let recent_order = recent(&a.path).cmp(&recent(&b.path));
+            if recent_order != std::cmp::Ordering::Equal {
+                return recent_order;
+            }
             let order = match request.sort_by {
                 WorkspaceCollectionSort::Path => a.path.cmp(&b.path),
                 WorkspaceCollectionSort::Relevance => {
@@ -413,8 +483,17 @@ fn safe_folder(value: &str) -> bool {
             .split('/')
             .all(|part| !part.is_empty() && part != "." && part != "..")
 }
-fn fingerprint(request: &WorkspaceCollectionRequest) -> [u8; 32] {
+fn fingerprint(
+    request: &WorkspaceCollectionRequest,
+    match_body: bool,
+    recent_paths: &[String],
+) -> [u8; 32] {
     let mut hash = Sha256::new();
+    hash.update([u8::from(match_body)]);
+    for path in recent_paths {
+        hash.update((path.len() as u64).to_be_bytes());
+        hash.update(path.as_bytes());
+    }
     for part in [
         request.search.as_str(),
         request.folder.as_deref().unwrap_or(""),
@@ -479,11 +558,9 @@ fn metadata(path: &str, source: &str) -> Option<Metadata> {
         }
     }
     // This is the existing explicit #tag grammar, not inferred entity extraction.
-    static TAG: LazyLock<Regex> = LazyLock::new(|| {
-        // The fixed Unicode property/classes are valid regex syntax by construction.
-        Regex::new(r"(?:^|[\s(\[{])#([\p{L}\p{N}_-]{1,40})").expect("static written-tag grammar")
-    });
-    for captures in TAG.captures_iter(source) {
+    static TAG: LazyLock<Option<Regex>> =
+        LazyLock::new(|| Regex::new(r"(?:^|[\s(\[{])#([\p{L}\p{N}_-]{1,40})").ok());
+    for captures in TAG.as_ref()?.captures_iter(source) {
         if let Some(tag) = captures.get(1) {
             tags.insert(tag.as_str().to_owned());
         }

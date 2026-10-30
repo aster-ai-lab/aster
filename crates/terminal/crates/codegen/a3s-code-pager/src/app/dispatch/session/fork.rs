@@ -35,6 +35,9 @@ pub(in crate::app::dispatch) fn dispatch_fork(
         app.show_toast("Cannot fork: session is still being created");
         return vec![];
     }
+    if app.is_a3s_code {
+        return dispatch_fork_resolved(app, args.worktree_override == Some(true), args.directive);
+    }
     match args.worktree_override {
         Some(true) if !in_git_repo => {
             app.show_toast("Cannot create worktree: not in a git repository");
@@ -138,12 +141,16 @@ fn open_fork_question(app: &mut AppView, directive: Option<String>) -> Vec<Effec
 }
 /// Construct the placeholder agent, push discoverability markers, flip the discovery gate, switch to the new agent, and emit the fork effect.
 /// `worktree == true` reuses the [`Effect::CreateWorktreeSession`] pipeline (with `load_session_id` set to the parent session id).
-/// `worktree == false` emits [`Effect::ForkSession`], which calls `x.ai/session/fork` directly.
+/// `worktree == false` emits [`Effect::ForkSession`] using the connected backend's fork contract.
 pub(in crate::app::dispatch) fn dispatch_fork_resolved(
     app: &mut AppView,
     worktree: bool,
     directive: Option<String>,
 ) -> Vec<Effect> {
+    if app.is_a3s_code && worktree {
+        app.show_toast("Current backend supports /fork in the same workspace; use --no-worktree");
+        return vec![];
+    }
     let ActiveView::Agent(parent_id) = app.active_view else {
         return vec![];
     };
@@ -237,6 +244,7 @@ pub(in crate::app::dispatch) fn dispatch_fork_resolved(
             parent_session_id,
             parent_cwd,
             parent_is_worktree,
+            load_parent: false,
             new_session_id: None,
         }]
     }
@@ -356,6 +364,7 @@ pub(in crate::app::dispatch) fn dispatch_startup_fork_session(
         parent_session_id: acp::SessionId::new(parent_session_id),
         parent_cwd: cwd,
         parent_is_worktree,
+        load_parent: true,
         new_session_id,
     });
     effects

@@ -1421,7 +1421,10 @@ mod tests {
             assert!(usable_cta(&a).is_none(), "scheme must be rejected: {bad}");
             assert!(promo_cta_target(&[a], &no_hidden()).is_none());
         }
-        for good in ["https://github.com/A3S-Lab/a3s/promo", "http://x.ai/promo"] {
+        for good in [
+            "https://github.com/A3S-Lab/a3s/promo",
+            "http://example.com/promo",
+        ] {
             let a = promo("p", "msg", Some(("Go", good)));
             assert!(usable_cta(&a).is_some(), "scheme must be allowed: {good}");
         }
@@ -1467,8 +1470,8 @@ mod tests {
         assert!(row0.ends_with(HIDE_BUTTON), "row0={row0:?}");
         assert!(row0.contains(HIDE_CTA), "row0={row0:?}");
 
-        // [Label] is 15 cols at x 0; [hide] right-aligns at 80 minus 6 = 74; the hide CTA sits one gap left of it (74 minus 2 minus 25 = 47)
-        assert_eq!(hits.cta, Some(Rect::new(0, 0, 15, 1)), "[Label] hit rect");
+        // [Label] is 14 cols at x 0; [hide] right-aligns at 80 minus 6 = 74; the hide CTA sits one gap left of it (74 minus 2 minus 25 = 47)
+        assert_eq!(hits.cta, Some(Rect::new(0, 0, 14, 1)), "[Label] hit rect");
         assert_eq!(hits.hide, Some(Rect::new(74, 0, 6, 1)), "[hide] hit rect");
 
         let theme = Theme::current();

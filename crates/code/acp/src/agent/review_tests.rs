@@ -98,7 +98,7 @@ async fn review_real_model_findings_are_admitted_for_current_bytes_and_stale_aft
         .clone();
     ext(
         &host,
-        "x.ai/permission_posture",
+        "a3s/permission_posture",
         json!({"sessionId":id.0.as_ref(),"posture":"yolo","deny":["write(*)","edit(*)","bash(*)"]}),
     )
     .await

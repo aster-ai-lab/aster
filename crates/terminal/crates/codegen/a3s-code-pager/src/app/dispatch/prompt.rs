@@ -1133,7 +1133,7 @@ pub(super) fn dispatch_send_prompt_submission(
         return effects;
     } else {
         // Server-authoritative immediate send (plain prompt only)
-        // The agent appends it to its authoritative `pending_inputs` (turn starts never overlap) and drives the drain via `x.ai/queue/changed`
+        // The agent appends it to its authoritative `pending_inputs` (turn starts never overlap) and drives the drain via `a3s/queue/changed`
         // So the chips are cleared ONLY when the suggestion actually sends or enqueues
         agent.release_hook_block_hold();
         if is_follow_up && agent.session.session_id.is_some() {
@@ -1481,7 +1481,7 @@ pub(super) fn handle_prompt_response(
                     }
                 }
                 // This prompt's RPC resolved without becoming the running turn (removed, cancelled, rewound)
-                // Retire its optimistic echo so a later `x.ai/queue/changed` broadcast can't re-pin a stale placeholder and reorder the queue
+                // Retire its optimistic echo so a later `a3s/queue/changed` broadcast can't re-pin a stale placeholder and reorder the queue
                 if let Some(sid) = agent.session.session_id.as_ref().map(|s| s.0.to_string()) {
                     retire_optimistic_echo(
                         &mut app.optimistic_prompt_echoes,
@@ -1694,6 +1694,15 @@ pub(super) fn handle_prompt_response(
             }
         };
         crate::app::turn_completion::push_turn_terminal_marker(agent, event);
+
+        if let Err(error) = &result
+            && crate::app::error_display::format_request_failure(http_status, None, error).wire
+                == crate::app::error_display::WireErrorType::ToolEffectUnresolved
+        {
+            agent.scrollback.push_block(RenderBlock::system(
+                "Review the operation and workspace changes before using /new to start a new session. This session keeps the unconfirmed effects.",
+            ));
+        }
 
         let notification = match (&result, was_cancelling) {
             (Ok(_), false) if !agent.bash_turn => {

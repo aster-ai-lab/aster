@@ -30,7 +30,8 @@ impl std::fmt::Debug for SessionOptions {
             .field("security_provider", &self.security_provider.is_some())
             .field("llm_client", &self.llm_client.is_some())
             .field("context_providers", &self.context_providers.len())
-            .field("cognitive_context", &self.cognitive_context)
+            .field("isolated_context", &self.isolated_context)
+            .field("package_context", &self.package_context)
             .field("confirmation_manager", &self.confirmation_manager.is_some())
             .field("permission_checker", &self.permission_checker.is_some())
             .field("permission_policy", &self.permission_policy.is_some())
@@ -158,9 +159,7 @@ impl SessionOptions {
 
     /// Override the agent-level web-search configuration for this session.
     ///
-    /// The configuration is value-typed and therefore safe to pass through
-    /// the Node, Python, and Go SDK boundaries. `None` keeps the agent/global
-    /// configuration unchanged.
+    /// `None` keeps the agent-level configuration unchanged.
     pub fn with_search_config(mut self, config: crate::config::SearchConfig) -> Self {
         self.search_config = Some(config);
         self
@@ -212,17 +211,24 @@ impl SessionOptions {
         self
     }
 
-    /// Bind this session to one exact A3S Use cognitive-package generation.
+    /// Keep host-supplied context, but omit skills and discovered instructions and
+    /// use empty, session-local memory instead of any persistent memory binding.
+    pub fn with_isolated_context(mut self) -> Self {
+        self.isolated_context = true;
+        self
+    }
+
+    /// Bind this session to one exact A3S Use package generation.
     ///
     /// The supplied runtime value contains a serializable immutable binding
     /// and a host-owned provider. On restart the host must inject the same
     /// binding again; Code never resolves `latest`, opens a package path, or
     /// substitutes graph/personal-memory context.
-    pub fn with_cognitive_context(
+    pub fn with_package_context(
         mut self,
-        context: crate::cognitive_context::CognitiveContextSession,
+        context: crate::package_context::PackageContextSession,
     ) -> Self {
-        self.cognitive_context = Some(context);
+        self.package_context = Some(context);
         self
     }
 
@@ -238,7 +244,7 @@ impl SessionOptions {
     /// Set a confirmation policy for HITL
     ///
     /// The policy will be used to create a ConfirmationManager when the session is built.
-    /// This is the preferred way to configure HITL from the Node SDK.
+    /// Hosts can use this policy without constructing a confirmation provider.
     pub fn with_confirmation_policy(mut self, policy: crate::hitl::ConfirmationPolicy) -> Self {
         self.confirmation_policy = Some(policy);
         self

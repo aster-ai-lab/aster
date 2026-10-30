@@ -1,5 +1,5 @@
 .work-spreadsheet-table-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
 
   width: min(480px, 100%);
 }
@@ -27,10 +27,10 @@
   border-radius: 7px;
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, #159469) 11%,
+    var(--work-spreadsheet-accent, var(--a3s-ink)) 11%,
     var(--a3s-panel)
   );
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-table-scope > div {
@@ -201,9 +201,9 @@
   justify-self: end;
   min-height: 29px;
   padding: 0 13px;
-  border: 1px solid var(--work-spreadsheet-accent, #159469);
+  border: 1px solid var(--work-spreadsheet-accent, var(--a3s-ink));
   border-radius: 5px;
-  background: var(--work-spreadsheet-accent, #159469);
+  background: var(--work-spreadsheet-accent, var(--a3s-ink));
   color: #ffffff;
   cursor: pointer;
   font-size: 11px;
@@ -286,19 +286,19 @@
 .work-spreadsheet-table-style-family button[aria-checked="true"] {
   border-color: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, #159469) 46%,
+    var(--work-spreadsheet-accent, var(--a3s-ink)) 46%,
     var(--a3s-line)
   );
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, #159469) 8%,
+    var(--work-spreadsheet-accent, var(--a3s-ink)) 8%,
     var(--a3s-panel)
   );
 }
 
 .work-spreadsheet-table-style-family button:focus-visible {
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 66%, white);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 66%, white);
   outline-offset: 1px;
 }
 

@@ -47,15 +47,36 @@ export const WorkMarkdown = Extension.create({
   },
 });
 
-/** Chords TipTap does not bind: paragraph style, and Google Docs strikethrough. */
+/** Match the toolbar's advertised Meta/Control aliases on both editing surfaces. */
 const WorkMarkdownShortcuts = Extension.create({
   name: 'workMarkdownShortcuts',
 
   addKeyboardShortcuts() {
-    return {
-      'Mod-Alt-0': () => this.editor.commands.setParagraph(),
-      'Mod-Shift-x': () => this.editor.commands.toggleStrike(),
+    const commands: Record<string, () => boolean> = {
+      b: () => this.editor.commands.toggleBold(),
+      i: () => this.editor.commands.toggleItalic(),
+      e: () => this.editor.commands.toggleCode(),
+      'Shift-s': () => this.editor.commands.toggleStrike(),
+      'Shift-x': () => this.editor.commands.toggleStrike(),
+      'Shift-8': () => this.editor.commands.toggleBulletList(),
+      'Shift-7': () => this.editor.commands.toggleOrderedList(),
+      'Shift-9': () => this.editor.commands.toggleTaskList(),
+      'Shift-b': () => this.editor.commands.toggleBlockquote(),
+      'Alt-c': () => this.editor.commands.toggleCodeBlock(),
+      z: () => this.editor.commands.undo(),
+      'Shift-z': () => this.editor.commands.redo(),
+      y: () => this.editor.commands.redo(),
+      'Alt-0': () => this.editor.commands.setParagraph(),
     };
+    for (const level of [1, 2, 3, 4, 5, 6] as const) {
+      commands[`Alt-${level}`] = () =>
+        this.editor.commands.toggleHeading({ level });
+    }
+    return Object.fromEntries(
+      Object.entries(commands).flatMap(([key, command]) =>
+        ['Meta', 'Ctrl'].map((modifier) => [`${modifier}-${key}`, command]),
+      ),
+    );
   },
 });
 

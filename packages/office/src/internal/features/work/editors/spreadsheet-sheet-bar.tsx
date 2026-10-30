@@ -345,7 +345,7 @@ export function SpreadsheetSheetBar({
       <div
         ref={sheetTabsRef}
         className="work-spreadsheet-sheet-tabs"
-        role="group"
+        role="tablist"
         aria-label={officeMessage(messages, 'spreadsheet.sheet.listLabel')}
       >
         {visibleSheets.map((sheet, index) => {
@@ -420,6 +420,8 @@ export function SpreadsheetSheetBar({
                     else sheetTabRefs.current.delete(sheetId);
                   }}
                   type="button"
+                  role="tab"
+                  aria-selected={active}
                   aria-current={active ? 'true' : undefined}
                   tabIndex={active ? 0 : -1}
                   title={sheet.name}

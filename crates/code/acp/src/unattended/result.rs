@@ -30,6 +30,30 @@ pub(crate) enum TerminalReason {
     DeadlineExceeded,
 }
 
+#[derive(Debug)]
+pub(crate) struct ExecutionDeadline;
+
+impl std::fmt::Display for ExecutionDeadline {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("A3S Code execution deadline exceeded")
+    }
+}
+
+impl std::error::Error for ExecutionDeadline {}
+
+fn is_execution_deadline(error: &anyhow::Error) -> bool {
+    error.chain().any(|source| {
+        source.is::<ExecutionDeadline>()
+            || matches!(
+                source.downcast_ref::<a3s_code_core::goal_control::GoalControlError>(),
+                Some(a3s_code_core::goal_control::GoalControlError::Refused {
+                    refusal: a3s_code_core::goal_control::GoalRefusal::DeadlineExpired,
+                    ..
+                })
+            )
+    })
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct TerminalBenchRunResultV1 {
@@ -126,13 +150,14 @@ impl RunProgress {
     }
 
     pub(crate) fn remember_failure(&mut self, error: &anyhow::Error) {
-        if error
-            .downcast_ref::<crate::goal::GoalContinuationStopped>()
-            .is_some()
+        if is_execution_deadline(error)
+            || error
+                .downcast_ref::<crate::goal::GoalContinuationStopped>()
+                .is_some()
         {
             // A recoverable tool error from an earlier slice must not hide
             // the host's terminal refusal to continue this unfinished goal.
-            self.last_error = Some(bound_error(error.to_string()));
+            self.last_error = Some(bound_error(format!("{error:#}")));
             return;
         }
         self.remember_error(error);
@@ -286,6 +311,12 @@ pub(crate) fn classify_failure(
             TerminalReason::EvidenceMissing,
         );
     }
+    if is_execution_deadline(error) {
+        return (
+            ExecutionResultOutcomeV1::TimedOut,
+            TerminalReason::DeadlineExceeded,
+        );
+    }
     if error
         .downcast_ref::<crate::goal::GoalContinuationStopped>()
         .is_some()
@@ -340,12 +371,6 @@ pub(crate) fn classify_failure(
         return (
             ExecutionResultOutcomeV1::Failed,
             TerminalReason::StreamClosedWithoutTerminalEvent,
-        );
-    }
-    if lower.contains("deadline") || lower.contains("execution timeout") {
-        return (
-            ExecutionResultOutcomeV1::TimedOut,
-            TerminalReason::DeadlineExceeded,
         );
     }
     // Older Agent paths may have rendered the typed exhaustion into a plain

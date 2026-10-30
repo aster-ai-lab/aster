@@ -1,11 +1,11 @@
 export const meta = {
-  "title": "找到资料，并确认资料仍然有效",
+  "title": "资料检索与有效性检查",
   "description": "词法与语义索引、网络搜索、语言服务和宿主知识包。",
   "label": "检索、联网与代码智能",
   "updated": "2026-10-26"
 };
 
-## 先区分四种来源
+## 四类资料来源
 
 源码检索查询当前工作区；持久记忆保留经授权的历史事实；网页搜索读取外部资料；代码智能由语言服务解释源码结构。它们可以同时进入上下文，但来源、更新机制和授权各不相同。
 
@@ -40,11 +40,11 @@ Rust 宿主使用 `EmbeddingProvider`、`WorkspaceRetrievalOptions`、`with_work
 
 `web_fetch` 受重定向、响应大小、地址和内容类型限制。PDF 文本提取是 `web-fetch-pdf` 的特定能力，不等于 Office 的 PDF/OCR 支持。检索结果保留来源链接和日期；结果中的提示注入按外部数据处理。
 
-## 代码智能和知识包
+## 代码智能和包
 
 `code_symbols`、`code_navigation`、`code_diagnostics`、`code_format` 需要宿主提供权威语言服务。没有服务时，模型不能用同名提示补出这个能力。查询和修改都应绑定文档版本；版本已变化时刷新再操作。
 
-`cognitive_package_binding()` 和 `current_cognitive_package_binding()` 返回宿主已绑定的认知包身份。它不是任意插件加载器。`use_runtime_task` 同样需要宿主的 Use 任务 provider、能力范围和生命周期，不能因为目录里有任务说明就宣布可执行。
+`package_binding()` 和 `current_package_binding()` 返回宿主已绑定的包身份。它不是任意插件加载器。`use_runtime_task` 同样需要宿主的 Use 任务 provider、能力范围和生命周期，不能因为目录里有任务说明就宣布可执行。
 
 ## 验收
 
@@ -55,5 +55,5 @@ Rust 宿主使用 `EmbeddingProvider`、`WorkspaceRetrievalOptions`、`with_work
 - [工作区检索](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/workspace)
 - [Embedding 合同](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/embedding)
 - [代码智能合同](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/code_intelligence)
-- [认知包与 Use 任务](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/cognitive_context.rs)
+- [包与 Use 任务](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/package_context.rs)
 - [网页工具](https://github.com/aster-ai-lab/aster/tree/main/crates/code/core/src/tools/builtin)

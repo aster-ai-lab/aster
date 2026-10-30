@@ -7,7 +7,7 @@ use crate::UseResult;
 
 use super::{
     bundle_error, limit_error, path, OkfBundleDiagnostic, OkfConceptSummary, OkfDiagnosticCode,
-    OkfFormatVersion,
+    OkfDocumentReference, OkfFormatVersion,
 };
 
 pub(super) struct DocumentInspection {
@@ -158,25 +158,13 @@ fn inspect_references(
     bundle_paths: &BTreeSet<String>,
     max_links: u64,
 ) -> UseResult<(u64, Vec<OkfBundleDiagnostic>)> {
-    let mut references = markdown_references(body)
-        .into_iter()
-        .map(|target| (target, false))
-        .collect::<Vec<_>>();
-    if let Some(Value::Mapping(mapping)) = frontmatter {
-        references.extend(frontmatter_references(mapping));
-    }
-    if references.len() as u64 > max_links {
-        return Err(limit_error());
-    }
-
+    let references = references(source_path, body, frontmatter, max_links)?;
     let mut dangling = BTreeSet::new();
-    for (target, allow_scope_descriptor) in &references {
-        let Some(resolved) = path::resolve_reference(source_path, target, *allow_scope_descriptor)?
-        else {
-            continue;
-        };
-        if !bundle_paths.contains(&resolved) {
-            dangling.insert(resolved);
+    for reference in &references {
+        if let Some(resolved) = &reference.resolved_path {
+            if !bundle_paths.contains(resolved) {
+                dangling.insert(resolved.clone());
+            }
         }
     }
     let diagnostics = dangling
@@ -191,6 +179,46 @@ fn inspect_references(
         })
         .collect();
     Ok((references.len() as u64, diagnostics))
+}
+
+pub(super) fn document_references(
+    path: &str,
+    content: &[u8],
+    max_links: u64,
+) -> UseResult<Vec<OkfDocumentReference>> {
+    let text =
+        std::str::from_utf8(content).map_err(|_| bundle_error("OKF references require UTF-8"))?;
+    let parsed = parse_frontmatter(path, text)?;
+    references(path, parsed.body, parsed.frontmatter.as_ref(), max_links)
+}
+
+fn references(
+    source_path: &str,
+    body: &str,
+    frontmatter: Option<&Value>,
+    max_links: u64,
+) -> UseResult<Vec<OkfDocumentReference>> {
+    let mut references = markdown_references(body)
+        .into_iter()
+        .map(|target| (target, false))
+        .collect::<Vec<_>>();
+    if let Some(Value::Mapping(mapping)) = frontmatter {
+        references.extend(frontmatter_references(mapping));
+    }
+    if references.len() as u64 > max_links {
+        return Err(limit_error());
+    }
+
+    references
+        .into_iter()
+        .map(|(target, scope)| {
+            let resolved_path = path::resolve_reference(source_path, &target, scope)?;
+            Ok(OkfDocumentReference {
+                target,
+                resolved_path,
+            })
+        })
+        .collect()
 }
 
 fn markdown_references(body: &str) -> Vec<String> {

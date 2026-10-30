@@ -6,7 +6,6 @@ use std::process::Stdio;
 use std::thread;
 
 use anyhow::{Context, Result, anyhow};
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::process::Command;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
@@ -18,7 +17,6 @@ use agent_client_protocol as acp;
 use super::spawn::{SpawnedAgent, boot_auth_manager};
 use a3s_code_shell::agent::config::Config as AgentConfig;
 
-const MAX_BUF: usize = 8 * 1024 * 1024;
 static EXPECTED_PAIR_BUILD_ID: std::sync::OnceLock<&'static str> = std::sync::OnceLock::new();
 
 pub fn set_expected_pair_build_id(id: &'static str) {
@@ -77,9 +75,23 @@ pub async fn spawn_a3s_acp(
         model,
         std::env::var_os("A3S_CONFIG").as_deref(),
     );
-    let bridge_cancel = agent_cancel.clone();
+    let thread_handle = spawn_bridge(bin, arguments, agent_cancel.clone(), agent_channel)?;
 
-    let thread_handle = thread::Builder::new()
+    Ok(SpawnedAgent {
+        thread_handle,
+        channel: client_channel,
+        cancel: agent_cancel,
+        auth_manager,
+    })
+}
+
+fn spawn_bridge(
+    bin: PathBuf,
+    arguments: Vec<std::ffi::OsString>,
+    bridge_cancel: CancellationToken,
+    agent_channel: a3s_acp_lib::AcpAgentChannel,
+) -> Result<thread::JoinHandle<Result<()>>> {
+    thread::Builder::new()
         .name("a3s-acp-bridge".into())
         .stack_size(8 * 1024 * 1024)
         .spawn(move || -> Result<()> {
@@ -92,9 +104,9 @@ pub async fn spawn_a3s_acp(
                 // The welcome screen owns the console. ACP diagnostics stay in
                 // the daily log instead of painting over that screen.
                 apply_interactive_acp_stdio(&mut command);
-                let mut child = command
-                    .spawn()
-                    .with_context(|| format!("failed to spawn a3s ACP agent at {}", bin.display()))?;
+                let mut child = command.spawn().with_context(|| {
+                    format!("failed to spawn a3s ACP agent at {}", bin.display())
+                })?;
                 let child_stdin = child
                     .stdin
                     .take()
@@ -103,88 +115,21 @@ pub async fn spawn_a3s_acp(
                     .stdout
                     .take()
                     .ok_or_else(|| anyhow!("a3s ACP agent stdout missing"))?;
-                let child_stderr = child
+                let mut child_stderr = child
                     .stderr
                     .take()
                     .ok_or_else(|| anyhow!("a3s ACP agent stderr missing"))?;
 
-                let (incoming_read, mut incoming_write) = tokio::io::simplex(MAX_BUF);
-                let (outgoing_read, outgoing_write) = tokio::io::simplex(MAX_BUF);
-
-                // Child stdout → ClientSideConnection incoming
-                let cancel_e = bridge_cancel.clone();
                 let stderr_task = tokio::task::spawn_local(async move {
-                    let mut reader = BufReader::new(child_stderr);
-                    let mut line = String::new();
-                    loop {
-                        line.clear();
-                        tokio::select! {
-                            biased;
-                            _ = cancel_e.cancelled() => break,
-                            result = reader.read_line(&mut line) => {
-                                if !matches!(result, Ok(n) if n > 0) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                });
-
-                let cancel_r = bridge_cancel.clone();
-                let reader_task = tokio::task::spawn_local(async move {
-                    let mut reader = BufReader::new(child_stdout);
-                    let mut line = String::new();
-                    loop {
-                        line.clear();
-                        tokio::select! {
-                            biased;
-                            _ = cancel_r.cancelled() => break,
-                            result = reader.read_line(&mut line) => {
-                                match result {
-                                    Ok(0) => break,
-                                    Ok(_) => {
-                                        if incoming_write.write_all(line.as_bytes()).await.is_err() {
-                                            break;
-                                        }
-                                    }
-                                    Err(_) => break,
-                                }
-                            }
-                        }
-                    }
-                });
-
-                // ClientSideConnection outgoing → child stdin
-                let cancel_w = bridge_cancel.clone();
-                let writer_task = tokio::task::spawn_local(async move {
-                    let mut reader = BufReader::new(outgoing_read);
-                    let mut stdin = child_stdin;
-                    let mut line = String::new();
-                    loop {
-                        line.clear();
-                        tokio::select! {
-                            biased;
-                            _ = cancel_w.cancelled() => break,
-                            result = reader.read_line(&mut line) => {
-                                match result {
-                                    Ok(0) => break,
-                                    Ok(_) => {
-                                        if stdin.write_all(line.as_bytes()).await.is_err() {
-                                            break;
-                                        }
-                                    }
-                                    Err(_) => break,
-                                }
-                            }
-                        }
-                    }
+                    let _ = tokio::io::copy(&mut child_stderr, &mut tokio::io::sink()).await;
                 });
 
                 let gw_tx = AcpGatewaySender::new(agent_channel.tx).with_tracing(true);
-                let incoming = LineBufferedRead::spawn_local(incoming_read.compat());
+                // Apply the frame limit before any unbounded line allocation.
+                let incoming = LineBufferedRead::spawn_local(child_stdout.compat());
                 let (conn, handle_io) = acp::ClientSideConnection::new(
                     gw_tx,
-                    outgoing_write.compat_write(),
+                    child_stdin.compat_write(),
                     incoming,
                     |fut| {
                         tokio::task::spawn_local(fut);
@@ -198,31 +143,24 @@ pub async fn spawn_a3s_acp(
                 let outcome = tokio::select! {
                     biased;
                     _ = bridge_cancel.cancelled() => Ok(()),
-                    status = child.wait() => {
-                        Err(anyhow!("A3S Code ACP exited: {}", status.context("wait for ACP agent")?))
-                    }
-                    result = &mut io_task => {
-                        result.context("ACP transport task")??;
-                        Err(anyhow!("A3S Code ACP transport closed"))
-                    }
+                    result = &mut io_task => match result {
+                        Ok(Ok(())) => Err(anyhow!("A3S Code ACP transport closed")),
+                        Ok(Err(error)) => Err(anyhow::Error::new(error)),
+                        Err(error) => Err(anyhow::Error::new(error).context("ACP transport task")),
+                    },
+                    status = child.wait() => match status {
+                        Ok(status) => Err(anyhow!("A3S Code ACP exited: {status}")),
+                        Err(error) => Err(anyhow::Error::new(error).context("wait for ACP agent")),
+                    },
                 };
-                reader_task.abort();
-                writer_task.abort();
                 stderr_task.abort();
                 io_task.abort();
                 gateway_task.abort();
-                let _ = child.kill().await;
+                child.kill().await.context("stop and reap ACP agent")?;
                 outcome
             })
         })
-        .context("failed to start a3s ACP bridge thread")?;
-
-    Ok(SpawnedAgent {
-        thread_handle,
-        channel: client_channel,
-        cancel: agent_cancel,
-        auth_manager,
-    })
+        .context("failed to start a3s ACP bridge thread")
 }
 
 /// The sentence the interactive pager returns when no sidecar executable is configured.
@@ -551,3 +489,6 @@ mod tests {
 
 #[cfg(test)]
 mod argument_tests;
+
+#[cfg(test)]
+mod transport_tests;

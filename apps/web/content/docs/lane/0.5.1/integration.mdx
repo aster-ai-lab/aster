@@ -1,0 +1,91 @@
+export const meta = {
+  title: 'Lane 队列与调度接入',
+  description: 'Command、QueueManager、PriorityQueue、LaneConfig 和关闭流程。',
+  label: '队列与调度',
+  updated: '2026-10-29',
+};
+
+每种任务类型实现 `Command`，QueueManager 按 Lane 的优先级和并发限制调度。宿主也可以保留类型化队列并自行决定执行时机。
+
+## 提交 Command
+
+```rust
+use a3s_lane::{QueueManagerBuilder, EventEmitter, Command, Result};
+use async_trait::async_trait;
+use std::time::Duration;
+
+struct FetchCommand { url: String }
+
+#[async_trait]
+impl Command for FetchCommand {
+    async fn execute(&self) -> Result<serde_json::Value> {
+        Ok(serde_json::json!({ "url": self.url }))
+    }
+    fn command_type(&self) -> &str { "fetch" }
+}
+
+#[tokio::main]
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    let emitter = EventEmitter::new(100);
+    let manager = QueueManagerBuilder::new(emitter)
+        .with_default_lanes()
+        .build().await?;
+
+    manager.start().await?;
+    let rx = manager.submit("query", Box::new(FetchCommand { url: "...".into() })).await?;
+    let result = rx.await??;
+    println!("{result}");
+
+    manager.shutdown().await;
+    manager.drain(Duration::from_secs(5)).await?;
+    Ok(())
+}
+```
+
+`submit()` 返回 `oneshot::Receiver<Result<Value>>`。第一次 `?` 处理 Channel 错误，第二次 `?` 处理 Command 结果。
+
+`shutdown()` 停止接收新 Command。`drain()` 在有界时间内等待活动工作完成。
+
+## 宿主持有的类型化队列
+
+`PriorityQueue<T>` 不启动 Scheduler。较低数字先出队，相同 Priority 保持插入顺序。
+
+<DocTable caption="PriorityQueue 的队列操作" headers={['操作', '行为']} rows={[
+  ['push', '按 Priority 和插入顺序加入类型化值'],
+  ['pop', '领取下一个值并保留原 Priority 与序号'],
+  ['restore', '准入失败时恢复原始 FIFO 位置'],
+  ['ordered', '生成不修改队列的界面视图'],
+]} />
+
+该入口适合终端或 Web Event Loop。宿主负责执行、取消和结算，不把状态提前交给后台 Worker。
+
+## 配置 Lane
+
+```rust
+LaneConfig::new(min_concurrency, max_concurrency)
+    .with_timeout(Duration::from_secs(30))
+    .with_retry_policy(RetryPolicy::exponential(3))
+    .with_pressure_threshold(50)
+    .with_rate_limit(RateLimitConfig::per_second(100))
+    .with_priority_boost(PriorityBoostConfig::standard(
+        Duration::from_secs(300),
+    ));
+```
+
+Retry Policy 支持 `exponential`、`fixed` 和 `none`。Rate Limit 与 Priority Boost 需要 `distributed` feature。
+
+Priority Boost 根据任务剩余期限提升等待项优先级。它不会抢占活动 Future。
+
+## 事件与观测
+
+`manager.subscribe()` 返回全部队列事件，`subscribe_filtered` 只保留指定事件。事件流实现 `futures_core::Stream`。
+
+常见事件包括 `queue.command.submitted`、`started`、`completed`、`retry`、`failed`、`timeout` 和 `dead_lettered`。
+
+`queue.lane.pressure` 在 Pending 首次达到阈值时发出，`queue.lane.idle` 在压力后的 Pending 归零时发出。两个事件都要求配置 `with_pressure_threshold`。
+
+## 实现依据
+
+- [Command 与 QueueManager](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [PriorityQueue 与 LaneConfig](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [队列事件](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)

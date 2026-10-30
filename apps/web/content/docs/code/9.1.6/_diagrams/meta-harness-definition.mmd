@@ -1,0 +1,16 @@
+flowchart TB
+  accTitle: Meta Harness 是什么
+  accDescr: 宿主用配方、注册组件或完整组件树描述执行方式。Meta Harness 装配组件，同一个会话按事实日志运行，Core 的固定约束始终生效。
+  recipe["默认配方<br/>组件与参数"]
+  registry["宿主组件<br/>已注册的 host 组件"]
+  assembler["完整组件树<br/>HostHarnessAssembler"]
+  compose["Meta Harness<br/>装配执行组件"]
+  session["同一个 AgentSession<br/>按选定方式执行"]
+  facts["事实日志<br/>状态与原始回执"]
+  guards["Core 固定约束<br/>权限 / 完成 / 资源"]
+  recipe --> compose
+  registry --> compose
+  assembler --> compose
+  compose --> session
+  session --> facts
+  guards -. 始终生效 .-> session

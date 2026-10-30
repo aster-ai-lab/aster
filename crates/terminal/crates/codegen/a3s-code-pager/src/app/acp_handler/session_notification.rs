@@ -36,7 +36,7 @@ fn is_foreign_hook_batch(agent: &AgentView, batch_prompt_id: Option<&str>) -> bo
         (Some(batch), Some(current)) if batch != current
     )
 }
-/// `x.ai/turn/outcome`: how the completed run closed at the agent's
+/// `a3s/turn/outcome`: how the completed run closed at the agent's
 /// completion gate. Arrives before the prompt response (same FIFO wire), so
 /// the line renders beside the terminal marker instead of after it.
 pub(super) fn handle_turn_outcome(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
@@ -46,7 +46,7 @@ pub(super) fn handle_turn_outcome(notif: &acp::ExtNotification, app: &mut AppVie
         id: String,
     }
     let session_id = serde_json::from_str::<SessionId>(notif.params.get())
-        .map_err(|error| tracing::warn!(%error, "failed to parse x.ai/turn/outcome"))
+        .map_err(|error| tracing::warn!(%error, "failed to parse a3s/turn/outcome"))
         .ok()
         .map(|payload| payload.id);
     let info = crate::app::turn_completion::parse_turn_outcome(notif.params.get());
@@ -57,7 +57,7 @@ pub(super) fn handle_turn_outcome(notif: &acp::ExtNotification, app: &mut AppVie
         return false;
     };
     let Some(matched) = super::routing::find_session_match(app, &session_id.into()) else {
-        tracing::warn!("x.ai/turn/outcome for unknown session; dropping");
+        tracing::warn!("a3s/turn/outcome for unknown session; dropping");
         return false;
     };
     let Some(agent) = app.agents.get_mut(&matched.agent_id()) else {
@@ -214,7 +214,7 @@ fn synthesize_replay_turn_marker(
         })
     })
 }
-/// Handle `x.ai/session_notification` and replay-path `x.ai/session/update`.
+/// Handle `a3s/session_notification` and replay-path `a3s/session/update`.
 /// Routes by `session_id` so events for an inactive agent still mutate that agent's state.
 /// The redraw decision is gated on whether the matched agent is the currently visible one.
 pub(super) fn handle_session_notification(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
@@ -251,7 +251,7 @@ pub(super) fn handle_session_notification_with_origin(
             tracing::debug!(
                 session_id = session_notif.session_id.0.as_ref(),
                 method = notif.method.as_ref(),
-                "load-race: x.ai/session_notification DROPPED — no agent matches session_id"
+                "load-race: a3s/session_notification DROPPED — no agent matches session_id"
             );
             return false;
         }
@@ -278,7 +278,7 @@ pub(super) fn handle_session_notification_with_origin(
         agent,
         &meta,
         session_notif.session_id.0.as_ref(),
-        "x.ai/session/update",
+        "a3s/session/update",
     ) {
         return false;
     }
@@ -321,11 +321,16 @@ pub(super) fn handle_session_notification_with_origin(
             session_id = session_notif.session_id.0.as_ref(),
             event_seq = meta.event_seq,
             last_applied = agent.last_applied_a3s_event_seq,
-            "x.ai/session update DROPPED by dedup highwater (event_seq <= last_applied)"
+            "a3s/session update DROPPED by dedup highwater (event_seq <= last_applied)"
         );
         return false;
     }
     let mut plugins_changed_needs_skills_refetch = false;
+    if !meta.is_replay
+        && let Some(language) = &meta.output_language
+    {
+        agent.session.tracker.output_language = Some(language.clone());
+    }
     let mut status_snapshot_applied = false;
     let mut terminal_outcome: Option<super::super::turn_completion::TerminalApply> = None;
     let mut queue_wake_turn_complete = false;
@@ -1416,7 +1421,7 @@ pub(super) fn handle_session_notification_with_origin(
     if let Some((payload, origin)) = pending_finish_for_spawn
         && let Ok(params) = serde_json::value::to_raw_value(&payload)
     {
-        let deferred = acp::ExtNotification::new("x.ai/session/update", params.into());
+        let deferred = acp::ExtNotification::new("a3s/session/update", params.into());
         let _ = handle_session_notification_with_origin(&deferred, app, origin);
     }
     if queue_wake_turn_complete {
@@ -1488,6 +1493,13 @@ pub(super) fn handle_child_session_notification(
     is_api_key_auth: bool,
     meta: Option<&serde_json::Value>,
 ) -> bool {
+    let parsed_meta = NotificationMeta::from_json(meta.and_then(|v| v.as_object()));
+    if !parsed_meta.is_replay
+        && let Some(language) = parsed_meta.output_language
+        && let Some(child_view) = agent.child_view_for_live_update_mut(child_sid)
+    {
+        child_view.session.tracker.output_language = Some(language);
+    }
     match update {
         A3sSessionUpdate::AutoCompactStarted { .. }
         | A3sSessionUpdate::AutoCompactCompleted { .. }

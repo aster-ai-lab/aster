@@ -1,0 +1,67 @@
+---
+import LegalLayout from '../../layouts/LegalLayout.astro';
+---
+
+<LegalLayout
+  kind="privacy"
+  title="Aster 隐私政策"
+  description="Aster 隐私政策：说明本地内容、模型请求、更新下载、静态网页及第三方服务的数据处理边界。"
+  eyebrow="ASTER / PRIVACY"
+  summaryTitle="本地优先不等于始终离线"
+  summary="Aster 在您选择的环境中完成任务。只有使用联网模型、搜索、更新或其他外部服务时，相应请求才会发送至您选择或系统配置的服务方。"
+>
+  <section aria-labelledby="privacy-scope">
+    <h2 id="privacy-scope">一、适用范围</h2>
+    <p>本政策适用于 Aster 桌面版、命令行工具，以及托管在 Aster GitHub Pages 站点上的用户协议和隐私政策页面。</p>
+    <p>第三方模型、搜索、代码托管、存储及其他服务具有独立的数据处理规则。本政策不替代该等第三方的隐私政策。</p>
+  </section>
+  <section aria-labelledby="privacy-local">
+    <h2 id="privacy-local">二、本地内容与运行配置</h2>
+    <p>为提供任务和文件能力，Aster 会在您的设备或您配置的运行环境中处理会话内容、工作区文件、任务记录、应用设置和诊断信息。具体内容取决于您使用的功能和导入的数据。</p>
+    <p>API Key、访问令牌及其他凭证用于连接您配置的服务。其保存位置和系统保护方式取决于产品版本、操作系统及您的配置；请在共享设备或导出诊断资料前检查并移除敏感信息。</p>
+  </section>
+  <section aria-labelledby="privacy-network">
+    <h2 id="privacy-network">三、模型与联网请求</h2>
+    <p>当您使用模型对话、联网搜索或需要外部资料的任务时，提示词、对话上下文、您选择的文件内容或查询参数可能发送至相应模型或服务提供商，以生成回复或完成请求。</p>
+    <p>发送范围取决于您的输入、所选上下文、工具参数和服务配置。请在执行前检查任务内容，不要向不信任的服务发送个人信息、商业机密或无权披露的数据。</p>
+  </section>
+  <section aria-labelledby="privacy-updates">
+    <h2 id="privacy-updates">四、更新、下载与代码托管</h2>
+    <p>检查更新、下载安装包、访问 GitHub 仓库或提交公开 issue 时，GitHub 及相关网络基础设施可能处理 IP 地址、请求时间、浏览器或客户端标识等技术与日志数据。</p>
+    <p>公开 issue、评论、附件和代码贡献可被他人查看。请勿在其中提交访问凭证、私有文件或不必要的个人信息。</p>
+  </section>
+  <section aria-labelledby="privacy-pages">
+    <h2 id="privacy-pages">五、静态政策页面</h2>
+    <p>本用户协议和隐私政策页面为静态 HTML，不设置 Cookie，不加载第三方分析脚本，也不要求您登录或填写个人信息。页面仅加载同站点的样式、字体和品牌资源。</p>
+    <p>托管平台仍可能依据其自身政策处理访问日志。点击 GitHub 等外部链接后，您的访问将受目标网站政策约束。</p>
+  </section>
+  <section aria-labelledby="privacy-purpose">
+    <h2 id="privacy-purpose">六、数据使用目的</h2>
+    <p>在上述场景中处理数据，是为了提供您请求的功能、维持配置与会话、执行更新、排查故障以及保障产品和服务安全。</p>
+    <p>我们不通过这两个静态政策页主动建立用户画像或投放广告。本说明不限制第三方服务依据其合法依据进行的数据处理。</p>
+  </section>
+  <section aria-labelledby="privacy-sharing">
+    <h2 id="privacy-sharing">七、对外提供与委托处理</h2>
+    <p>当您主动使用外部服务时，完成请求所需的数据会由该服务方处理。除此之外，法律法规要求、保护合法权益或保障服务安全所必需的情形，也可能涉及必要的信息提供。</p>
+    <p>我们不会因您阅读这两个静态政策页而向广告网络提供您的浏览行为。</p>
+  </section>
+  <section aria-labelledby="privacy-retention">
+    <h2 id="privacy-retention">八、保存、导出与删除</h2>
+    <p>本地会话、设置、任务记录和文件的保存期限主要由您的设备、配置和使用方式决定。您可以通过产品提供的管理能力或删除相应本地数据来清理不再需要的内容；操作前请保留必要备份。</p>
+    <p>已经发送至第三方服务的数据，其保存、导出和删除由该第三方规则决定。卸载 Aster 不会自动撤销第三方令牌或删除第三方已经保存的数据。</p>
+  </section>
+  <section aria-labelledby="privacy-control">
+    <h2 id="privacy-control">九、安全与您的控制</h2>
+    <p>您可以通过权限设置、工作区选择、工具确认、凭证撤销和数据清理控制处理范围。请使用受支持的操作系统，保持软件更新，并限制不可信人员访问您的设备与账号。</p>
+    <p>没有任何软件或网络传输能够保证绝对安全。发现可能的安全问题时，请通过适当渠道报告，避免在公开 issue 中披露可利用的敏感细节。</p>
+  </section>
+  <section aria-labelledby="privacy-minors">
+    <h2 id="privacy-minors">十、未成年人</h2>
+    <p>Aster 是面向专业与创作场景的工具，不专门面向未成年人。未成年人应在监护人指导和同意下使用，并避免提交不必要的个人信息。</p>
+  </section>
+  <section aria-labelledby="privacy-changes">
+    <h2 id="privacy-changes">十一、政策更新与联系</h2>
+    <p>功能、法律要求或数据处理场景变化时，我们可能更新本政策并调整本页日期。重大变更将按适用法律要求以适当方式提示。</p>
+    <p>如对本政策有疑问，可通过 Aster GitHub 仓库提交公开 issue。请仅提供处理问题所需且可以公开的信息。</p>
+  </section>
+</LegalLayout>

@@ -51,21 +51,6 @@ pub fn load_pinned_layer_c_config() -> CodeConfig {
     let path = repo_config_path();
     let mut config = CodeConfig::from_file(&path)
         .unwrap_or_else(|error| panic!("failed to load {}: {error}", path.display()));
-    let provider = config.find_provider(REQUIRED_PROVIDER).unwrap_or_else(|| {
-        panic!(
-            "{} must declare providers \"{REQUIRED_PROVIDER}\"",
-            path.display()
-        )
-    });
-    assert!(
-        provider
-            .models
-            .iter()
-            .any(|model| model.id == REQUIRED_MODEL_ID),
-        "{} must declare {REQUIRED_PROVIDER} models \"{REQUIRED_MODEL_ID}\"",
-        path.display()
-    );
-
     let pin = std::env::var("A3S_TEST_MODEL")
         .ok()
         .map(|value| value.trim().to_string())
@@ -92,6 +77,12 @@ pub fn load_pinned_layer_c_config() -> CodeConfig {
             }
         })
         .unwrap_or_else(|| REQUIRED_DEFAULT_MODEL.to_string());
+    let (provider_id, model_id) = resolve_provider_model(&pin).expect("pinned model route");
+    assert!(
+        provider_has_model(&config, provider_id, model_id),
+        "{} must declare the pinned model {pin}",
+        path.display()
+    );
 
     if config.default_model.as_deref() != Some(pin.as_str()) {
         eprintln!(

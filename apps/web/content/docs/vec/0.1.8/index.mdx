@@ -1,0 +1,53 @@
+export const meta = {
+  title: 'Aster Vec 产品概览',
+  description: '进程内向量与全文检索、精确重排、索引和持久化边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-vec` 是进程内向量与全文检索库。调用方提供文档、向量和嵌入模型，Vec 负责存储、索引、查询和持久化。
+
+当前版本为 `0.1.8`。库不需要独立数据库进程，也不依赖 C/C++ runtime。
+
+<VecArchitectureDiagram />
+
+## 核心原则
+
+<DocTable caption="Vec 的事实与索引边界" headers={['对象', '职责', '恢复或查询行为']} rows={[
+  ['文档快照与 WAL', '唯一事实来源', '恢复文档并确定最终分数'],
+  ['ANN 与标量/全文索引', '派生候选', '加速检索，可以从文档重建'],
+  ['精确重排', '核对候选', '使用权威向量计算 f64 中间分数'],
+  ['精确扫描回退', '处理缺失或过期索引', '不把近似结果当作精确结果'],
+]} />
+
+相同分数按主键升序排列。查询只观察一个不可变修订，后台写入和索引发布不会改变查询中途的结果集。
+
+## 主要能力
+
+<DocTable caption="Vec 的检索能力" headers={['能力', '实现']} rows={[
+  ['向量检索', 'HNSW、IVF、RaBitQ、Vamana、DiskANN 与精确 Flat'],
+  ['全文检索', 'BM25、布尔、短语、通配符、模糊和范围查询'],
+  ['结构化过滤', '等值、范围、IN、null、前缀、后缀和布尔组合'],
+  ['混合查询', '向量、全文、标量过滤、multi-query 和 group-by'],
+  ['持久化', 'WAL、校验和快照、文件锁、派生索引缓存和原子发布'],
+  ['异步查询', 'async feature 在 Tokio blocking pool 执行同一查询规划'],
+]} />
+
+## 产品边界
+
+Vec 不提供嵌入模型，不启动模型下载，也不作为托管向量云服务。`a3s-code` 负责工作区检索适配和模型供应商策略。
+
+Vec 不承诺 zvec 的 C++ ABI 或二进制存储兼容。公开 Rust API 使用 A3S 自有类型。
+
+## 文档入口
+
+- [Vec 接入](./integration/)：Collection、Schema、CRUD、向量和全文查询。
+- [运行与验证](./operations/)：持久化、资源上限、维护、平台和性能证据。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Vec 架构](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/ARCHITECTURE.md)
+- [查询与索引合同](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/README.md)
+- [测试计划](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/TESTING.md)

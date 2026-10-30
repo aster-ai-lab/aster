@@ -11,27 +11,37 @@ impl A3sCodeAgent {
         directory: &Path,
         session_id: &str,
         workspace: &Path,
-    ) -> acp::Result<Option<std::sync::Arc<dyn a3s_code_core::store::SessionStore>>> {
+    ) -> acp::Result<std::sync::Arc<dyn a3s_code_core::store::SessionStore>> {
         use a3s_code_core::store::{FileSessionStore, SessionStore};
         let failed = |error: anyhow::Error| {
             acp::Error::internal_error().data(format!("session snapshot recovery: {error}"))
         };
         if !directory
             .try_exists()
-            .map_err(|error| failed(error.into()))?
+            .map_err(|error: std::io::Error| failed(error.into()))?
         {
-            return Ok(None);
+            return Err(acp::Error::internal_error()
+                .data("session snapshot recovery: snapshot store is missing"));
         }
         let store = std::sync::Arc::new(FileSessionStore::new(directory).await.map_err(failed)?);
-        let Some(snapshot) = store.load_snapshot(session_id).await.map_err(failed)? else {
-            return Ok(None);
-        };
+        let snapshot = store
+            .load_snapshot(session_id)
+            .await
+            .map_err(failed)?
+            .ok_or_else(|| {
+                acp::Error::internal_error().data(format!(
+                    "session snapshot recovery: snapshot is missing for session {session_id}"
+                ))
+            })?;
         snapshot.validate_for_session(session_id).map_err(failed)?;
         canonical_workspace(
             workspace,
             Some(Path::new(&snapshot.session.config.workspace)),
-        )?;
-        Ok(Some(store))
+        )
+        .map_err(|_| {
+            acp::Error::invalid_params().data("session snapshot recovery: foreign workspace")
+        })?;
+        Ok(store)
     }
 
     pub(super) async fn admit_resume(&self, session_id: &str, cwd: &Path) -> acp::Result<PathBuf> {
@@ -39,6 +49,12 @@ impl A3sCodeAgent {
             return Err(acp::Error::invalid_params().data("invalid session identity"));
         }
         let session_id = session_id.to_owned();
+        let bound = self
+            .sessions
+            .lock()
+            .await
+            .get(&session_id)
+            .map(|live| live.session.workspace().to_owned());
         let launch = self.launch.workspace.clone();
         let cwd = cwd.to_owned();
         let permit = self
@@ -50,7 +66,17 @@ impl A3sCodeAgent {
             })?;
         tokio::task::spawn_blocking(move || {
             let _permit = permit;
-            let workspace = canonical_workspace(&launch, Some(&cwd))?;
+            let workspace = if let Some(bound) = bound {
+                let actual = cwd
+                    .canonicalize()
+                    .map_err(|_| acp::Error::resource_not_found(None))?;
+                if actual != bound {
+                    return Err(acp::Error::resource_not_found(None));
+                }
+                actual
+            } else {
+                canonical_workspace(&launch, Some(&cwd))?
+            };
             let entry =
                 a3s_code_core::session_folder::resolve_workspace_session(&workspace, &session_id)
                     .map_err(|_| acp::Error::resource_not_found(None))?;

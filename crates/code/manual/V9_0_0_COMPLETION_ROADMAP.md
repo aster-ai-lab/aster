@@ -1,5 +1,9 @@
 # a3s-code 9.0.0 completion roadmap
 
+> Historical upstream record. Foreign-language SDK results and external publishing
+> references do not describe this repository's Rust/ACP delivery or qualify its current release.
+
+
 **Status:** Planning authority for finishing the 9.0.0 fact-log line.  
 **Date:** 2026-09-25  
 **Does not replace:** [FULL_FEATURE_TEST_PLAN.md](FULL_FEATURE_TEST_PLAN.md),
@@ -50,7 +54,7 @@ the repository's own definition of done.
 | L2 F-kernel cov | **PASS** — `/tmp/a3s-llvm-cov-f95/FINAL.txt` `ALL_F_TABLE_KERNELS_GE_95_PASS scored=42`; `agent_protocol_harness.rs` **95.16%** |
 | L8 §7 9.0.0 pins | **PASS (hermetic)** — fact_log 34/34; effect park + tool_round_cap; bm25 a3s-vec FTS 17/17 |
 | L7 Harbor / CAR / DM | End-state A (channel release). Tip `b91462d3`: L0–L6 + L8 PASS; Layer C PASS (`/tmp/a3s-layer-c-b91462d3`). **DM-PROD1 closed**: host pack `/tmp/dm-prod1-host-be467457` (all seven dimensions, `HYGIENE_OK`). **TB-QUAL1 waived by product decision (2026-09-26)**; supporting diagnostic only (job `2026-09-26__02-14-59`, native `verifier_result` retained); full `-k 5` job stopped at 3/330 trials. CAR-01/03/04/05 out of scope: A3S Cloud retired by product decision (2026-09-26). The TB waiver and uncertified CAR forbid the Enterprise GA claim. |
-| `v9.0.0` tag / Release | **Published** on crates.io, npm, PyPI, Go (`sdk/go/v9.0.0`), and GitHub Release from `a3d86343` (release run `36208896307`) |
+| `v9.0.0` tag / Release | Historical upstream multi-channel publication from `a3d86343` (release run `36208896307`); foreign SDKs and registry publishing are excluded from this repository |
 | Docs site | Current line `docs/v9.0.0`; `v8.7.0` was tagged but never published and has no archive |
 | Out of 9.0.0 CHANGELOG body | Apofasi typed decisions live under `[Unreleased]` |
 
@@ -72,7 +76,7 @@ All must be true on **one** tagged commit `RC`:
 | C6 | L6 | Fresh `performance.yml` + `hermetic-integrations.yml` digests for `RC` in PERFORMANCE_QUALIFICATION |
 | C7 | L8 | §7 pins green **plus** new 9.0.0 fact-log pins (below) |
 | C8 | L7 disposition | Harbor TB-QUAL1 + DM-PROD1 + CAR-01…05 **close receipts**, **or** one written product waiver naming deferred rows |
-| C9 | Multi-channel cut | Git tag `v9.0.0`, GitHub Release, crates.io `a3s-code-core` 9.0.0, npm `@a3s-lab/code` 9.0.0, Python wheels/bootstrap, Go `sdk/go/v9.0.0`, website `docs/v9.0.0` |
+| C9 | Multi-channel cut | Historical upstream release cut; current delivery is the local Rust SDK and paired Aster/ACP artifacts |
 | C10 | Honest CHANGELOG | States what shipped; Enterprise GA only if §2.2 true |
 
 ### 2.2 Enterprise GA DoD (stricter)

@@ -131,6 +131,72 @@ async fn real_bash_streaming_receipt_workspace_and_credential_contract() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore = "requires signed HVF assets with the pinned Linux Rust compiler"]
+async fn real_rust_compiler_and_tests_execute_in_the_guest() {
+    use std::io::Read;
+    let workspace = tempfile::tempdir_in("/private/var/tmp").unwrap();
+    let root = workspace.path().canonicalize().unwrap();
+    std::fs::write(
+        root.join("probe.rs"),
+        "#[test] fn arithmetic() { assert_eq!(2_u64.checked_add(2), Some(4)); }\n",
+    )
+    .unwrap();
+    let sandbox = OciBashSandbox::from_artifacts(&root, assets()).unwrap();
+    let result = sandbox.exec(request("set -eu; uname -s; rustc --version --verbose; rustc --edition=2021 --test probe.rs -o probe-tests; ./probe-tests --exact arithmetic".into(), None, 30_000)).await;
+    sandbox.shutdown().await;
+    let output = result.expect("compiler preflight must settle through the real OCI owner");
+    assert_eq!(output.exit_code, 0, "{}", output.stderr);
+    assert!(!output.timed_out);
+    for exact in [
+        "Linux",
+        "release: 1.97.1",
+        "host: aarch64-unknown-linux-gnu",
+    ] {
+        assert!(
+            output.stdout.lines().any(|line| line == exact),
+            "{}",
+            output.stdout
+        );
+    }
+    assert!(
+        output
+            .stdout
+            .contains("test result: ok. 1 passed; 0 failed"),
+        "{}",
+        output.stdout
+    );
+    let mut header = [0; 20];
+    std::fs::File::open(root.join("probe-tests"))
+        .unwrap()
+        .read_exact(&mut header)
+        .unwrap();
+    assert_eq!(&header[..6], b"\x7fELF\x02\x01");
+    assert_eq!(u16::from_le_bytes([header[18], header[19]]), 183);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore = "requires signed HVF assets; run explicitly on Apple Silicon"]
+async fn real_success_reaps_a_setsid_descendant_before_returning() {
+    let workspace = tempfile::tempdir_in("/private/var/tmp").unwrap();
+    let root = workspace.path().canonicalize().unwrap();
+    let sandbox = OciBashSandbox::from_artifacts(&root, assets()).unwrap();
+    let output = sandbox.exec(request(
+        "/bin/busybox setsid /bin/bash -c 'while :; do printf x >> counter; sleep 0.05; done' >/dev/null 2>&1 & while [ ! -s counter ]; do sleep 0.01; done; exit 0".into(),
+        None, 20_000,
+    )).await.unwrap();
+    assert_eq!(output.exit_code, 0);
+    assert!(!output.timed_out);
+    let length = std::fs::metadata(root.join("counter")).unwrap().len();
+    assert!(length > 0);
+    tokio::time::sleep(Duration::from_millis(250)).await;
+    assert_eq!(
+        std::fs::metadata(root.join("counter")).unwrap().len(),
+        length
+    );
+    sandbox.shutdown().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 #[ignore = "requires signed HVF assets; run explicitly on Apple Silicon"]
 async fn real_deadline_reaps_a_setsid_descendant_before_returning() {
     let workspace = tempfile::tempdir_in("/private/var/tmp").unwrap();

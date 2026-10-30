@@ -12,8 +12,10 @@ const TOML_MODEL: &str = "toml/not-this";
 const SESSION_TIMEOUT: Duration = Duration::from_secs(180);
 const SERVE_TIMEOUT: Duration = Duration::from_secs(90);
 
-fn shipped_aster() -> &'static str {
-    env!("CARGO_BIN_EXE_aster")
+fn shipped_aster() -> PathBuf {
+    std::env::var_os("A3S_CODE_TUI_BIN")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
 
 fn temp_root(label: &str) -> PathBuf {
@@ -97,7 +99,10 @@ struct PtySession {
 
 impl Drop for PtySession {
     fn drop(&mut self) {
-        let _ = self.child.kill();
+        if matches!(self.child.try_wait(), Ok(None)) {
+            let _ = self.child.kill();
+        }
+        let _ = self.child.wait();
     }
 }
 
@@ -222,7 +227,7 @@ fn assert_acp_session(home: &Path, leader: bool) {
     if leader {
         args.push("--leader");
     }
-    let mut pty = PtySession::spawn(Path::new(shipped_aster()), &args, home, &workspace);
+    let mut pty = PtySession::spawn(&shipped_aster(), &args, home, &workspace);
     let deadline = Instant::now() + SESSION_TIMEOUT;
     let line = loop {
         pty.pump();
@@ -371,9 +376,38 @@ fn assert_auto_update_off() {
     let root = temp_root("update");
     let home = root.join("home");
     fs::create_dir_all(&home).expect("home");
+    let releases = root.join("local upstream notes");
+    fs::create_dir_all(&releases).expect("local release directory");
+    let next_major = env!("CARGO_PKG_VERSION_MAJOR")
+        .parse::<u32>()
+        .unwrap()
+        .checked_add(1)
+        .unwrap();
+    let version = format!("{next_major}.0.0");
+    let platform = std::env::consts::OS;
+    assert!(matches!(platform, "macos" | "linux" | "windows"));
+    let extension = if platform == "windows" {
+        "zip"
+    } else {
+        "tar.gz"
+    };
+    let name = format!("aster-cli-v{version}-{platform}.{extension}");
+    let archive = releases.join(&name);
+    fs::write(&archive, b"a check must not unpack this file").unwrap();
+    fs::write(
+        releases.join("latest.json"),
+        serde_json::json!({
+            "version": version,
+            "tag": format!("aster-cli-v{version}"),
+            "assets": {(platform): {"name":name,"sha256":"0".repeat(64)}}
+        })
+        .to_string(),
+    )
+    .unwrap();
     let mut command = Command::new(shipped_aster());
     command.args(["update", "--check", "--json"]);
     shell_env(&mut command, &home);
+    command.env("ASTER_RELEASE_BASE", &releases);
     command.stdout(Stdio::piped()).stderr(Stdio::piped());
     let output = command.output().expect("update check");
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -382,15 +416,30 @@ fn assert_auto_update_off() {
         output.status.success(),
         "update --check failed\n{stdout}\n{stderr}"
     );
-    assert!(
-        stdout.contains("\"autoUpdate\":false"),
-        "background auto-update stayed on: {stdout}"
+    let status: serde_json::Value = serde_json::from_slice(&output.stdout).expect("update status");
+    assert_eq!(status["autoUpdate"], false);
+    assert_eq!(status["installer"], "aster-cli");
+    assert_eq!(status["latestVersion"], version);
+    assert_eq!(status["updateAvailable"], true);
+    assert_eq!(
+        fs::read(&archive).unwrap(),
+        b"a check must not unpack this file"
     );
-    assert!(
-        stdout.contains("\"updateAvailable\":false"),
-        "update check contacted a release or reported an update: {stdout}"
+    for url in ["https://x.ai/releases", "https://example.invalid/releases"] {
+        let mut command = Command::new(shipped_aster());
+        command.args(["update", "--check", "--json"]);
+        shell_env(&mut command, &home);
+        let refused = command.env("ASTER_RELEASE_BASE", url).output().unwrap();
+        assert!(
+            !refused.status.success(),
+            "remote release override was admitted"
+        );
+        assert!(String::from_utf8_lossy(&refused.stderr).contains("does not download that binary"));
+    }
+    fs::remove_dir_all(&root).expect("release fixture cleanup");
+    println!(
+        "CAPTURE manual check reports a newer Aster release with autoUpdate=false; remote overrides refused"
     );
-    println!("CAPTURE auto-update off autoUpdate=false updateAvailable=false");
 }
 
 fn free_port() -> u16 {

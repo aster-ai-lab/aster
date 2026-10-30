@@ -317,7 +317,10 @@ mod tests {
 
     #[test]
     fn writer_reports_full_writes_even_without_a_file() {
-        let mut writer = DailyLogWriter::new();
+        let dir = tempfile::tempdir().unwrap();
+        let mut log = DailyLog::create(dir.path().to_path_buf());
+        log.file = None;
+        let mut writer = DailyLogWriter::from_log(log);
         let n = writer.write(b"event line\n").unwrap();
         assert_eq!(n, "event line\n".len());
         writer.flush().unwrap();

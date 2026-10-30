@@ -1145,7 +1145,7 @@ pub(crate) async fn spawn_session_actor(
             tracing::info!(
                 session_id = %session_info.id.0,
                 acp_mcp_servers = acp_server_count,
-                "Registered in-process SDK MCP servers (x.ai/mcp/sdk_call)"
+                "Registered in-process SDK MCP servers (a3s/mcp/sdk_call)"
             );
         }
         (Arc::new(TokioMutex::new(state)), admitted_mcp_servers)
@@ -2298,7 +2298,7 @@ pub(crate) async fn spawn_session_actor(
                     "ask_user_question reverse-request must carry a non-empty sessionId (design §5.4)"
                 );
                 let ext_request = agent_client_protocol::ExtRequest::new(
-                    "x.ai/ask_user_question",
+                    "a3s/ask_user_question",
                     serde_json::value::to_raw_value(&ext_req)
                         .expect("AskUserQuestionExtRequest serialization should not fail")
                         .into(),

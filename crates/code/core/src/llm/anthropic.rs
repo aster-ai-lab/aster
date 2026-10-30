@@ -37,6 +37,7 @@ pub struct AnthropicClient {
     pub(crate) reasoning_effort: Option<String>,
     pub(crate) http: Arc<dyn HttpClient>,
     pub(crate) retry_config: RetryConfig,
+    headers: std::collections::HashMap<String, String>,
 }
 
 impl AnthropicClient {
@@ -53,6 +54,7 @@ impl AnthropicClient {
             reasoning_effort: None,
             http: default_http_client(),
             retry_config: RetryConfig::default(),
+            headers: Default::default(),
         }
     }
 
@@ -96,6 +98,32 @@ impl AnthropicClient {
     pub fn with_http_client(mut self, http: Arc<dyn HttpClient>) -> Self {
         self.http = http;
         self
+    }
+
+    pub fn with_headers(mut self, headers: std::collections::HashMap<String, String>) -> Self {
+        self.headers = headers;
+        self
+    }
+
+    fn request_headers(&self) -> Vec<(String, String)> {
+        let mut headers: Vec<_> = self
+            .headers
+            .iter()
+            .map(|(name, value)| (name.clone(), value.clone()))
+            .collect();
+        for (name, value) in [
+            ("x-api-key", self.api_key.expose()),
+            ("anthropic-version", "2023-06-01"),
+            ("anthropic-beta", "prompt-caching-2024-07-31"),
+        ] {
+            if !headers
+                .iter()
+                .any(|(configured, _)| configured.eq_ignore_ascii_case(name))
+            {
+                headers.push((name.to_owned(), value.to_owned()));
+            }
+        }
+        super::http::invocation_headers(headers)
     }
 
     fn initial_tool_input_json(input: &serde_json::Value) -> Option<String> {
@@ -306,11 +334,11 @@ impl AnthropicClient {
             let request_started_at = Instant::now();
             let url = format!("{}/v1/messages", self.base_url);
 
-            let headers = vec![
-                ("x-api-key", self.api_key.expose()),
-                ("anthropic-version", "2023-06-01"),
-                ("anthropic-beta", "prompt-caching-2024-07-31"),
-            ];
+            let owned_headers = self.request_headers();
+            let headers: Vec<_> = owned_headers
+                .iter()
+                .map(|(name, value)| (name.as_str(), value.as_str()))
+                .collect();
 
             let response = crate::retry::with_retry(&self.retry_config, |_attempt| {
                 let http = &self.http;
@@ -511,11 +539,11 @@ impl AnthropicClient {
 
             let url = format!("{}/v1/messages", self.base_url);
 
-            let headers = vec![
-                ("x-api-key", self.api_key.expose()),
-                ("anthropic-version", "2023-06-01"),
-                ("anthropic-beta", "prompt-caching-2024-07-31"),
-            ];
+            let owned_headers = self.request_headers();
+            let headers: Vec<_> = owned_headers
+                .iter()
+                .map(|(name, value)| (name.as_str(), value.as_str()))
+                .collect();
 
             let streaming_resp = crate::retry::with_retry_cancellable(
                 &self.retry_config,

@@ -199,9 +199,11 @@ impl A3sCodeAgent {
                     session_id,
                     session,
                     &model_prompt,
+                    &[],
                     generation,
                     turn_permit,
                     observation,
+                    None,
                     None,
                     None,
                 )

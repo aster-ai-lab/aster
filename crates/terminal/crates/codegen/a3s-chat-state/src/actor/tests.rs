@@ -5431,7 +5431,7 @@ async fn prefix_stable_after_session_resume() {
 }
 
 // ============================================================================
-// Out-of-band history repair (x.ai/session/repair)
+// Out-of-band history repair (a3s/session/repair)
 // ============================================================================
 
 /// Bricked-session shape: an orphaned tool result survives load (the eager

@@ -1,0 +1,57 @@
+export const meta = {
+  title: 'Aster ORM 产品概览',
+  description: 'a3s-orm 的类型化查询、方言编译、异步 Executor 和迁移边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-orm` 是类型安全、Executor 中立的 Rust SQL 查询构建器。当前版本为 `0.3.1`，要求 Rust 1.85 或更新版本。
+
+表声明在编译期约束列、值、赋值和查询结果。不可变 Builder 生成 SQL 与绑定参数，再通过异步 Executor 执行。
+
+ORM 不是 Active Record 框架。记录不拥有持久化行为，查询保持可见，运行时值不会插值到 SQL 文本中。
+
+<OrmArchitectureDiagram />
+
+## 编译与执行分离
+
+<DocTable caption="ORM 的分层职责" headers={['层', '职责', '不承担的职责']} rows={[
+  ['Schema 与表达式', '约束表、列、值和结果类型', '不打开数据库连接'],
+  ['Query AST', '组合 SELECT、INSERT、UPDATE 和 DELETE', '不拼接运行时值'],
+  ['Dialect', '处理引用、占位符和能力检查', '不执行网络或文件 I/O'],
+  ['Executor', '执行 SQL、事务和结果解码', '不推断 Builder 类型状态'],
+  ['Migrator', '执行或核对带校验和的迁移账本', '不提供自动 Down Migration'],
+]} />
+
+新方言实现 `Dialect`，新运行时实现 `Executor`。自定义运行时不需要理解 Query Builder 的内部状态。
+
+## 驱动与方言
+
+<DocTable caption="当前驱动与方言范围" headers={['能力', 'PostgreSQL', 'SQLite', 'MySQL']} rows={[
+  ['SQL 编译', '支持', '支持', '支持'],
+  ['内置异步驱动', 'Deadpool + rustls', 'Tokio 安全单连接', '没有'],
+  ['事务', '支持', '支持', '无内置运行时'],
+  ['迁移锁', 'Advisory Lock', 'BEGIN IMMEDIATE', '无内置运行时'],
+  ['行锁与表锁', '支持', '明确拒绝', '明确拒绝'],
+]} />
+
+默认 feature 是 `sqlite`。`postgres` 启用 UUID、JSON、Chrono、Decimal、数组和 Deadpool 驱动。关闭默认 feature 可以只使用查询构建和方言编译。
+
+## 主要边界
+
+SQLite 内置 Executor 在单连接上串行执行，不是多连接池。MySQL 只表示 SQL 生成，不表示已有运行时驱动。
+
+迁移只向前执行。类型化 DDL Builder、查询插件、自定义 PostgreSQL domain codec 和 Schema 代码生成尚未包含。
+
+## 文档入口
+
+- [查询与接入](./integration/)：Schema、Query、Executor 和受控原生 SQL。
+- [迁移与运行验证](./operations/)：事务、迁移、连接池和部署边界。
+
+<ChapterCards />
+
+## 实现依据
+
+- [ORM 合同与驱动矩阵](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/README.md)
+- [架构与扩展边界](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/docs/architecture.md)
+- [生产支持范围](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/docs/production-readiness.md)

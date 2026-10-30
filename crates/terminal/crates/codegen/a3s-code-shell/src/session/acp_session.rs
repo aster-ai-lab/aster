@@ -275,7 +275,7 @@ mod spawn;
 use super::acp_types::*;
 pub use spawn::SessionThread;
 pub(crate) use spawn::*;
-/// Client-registered hook gates (the `x.ai/hooks/run` reverse request).
+/// Client-registered hook gates (the `a3s/hooks/run` reverse request).
 mod hooks;
 pub(crate) struct InputItem {
     pub(crate) prompt_id: String,
@@ -889,12 +889,12 @@ pub(crate) struct SessionActor {
     /// Replaces the old `tool_bridge` and `agent_definition` fields.
     /// Wrapped in `RefCell` for mid-session mutation (skill refresh, prompt regen).
     pub(crate) agent: std::cell::RefCell<a3s_code_agent::Agent>,
-    /// Dedup slot for `x.ai/git_head_changed`, shared with the fs-watch `GitHead` consumer (see `git_head_dedup_key`).
+    /// Dedup slot for `a3s/git_head_changed`, shared with the fs-watch `GitHead` consumer (see `git_head_dedup_key`).
     pub(crate) last_reported_branch: Arc<parking_lot::Mutex<Option<String>>>,
-    /// Client opted into `x.ai/gitHeadChanged`.
+    /// Client opted into `a3s/gitHeadChanged`.
     /// When false (headless/SDK), `maybe_notify_git_branch` no-ops; no git subprocess runs.
     git_head_enabled: bool,
-    /// A client that will draw a status row has attached (`x.ai/statusLine`).
+    /// A client that will draw a status row has attached (`a3s/statusLine`).
     /// While false, the emitter wakes and returns without building anything: no git discovery, no chat-state round trips.
     /// Live rather than fixed at spawn, because a resident session outlives the client that created it.
     pub(crate) status_line_enabled: Arc<std::sync::atomic::AtomicBool>,
@@ -1066,7 +1066,7 @@ pub(crate) struct SessionActor {
     /// Set once by [`turn_end_hooks::TurnEndQueue::spawn`]; `None` before the loop starts.
     pub(crate) turn_end_tx:
         std::cell::RefCell<Option<tokio::sync::mpsc::UnboundedSender<turn_end_hooks::QueueItem>>>,
-    /// Client hooks from `session/new` `_meta["x.ai/hooks"]`; gated in [`crate::session::acp_session::hooks`].
+    /// Client hooks from `session/new` `_meta["a3s/hooks"]`; gated in [`crate::session::acp_session::hooks`].
     /// `RefCell` so `load_session` reconnect can replace the set on the live actor (see `SessionCommand::SetClientHooks`).
     pub(crate) client_hooks: std::cell::RefCell<crate::extensions::hooks::ClientHooks>,
     /// Resolved workspace root for hooks: git worktree root if in a git repo, otherwise session cwd.
@@ -1771,7 +1771,7 @@ mod subagent_usage_fold_tests;
 mod turn_completion_emit_tests;
 #[cfg(test)]
 mod tool_meta_stamp_tests {
-    //! Pin the `x.ai/tool` stamps on the harness emission paths.
+    //! Pin the `a3s/tool` stamps on the harness emission paths.
     //! Those are the early ToolCall registered by `prepare_tool_call` and the permission-request ToolCallUpdate.
     //! (A dropped `stamp_tool_meta` call would regress silently.)
     use super::replay_buffer_send_update_tests::make_replay_send_update_fixture;
@@ -1791,7 +1791,7 @@ mod tool_meta_stamp_tests {
             },
         }
     }
-    /// The `x.ai/tool` object from an event's `_meta`, if present.
+    /// The `a3s/tool` object from an event's `_meta`, if present.
     fn tool_meta(meta: Option<&acp::Meta>) -> Option<&serde_json::Value> {
         meta.and_then(|m| m.get(TOOL_META_KEY))
     }
@@ -1828,7 +1828,7 @@ mod tool_meta_stamp_tests {
                     }
                 }
                 let early = early.expect("early ToolCall emitted");
-                let t = tool_meta(early.as_ref()).expect("early ToolCall carries x.ai/tool");
+                let t = tool_meta(early.as_ref()).expect("early ToolCall carries a3s/tool");
                 assert_eq!(
                     t.pointer("/name").unwrap_or(&serde_json::Value::Null),
                     "read_file"
@@ -1843,7 +1843,7 @@ mod tool_meta_stamp_tests {
                 );
                 assert!(t.get("input").is_none(), "identity-only before parse");
                 let refined = refined.expect("refinement ToolCallUpdate emitted");
-                let t = tool_meta(refined.as_ref()).expect("refinement carries x.ai/tool");
+                let t = tool_meta(refined.as_ref()).expect("refinement carries a3s/tool");
                 assert_eq!(
                     t.pointer("/input/path").unwrap_or(&serde_json::Value::Null),
                     "/tmp/stamp.txt"
@@ -1909,7 +1909,7 @@ mod tool_meta_stamp_tests {
                     .take()
                     .expect("permission request must have been issued");
                 let t = tool_meta(update.meta.as_ref())
-                    .expect("permission-request ToolCallUpdate carries x.ai/tool");
+                    .expect("permission-request ToolCallUpdate carries a3s/tool");
                 assert_eq!(
                     t.pointer("/name").unwrap_or(&serde_json::Value::Null),
                     "read_file"

@@ -3,14 +3,18 @@ use std::process::Command;
 
 #[test]
 fn product_help_and_version_use_aster() {
+    let version = format!("aster {}", env!("CARGO_PKG_VERSION"));
     for (arg, expected) in [
         ("--help", "Aster terminal coding agent"),
-        ("--version", "aster 0.1.2"),
+        ("--version", version.as_str()),
     ] {
-        let output = Command::new(env!("CARGO_BIN_EXE_aster"))
-            .arg(arg)
-            .output()
-            .expect("run aster");
+        let output = Command::new(
+            std::env::var_os("A3S_CODE_TUI_BIN")
+                .unwrap_or_else(|| env!("CARGO_BIN_EXE_aster").into()),
+        )
+        .arg(arg)
+        .output()
+        .expect("run aster");
         assert!(output.status.success(), "{output:?}");
         let stdout = String::from_utf8(output.stdout).expect("UTF-8 output");
         assert!(stdout.contains(expected), "{stdout}");

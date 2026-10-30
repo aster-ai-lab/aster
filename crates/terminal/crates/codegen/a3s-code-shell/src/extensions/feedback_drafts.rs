@@ -1,4 +1,4 @@
-//! `x.ai/feedback/drafts/*` extension handlers over a session's `FeedbackDraftStore`.
+//! `a3s/feedback/drafts/*` extension handlers over a session's `FeedbackDraftStore`.
 
 use a3s_code_feedback::{DeleteOutcome, FeedbackDraftStore, FeedbackStoreError, UpdateOutcome};
 use a3s_code_telemetry::events::{FeedbackDraftOp, FeedbackDraftOpError, FeedbackDraftOpKind};
@@ -9,7 +9,7 @@ use super::{ExtResult, parse_params};
 use crate::agent::MvpAgent;
 use crate::session::FeedbackDraftUpdateRequest;
 
-pub const DRAFTS_METHOD_PREFIX: &str = "x.ai/feedback/drafts/";
+pub const DRAFTS_METHOD_PREFIX: &str = "a3s/feedback/drafts/";
 
 #[derive(serde::Deserialize)]
 struct FeedbackDraftSessionRequest {
@@ -21,21 +21,17 @@ pub(super) async fn handle(agent: &MvpAgent, args: &acp::ExtRequest) -> ExtResul
     answer(args, store, agent.product_analytics_enabled()).await
 }
 
-/// Answers one `x.ai/feedback/drafts/*` request against the given store.
+/// Answers one `a3s/feedback/drafts/*` request against the given store.
 pub async fn answer(
     args: &acp::ExtRequest,
     store: FeedbackDraftStore,
     telemetry_enabled: bool,
 ) -> ExtResult {
     match args.method.as_ref() {
-        "x.ai/feedback/drafts/list" => list_feedback_drafts(args, store, telemetry_enabled).await,
-        "x.ai/feedback/drafts/get" => get_feedback_draft(args, store, telemetry_enabled).await,
-        "x.ai/feedback/drafts/delete" => {
-            delete_feedback_draft(args, store, telemetry_enabled).await
-        }
-        "x.ai/feedback/drafts/update" => {
-            update_feedback_draft(args, store, telemetry_enabled).await
-        }
+        "a3s/feedback/drafts/list" => list_feedback_drafts(args, store, telemetry_enabled).await,
+        "a3s/feedback/drafts/get" => get_feedback_draft(args, store, telemetry_enabled).await,
+        "a3s/feedback/drafts/delete" => delete_feedback_draft(args, store, telemetry_enabled).await,
+        "a3s/feedback/drafts/update" => update_feedback_draft(args, store, telemetry_enabled).await,
         _ => Err(acp::Error::method_not_found()),
     }
 }

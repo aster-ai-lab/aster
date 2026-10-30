@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Editor } from '@tiptap/core';
 import { officeMessage, resolveOfficeMessages } from '../../../i18n/office-locale';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
@@ -8,6 +9,8 @@ import {
   AlignRight,
   Bold,
   Code2,
+  Columns2,
+  Eye,
   Image as ImageIcon,
   Italic,
   Link2,
@@ -47,6 +50,7 @@ import {
 } from './markdown-source-commands';
 import type { MarkdownViewMode } from './markdown-workspace';
 import { synchronizeDocumentEditorSelectionFromDom } from './document-dom-selection';
+import { IconButton } from '../../../design-system/primitives/button/icon-button';
 import { OfficeSelect } from './office-controls';
 import { useOfficeMessages } from './office-messages-context';
 import { isOfficeShortcutBlocked } from './office-shortcuts';
@@ -133,12 +137,12 @@ const markdownToolbarShortcuts = {
 export function MarkdownToolbar({
   editor,
   fileActions,
-  collaborative,
   sourceEditing,
   canSourceRedo,
   canSourceUndo,
   viewMode,
   modes = ['visual', 'source', 'split'],
+  compactModes = false,
   getSourceFocusTarget,
   getSourceSelection,
   onSourceCommand,
@@ -149,13 +153,13 @@ export function MarkdownToolbar({
 }: {
   editor: Editor;
   fileActions?: readonly WorkOfficeFileAction[];
-  collaborative: boolean;
   sourceEditing: boolean;
   canSourceRedo: boolean;
   canSourceUndo: boolean;
   viewMode: MarkdownViewMode;
   /** Note pages are split then source. Documents keep visual, source, then split. */
   modes?: readonly MarkdownViewMode[];
+  compactModes?: boolean;
   getSourceFocusTarget: () => HTMLElement | null;
   getSourceSelection: () => MarkdownSourceSelectionState | null;
   onSourceCommand: (command: MarkdownSourceCommand) => boolean;
@@ -202,17 +206,6 @@ export function MarkdownToolbar({
   const linkActive = sourceEditing
     ? Boolean(sourceLink)
     : editor.isActive('link');
-  const usesSharedHistory = sourceEditing || collaborative;
-  const canUndo = usesSharedHistory
-    ? canSourceUndo
-    : canRunVisualEditorCommand(editor, () =>
-        editor.can().chain().focus().undo().run(),
-      );
-  const canRedo = usesSharedHistory
-    ? canSourceRedo
-    : canRunVisualEditorCommand(editor, () =>
-        editor.can().chain().focus().redo().run(),
-      );
   const runCommand = (
     sourceCommand: MarkdownSourceCommand,
     visualCommand: () => void,
@@ -424,24 +417,16 @@ export function MarkdownToolbar({
               <MarkdownToolbarButton
                   label={officeMessage(messages, 'markdown.action.undo')}
                   shortcut={resolvedShortcuts.undo}
-                  disabled={!canUndo}
-                  onClick={() => {
-                    if (usesSharedHistory) onSourceUndo();
-                    // Keep ribbon focus — chain().focus() steals into the editor.
-                    else editor.commands.undo();
-                  }}
+                  disabled={!canSourceUndo}
+                  onClick={onSourceUndo}
                 >
                   <Undo2 size={16} strokeWidth={1.7} />
                 </MarkdownToolbarButton>
                 <MarkdownToolbarButton
                   label={officeMessage(messages, 'markdown.action.redo')}
                   shortcut={resolvedShortcuts.redo}
-                  disabled={!canRedo}
-                  onClick={() => {
-                    if (usesSharedHistory) onSourceRedo();
-                    // Keep ribbon focus — chain().focus() steals into the editor.
-                    else editor.commands.redo();
-                  }}
+                  disabled={!canSourceRedo}
+                  onClick={onSourceRedo}
                 >
                   <Redo2 size={16} strokeWidth={1.7} />
                 </MarkdownToolbarButton>
@@ -730,21 +715,24 @@ export function MarkdownToolbar({
         <MarkdownModeSwitch
           viewMode={viewMode}
           modes={modes}
+          compact={compactModes}
           onViewModeChange={onViewModeChange}
         />
       </div>
-      {insertDialog && (
-        <MarkdownInsertDialog
-          request={insertDialog.request}
-          restoreFocusTarget={() =>
-            insertDialog.surface === 'source'
-              ? (getSourceFocusTarget() ?? editor.view.dom)
-              : editor.view.dom
-          }
-          onClose={() => setInsertDialog(null)}
-          onSubmit={commitInsert}
-        />
-      )}
+      <DialogPresence>
+        {insertDialog && (
+          <MarkdownInsertDialog
+            request={insertDialog.request}
+            restoreFocusTarget={() =>
+              insertDialog.surface === 'source'
+                ? (getSourceFocusTarget() ?? editor.view.dom)
+                : editor.view.dom
+            }
+            onClose={() => setInsertDialog(null)}
+            onSubmit={commitInsert}
+          />
+        )}
+      </DialogPresence>
     </>
   );
 }
@@ -772,14 +760,6 @@ function markdownParagraphStyleValue(
   return 'paragraph';
 }
 
-function canRunVisualEditorCommand(
-  editor: Editor,
-  command: () => boolean,
-): boolean {
-  if (editor.isDestroyed || !editor.view) return false;
-  return command();
-}
-
 const MARKDOWN_MODE_LABELS = {
   visual: ['markdown.mode.visual', 'markdown.mode.visualShort'],
   source: ['markdown.mode.source', 'markdown.mode.sourceShort'],
@@ -789,16 +769,43 @@ const MARKDOWN_MODE_LABELS = {
 function MarkdownModeSwitch({
   viewMode,
   modes,
+  compact,
   onViewModeChange,
 }: {
   viewMode: MarkdownViewMode;
   modes: readonly MarkdownViewMode[];
+  compact: boolean;
   onViewModeChange: (mode: MarkdownViewMode) => void;
 }) {
   const messages = useOfficeMessages();
+  if (compact) {
+    return (
+      <section
+        className="ds-segmented-control compact work-markdown-mode-icons"
+        role="group"
+        aria-label={officeMessage(messages, 'markdown.group.editMode')}
+      >
+        {modes.map((mode) => {
+          const Icon = { visual: Eye, split: Columns2, source: Code2 }[mode];
+          return (
+            <IconButton
+              key={mode}
+              label={officeMessage(messages, MARKDOWN_MODE_LABELS[mode][0])}
+              selected={viewMode === mode}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => onViewModeChange(mode)}
+            >
+              <Icon aria-hidden="true" />
+            </IconButton>
+          );
+        })}
+      </section>
+    );
+  }
   return (
     <section
       className="work-markdown-mode-switch"
+      role="group"
       aria-label={officeMessage(messages, 'markdown.group.editMode')}
     >
       {modes.map((mode) => {

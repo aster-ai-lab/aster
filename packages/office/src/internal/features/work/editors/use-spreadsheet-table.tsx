@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Selection } from '@fortune-sheet/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { showToast } from '../../../state/app-state';
@@ -111,52 +112,56 @@ export function useSpreadsheetTable({
   return {
     commandPort,
     selectionForChange,
-    dialog: source ? (
-      <SpreadsheetTableDialog
-        source={source}
-        restoreFocusTarget={() =>
-          appliedRef.current
-            ? getGridFocusTarget()
-            : invokerRef.current?.isConnected
-              ? invokerRef.current
-              : getGridFocusTarget()
-        }
-        onApply={(value) => {
-          const range = spreadsheetTableRangeFromText(value.rangeReference);
-          if (!range) return false;
-          applyingRef.current = true;
-          let handled = false;
-          try {
-            handled =
-              commandsRef.current?.applyTable({
-                headerRow: value.headerRow,
-                name: source.name,
-                range,
-                sheetId: source.sheetId,
-                totalsRow: value.totalsRow === true,
-              }) ?? false;
-            appliedRef.current = handled;
-          } finally {
-            applyingRef.current = false;
-          }
-          if (!handled) {
-            showToast(
-              spreadsheetTableValidationMessage(
-                contentRef.current,
-                source,
-                value,
-              ) ?? officeMessage(messages, 'spreadsheet.table.createFailed'),
-              'error',
-            );
-          }
-          return handled;
-        }}
-        onClose={close}
-        onValidate={(value) =>
-          spreadsheetTableValidationMessage(contentRef.current, source, value)
-        }
-      />
-    ) : null,
+    dialog: (
+      <DialogPresence>
+        {source ? (
+          <SpreadsheetTableDialog
+            source={source}
+            restoreFocusTarget={() =>
+              appliedRef.current
+                ? getGridFocusTarget()
+                : invokerRef.current?.isConnected
+                  ? invokerRef.current
+                  : getGridFocusTarget()
+            }
+            onApply={(value) => {
+              const range = spreadsheetTableRangeFromText(value.rangeReference);
+              if (!range) return false;
+              applyingRef.current = true;
+              let handled = false;
+              try {
+                handled =
+                  commandsRef.current?.applyTable({
+                    headerRow: value.headerRow,
+                    name: source.name,
+                    range,
+                    sheetId: source.sheetId,
+                    totalsRow: value.totalsRow === true,
+                  }) ?? false;
+                appliedRef.current = handled;
+              } finally {
+                applyingRef.current = false;
+              }
+              if (!handled) {
+                showToast(
+                  spreadsheetTableValidationMessage(
+                    contentRef.current,
+                    source,
+                    value,
+                  ) ?? officeMessage(messages, 'spreadsheet.table.createFailed'),
+                  'error',
+                );
+              }
+              return handled;
+            }}
+            onClose={close}
+            onValidate={(value) =>
+              spreadsheetTableValidationMessage(contentRef.current, source, value)
+            }
+          />
+        ) : null}
+      </DialogPresence>
+    ),
   };
 }
 

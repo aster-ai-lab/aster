@@ -54,7 +54,7 @@ pub struct AnnouncementCta {
     pub caption: Option<String>,
 }
 
-/// Payload for `x.ai/announcements/update` ACP notification.
+/// Payload for `a3s/announcements/update` ACP notification.
 // Name predates the method rename to `.../update`; renaming would churn the pager consumer.
 #[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]

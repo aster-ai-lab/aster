@@ -1,0 +1,8 @@
+flowchart TB
+  accTitle: ORM 的查询编译与执行边界
+  accDescr: 类型化 Schema 和表达式形成不可变查询。方言只编译 SQL 与参数。Executor 负责异步执行、事务与结果解码。
+  schema["类型化 Schema + 表达式"] --> ast["不可变 Query AST"]
+  ast --> dialect["Dialect<br/>PostgreSQL / SQLite / MySQL"]
+  dialect --> sql["SQL + 绑定参数"]
+  sql --> executor["异步 Executor<br/>连接 / 事务 / 解码"]
+  executor --> database["PostgreSQL 或 SQLite<br/>MySQL 仅编译"]

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { type FormEvent, useId, useMemo, useRef, useState } from 'react';
 import { officeMessage } from '../../../i18n/office-locale';
-import { Button, Dialog } from '../../../design-system/primitives';
+import { DialogPresence, Button, Dialog } from '../../../design-system/primitives';
 import { OfficeCheckbox, OfficeSelect } from './office-controls';
 import { useOfficeMessages } from './office-messages-context';
 import {
@@ -273,6 +273,7 @@ export function SpreadsheetSortDialog({
   return (
     <>
       <Dialog
+        closeLabel={officeMessage(messages, 'office.dialog.close')}
         title={officeMessage(messages, 'spreadsheet.sort.title')}
         description={`${source.sheetName}!${source.rangeReference}`}
         className="work-spreadsheet-sort-dialog"
@@ -512,27 +513,31 @@ export function SpreadsheetSortDialog({
           </p>
         </form>
       </Dialog>
-      {optionsOpen ? (
-        <SpreadsheetSortOptionsDialog
-          value={{
-            orientation: value.orientation,
-            caseSensitive: value.caseSensitive,
-            textMethod: value.textMethod,
-          }}
-          orientationLocked={structuralScope}
-          restoreFocusTarget={() => optionsButtonRef.current}
-          onApply={applyOptions}
-          onClose={() => setOptionsOpen(false)}
-        />
-      ) : null}
-      {customListManagerOpen ? (
-        <SpreadsheetSortCustomListManagerDialog
-          customLists={customLists}
-          restoreFocusTarget={() => customListManagerButtonRef.current}
-          onApply={applyCustomListManagement}
-          onClose={() => setCustomListManagerOpen(false)}
-        />
-      ) : null}
+      <DialogPresence>
+        {optionsOpen ? (
+          <SpreadsheetSortOptionsDialog
+            value={{
+              orientation: value.orientation,
+              caseSensitive: value.caseSensitive,
+              textMethod: value.textMethod,
+            }}
+            orientationLocked={structuralScope}
+            restoreFocusTarget={() => optionsButtonRef.current}
+            onApply={applyOptions}
+            onClose={() => setOptionsOpen(false)}
+          />
+        ) : null}
+      </DialogPresence>
+      <DialogPresence>
+        {customListManagerOpen ? (
+          <SpreadsheetSortCustomListManagerDialog
+            customLists={customLists}
+            restoreFocusTarget={() => customListManagerButtonRef.current}
+            onApply={applyCustomListManagement}
+            onClose={() => setCustomListManagerOpen(false)}
+          />
+        ) : null}
+      </DialogPresence>
     </>
   );
 }

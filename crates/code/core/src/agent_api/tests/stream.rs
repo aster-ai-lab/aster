@@ -93,8 +93,8 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
                 "content": "7"
             }),
         ),
-        // Deliberately never consumed: we abort after ToolEnd to prove the
-        // session snapshot does not depend on End autosave.
+        // The tool-round checkpoint must be durable before the terminal response
+        // and the stream's End event.
         scripted_text_response(marker),
     ]));
     let agent = Agent::from_config(test_config()).await.unwrap();
@@ -113,27 +113,40 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
         .await
         .unwrap();
     let mut flushed_before_end = false;
-    while let Some(event) = rx.recv().await {
-        match &event {
-            AgentEvent::ToolEnd { id, .. } if id == "call-write" => {
-                // Checkpoint commit acks after the event sink drains.
-                for _ in 0..50 {
-                    tokio::time::sleep(std::time::Duration::from_millis(40)).await;
-                    if let Ok(Some(saved)) = store.load("stream-ckpt-flush-test").await {
-                        let hay = serde_json::to_string(&saved.messages).unwrap_or_default();
-                        if hay.contains("a3s-ckpt-flush.md") || hay.contains("call-write") {
-                            flushed_before_end = true;
-                            break;
-                        }
-                    }
+    let mut tool_end_seen = false;
+    let mut saw_end = false;
+    for _ in 0..100 {
+        let event = tokio::time::timeout(std::time::Duration::from_millis(40), rx.recv()).await;
+        match event {
+            Ok(Some(event)) => match &event {
+                AgentEvent::ToolEnd { name, .. } if name == "write" => {
+                    tool_end_seen = true;
                 }
-                handle.abort();
-                break;
+                AgentEvent::End { .. } => {
+                    saw_end = true;
+                }
+                _ => {}
+            },
+            Ok(None) => break,
+            Err(_) => {}
+        }
+        if tool_end_seen {
+            if let Ok(Some(saved)) = store.load("stream-ckpt-flush-test").await {
+                if saved.messages.iter().any(|message| {
+                    message
+                        .content
+                        .iter()
+                        .any(|block| matches!(block, ContentBlock::ToolResult { .. }))
+                }) {
+                    flushed_before_end = true;
+                }
             }
-            AgentEvent::End { .. } => break,
-            _ => {}
+        }
+        if flushed_before_end || saw_end {
+            break;
         }
     }
+    handle.abort();
     let _ = handle.await;
 
     assert_eq!(
@@ -141,9 +154,10 @@ async fn test_stream_tool_round_checkpoint_flushes_session_before_end() {
         b"7",
         "the checkpoint pin requires an actual schema-admitted write"
     );
+    let saved = store.load("stream-ckpt-flush-test").await.unwrap();
     assert!(
         flushed_before_end,
-        "session JSON must flush at the tool-round checkpoint before stream End"
+        "session JSON must flush at the tool-round checkpoint before stream End: {saved:?}"
     );
     let _ = std::fs::remove_dir_all(&workspace);
 }
@@ -199,7 +213,7 @@ async fn test_stream_bridges_subagent_lifecycle_events() {
                 subagent_ends += 1;
                 last_subagent_end = Some(event_index);
             }
-            AgentEvent::ToolEnd { id, .. } if id == "call-parallel" => {
+            AgentEvent::ToolEnd { name, .. } if name == "task" => {
                 parent_tool_end = Some(event_index);
             }
             AgentEvent::End { .. } => break,
@@ -422,6 +436,37 @@ async fn test_stream_cancel_records_interrupted_history_and_auto_saves() {
     assert_eq!(saved.messages[0].text(), "hello");
     assert!(saved.messages[1].text().contains("interrupted"));
     assert!(!session.cancel().await);
+}
+
+#[tokio::test]
+async fn image_stream_returns_the_admitted_run_and_retains_image_history() {
+    let root = tempfile::tempdir().unwrap();
+    let agent = Agent::from_config(test_config()).await.unwrap();
+    let session = agent
+        .build_session(
+            root.path().to_string_lossy().into_owned(),
+            Arc::new(StaticStreamingClient::new("image answer")),
+            &SessionOptions::new(),
+        )
+        .unwrap();
+    let mut stream = session
+        .stream_with_attachments_and_run("", &[crate::Attachment::png(vec![1, 2, 3])], None)
+        .await
+        .unwrap();
+    let run = stream.run.expect("run captured at admission");
+    while stream.events.recv().await.is_some() {}
+    stream.worker.await.unwrap();
+    assert_eq!(
+        run.snapshot().await.unwrap().status,
+        crate::run::RunStatus::Completed
+    );
+    assert_eq!(session.runs().await.len(), 1);
+    let history = session.history();
+    assert!(history[0].content.iter().any(|block| matches!(
+        block, crate::ContentBlock::Image { source }
+            if source.data == "AQID" && source.media_type == "image/png"
+    )));
+    assert_eq!(history[1].text(), "image answer");
 }
 
 #[tokio::test]

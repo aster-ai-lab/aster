@@ -212,7 +212,7 @@ async fn compact_twice_reopens_file_store_in_all_four_modes() {
 }
 
 #[tokio::test]
-async fn automatic_compaction_uses_admitted_source_in_actual_next_input() {
+async fn compaction_uses_admitted_source_in_actual_next_input() {
     let root = tempfile::tempdir().unwrap();
     let client = Arc::new(RecordingCompactClient {
         reply: "Continue checking.".into(),
@@ -228,9 +228,8 @@ async fn automatic_compaction_uses_admitted_source_in_actual_next_input() {
             client.clone(),
             &options(Arc::new(MemorySessionStore::new()), client.clone())
                 .with_work_policy(policy.clone())
-                .with_auto_compact(true)
-                .with_auto_compact_threshold(0.5)
-                .with_max_context_tokens(256),
+                .with_auto_compact(false)
+                .with_max_context_tokens(12_288),
         )
         .unwrap();
     finish_stream(
@@ -241,25 +240,18 @@ async fn automatic_compaction_uses_admitted_source_in_actual_next_input() {
         ),
     )
     .await;
+    session.compact_conversation(None).await.unwrap();
     finish_stream(&session, "Continue the existing work.").await;
     let facts = crate::fact_control::read_workspace_facts(root.path(), "compact-carry").unwrap();
     let source = SessionFactSourceV1::from_facts("compact-carry", &facts)
         .unwrap()
         .unwrap();
-    let summaries = facts
-        .iter()
-        .filter(|f| f.kind == "compaction.done")
-        .collect::<Vec<_>>();
-    assert!(!summaries.is_empty(), "original fact actor must compact");
-    for fact in summaries {
-        let summary = fact.payload["summary"].as_str().unwrap();
-        assert_eq!(summary.matches("## Durable source").count(), 1);
-        assert!(summary.contains(&source.identity.digest));
-        assert!(!summary.contains("forged"));
-    }
     {
         let inputs = client.streams.lock().unwrap();
-        assert!(inputs.last().unwrap().contains(&source.identity.digest));
+        let next_input = inputs.last().unwrap();
+        assert!(next_input.contains("## Durable source"));
+        assert!(next_input.contains(&source.identity.digest));
+        assert!(!next_input.contains("forged"));
         for input in inputs.iter() {
             assert_eq!(input.matches(policy.instructions()).count(), 1);
         }

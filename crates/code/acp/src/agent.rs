@@ -14,16 +14,21 @@ use tokio::task::JoinHandle;
 
 use crate::config::LaunchConfig;
 
+mod attempt;
 mod client_fs;
 mod commands;
 mod emit;
 mod extensions;
+mod follow_up;
 mod goal_ext;
 mod host_methods;
+mod inspection_commands;
 mod local_embedding;
+mod memory_management;
 mod models;
 mod permission_ask;
 mod permission_state;
+mod protocol;
 mod resume;
 mod sampling;
 mod session_catalog;
@@ -36,10 +41,10 @@ mod workspace_scope;
 use emit::{context_usage, note_child_progress};
 #[cfg(test)]
 use emit::{progress_duration_ms, progress_tokens_used, subagent_finished_update};
-use extensions::{answer_wiki_search, product_prompt_turns};
+use extensions::answer_wiki_search;
 #[cfg(test)]
 use extensions::{parse_interject_params, recorded_session_homes, remove_recorded_session_under};
-use host_methods::HostMethod;
+use host_methods::{session_tooling_projection, HostMethod};
 use models::{effort_guideline, effort_limits, EffortLimits};
 #[cfg(test)]
 use models::{effort_limits_from_meta, reasoning_effort_catalog_meta, reasoning_effort_token};
@@ -147,7 +152,7 @@ impl TurnQueue {
 }
 
 /// Sessions whose `session/load` has started and not yet inserted a live
-/// session. `x.ai/session/info` waits here. A lookup that runs first answers
+/// session. `a3s/session/info` waits here. A lookup that runs first answers
 /// `unknown session id` while the pager is still on "Loading session".
 struct InflightSessionLoads {
     open: std::sync::Mutex<HashMap<String, watch::Sender<bool>>>,
@@ -507,7 +512,10 @@ fn posture_policy(
     }
     // Published catalog reads only. Deny rules above still win. Other tools stay
     // on the posture; this does not switch the session to yolo.
-    policy.allow("open_local_asset").allow("search_wiki")
+    policy
+        .allow("open_local_asset")
+        .allow("search_wiki")
+        .allow("search_memory")
 }
 
 #[cfg(test)]
@@ -527,6 +535,7 @@ fn remember_denies(live: &mut LiveSession) {
 /// ACP agent that owns live [`AgentSession`] values keyed by ACP session id.
 pub struct A3sCodeAgent {
     launch: LaunchConfig,
+    managed_memory: Arc<a3s_code_core::durable_memory_vec::LazyFileMemoryStore>,
     /// Set once the stdio `AgentSideConnection` is built (chicken/egg with
     /// ACP ctor). `Rc`-shared so the sampling consent consumer (spawned on
     /// the same LocalSet) reads the live connection.
@@ -613,9 +622,13 @@ fn model_picker_description(provider_name: &str) -> String {
 impl A3sCodeAgent {
     pub fn new(launch: LaunchConfig) -> Self {
         let model_id = launch.model_id.clone();
+        let managed_memory = Arc::new(a3s_code_core::durable_memory_vec::LazyFileMemoryStore::new(
+            session_memory_dir(&launch.workspace, &launch.config),
+        ));
         let (consent_tx, consent_rx) = tokio::sync::mpsc::channel(16);
         Self {
             launch,
+            managed_memory,
             client: Rc::new(RefCell::new(None)),
             core_agent: Mutex::new(None),
             catalog_queries: Arc::new(tokio::sync::Semaphore::new(1)),
@@ -807,14 +820,18 @@ impl A3sCodeAgent {
         let count_guideline = if max_tool_rounds == 0 {
             "Tool calls have no count limit. Stop when the user's outcome is done.".to_owned()
         } else {
-            format!("Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done.")
+            format!(
+                "Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done."
+            )
         };
         let guidelines = slots.guidelines.get_or_insert_with(String::new);
         if !guidelines.is_empty() {
             guidelines.push('\n');
         }
         guidelines.push_str(&count_guideline);
-        let (hook_executor, hook_count, pending_hooks) = match trust_path {
+        let (hook_executor, hook_count, pending_hooks) = match trust_path
+            .filter(|_| !setup.host.source_review && setup.host.knowledge_compile.is_none())
+        {
             Some(path) => discovered_command_hooks(&setup.workspace, hook_home, path),
             None => (None, 0, 0),
         };
@@ -878,13 +895,18 @@ impl A3sCodeAgent {
     async fn snapshot_session_info(
         &self,
         session_id: &str,
-    ) -> Option<(String, String, String, u64, u64, u64)> {
+    ) -> acp::Result<Option<(String, String, String, u64, u64, u64)>> {
         let sessions = self.sessions.lock().await;
-        let live = sessions.get(session_id)?;
+        let Some(live) = sessions.get(session_id) else {
+            return Ok(None);
+        };
         // The fact scheduler increments its turn only on `user.message`.
         // Tool rounds and assistant tool lines are other fact kinds, and
         // the folded transcript stores those lines with role=user.
-        let turns = product_prompt_turns(live.workspace.as_path(), session_id);
+        let turns = live
+            .session
+            .user_prompt_count()
+            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         let (prompt_tokens, completion_tokens, total_tokens) = live.session.recorded_usage_tokens();
         let used = if total_tokens > 0 {
             total_tokens
@@ -899,14 +921,14 @@ impl A3sCodeAgent {
             .posture
             .as_str()
             .to_string();
-        Some((
+        Ok(Some((
             live.workspace.display().to_string(),
             live.model_id.clone(),
             posture,
             turns,
             used,
             total,
-        ))
+        )))
     }
 }
 
@@ -943,7 +965,7 @@ struct TurnState {
     delta_text: String,
     end_text: Option<String>,
     /// The completion-gate terminal from the run's End event, forwarded to
-    /// the client as an `x.ai/turn/outcome` notification just before the
+    /// the client as an `a3s/turn/outcome` notification just before the
     /// prompt response resolves (so it precedes the terminal marker).
     end_outcome: Option<serde_json::Value>,
     stop_reason: Option<acp::StopReason>,
@@ -954,6 +976,10 @@ struct TurnState {
     /// Tool calls already given a pager row. A later start for the same id
     /// updates that row instead of opening another Run card.
     painted_tools: HashSet<String>,
+    /// Last model invocation's usage, paired with End's response metadata for measured TPS.
+    last_turn_usage: Option<a3s_code_core::llm::TokenUsage>,
+    end_usage: Option<a3s_code_core::llm::TokenUsage>,
+    model_calls: u64,
 }
 
 #[derive(Default)]
@@ -963,519 +989,9 @@ struct ChildProgress {
     tools_used: Vec<String>,
     error_count: u32,
     tokens_used: u64,
-}
-
-#[async_trait::async_trait(?Send)]
-impl acp::Agent for A3sCodeAgent {
-    async fn initialize(
-        &self,
-        args: acp::InitializeRequest,
-    ) -> acp::Result<acp::InitializeResponse> {
-        let rules = initialize_rules_from_meta(args.meta.as_ref())?;
-        *self.client_rules.borrow_mut() = rules;
-        self.client_reads_files
-            .set(args.client_capabilities.fs.read_text_file);
-        let cwd = self.launch.workspace.to_string_lossy().to_string();
-        let current = self.model_id.lock().await.clone();
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
-        let model_state = self.model_state_with(&current, effort_token);
-        Ok(acp::InitializeResponse::new(acp::ProtocolVersion::V1)
-            .agent_capabilities(
-                acp::AgentCapabilities::new()
-                    .load_session(true)
-                    .prompt_capabilities(acp::PromptCapabilities::new().embedded_context(true)),
-            )
-            .auth_methods(Vec::new())
-            .meta(
-                serde_json::json!({
-                    "grokShell": false,
-                    "a3sCode": true,
-                    "agentVersion": env!("CARGO_PKG_VERSION"),
-                    "currentWorkingDirectory": cwd,
-                    "modelState": model_state,
-                    "availableCommands": commands::available_commands(),
-                    "cancelRewind": false,
-                    "sessionRecap": false,
-                    "feedbackTraceOffer": false,
-                    "a3s": self.workspace_admission_meta(),
-                    "openModelConfig": self.first_run_config,
-                })
-                .as_object()
-                .cloned(),
-            ))
-    }
-
-    async fn authenticate(
-        &self,
-        _args: acp::AuthenticateRequest,
-    ) -> acp::Result<acp::AuthenticateResponse> {
-        Ok(acp::AuthenticateResponse::default())
-    }
-
-    async fn new_session(
-        &self,
-        args: acp::NewSessionRequest,
-    ) -> acp::Result<acp::NewSessionResponse> {
-        let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
-        let mut host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
-            .map_err(|error| acp::Error::invalid_params().data(error))?;
-        if !args
-            .meta
-            .as_ref()
-            .is_some_and(|meta| meta.contains_key("a3sEngineering"))
-        {
-            host.work_policy = Some(
-                crate::engineering::named_policy("engineering-v1")
-                    .map_err(|error| acp::Error::internal_error().data(error))?,
-            );
-        }
-        self.validate_plugin_selection(args.meta.as_ref(), &args.mcp_servers)?;
-        self.admit_studio_documents(args.meta.as_ref());
-        let session_id = uuid::Uuid::new_v4().to_string();
-        let workspace = if args.cwd.as_os_str().is_empty() {
-            self.launch.workspace.clone()
-        } else {
-            args.cwd.clone()
-        };
-        if let Some(host) = &self.plugin_selection {
-            host.validate_workspace(&self.launch.workspace)
-                .and_then(|_| host.validate_workspace(&workspace))
-                .map_err(|_| {
-                    acp::Error::invalid_params().data("native plugin workspace is not admitted")
-                })?;
-        }
-        a3s_code_core::session_folder::prepare_session_home(&workspace, &session_id)
-            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-        let session_mcp = session_mcp_configs(&args.mcp_servers);
-        self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
-            .await?;
-        let model_id = self.model_id.lock().await.clone();
-        let effort = *self.effort.lock().await;
-        let plugin_tools = crate::plugin_tools::entries_from_meta(args.meta.as_ref());
-        let components = crate::harness_assemble::components_from_meta(args.meta.as_ref())
-            .map_err(|error| acp::Error::invalid_params().data(error))?;
-        let live = self
-            .open_core_session(
-                &session_id,
-                SessionSetup {
-                    workspace: workspace.clone(),
-                    model_id: &model_id,
-                    effort,
-                    host,
-                    components: &components,
-                    mcp_servers: session_mcp,
-                },
-                false,
-            )
-            .await?;
-        let mut live = self.finish_plugin_tools(live, plugin_tools).await?;
-        if let Some(posture) = posture {
-            live.set_posture(posture, Vec::new())?;
-        }
-        let modes = live
-            .permissions
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .posture
-            .modes();
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
-        let models = self.model_state_with(&live.model_id, effort_token);
-        let goal = match live.session.goal_definition() {
-            Ok(Some(_)) => Ok(None),
-            Ok(None) => crate::goal::load_goal(&workspace, &session_id)
-                .await
-                .map_err(|error| acp::Error::invalid_params().data(error.to_string())),
-            Err(error) => Err(acp::Error::invalid_params().data(error.to_string())),
-        };
-        let goal = match goal {
-            Ok(goal) => goal,
-            Err(error) => {
-                live.session.close().await;
-                return Err(error);
-            }
-        };
-        self.sessions.lock().await.insert(session_id.clone(), live);
-        if let Some(goal) = goal {
-            self.goals.lock().await.insert(session_id.clone(), goal);
-        } else {
-            self.goals.lock().await.remove(&session_id);
-        }
-        self.reapply_active_goal(&session_id).await;
-
-        let config_options = Self::model_config_options(&models);
-        self.announce_commands(&session_id);
-        Ok(
-            acp::NewSessionResponse::new(acp::SessionId::new(session_id))
-                .modes(modes)
-                .models(models)
-                .config_options(config_options),
-        )
-    }
-
-    async fn load_session(
-        &self,
-        args: acp::LoadSessionRequest,
-    ) -> acp::Result<acp::LoadSessionResponse> {
-        let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
-        let host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
-            .map_err(|error| acp::Error::invalid_params().data(error))?;
-        self.validate_plugin_selection(args.meta.as_ref(), &args.mcp_servers)?;
-        let session_id = args.session_id.0.to_string();
-        let loading = self.session_loads.begin(&session_id);
-        let workspace = self.admit_resume(&session_id, &args.cwd).await?;
-        if let Some(host) = &self.plugin_selection {
-            host.validate_workspace(&self.launch.workspace)
-                .and_then(|_| host.validate_workspace(&workspace))
-                .map_err(|_| {
-                    acp::Error::invalid_params().data("native plugin workspace is not admitted")
-                })?;
-        }
-        let components = crate::harness_assemble::components_from_meta(args.meta.as_ref())
-            .map_err(|error| acp::Error::invalid_params().data(error))?;
-        self.admit_studio_documents(args.meta.as_ref());
-        let session_mcp = session_mcp_configs(&args.mcp_servers);
-        self.sync_session_mcp_servers(Some(session_id.as_ref()), &args.mcp_servers)
-            .await?;
-        let model_id = self.model_id.lock().await.clone();
-        let effort = *self.effort.lock().await;
-        let plugin_tools = crate::plugin_tools::entries_from_meta(args.meta.as_ref());
-        let live = self
-            .open_core_session(
-                &session_id,
-                SessionSetup {
-                    workspace: workspace.clone(),
-                    model_id: &model_id,
-                    effort,
-                    host,
-                    components: &components,
-                    mcp_servers: session_mcp,
-                },
-                true,
-            )
-            .await?;
-        let mut live = self.finish_plugin_tools(live, plugin_tools).await?;
-        if let Some(posture) = posture {
-            live.set_posture(posture, Vec::new())?;
-        }
-        let modes = live
-            .permissions
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .posture
-            .modes();
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
-        let models = self.model_state_with(&live.model_id, effort_token);
-        let transcript = Arc::clone(&live.session);
-        let goal = match live.session.goal_definition() {
-            Ok(Some(_)) => Ok(None),
-            Ok(None) => crate::goal::load_goal(&workspace, &session_id)
-                .await
-                .map_err(|error| acp::Error::invalid_params().data(error.to_string())),
-            Err(error) => Err(acp::Error::invalid_params().data(error.to_string())),
-        };
-        let goal = match goal {
-            Ok(goal) => goal,
-            Err(error) => {
-                live.session.close().await;
-                return Err(error);
-            }
-        };
-        self.sessions.lock().await.insert(session_id.clone(), live);
-        loading.ready();
-        if let Some(goal) = goal {
-            self.goals.lock().await.insert(session_id.clone(), goal);
-        } else {
-            self.goals.lock().await.remove(&session_id);
-        }
-        self.reapply_active_goal(&session_id).await;
-        // The pager keeps `isReplay` updates only while this load is in flight
-        // (and for a short grace after). Emit before the response returns.
-        self.replay_loaded_transcript(&args.session_id, &transcript)
-            .await;
-        let config_options = Self::model_config_options(&models);
-        self.announce_commands(&session_id);
-        Ok(acp::LoadSessionResponse::new()
-            .modes(modes)
-            .models(models)
-            .config_options(config_options))
-    }
-
-    /// ACP session modes: the A3S permission/mode surface. `plan` enables
-    /// maker planning; every other mode runs with the session's configured
-    /// planning default.
-    async fn set_session_mode(
-        &self,
-        args: acp::SetSessionModeRequest,
-    ) -> acp::Result<acp::SetSessionModeResponse> {
-        let session_key = args.session_id.0.to_string();
-        let posture = PermissionPosture::parse(args.mode_id.0.as_ref())?;
-        self.sessions
-            .lock()
-            .await
-            .get_mut(&session_key)
-            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
-            .set_posture(posture, Vec::new())?;
-        self.emit_permission_mode(args.session_id, posture).await;
-        Ok(acp::SetSessionModeResponse::new())
-    }
-
-    async fn set_session_model(
-        &self,
-        args: acp::SetSessionModelRequest,
-    ) -> acp::Result<acp::SetSessionModelResponse> {
-        let model_id = args.model_id.0.to_string();
-        if !self.known_model(&model_id) {
-            return Err(acp::Error::invalid_params().data(format!("unknown model id: {model_id}")));
-        }
-
-        let effort = models::selected_effort(args.meta.as_ref(), *self.effort.lock().await)?;
-
-        let session_key = args.session_id.0.to_string();
-        let turn_queue = self
-            .sessions
-            .lock()
-            .await
-            .get(&session_key)
-            .map(|live| Arc::clone(&live.turn_queue))
-            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-        let _turn_permit = turn_queue
-            .acquire_owned()
-            .await
-            .ok_or_else(|| acp::Error::invalid_params().data("session operation queue is full"))?;
-        // Keep permission updates and replacement in one commit. Queued turns
-        // look the session up again after acquiring this same queue.
-        {
-            let mut sessions = self.sessions.lock().await;
-            let current = sessions
-                .get(&session_key)
-                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-            let live = self
-                .replace_core_session(
-                    current,
-                    SessionSetup {
-                        workspace: current.workspace.clone(),
-                        model_id: &model_id,
-                        effort,
-                        host: current.host.clone(),
-                        components: &current.components,
-                        mcp_servers: current.mcp_servers.clone(),
-                    },
-                )
-                .await?;
-            let live = self
-                .finish_plugin_tools(live, current.plugin_tools.clone())
-                .await?;
-            sessions.insert(session_key.clone(), live);
-        }
-        self.reapply_active_goal(&session_key).await;
-        *self.model_id.lock().await = model_id;
-        *self.effort.lock().await = effort;
-
-        Ok(acp::SetSessionModelResponse::new())
-    }
-
-    async fn set_session_config_option(
-        &self,
-        args: acp::SetSessionConfigOptionRequest,
-    ) -> acp::Result<acp::SetSessionConfigOptionResponse> {
-        if args.config_id.0.as_ref() != MODEL_CONFIG_ID {
-            return Err(acp::Error::invalid_params().data(format!(
-                "unknown config option: {} (expected {MODEL_CONFIG_ID})",
-                args.config_id.0
-            )));
-        }
-        let acp::SessionConfigOptionValue::ValueId { value } = args.value else {
-            return Err(acp::Error::invalid_params().data("model config option takes a model id"));
-        };
-        let model_id = value.0.to_string();
-        self.set_session_model(
-            acp::SetSessionModelRequest::new(args.session_id, acp::ModelId::new(model_id.clone()))
-                .meta(args.meta),
-        )
-        .await?;
-        let effort_token = self.effort.lock().await.map(|limits| limits.token);
-        let models = self.model_state_with(&model_id, effort_token);
-        Ok(acp::SetSessionConfigOptionResponse::new(
-            Self::model_config_options(&models),
-        ))
-    }
-
-    async fn prompt(&self, args: acp::PromptRequest) -> acp::Result<acp::PromptResponse> {
-        tracing::info!(target: "perf_probe", "prompt_enter");
-        let requested_posture = PermissionPosture::from_meta(args.meta.as_ref())?;
-        let session_key = args.session_id.0.to_string();
-        let turn_started = std::time::Instant::now();
-        let turn_queue = self
-            .sessions
-            .lock()
-            .await
-            .get(&session_key)
-            .map(|live| Arc::clone(&live.turn_queue))
-            .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-
-        let prompt = Self::prompt_text(&args.prompt);
-        if prompt.trim().is_empty() {
-            return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
-        }
-        if let Err(message) = configured_model_id(&self.model_id.lock().await) {
-            return Err(acp::Error::invalid_params().data(message));
-        }
-        // Queue behind an active turn instead of failing: the pager's
-        // send-now / queue-reissue expect the agent to accept and serialize.
-        // Owned so a cancelled turn can move the guard into a detached join.
-        let turn_permit = match turn_queue.acquire_owned().await {
-            Some(permit) => permit,
-            None => {
-                return Err(acp::Error::invalid_params().data(format!(
-                    "prompt queue is full ({MAX_QUEUED_PROMPTS} waiting behind the active \
-                     turn); the session is still working through queued prompts"
-                )));
-            }
-        };
-        let session = {
-            let mut sessions = self.sessions.lock().await;
-            let live = sessions
-                .get_mut(&session_key)
-                .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-            if let Some(posture) = requested_posture {
-                live.set_posture(posture, Vec::new())?;
-            }
-            Arc::clone(&live.session)
-        };
-        let generation = {
-            let mut generations = self.turn_generation.lock().await;
-            let slot = generations.entry(session_key.clone()).or_insert(0);
-            *slot = slot.saturating_add(1);
-            *slot
-        };
-        // Echo the client's prompt id on every notification (the ACP
-        // prompt-ack contract): the pager disarms its ack watch on the
-        // first update naming the prompt.
-        let client_prompt_id = args
-            .meta
-            .as_ref()
-            .and_then(|meta| meta.get("promptId"))
-            .and_then(|v| v.as_str())
-            .map(str::to_string);
-        if let Some(live) = self.sessions.lock().await.get(&session_key) {
-            *live
-                .turn_started
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(turn_started);
-            *live
-                .active_prompt_id
-                .lock()
-                .unwrap_or_else(|p| p.into_inner()) = client_prompt_id.clone();
-        }
-        if let Some(posture) = requested_posture {
-            self.emit_permission_mode(args.session_id.clone(), posture)
-                .await;
-        }
-        if let Some(unattended) = &self.unattended {
-            // A task that starts with `/goal` is task text, not a goal command.
-            let response = self
-                .unattended_prompt(
-                    &args.session_id,
-                    &session,
-                    &prompt,
-                    generation,
-                    turn_permit,
-                    unattended,
-                )
-                .await;
-            return self.finish_prompt(&session_key, generation, response).await;
-        }
-        let turn = crate::host_context::turn_context_from_meta(args.meta.as_ref());
-        let observation = crate::run_observation::Binding::from_meta(args.meta.as_ref());
-        let response = if let Some(op) = crate::goal::parse_goal_command(&prompt) {
-            tracing::info!(target: "perf_probe", "goal_command_branch");
-            self.handle_goal(
-                &args.session_id,
-                &session,
-                op,
-                generation,
-                turn_permit,
-                observation.as_ref(),
-            )
-            .await
-        } else {
-            let goal = if session
-                .goal_definition()
-                .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?
-                .is_some()
-            {
-                None
-            } else {
-                crate::goal::apply_session_goal(&session, crate::goal::GoalOp::Status)
-                    .await
-                    .map_err(|error| acp::Error::invalid_params().data(error.to_string()))?
-                    .next
-            };
-            {
-                let mut goals = self.goals.lock().await;
-                if let Some(goal) = &goal {
-                    goals.insert(session_key.clone(), goal.clone());
-                } else {
-                    goals.remove(&session_key);
-                }
-            }
-            let prompt = crate::goal::standing_goal_prompt(goal.as_ref(), &prompt);
-            let prompt = crate::host_context::apply_turn_directives(&prompt, &turn);
-            let gate = if turn.research || turn.plan_first {
-                let sessions = self.sessions.lock().await;
-                let live = sessions
-                    .get(&session_key)
-                    .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?;
-                Some(ResearchGate::enter(live)?)
-            } else {
-                None
-            };
-            self.stream_turn(
-                &args.session_id,
-                &session,
-                &prompt,
-                generation,
-                turn_permit,
-                observation.as_ref(),
-                gate,
-                requested_posture,
-            )
-            .await
-        };
-        tracing::info!(target: "perf_probe", "prompt_return");
-        self.finish_prompt(&session_key, generation, response).await
-    }
-
-    async fn ext_method(&self, args: acp::ExtRequest) -> acp::Result<acp::ExtResponse> {
-        match HostMethod::parse(args.method.as_ref()) {
-            Some(method) => self.answer_host_method(method, &args).await,
-            None => Err(acp::Error::method_not_found().data(args.method.to_string())),
-        }
-    }
-
-    async fn cancel(&self, args: acp::CancelNotification) -> acp::Result<()> {
-        let session_key = args.session_id.0.to_string();
-        let generation = self
-            .turn_generation
-            .lock()
-            .await
-            .get(&session_key)
-            .copied()
-            .unwrap_or(0);
-        self.cancelled_generation
-            .lock()
-            .await
-            .insert(session_key.clone(), generation);
-        let session = {
-            let sessions = self.sessions.lock().await;
-            sessions.get(&session_key).map(|live| live.session.clone())
-        };
-        if let Some(session) = session {
-            let _ = session.cancel().await;
-        }
-        self.turn_cancel.notify_waiters();
-        Ok(())
-    }
+    command: Option<String>,
+    disposition: Option<String>,
+    exit_code: Option<i64>,
 }
 
 /// Host budget levels offered when the provider has no native effort parameter.
@@ -1488,7 +1004,7 @@ Finish the user's outcome in this turn. Do not read or explain the product \
 implementation unless the user asked to change that implementation. When a \
 host command already does the outcome, name that command and stop. Example: \
 the user lists recent sessions with `aster sessions list`. \
-For persisted DOCX/XLSX/PPTX sources, prefer office_read when exposed, and \
+For persisted DOCX/XLSX/PPTX/PDF and image sources, prefer office_read when exposed, and \
 use the exposed native Office creation and output_check tools before probing \
 external packages. Respect each tool's explicit unavailable capabilities. \
 Before finishing, read back deliverables and check every factual and numerical \
@@ -1520,6 +1036,14 @@ mod reasoning_transport_tests;
 #[cfg(test)]
 #[path = "agent/turn_terminal_tests.rs"]
 mod turn_terminal_tests;
+
+#[cfg(test)]
+#[path = "agent/attempt_tests.rs"]
+mod attempt_tests;
+
+#[cfg(test)]
+#[path = "agent/structured_output_tests.rs"]
+mod structured_output_tests;
 
 #[cfg(test)]
 pub(crate) use tests::test_launch;

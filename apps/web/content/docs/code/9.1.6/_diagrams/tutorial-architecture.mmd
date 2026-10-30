@@ -1,11 +1,10 @@
-flowchart TB
-  accTitle: 教程终端智能体的模块分工
-  accDescr: 键盘和运行事件进入界面状态；运行层持有会话、确认管理器与存储，Core 负责实际执行与完成检查。
-  keyboard[Crossterm 键盘事件] --> ui[ui.rs / App 状态与绘制]
-  ui -- 提交 / 取消 / 确认 --> runtime[runtime.rs / 宿主运行层]
-  runtime --> session[AgentSession]
-  runtime --> confirmation[ConfirmationManager]
-  runtime --> storage[会话与记忆存储]
-  session -- 文本 / 工具 / 终态 --> ui
-  confirmation -- 待确认 / 回执 --> ui
-  session --> core[Core：受控工具 / 事实日志 / 完成与清理]
+flowchart LR
+  accTitle: 自己的终端智能体需要哪些部分
+  accDescr: 界面显示事件。宿主持有会话和确认管理器。
+  ui["终端界面<br/>键盘与消息"]
+  host["Rust 宿主<br/>会话与存储"]
+  session["Core 会话<br/>AgentSession"]
+  events["运行事件<br/>增量与回执"]
+  ui --> host
+  host --> session
+  session --> events

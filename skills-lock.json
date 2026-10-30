@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "scrawl": {
+      "source": "kitlangton/scrawl",
+      "sourceType": "github",
+      "skillPath": "skills/scrawl/SKILL.md",
+      "computedHash": "9106c1f050543713733c1293896d4adfdc5af30da9bbfaf1175087a7db46f405"
+    }
+  }
+}

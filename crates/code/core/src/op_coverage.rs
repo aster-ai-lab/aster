@@ -95,28 +95,28 @@ impl crate::budget::BudgetGuard for DenyingBudget {
     }
 }
 
-struct StubCognitive;
+struct StubPackage;
 
 #[async_trait::async_trait]
-impl crate::CognitiveContextProvider for StubCognitive {
+impl crate::PackageContextProvider for StubPackage {
     fn name(&self) -> &str {
-        "opcov-cognitive"
+        "opcov-package"
     }
 
     async fn query(
         &self,
-        _request: &crate::CognitiveContextRequestV1,
-    ) -> crate::CognitiveContextResult<crate::CognitiveContextResponseV1> {
-        Err(crate::CognitiveContextError::Provider(
+        _request: &crate::PackageContextRequestV1,
+    ) -> crate::PackageContextResult<crate::PackageContextResponseV1> {
+        Err(crate::PackageContextError::Provider(
             "opcov stub does not serve knowledge".into(),
         ))
     }
 }
 
-fn cognitive_binding() -> crate::CognitivePackageBindingV1 {
+fn package_binding() -> crate::PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = crate::CognitiveKnowledgeBindingV1::new(
+    let knowledge = crate::PackageKnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -124,14 +124,14 @@ fn cognitive_binding() -> crate::CognitivePackageBindingV1 {
         generation_digest,
     )
     .unwrap();
-    crate::CognitivePackageBindingV1::new(
+    crate::PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        crate::CognitiveContextLimits::default(),
+        crate::PackageContextLimits::default(),
     )
     .unwrap()
 }
@@ -1033,33 +1033,28 @@ async fn opcov_code_intelligence() {
 }
 
 #[tokio::test]
-async fn opcov_cognitive_current() {
+async fn opcov_package_current() {
     let workspace = tempfile::tempdir().expect("workspace");
-    let (agent, bare) = open_session(
-        workspace.path(),
-        base_options(&session_id("cognitive-none")),
-    )
-    .await;
-    assert!(bare.current_cognitive_package_binding().is_none());
+    let (agent, bare) =
+        open_session(workspace.path(), base_options(&session_id("package-none"))).await;
+    assert!(bare.current_package_binding().is_none());
     bare.close().await;
-    let binding = cognitive_binding();
+    let binding = package_binding();
     let digest = binding.generation_digest.clone();
-    let context = crate::CognitiveContextSession::new(binding, Arc::new(StubCognitive))
-        .expect("cognitive session");
+    let context =
+        crate::PackageContextSession::new(binding, Arc::new(StubPackage)).expect("package session");
     let bound = agent
         .session_async(
             workspace.path().to_string_lossy().as_ref(),
-            Some(base_options(&session_id("cognitive-bound")).with_cognitive_context(context)),
+            Some(base_options(&session_id("package-bound")).with_package_context(context)),
         )
         .await
         .expect("bound session");
-    let current = bound
-        .current_cognitive_package_binding()
-        .expect("current binding");
+    let current = bound.current_package_binding().expect("current binding");
     assert_eq!(current.generation_digest, digest);
     bound.close().await;
     agent.close().await;
-    op("session.current_cognitive_package_binding", &digest);
+    op("session.current_package_binding", &digest);
 }
 
 #[tokio::test]

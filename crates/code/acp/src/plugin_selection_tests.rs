@@ -316,7 +316,7 @@ async fn native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_
         .unwrap()
         .unwrap()
         .unwrap();
-    assert_eq!(&*model.results.lock().unwrap(), &["old"]);
+    assert_eq!(&*model.results.lock().unwrap(), &["Tool exit code: 0\nold"]);
     store.collect_retired_sync("acme/echo").unwrap();
     assert!(
         !old_entry.exists(),
@@ -330,7 +330,10 @@ async fn native_plugin_tool_is_inherited_by_actual_task_and_stays_pinned_across_
     .await
     .unwrap()
     .unwrap();
-    assert_eq!(&*model.results.lock().unwrap(), &["old", "new"]);
+    assert_eq!(
+        &*model.results.lock().unwrap(),
+        &["Tool exit code: 0\nold", "Tool exit code: 0\nnew"]
+    );
     session.close().await;
 }
 
@@ -681,7 +684,10 @@ async fn real_harness_run_retains_native_tool_across_cutover_and_rejects_withdra
         "settled Harness Run retained retired bytes"
     );
     session.send("Call echo again.", None).await.unwrap();
-    assert_eq!(*model.results.lock().unwrap(), ["old", "new"]);
+    assert_eq!(
+        *model.results.lock().unwrap(),
+        ["Tool exit code: 0\nold", "Tool exit code: 0\nnew"]
+    );
     let current = store.selection_sync(ID).unwrap().unwrap();
     store.withdraw_selection_sync(&current.cursor()).unwrap();
     assert!(session

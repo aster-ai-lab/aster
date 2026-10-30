@@ -1,11 +1,11 @@
 export const meta = {
-  title: '10 · 让记忆跟随正确的项目和用户',
+  title: '10 · 记忆的数据范围',
   description: '区分会话历史、文件记忆与持久记忆，建立准确命名空间并验证恢复绑定。',
   label: '10 记忆与数据范围',
   updated: '2026-10-26',
 };
 
-## 会话保存之后，为什么还需要记忆
+## 会话历史与持久记忆
 
 会话历史用于继续这段对话；长期记忆用于让后续会话召回已经确认的项目知识。把所有历史永久放进系统提示会增加上下文负担，也无法表达候选、过期、冲突和撤销。
 
@@ -59,11 +59,11 @@ async fn project_memory(state_dir: &std::path::Path)
 
 想接语义召回，还需要嵌入执行器、向量索引、同一份可服务代际和刷新回执。先把词法召回、激活和命名空间验证正确，再增加这些后端。嵌入服务故障时也要验证回退行为，不能扩大读取范围来“提高召回率”。
 
-## 本章验收
+## 验收
 
 建立两个不同 scope 的练习会话，在 A 激活一条项目约定，B 不应召回。候选未激活时不能出现在后续模型输入中。重启后用原绑定恢复应成功；换成另一主体或范围应拒绝恢复，而不是悄悄改绑。
 
-## 继续查阅
+## 相关文档
 
 - [持久记忆接入与激活证据](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_MEMORY.md)
 - [文件记忆仓库](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/src/repository/file.rs)

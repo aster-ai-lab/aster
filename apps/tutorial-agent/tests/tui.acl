@@ -1,0 +1,21 @@
+suite "tutorial-agent" {
+    version = 1
+    scenario "offline-conversation" {
+        name = "Read, confirm, answer a question and finish the original Run"
+        surface = "tui"
+        timeout_ms = 30000
+        wait "ready" { text = "输入任务" }
+        terminal_paste "task" { text = "运行离线练习" }
+        press "submit" { key = "Enter" }
+        wait "confirmation" { text = "待确认 1 项" }
+        expect "selected-tool" { text = "project_label" }
+        press "approve" { key = "Alt+y" }
+        wait "question" { text = "业务提问" }
+        press "choose-answer" { key = "Alt+o" }
+        press "answer" { key = "Alt+a" }
+        wait "reply" { text = "离线练习完成" }
+        wait "settled" { text = "Completed" }
+        terminal_recording "result" { path = "terminal/offline-flow.vt" }
+        press "exit" { key = "Control+c" }
+    }
+}

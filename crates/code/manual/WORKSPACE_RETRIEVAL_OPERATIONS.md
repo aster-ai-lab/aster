@@ -13,10 +13,9 @@ lexical, optional Code Intelligence and optional semantic channels. A missing or
 failed semantic channel does not disable hybrid search on a catalog-capable
 workspace. Backends without reads or a catalog do not advertise hybrid.
 
-The host owns the embedding provider and local model assets. Core does not
-link a model runtime. ACP uses its existing BGE adapter; there is no
-`local-bge` Cargo feature or automatic installer. Local semantic retrieval is
-default-off and requires this declaration in trusted user/explicit ACL:
+Core accepts a host-owned embedding provider through its public Rust trait.
+ACP semantic retrieval is default-off and requires this declaration in trusted
+user/explicit ACL:
 
 ```acl
 workspace_retrieval {
@@ -25,17 +24,16 @@ workspace_retrieval {
 }
 ```
 
-Automatically discovered workspace ACL cannot grant this capability. Missing,
-invalid, changed or unavailable local assets produce a named refusal and an
-error-level log; grep, glob, BM25 and model-free hybrid remain usable. No
-remote backend or download is activated. Model installation remains the
-manifest-driven BGE supply's responsibility (`a3s-use-bge install --help`).
-The adapter validates the install revision and actual output dimensions rather
-than assuming a model shape. Status inspection requires no inference:
-
-```sh
-cargo run --locked -p a3s-use-bge --features cli,bge-m3 -- status bge-m3 --json
-```
+Automatically discovered workspace ACL cannot grant this capability. With the
+trusted opt-in, the shipped stdio agent loads the in-tree light tier from embedded
+assets. An internal Rust composition seam can install a factory that takes
+precedence; it is not an ACP metadata or environment-variable loader. This default needs no separate
+BGE installation, environment factory variable or model download. A registered
+factory that returns no provider refuses explicitly; it does not fall back to
+the light tier. Embedded-asset load failures also report a named setup error.
+Grep, glob, BM25 and model-free hybrid remain usable. No remote provider is
+implicitly activated. Provider identity and actual dimensions come from the
+provider descriptor rather than an assumed model shape.
 
 The existing Rust host contract remains
 `SessionOptions::with_workspace_retrieval(WorkspaceRetrievalOptions::new(provider))`.

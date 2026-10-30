@@ -76,6 +76,7 @@ fn actual_write_and_host_verifier_provenance_survive_unrelated_prepared_uncertai
         &[],
         0,
         Some(&json!({"verification_report":report,"verification_author":"host"})),
+        None,
     );
     cached.observe_tool_receipt("bash", &verified);
     let mut accepted = Vec::new();
@@ -300,6 +301,7 @@ fn later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_
         &[],
         0,
         Some(&json!({"verification_report":report,"verification_author":"host"})),
+        None,
     );
     cached.observe_tool_receipt("bash", &verified);
     cached.set_unresolved_tool_effects(BTreeSet::from([pending.identity.key().unwrap()]));

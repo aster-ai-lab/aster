@@ -1,0 +1,71 @@
+{
+  "color-space-for-untagged-svg-colors": "display-p3",
+  "fill": {
+    "linear-gradient": [
+      "display-p3:0.17000,0.17500,0.20000,1.00000",
+      "display-p3:0.03500,0.03600,0.04500,1.00000"
+    ],
+    "orientation": {
+      "start": {
+        "x": 0.3,
+        "y": 0
+      },
+      "stop": {
+        "x": 0.7,
+        "y": 1
+      }
+    }
+  },
+  "groups": [
+    {
+      "name": "Brush",
+      "layers": [
+        {
+          "glass": false,
+          "image-name": "brush.png",
+          "name": "Brush",
+          "position": {
+            "scale": 0.53,
+            "translation-in-points": [
+              47.0,
+              -41.0
+            ]
+          }
+        }
+      ],
+      "lighting": "individual",
+      "specular": true,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.55
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.1
+      }
+    },
+    {
+      "name": "Glow",
+      "layers": [
+        {
+          "image-name": "glow.svg",
+          "name": "Glow"
+        }
+      ],
+      "shadow": {
+        "kind": "none",
+        "opacity": 0.0
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  }
+}

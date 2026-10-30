@@ -93,6 +93,7 @@ export function DocumentMailMergeRecipientFilterDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.mailMerge.filter.title')}
       description={officeMessage(
         messages,

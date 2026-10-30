@@ -1,5 +1,3 @@
-import type { Expression } from "estree";
-
 import { componentCatalog } from "./catalog";
 
 export type Value = string | number | boolean | null | Value[] | { [key: string]: Value };
@@ -9,7 +7,7 @@ export interface UiNode {
   name?: string;
   value?: string;
   children?: UiNode[];
-  props?: Record<string, Expression>;
+  props?: Record<string, Value>;
 }
 export type Document = { nodes: UiNode[]; initial: Values; pending: boolean };
 
@@ -17,127 +15,14 @@ const controls = new Set(["Input", "Textarea", "Slider", "Select", "Checkbox"]);
 export const holdsControl = (node: UiNode): boolean =>
   node.type === "component" &&
   (controls.has(node.name ?? "") || (node.children ?? []).some(holdsControl));
-const forbidden = new Set(["__proto__", "prototype", "constructor"]);
+export const identifier = (name: string) =>
+  /^[A-Za-z][A-Za-z0-9_]{0,47}$/.test(name) &&
+  !["__proto__", "prototype", "constructor"].includes(name);
+export const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
 const fail = (): never => {
-  throw new Error("Unsupported OpenUI document");
+  throw new Error("Unsupported JSON Render document");
 };
-
-/** Interpret a small expression language; generated JavaScript is never compiled or evaluated. */
-export function evaluate(node: Expression, values: Values, depth = 0): Value {
-  if (depth > 24) return fail();
-  const next = (value: Expression) => evaluate(value, values, depth + 1);
-  switch (node.type) {
-    case "Literal":
-      if (node.value === null || typeof node.value === "string" || typeof node.value === "boolean")
-        return node.value;
-      if (typeof node.value === "number" && Number.isFinite(node.value)) return node.value;
-      return fail();
-    case "Identifier":
-      if (forbidden.has(node.name) || !Object.hasOwn(values, node.name)) return fail();
-      return values[node.name];
-    case "ArrayExpression":
-      if (node.elements.length > 64) return fail();
-      return node.elements.map((element) =>
-        !element || element.type === "SpreadElement" ? fail() : next(element),
-      );
-    case "ObjectExpression": {
-      if (node.properties.length > 64) return fail();
-      const result: Record<string, Value> = Object.create(null);
-      for (const prop of node.properties) {
-        if (
-          prop.type !== "Property" ||
-          prop.computed ||
-          prop.method ||
-          prop.kind !== "init" ||
-          prop.value.type === "AssignmentPattern"
-        )
-          return fail();
-        const key =
-          prop.key.type === "Identifier"
-            ? prop.key.name
-            : prop.key.type === "Literal"
-              ? String(prop.key.value)
-              : fail();
-        if (forbidden.has(key) || Object.hasOwn(result, key)) return fail();
-        result[key] = next(prop.value as Expression);
-      }
-      return result;
-    }
-    case "UnaryExpression": {
-      const value = next(node.argument);
-      if (node.operator === "!") return !value;
-      if (typeof value !== "number") return fail();
-      if (node.operator === "-") return -value;
-      if (node.operator === "+") return value;
-      return fail();
-    }
-    case "BinaryExpression": {
-      const left = next(node.left as Expression),
-        right = next(node.right);
-      if (node.operator === "===") return left === right;
-      if (node.operator === "!==") return left !== right;
-      if (typeof left !== "number" || typeof right !== "number") return fail();
-      let result: Value;
-      switch (node.operator) {
-        case "+":
-          result = left + right;
-          break;
-        case "-":
-          result = left - right;
-          break;
-        case "*":
-          result = left * right;
-          break;
-        case "/":
-          result = left / right;
-          break;
-        case "%":
-          result = left % right;
-          break;
-        case "**":
-          result = left ** right;
-          break;
-        case "<":
-          return left < right;
-        case ">":
-          return left > right;
-        case "<=":
-          return left <= right;
-        case ">=":
-          return left >= right;
-        default:
-          return fail();
-      }
-      return Number.isFinite(result) ? result : fail();
-    }
-    case "LogicalExpression": {
-      const left = next(node.left),
-        right = next(node.right);
-      if (node.operator === "&&") return left ? right : left;
-      if (node.operator === "||") return left ? left : right;
-      if (node.operator === "??") return left ?? right;
-      return fail();
-    }
-    case "ConditionalExpression": {
-      // Validate both branches, including ones not currently visible.
-      const test = next(node.test),
-        yes = next(node.consequent),
-        no = next(node.alternate);
-      return test ? yes : no;
-    }
-    default:
-      return fail();
-  }
-}
-
-export function propsOf(node: UiNode, values: Values): Record<string, Value> {
-  const result: Record<string, Value> = Object.create(null);
-  for (const [name, expression] of Object.entries(node.props ?? {})) {
-    result[name] = evaluate(expression, values);
-  }
-  return result;
-}
-
 export function validate(nodes: UiNode[]): Values {
   const initial: Values = Object.create(null);
   const flat: UiNode[] = [];
@@ -146,18 +31,10 @@ export function validate(nodes: UiNode[]): Values {
     flat.push(node);
     if (node.type === "component") {
       if (!node.name || !Object.hasOwn(componentCatalog, node.name)) return fail();
-      for (const name of Object.keys(node.props ?? {})) {
-        if (!componentCatalog[node.name].props.includes(name)) return fail();
-      }
       if (controls.has(node.name)) {
         // Control definitions must be literals, independent of other controls.
-        const p = propsOf(node, {});
-        if (
-          typeof p.name !== "string" ||
-          !/^[A-Za-z][A-Za-z0-9_]{0,47}$/.test(p.name) ||
-          forbidden.has(p.name) ||
-          Object.hasOwn(initial, p.name)
-        )
+        const p = node.props ?? {};
+        if (typeof p.name !== "string" || !identifier(p.name) || Object.hasOwn(initial, p.name))
           return fail();
         if (typeof p.label !== "string" || !p.label.trim()) return fail();
         if (p.required !== undefined && typeof p.required !== "boolean") return fail();
@@ -170,7 +47,13 @@ export function validate(nodes: UiNode[]): Values {
               ? 0
               : "");
         if (!["string", "number", "boolean"].includes(typeof value)) return fail();
-        if (typeof value === "string" && value.length > 4096) return fail();
+        if (
+          typeof value === "number" &&
+          (!Number.isFinite(value) || Math.abs(value) > Number.MAX_SAFE_INTEGER)
+        )
+          return fail();
+        if (typeof value === "string" && new TextEncoder().encode(value).byteLength > 4096)
+          return fail();
         if (node.name === "Checkbox" && typeof value !== "boolean") return fail();
         if ((node.name === "Slider" || p.type === "number") && typeof value !== "number")
           return fail();
@@ -190,7 +73,25 @@ export function validate(nodes: UiNode[]): Values {
   for (const node of nodes) walk(node, 0);
   for (const node of flat) {
     if (!node.name) continue;
-    const p = propsOf(node, initial);
+    const p = node.props ?? {};
+    if (node.name === "Form" && p.submitAction !== undefined && p.submitAction !== "submit")
+      return fail();
+    if (node.name === "Card" && p.title !== undefined && typeof p.title !== "string") return fail();
+    if (node.name === "Text" && typeof p.content !== "string") return fail();
+    if (
+      node.name === "Metric" &&
+      (typeof p.label !== "string" ||
+        !["string", "number"].includes(typeof p.value) ||
+        (typeof p.value === "number" && !Number.isFinite(p.value)) ||
+        (p.unit !== undefined && typeof p.unit !== "string"))
+    )
+      return fail();
+    if (
+      node.name === "Stack" &&
+      ((p.direction !== undefined && !["vertical", "horizontal"].includes(p.direction as string)) ||
+        (p.gap !== undefined && (typeof p.gap !== "number" || p.gap < 0 || p.gap > 24)))
+    )
+      return fail();
     if (node.name === "Button" && (p.action !== "submit" || typeof p.label !== "string"))
       return fail();
     if (node.name === "Grid" && p.columns !== undefined && ![1, 2, 3].includes(p.columns as number))
@@ -203,7 +104,8 @@ export function validate(nodes: UiNode[]): Values {
       return fail();
     if (node.name === "Slider" || node.name === "Input") {
       for (const key of ["min", "max", "step"])
-        if (p[key] !== undefined && typeof p[key] !== "number") return fail();
+        if (p[key] !== undefined && (typeof p[key] !== "number" || !Number.isFinite(p[key])))
+          return fail();
       // min, max, and step constrain sliders and number inputs. Other input types only carry those slots.
       const numeric = node.name === "Slider" || p.type === "number";
       if (numeric) {
@@ -227,6 +129,7 @@ export function validate(nodes: UiNode[]): Values {
       node.name === "Select" &&
       (!Array.isArray(p.options) ||
         !p.options.length ||
+        p.options.length > 64 ||
         p.options.some((v) => typeof v !== "string" || !v) ||
         new Set(p.options).size !== p.options.length ||
         (initial[p.name as string] !== "" && !p.options.includes(initial[p.name as string])))
@@ -237,8 +140,9 @@ export function validate(nodes: UiNode[]): Values {
       (!Array.isArray(p.labels) ||
         !Array.isArray(p.values) ||
         p.labels.length !== p.values.length ||
+        p.labels.length > 64 ||
         p.labels.some((v) => typeof v !== "string") ||
-        p.values.some((v) => typeof v !== "number" || v < 0))
+        p.values.some((v) => typeof v !== "number" || !Number.isFinite(v) || v < 0))
     )
       return fail();
   }
@@ -253,11 +157,11 @@ export function outline(nodes: UiNode[]): FormOutline {
   const result: FormOutline = { title: "", fields: [] };
   const walk = (node: UiNode) => {
     if (node.name === "Card" && !result.title) {
-      const title = propsOf(node, {}).title;
+      const title = (node.props ?? {}).title;
       if (typeof title === "string") result.title = title;
     }
     if (node.name && controls.has(node.name)) {
-      const p = propsOf(node, {});
+      const p = node.props ?? {};
       result.fields.push({ name: String(p.name), label: String(p.label), kind: node.name });
     }
     for (const child of node.children ?? []) walk(child);
@@ -270,7 +174,7 @@ export function outline(nodes: UiNode[]): FormOutline {
 export function validAnswers(nodes: UiNode[], values: Values): boolean {
   for (const node of nodes) {
     if (node.name && controls.has(node.name)) {
-      const p = propsOf(node, {});
+      const p = node.props ?? {};
       const value = values[p.name as string];
       const expected =
         node.name === "Checkbox"
@@ -279,6 +183,8 @@ export function validAnswers(nodes: UiNode[], values: Values): boolean {
             ? "number"
             : "string";
       if (typeof value !== expected) return false;
+      if (typeof value === "string" && new TextEncoder().encode(value).byteLength > 4096)
+        return false;
       if (p.required && (value === false || (typeof value === "string" && !value.trim())))
         return false;
       if (
@@ -290,6 +196,7 @@ export function validAnswers(nodes: UiNode[], values: Values): boolean {
       if (
         typeof value === "number" &&
         (!Number.isFinite(value) ||
+          Math.abs(value) > Number.MAX_SAFE_INTEGER ||
           (typeof p.min === "number" && value < p.min) ||
           (typeof p.max === "number" && value > p.max))
       )

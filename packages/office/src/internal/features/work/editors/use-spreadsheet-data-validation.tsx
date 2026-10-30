@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Selection } from '@fortune-sheet/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { officeMessage } from '../../../i18n/office-locale';
@@ -108,77 +109,81 @@ export function useSpreadsheetDataValidation({
   return {
     commandPort,
     selectionForChange,
-    dialog: source ? (
-      <SpreadsheetDataValidationDialog
-        source={source}
-        restoreFocusTarget={() =>
-          invokerRef.current?.isConnected
-            ? invokerRef.current
-            : getGridFocusTarget()
-        }
-        onApply={(value) => {
-          applyingRef.current = true;
-          let handled = false;
-          try {
-            handled =
-              commandsRef.current?.applyDataValidation({
-                sheetId: source.sheetId,
-                ranges: source.ranges,
-                activeCell: source.activeCell,
-                value,
-              }) ?? false;
-          } finally {
-            applyingRef.current = false;
-          }
-          if (!handled) {
-            const applyFailed = officeMessage(
-              messages,
-              'spreadsheet.dv.toast.applyFailed',
-            );
-            showToast(
+    dialog: (
+      <DialogPresence>
+        {source ? (
+          <SpreadsheetDataValidationDialog
+            source={source}
+            restoreFocusTarget={() =>
+              invokerRef.current?.isConnected
+                ? invokerRef.current
+                : getGridFocusTarget()
+            }
+            onApply={(value) => {
+              applyingRef.current = true;
+              let handled = false;
+              try {
+                handled =
+                  commandsRef.current?.applyDataValidation({
+                    sheetId: source.sheetId,
+                    ranges: source.ranges,
+                    activeCell: source.activeCell,
+                    value,
+                  }) ?? false;
+              } finally {
+                applyingRef.current = false;
+              }
+              if (!handled) {
+                const applyFailed = officeMessage(
+                  messages,
+                  'spreadsheet.dv.toast.applyFailed',
+                );
+                showToast(
+                  spreadsheetDataValidationError(
+                    contentRef.current,
+                    source,
+                    value,
+                    applyFailed,
+                  ) ?? applyFailed,
+                  'error',
+                );
+              }
+              return handled;
+            }}
+            onClose={close}
+            onRemove={() => {
+              applyingRef.current = true;
+              let handled = false;
+              try {
+                handled =
+                  commandsRef.current?.removeDataValidation({
+                    sheetId: source.sheetId,
+                    ranges: source.ranges,
+                    activeCell: source.activeCell,
+                  }) ?? false;
+              } finally {
+                applyingRef.current = false;
+              }
+              if (!handled) {
+                showToast(
+                  officeMessage(messages, 'spreadsheet.dv.toast.clearFailed'),
+                  'error',
+                );
+              }
+              return handled;
+            }}
+            onValidate={(value) =>
               spreadsheetDataValidationError(
                 contentRef.current,
                 source,
                 value,
-                applyFailed,
-              ) ?? applyFailed,
-              'error',
-            );
-          }
-          return handled;
-        }}
-        onClose={close}
-        onRemove={() => {
-          applyingRef.current = true;
-          let handled = false;
-          try {
-            handled =
-              commandsRef.current?.removeDataValidation({
-                sheetId: source.sheetId,
-                ranges: source.ranges,
-                activeCell: source.activeCell,
-              }) ?? false;
-          } finally {
-            applyingRef.current = false;
-          }
-          if (!handled) {
-            showToast(
-              officeMessage(messages, 'spreadsheet.dv.toast.clearFailed'),
-              'error',
-            );
-          }
-          return handled;
-        }}
-        onValidate={(value) =>
-          spreadsheetDataValidationError(
-            contentRef.current,
-            source,
-            value,
-            null,
-          )
-        }
-      />
-    ) : null,
+                null,
+              )
+            }
+          />
+        ) : null}
+      </DialogPresence>
+    ),
   };
 }
 

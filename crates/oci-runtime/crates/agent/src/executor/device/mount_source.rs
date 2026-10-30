@@ -6,6 +6,7 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 
+use crate::executor::mount::{MOVE_MOUNT_F_EMPTY_PATH, MOVE_MOUNT_T_EMPTY_PATH};
 use a3s_oci_sdk::{ErrorCode, Result};
 
 use super::types::TargetMetadata;
@@ -157,7 +158,7 @@ pub(super) fn attach_device_mount(
 ) -> Result<()> {
     let target_descriptor = open_path_descriptor(target)?;
     let empty = c"";
-    let flags = libc::MOVE_MOUNT_F_EMPTY_PATH | libc::MOVE_MOUNT_T_EMPTY_PATH;
+    let flags = MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH;
     // SAFETY: both descriptors are live detached/source and target mount
     // references, both empty paths are NUL-terminated, and the EMPTY_PATH
     // flags select the descriptors directly.

@@ -4,6 +4,7 @@ use a3s_use_core::UseResult;
 use serde_json::Value as JsonValue;
 use yrs::{Any, GetString, Map, MapPrelim, Out, Text, TextPrelim, Transact};
 
+use super::super::{is_utf16_boundary, utf16_slice};
 use super::json::{encode_flat_json_key, FlatJsonEntryKind};
 use super::state::{encode_cell_field_key, encode_coordinate, read_sheet_state, CELL_TEXT_KEY};
 use super::{
@@ -243,41 +244,4 @@ fn utf16_len(value: &str) -> UseResult<u32> {
             "The spreadsheet splice text exceeds the supported UTF-16 offset range.",
         )
     })
-}
-
-fn is_utf16_boundary(value: &str, offset: u32) -> bool {
-    let mut seen = 0u32;
-    for character in value.chars() {
-        if seen == offset {
-            return true;
-        }
-        if seen > offset {
-            return false;
-        }
-        seen += u32::try_from(character.len_utf16()).unwrap_or(0);
-    }
-    seen == offset
-}
-
-fn utf16_slice(value: &str, start: u32, end: u32) -> Option<String> {
-    let mut seen = 0u32;
-    let mut start_byte = None;
-    let mut end_byte = None;
-    for (byte, character) in value.char_indices() {
-        if seen == start {
-            start_byte = Some(byte);
-        }
-        if seen == end {
-            end_byte = Some(byte);
-            break;
-        }
-        seen += u32::try_from(character.len_utf16()).unwrap_or(0);
-    }
-    if start_byte.is_none() && seen == start {
-        start_byte = Some(value.len());
-    }
-    if end_byte.is_none() && seen == end {
-        end_byte = Some(value.len());
-    }
-    Some(value[start_byte?..end_byte?].to_owned())
 }

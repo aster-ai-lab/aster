@@ -1,11 +1,13 @@
 export const meta = {
-  "title": "跑通请求、更新、取消和恢复",
+  "title": "ACP 请求、更新、取消与恢复",
   "description": "标准处理入口、请求关联、模式切换和会话恢复。",
   "label": "协议与会话生命周期",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## 最小会话流程
+
+<PeleAtlasDiagram name="protocol-lifecycle" label="会话请求、持续更新与取消" description="最终响应到来之前，客户端始终消费更新和独立交互请求；取消后仍等待原 prompt 结束。" />
 
 客户端启动代理后先协商协议，再创建会话，最后向拿到的 sessionId 提交 prompt。示例中的路径为占位路径，需替换为代理准入的绝对工作区。
 
@@ -22,6 +24,8 @@ export const meta = {
 ```
 
 读取 id=3 的最终响应期间继续处理 `session/update`、权限请求和扩展请求。客户端若只等最终回答、暂停读取 stdout，会卡住需要用户交互的任务。
+
+三个请求分别进入 <SourceRef path="crates/code/acp/src/agent.rs" match="async fn initialize(">initialize</SourceRef>、<SourceRef path="crates/code/acp/src/agent.rs" match="async fn new_session(">new_session</SourceRef> 和 <SourceRef path="crates/code/acp/src/agent.rs" match="async fn prompt(&amp;self, args: acp::PromptRequest)">prompt</SourceRef>。从这里可以对照消息字段追到实际准入逻辑。
 
 ## 代理实际实现的标准入口
 
@@ -53,11 +57,15 @@ export const meta = {
 
 这是通知，没有 id 和直接成功响应。客户端标记“正在停止”，继续处理输出，直到原 prompt 的终态与资源结算。关闭管道是进程故障，不应当作正常任务完成。
 
+通知处理见 <SourceRef path="crates/code/acp/src/agent.rs" match="async fn cancel(&amp;self, args: acp::CancelNotification)">cancel</SourceRef>，运行期间的事件与收尾见 <SourceRef path="crates/code/acp/src/agent/turn.rs" match="pub(super) async fn drain_turn(">drain_turn</SourceRef>。
+
 ## 保存、加载与重放
 
 session/load 使用真实保存的会话 ID 和准入 cwd。重放可能包含用户、模型、工具、计划与类型化扩展通知，宿主按稳定条目身份去重。不要把重放更新当成新的模型推理或再次执行工具。
 
-模型上下文压缩不应删掉 UI 的完整转录。较长历史使用[会话目录与分页](../sessions/)，不要只靠加载时的可见消息拼出“完整历史”。
+加载入口是 <SourceRef path="crates/code/acp/src/agent.rs" match="async fn load_session(">load_session</SourceRef>；工作区与恢复身份的准入见 <SourceRef path="crates/code/acp/src/agent/resume.rs" match="pub(super) async fn admit_resume(">admit_resume</SourceRef>。
+
+模型上下文压缩不应删除 UI 的完整转录。较长历史使用[会话目录与分页](../sessions/)，不要只靠加载时的可见消息拼出“完整历史”。
 
 ## 验收
 

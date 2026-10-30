@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Dialog } from '../../../design-system/primitives';
+import { DialogPresence, Button, Dialog } from '../../../design-system/primitives';
 import { officeMessage } from '../../../i18n/office-locale';
 import { documentTableCellFormat } from '../work-document-table-cell-formatting';
 import {
@@ -75,14 +75,16 @@ export function DocumentTablePropertiesControl({
       >
         <TableProperties size={18} />
       </WorkOfficeRibbonButton>
-      {source && (
-        <DocumentTablePropertiesDialog
-          editor={editor}
-          source={source}
-          restoreFocusTarget={() => triggerRef.current}
-          onClose={() => setSource(null)}
-        />
-      )}
+      <DialogPresence>
+        {source && (
+          <DocumentTablePropertiesDialog
+            editor={editor}
+            source={source}
+            restoreFocusTarget={() => triggerRef.current}
+            onClose={() => setSource(null)}
+          />
+        )}
+      </DialogPresence>
     </>
   );
 }
@@ -120,6 +122,7 @@ function DocumentTablePropertiesDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.tableProps.title')}
       description={officeMessage(messages, 'document.tableProps.description')}
       className="work-document-table-properties-dialog"

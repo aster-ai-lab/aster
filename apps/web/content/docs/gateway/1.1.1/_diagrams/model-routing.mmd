@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Gateway 的聚合与 P/D 模型路由
+  accDescr: Gateway 先完成认证、授权和准入。聚合请求进入一个 Power worker。P/D 请求依次执行 decode prepare、prefill execute 和 decode execute。
+  client["已授权的模型请求"] --> gateway["Gateway<br/>准入与目标选择"]
+  gateway --> aggregated["聚合路径<br/>一个 Power worker"]
+  gateway --> prepare["1. decode/prepare"]
+  prepare --> prefill["2. prefill/execute<br/>发布 opaque 源状态"]
+  prefill --> decode["3. decode/execute<br/>消费状态并输出"]
+  cloud["Cloud 快照"] -. worker 身份与观测 .-> gateway

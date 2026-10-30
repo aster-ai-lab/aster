@@ -291,8 +291,8 @@ async fn failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed
         "first acquired connection was not transferred to rollback ownership"
     );
     assert!(!alive(pid(root.path(), "native-zbroken")));
-    store.withdraw_sync("acme/cognition").unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.withdraw_sync("acme/knowledge").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(
         entry.exists(),
         "unobserved rollback released a live process's package"
@@ -301,7 +301,7 @@ async fn failed_later_mcp_preparation_keeps_earlier_process_bytes_until_observed
     assert!(report.is_clean(), "{report:?}");
     assert_eq!(report.rollback_batches, 1);
     assert_eq!(report.effects_closed, 1);
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(!entry.exists());
     assert!(!alive(pid(root.path(), "native-one")));
     session.close().await;
@@ -351,8 +351,8 @@ async fn cancelling_an_actual_native_mcp_call_retires_its_process_and_descendant
     })
     .await
     .expect("actual native MCP tools/call did not start");
-    store.withdraw_sync("acme/cognition").unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.withdraw_sync("acme/knowledge").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(entry.exists());
     assert!(session.cancel().await);
     let _outcome = tokio::time::timeout(Duration::from_secs(3), task)
@@ -366,7 +366,7 @@ async fn cancelling_an_actual_native_mcp_call_retires_its_process_and_descendant
     })
     .await
     .unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(!entry.exists());
     tokio::time::sleep(Duration::from_millis(1100)).await;
     assert!(
@@ -416,7 +416,7 @@ fn spec(root: &Path, marker: &str) -> PackageSpec {
         .into_bytes(),
     }];
     PackageSpec {
-        package_id: "acme/cognition".into(),
+        package_id: "acme/knowledge".into(),
         surfaces: vec![
             SurfaceSpec {
                 kind: SurfaceKind::Skill,
@@ -673,7 +673,7 @@ async fn native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_
         .apply(&session)
         .await
         .unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(old_entry.exists());
     assert!(alive(old_pid));
     model.release.add_permits(1);
@@ -685,13 +685,13 @@ async fn native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_
     let report = session.drain_capability_cleanup().await;
     assert!(report.is_clean(), "{report:?}");
     assert!(report.effects_closed > 0);
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(!old_entry.exists());
     assert!(!alive(old_pid));
     session.send("Query the new package.", None).await.unwrap();
     assert_eq!(model.results.lock().unwrap().len(), 4);
     store.withdraw_selection_sync(&second.cursor()).unwrap();
-    store.withdraw_sync("acme/cognition").unwrap();
+    store.withdraw_sync("acme/knowledge").unwrap();
     assert!(session
         .send("This selection was withdrawn.", None)
         .await
@@ -705,14 +705,14 @@ async fn native_skill_and_real_stdio_mcp_stay_frozen_and_ready_processes_retain_
         .entry
         .as_ref()
         .unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(
         next_entry.exists(),
         "a Ready MCP process lost its real package lease before close"
     );
     assert!(alive(pid(root.path(), "native-two")));
     session.close().await;
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(!next_entry.exists());
     assert!(!alive(pid(root.path(), "native-two")));
 }
@@ -769,8 +769,8 @@ async fn timed_out_native_mcp_call_revokes_readiness_and_reaps_before_retirement
         2,
         "new Run inferred through an unready binding"
     );
-    store.withdraw_sync("acme/cognition").unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.withdraw_sync("acme/knowledge").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(
         !entry.exists(),
         "reaped server retained retired package bytes without a Run"
@@ -840,8 +840,8 @@ async fn workspace_replacement_during_real_mcp_preparation_refuses_commit_and_ke
     assert_eq!(session.capability_catalog_stamp(), before);
     assert_eq!(model.calls.load(Ordering::SeqCst), 0);
     assert!(alive(pid(root.path(), "native-one-slow-init")));
-    store.withdraw_sync("acme/cognition").unwrap();
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.withdraw_sync("acme/knowledge").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(
         entry.exists(),
         "workspace refusal released a still-owned MCP process's artifacts"
@@ -851,7 +851,7 @@ async fn workspace_replacement_during_real_mcp_preparation_refuses_commit_and_ke
     assert_eq!(report.rollback_batches, 1);
     assert_eq!(report.effects_closed, 1);
     assert!(!alive(pid(root.path(), "native-one-slow-init")));
-    store.collect_retired_sync("acme/cognition").unwrap();
+    store.collect_retired_sync("acme/knowledge").unwrap();
     assert!(!entry.exists());
     session.close().await;
 }

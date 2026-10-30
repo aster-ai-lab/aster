@@ -38,6 +38,7 @@ impl A3sCodeAgent {
     ) -> SessionOptions {
         let mut options = SessionOptions::new()
             .with_assistant_final_response(true)
+            .with_auto_save(true)
             .with_session_id(session_id.to_string());
         if let Ok(model_id) = super::configured_model_id(model_id) {
             options = options.with_model(model_id.to_string());
@@ -161,7 +162,12 @@ impl A3sCodeAgent {
         setup: &SessionSetup<'_>,
         session_store_dir: &std::path::Path,
     ) -> acp::Result<SessionOptions> {
-        let (embedding, unavailable) = match self.launch.config.workspace_retrieval {
+        let retrieval = self
+            .launch
+            .config
+            .workspace_retrieval
+            .filter(|_| !setup.host.source_review && setup.host.knowledge_compile.is_none());
+        let (embedding, unavailable) = match retrieval {
             Some(retrieval) if retrieval.enabled && retrieval.local_cpu => {
                 local_cpu_embedding().await
             }
@@ -222,9 +228,23 @@ impl A3sCodeAgent {
         let options = self.with_client_reads(options, session_id, &setup.workspace);
         if setup.host.source_review {
             // A fixed checker keeps the capability ceiling empty even after a mode change.
-            Ok(options.with_permission_policy(
+            let mut options = options;
+            options.hook_executor = None;
+            Ok(options.with_isolated_context().with_permission_policy(
                 a3s_code_core::permissions::PermissionPolicy::new().deny("*"),
             ))
+        } else if let Some(scope) = &setup.host.knowledge_compile {
+            let mut options = options;
+            options.hook_executor = None;
+            let guard = crate::knowledge_compile::CompileGuard::new(scope, &setup.workspace)
+                .map_err(|error| acp::Error::invalid_params().data(error))?;
+            Ok(options
+                .with_isolated_context()
+                .with_completion_attestor(Arc::new(
+                    a3s_code_core::completion_attestor::DiskContentAttestor::new(&setup.workspace),
+                ))
+                .with_permission_policy(crate::knowledge_compile::policy(&[]))
+                .with_permission_checker(Arc::new(guard)))
         } else {
             Ok(options)
         }
@@ -236,12 +256,17 @@ impl A3sCodeAgent {
         setup: SessionSetup<'_>,
         restore: bool,
     ) -> acp::Result<LiveSession> {
+        let store_dir =
+            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
+        let stored = if restore {
+            Some(Self::resume_snapshot_store(&store_dir, session_id, &setup.workspace).await?)
+        } else {
+            None
+        };
         if let Err(message) = super::configured_model_id(setup.model_id) {
             return Err(acp::Error::invalid_params().data(message));
         }
         self.ensure_core_agent().await?;
-        let store_dir =
-            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
         let options = self
             .session_options_for(session_id, &setup, &store_dir)
             .await?;
@@ -255,11 +280,6 @@ impl A3sCodeAgent {
         };
         let options = crate::harness_assemble::apply(options, setup.components)
             .map_err(|error| acp::Error::invalid_params().data(error))?;
-        let stored = if restore {
-            Self::resume_snapshot_store(&store_dir, session_id, &setup.workspace).await?
-        } else {
-            None
-        };
         let session = match stored {
             Some(store) => {
                 agent
@@ -267,6 +287,7 @@ impl A3sCodeAgent {
                     .await
             }
             None => {
+                debug_assert!(!restore);
                 agent
                     .session_async(setup.workspace.to_string_lossy().to_string(), Some(options))
                     .await
@@ -295,13 +316,14 @@ impl A3sCodeAgent {
                 .map_err(|error| acp::Error::internal_error().data(error))?;
         }
         let asset_denies = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
-        if Self::attach_local_assets(&session, &setup.host, &asset_denies, self.document_bridge())?
+        if setup.host.knowledge_compile.is_none()
+            && self.attach_local_assets(&session, &setup.host, &asset_denies)?
         {
             session
                 .set_permission_policy(posture_policy("default", &[]))
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         }
-        Ok(LiveSession {
+        let live = LiveSession {
             turn_started: std::sync::Mutex::new(None),
             session: Arc::new(session),
             workspace: setup.workspace,
@@ -314,7 +336,9 @@ impl A3sCodeAgent {
             turn_queue: Arc::new(TurnQueue::new()),
             mcp_servers: setup.mcp_servers,
             active_prompt_id: std::sync::Mutex::new(None),
-        })
+        };
+        start_workspace_indexing(&live);
+        Ok(live)
     }
 
     /// Register each installed plugin executable on the live session.
@@ -336,21 +360,31 @@ impl A3sCodeAgent {
         entries: Vec<serde_json::Value>,
     ) -> acp::Result<LiveSession> {
         let result = async {
-            if !live.host.source_review {
-                live.session
-                    .register_dynamic_tool(Arc::new(
-                        crate::office_read::OfficeReadTool::new(&live.workspace).map_err(
-                            |error| acp::Error::internal_error().data(error.to_string()),
-                        )?,
-                    ))
-                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-                live.session
-                    .register_dynamic_tool(Arc::new(
-                        crate::office_file::OfficeFileTool::new(&live.workspace).map_err(
-                            |error| acp::Error::internal_error().data(error.to_string()),
-                        )?,
-                    ))
-                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            if !live.host.source_review && live.host.knowledge_compile.is_none() {
+                if live.host.office_tools {
+                    live.session
+                        .register_dynamic_tool(Arc::new(
+                            crate::office_read::OfficeReadTool::new(&live.workspace)
+                                .map_err(|error| {
+                                    acp::Error::internal_error().data(error.to_string())
+                                })?
+                                .with_host(
+                                    self.client_reads_files
+                                        .get()
+                                        .then(|| self.document_bridge())
+                                        .flatten(),
+                                    live.session.session_id().to_owned(),
+                                ),
+                        ))
+                        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+                    live.session
+                        .register_dynamic_tool(Arc::new(
+                            crate::office_file::OfficeFileTool::new(&live.workspace).map_err(
+                                |error| acp::Error::internal_error().data(error.to_string()),
+                            )?,
+                        ))
+                        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+                }
                 live.session
                     .register_dynamic_tool(Arc::new(crate::output_check::OutputCheckTool))
                     .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
@@ -427,7 +461,9 @@ impl A3sCodeAgent {
                 .map_err(|error| acp::Error::internal_error().data(error))?;
         }
         let asset_denies = Arc::clone(&current.asset_denies);
-        Self::attach_local_assets(&session, &setup.host, &asset_denies, self.document_bridge())?;
+        if setup.host.knowledge_compile.is_none() {
+            self.attach_local_assets(&session, &setup.host, &asset_denies)?;
+        }
         let mut live = LiveSession {
             turn_started: std::sync::Mutex::new(None),
             session: Arc::new(session),
@@ -448,42 +484,42 @@ impl A3sCodeAgent {
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .posture;
         live.set_posture(posture, Vec::new())?;
+        start_workspace_indexing(&live);
         Ok(live)
     }
 
     /// Register `open_local_asset` when the tenant catalog is non-empty.
     pub(super) fn attach_local_assets(
+        &self,
         session: &AgentSession,
         host: &crate::host_context::StudioHost,
         denies: &std::sync::Arc<std::sync::Mutex<Vec<String>>>,
-        bridge: Option<std::sync::Arc<crate::document_read::DocumentBridge>>,
     ) -> acp::Result<bool> {
-        let Some(roots) = host.assets.clone() else {
-            if bridge.is_none() {
-                return Ok(false);
-            }
-            session
-                .register_dynamic_tool(std::sync::Arc::new(
-                    crate::wiki_search::SearchWikiTool::new(
-                        None,
-                        bridge,
-                        std::sync::Arc::clone(denies),
-                    ),
-                ))
-                .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
-            return Ok(true);
-        };
+        if host.source_review || host.knowledge_compile.is_some() {
+            return Ok(false);
+        }
+        let bridge = host
+            .workspace_wiki_search
+            .then(|| self.document_bridge())
+            .flatten();
+        let memory_bridge = host
+            .workspace_memory_search
+            .then(|| self.document_bridge())
+            .flatten();
+        let roots = host.assets.clone().unwrap_or_default();
         let catalog_empty = crate::local_assets::load_catalog(&roots).is_empty();
-        let wiki = roots.wiki.as_ref().and_then(|path| {
-            match a3s_code_core::workspace::WikiIndex::start(path.clone()) {
-                Ok(index) => Some(index),
-                Err(error) => {
-                    tracing::warn!(%error, "wiki index did not start");
-                    None
-                }
-            }
-        });
-        if catalog_empty && wiki.is_none() && bridge.is_none() {
+        let wiki =
+            roots
+                .wiki
+                .as_ref()
+                .and_then(|path| match crate::wiki_search::shared_index(path) {
+                    Ok(index) => Some(index),
+                    Err(error) => {
+                        tracing::warn!(%error, "wiki index did not start");
+                        None
+                    }
+                });
+        if catalog_empty && wiki.is_none() && bridge.is_none() && memory_bridge.is_none() {
             return Ok(false);
         }
         if !catalog_empty {
@@ -495,12 +531,27 @@ impl A3sCodeAgent {
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         }
         if wiki.is_some() || bridge.is_some() {
+            let mut tool =
+                crate::wiki_search::SearchWikiTool::new(wiki, std::sync::Arc::clone(denies));
+            if let Some(bridge) = bridge {
+                tool = tool
+                    .with_host(bridge, session.session_id(), session.workspace())
+                    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            }
             session
-                .register_dynamic_tool(Arc::new(crate::wiki_search::SearchWikiTool::new(
-                    wiki.map(std::sync::Arc::new),
-                    bridge,
-                    std::sync::Arc::clone(denies),
-                )))
+                .register_dynamic_tool(Arc::new(tool))
+                .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+        }
+        if let Some(bridge) = memory_bridge {
+            let tool = crate::memory_search::SearchMemoryTool::new(
+                bridge,
+                session.session_id(),
+                session.workspace(),
+                Arc::clone(denies),
+            )
+            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            session
+                .register_dynamic_tool(Arc::new(tool))
                 .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         }
         Ok(true)
@@ -541,6 +592,25 @@ impl A3sCodeAgent {
             .await
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))
     }
+}
+
+fn start_workspace_indexing(live: &LiveSession) {
+    if live.host.source_review || live.host.knowledge_compile.is_some() {
+        return;
+    }
+    let session = Arc::downgrade(&live.session);
+    tokio::spawn(async move {
+        let Some(session) = session.upgrade() else {
+            return;
+        };
+        match session.prepare_workspace_index().await {
+            Ok(true) | Err(a3s_code_core::CodeError::SessionClosed { .. }) => {}
+            Ok(false) => tracing::warn!(
+                "workspace a3s-vec index unavailable; verified retrieval fallback remains active"
+            ),
+            Err(error) => tracing::warn!(%error, "workspace index preparation failed"),
+        }
+    });
 }
 
 /// The desired global set: baseline ∪ every live session's servers,
@@ -645,6 +715,7 @@ pub(super) fn acp_mcp_to_config(
     let hosted = |name: &str,
                   url: &str,
                   headers: &[acp::HttpHeader],
+                  meta: Option<&acp::Meta>,
                   sse: bool|
      -> Option<a3s_code_core::mcp::McpServerConfig> {
         if name.is_empty() || url.is_empty() {
@@ -672,7 +743,7 @@ pub(super) fn acp_mcp_to_config(
             enabled: true,
             env: HashMap::new(),
             oauth: None,
-            tool_timeout_secs: 60,
+            tool_timeout_secs: mcp_tool_timeout(meta)?,
         })
     };
 
@@ -697,14 +768,35 @@ pub(super) fn acp_mcp_to_config(
                 enabled: true,
                 env,
                 oauth: None,
-                tool_timeout_secs: 60,
+                tool_timeout_secs: mcp_tool_timeout(stdio.meta.as_ref())?,
             })
         }
-        acp::McpServer::Http(http) => hosted(&http.name, &http.url, &http.headers, false),
-        acp::McpServer::Sse(sse) => hosted(&sse.name, &sse.url, &sse.headers, true),
+        acp::McpServer::Http(http) => hosted(
+            &http.name,
+            &http.url,
+            &http.headers,
+            http.meta.as_ref(),
+            false,
+        ),
+        acp::McpServer::Sse(sse) => {
+            hosted(&sse.name, &sse.url, &sse.headers, sse.meta.as_ref(), true)
+        }
         _ => None,
     }
 }
+
+fn mcp_tool_timeout(meta: Option<&acp::Meta>) -> Option<u64> {
+    match meta.and_then(|meta| meta.get("aster/toolTimeoutSecs")) {
+        None => Some(60),
+        Some(value) => value
+            .as_u64()
+            .filter(|seconds| (1..=3600).contains(seconds)),
+    }
+}
+
+#[cfg(test)]
+#[path = "session_mcp_timeout_tests.rs"]
+mod session_mcp_timeout_tests;
 
 /// The host's registered provider (BYO model engine) serves the trusted
 /// local_cpu opt-in; the product itself ships no engine.

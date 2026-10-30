@@ -55,12 +55,13 @@ impl crate::agent::TurnEngine {
         ledger: &crate::harness_loop::MutationLedger,
         reports: &[crate::verification::VerificationReport],
     ) -> crate::harness_loop::CompletionGate {
-        crate::harness_loop::decide_with_observations(
+        crate::harness_loop::decide_with_contracts(
             ledger,
             reports,
             &self.config.completion_waivers,
             false,
             &self.config.external_observations,
+            &self.config.verification_contracts,
         )
     }
 
@@ -159,7 +160,7 @@ impl crate::agent::TurnEngine {
             return CompletionFlow::Continue;
         }
         self.merge_completion_attestor(&state.mutations, &mut state.verification_reports);
-        let gate = crate::harness_loop::decide_with_observations(
+        let gate = crate::harness_loop::decide_with_contracts(
             &state.mutations,
             &state.verification_reports,
             &self.config.completion_waivers,
@@ -167,6 +168,7 @@ impl crate::agent::TurnEngine {
                 && self.config.continuation_enabled
                 && state.gate_continuation_count == 0,
             &state.open_observations,
+            &self.config.verification_contracts,
         );
         let completion = match gate {
             crate::harness_loop::CompletionGate::Continue { message } => {

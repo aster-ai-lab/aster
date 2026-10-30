@@ -245,6 +245,9 @@ async fn session_close_settles_a_stream_blocked_on_confirmation() {
         }
         panic!("the tool confirmation must become pending: {observed:?}");
     }
+    let confirmation_id = manager.pending_confirmation_details().await[0]
+        .tool_id
+        .clone();
     let run_id = session.current_run().await.unwrap().id().to_string();
     session.close().await;
     tokio::time::timeout(std::time::Duration::from_secs(1), handle)
@@ -267,7 +270,7 @@ async fn session_close_settles_a_stream_blocked_on_confirmation() {
             tool_id,
             tool_name,
             ..
-        } if tool_id == "tool-close-stream" && tool_name == "write"
+        } if tool_id == &confirmation_id && tool_name == "write"
     )));
     // A cancelled full host FIFO preserves its queued prefix. The exact
     // confirmation result remains observable through this original Run.
@@ -278,16 +281,16 @@ async fn session_close_settles_a_stream_blocked_on_confirmation() {
             tool_id,
             approved: false,
             reason,
-        } if tool_id == "tool-close-stream"
+        } if tool_id == &confirmation_id
             && reason.as_deref() == Some("Confirmation cancelled")
     )));
     assert!(!events.iter().any(|event| matches!(
         event,
-        AgentEvent::ToolExecutionStart { id, .. } if id == "tool-close-stream"
+        AgentEvent::ToolExecutionStart { id, .. } if id == &confirmation_id
     )));
     assert!(!retained.iter().any(|frame| matches!(
         &frame.event,
-        AgentEvent::ToolExecutionStart { id, .. } if id == "tool-close-stream"
+        AgentEvent::ToolExecutionStart { id, .. } if id == &confirmation_id
     )));
     assert_eq!(manager.pending_count().await, 0);
     assert_eq!(

@@ -299,6 +299,18 @@ async fn run() -> Result<()> {
     if let Some(model) = args.model {
         std::env::set_var("A3S_DEFAULT_MODEL", model);
     }
+    let load_config = || {
+        load_launch_config_with_imports(
+            args.cwd.clone(),
+            args.config.clone(),
+            &args.import_accounts,
+        )
+    };
+    // Refuse an invalid workspace layer before a first-run template can mask it.
+    let (mut launch, mut admission) = match load_config() {
+        Ok(launch) => launch,
+        Err(error) => return startup_error::report(error.context("load A3S ACL")).await,
+    };
     let created_user_acl = if args.config.is_none() && args.unattended.is_none() {
         match a3s_code_acp::ensure_user_acl() {
             Ok(created) => created,
@@ -309,11 +321,12 @@ async fn run() -> Result<()> {
     } else {
         false
     };
-    let (mut launch, admission) =
-        match load_launch_config_with_imports(args.cwd, args.config, &args.import_accounts) {
+    if created_user_acl {
+        (launch, admission) = match load_config() {
             Ok(launch) => launch,
             Err(error) => return startup_error::report(error.context("load A3S ACL")).await,
         };
+    }
     if launch.model_id.is_empty() && args.unattended.is_some() {
         return startup_error::report(anyhow::anyhow!(
             "A3S ACL configuration was not found; pass --config or create ~/.a3s/config.acl"

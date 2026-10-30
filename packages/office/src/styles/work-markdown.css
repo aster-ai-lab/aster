@@ -1301,6 +1301,22 @@
   line-height: 22px;
 }
 
+.ds-segmented-control.work-markdown-mode-icons {
+  align-self: center;
+  flex: 0 0 auto;
+  border-color: #e5e7eb;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.work-markdown-mode-icons .ds-icon-button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  transition: none;
+}
+
 .work-markdown-view-note {
   margin: 0;
   padding: 0 4px;
@@ -1754,59 +1770,6 @@
   background: #ffffff;
   color: #8a8a8a;
   font-size: 12px;
-}
-
-/* Portaled paragraph menu. It leaves .a3s-office, so these values are literals. */
-.markdown-paragraph-style-menu.work-office-select-menu,
-.markdown-paragraph-style-menu.work-office-select-menu[data-floating='true'] {
-  width: max-content;
-  min-width: 160px;
-  max-width: 240px;
-  padding: 4px;
-  border: 1px solid #ececec;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  backdrop-filter: none;
-  color: #171717;
-}
-
-.markdown-paragraph-style-menu.work-office-select-menu > button {
-  height: 36px;
-  min-height: 36px;
-  padding: 0 10px;
-  border-radius: 8px;
-  background: transparent;
-  color: #3f3f3f;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 18px;
-}
-
-.markdown-paragraph-style-menu.work-office-select-menu > button:hover:not(:disabled),
-.markdown-paragraph-style-menu.work-office-select-menu > button:focus-visible {
-  outline: 0;
-  background: #f7f7f7;
-  color: #171717;
-}
-
-.markdown-paragraph-style-menu.work-office-select-menu > button:focus-visible {
-  outline: 2px solid rgb(0 0 0 / 10%);
-  outline-offset: -2px;
-}
-
-.markdown-paragraph-style-menu.work-office-select-menu > button[aria-selected='true'],
-.markdown-paragraph-style-menu.work-office-select-menu > button[aria-selected='true']:hover:not(:disabled) {
-  background: #f2f3f5;
-  color: #171717;
-  font-weight: 500;
-}
-
-.markdown-paragraph-style-menu.work-office-select-menu > button > svg {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  color: #171717;
 }
 
 .work-markdown-context-menu.work-office-context-menu {

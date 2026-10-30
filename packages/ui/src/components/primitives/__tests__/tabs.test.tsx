@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -10,6 +10,38 @@ afterEach(() => {
   cleanup()
   vi.clearAllMocks()
 })
+
+it.each(['default', 'line', 'underline'] as const)(
+  'moves only the selected %s plate after the controlled owner accepts a change',
+  async (variant) => {
+    const onValueChange = vi.fn()
+    const view = (value: string) => (
+      <Tabs value={value} variant={variant} onValueChange={onValueChange}>
+        <TabsList aria-label="Workspace">
+          <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsTrigger value="terminal">Terminal</TabsTrigger>
+          <TabsTrigger value="disabled" disabled>
+            Unavailable
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    )
+    const { container, rerender } = render(view('files'))
+    const files = screen.getByRole('tab', { name: 'Files' })
+    const terminal = screen.getByRole('tab', { name: 'Terminal' })
+    fireEvent.mouseDown(terminal, { button: 0, ctrlKey: false })
+    expect(onValueChange).toHaveBeenCalledWith('terminal')
+    expect(files.querySelector('[data-slot="tabs-indicator"]')).not.toBeNull()
+    expect(terminal).toHaveAttribute('aria-selected', 'false')
+    rerender(view('terminal'))
+    expect(terminal).toHaveAttribute('aria-selected', 'true')
+    expect(terminal.querySelector('[data-slot="tabs-indicator"]')).not.toBeNull()
+    expect(container.querySelectorAll('[data-slot="tabs-indicator"]')).toHaveLength(1)
+    terminal.focus()
+    await userEvent.keyboard('{ArrowRight}')
+    expect(files).toHaveFocus()
+  }
+)
 
 describe('Tabs workflow variant', () => {
   it('marks the active trigger with bold + underline styles', () => {

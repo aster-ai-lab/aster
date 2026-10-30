@@ -129,6 +129,10 @@ fn bare_task(workspace: &std::path::Path, name: &str) -> BackgroundTask {
         uuid::Uuid::new_v4(),
         Arc::new(FileLog::open(workspace.join("facts")).unwrap()),
         "bg-evidence".to_string(),
+        "bare-session".to_string(),
+        "echo bare".to_string(),
+        None,
+        None,
     )
 }
 
@@ -621,7 +625,8 @@ async fn streaming_unterminated_lines_stay_bounded_and_flush_before_exit() {
     let task = bare_task(workspace.path(), "partial");
     task.on_output_delta(&"标记".repeat(100_000)).await;
     assert!(task.output_lines.lock().unwrap().pending.len() <= BG_MAX_LINE_BYTES);
-    task.finish("exit status 0".to_string(), serde_json::json!({}));
+    task.finish("exit status 0".to_string(), serde_json::json!({}))
+        .await;
     let facts = task.log.read(&task.thread).unwrap();
     assert_eq!(facts.len(), 2);
     assert!(facts[0].payload["line"].as_str().unwrap().len() <= BG_MAX_LINE_BYTES + 3);
@@ -635,7 +640,8 @@ async fn stream_cap_records_one_truncation_fact_and_a_terminal_fact() {
     for index in 0..(BG_FACT_LINES_PER_TASK + 20) {
         task.record_line(&format!("line-{index}"), None);
     }
-    task.finish("exit status 0".to_string(), serde_json::json!({}));
+    task.finish("exit status 0".to_string(), serde_json::json!({}))
+        .await;
     let facts = task.log.read(&task.thread).unwrap();
     assert_eq!(facts.len() as u64, BG_FACT_LINES_PER_TASK + 2);
     assert_eq!(
@@ -657,7 +663,8 @@ async fn output_or_terminal_append_failure_refuses_settlement() {
     // A directory at the thread-file path deterministically breaks durable append.
     std::fs::create_dir(workspace.path().join("facts/bg-evidence.jsonl")).unwrap();
     task.record_line("output before exit", None);
-    task.finish("exit status 0".to_string(), serde_json::json!({}));
+    task.finish("exit status 0".to_string(), serde_json::json!({}))
+        .await;
     assert!(task.failure().unwrap().contains("evidence append failed"));
     let runs = Arc::new(BackgroundRuns::default());
     runs.insert(task.run, Arc::clone(&task));
@@ -683,7 +690,8 @@ async fn recovered_terminal_append_retains_an_earlier_output_evidence_failure() 
             "disposition": "completed", "process_settled": true,
             "process_settlement_basis": "execution_returned", "output_complete": true,
         }),
-    );
+    )
+    .await;
     let facts = task.log.read(&task.thread).unwrap();
     assert_eq!(facts.len(), 1);
     assert_eq!(facts[0].payload["event"], "exited");
@@ -997,5 +1005,73 @@ async fn stop_releases_admission_without_reusing_fact_identity() {
     );
     assert!(facts.iter().any(|fact| fact.payload["line"] == "ready-1"));
     assert!(facts.iter().any(|fact| fact.payload["line"] == "ready-2"));
+    owned.close().await;
+}
+
+#[tokio::test]
+async fn parallel_background_tasks_publish_lifecycle_and_stop_independently() {
+    use crate::subagent_task_tracker::{InMemorySubagentTaskTracker, SubagentStatus};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let tracker = Arc::new(InMemorySubagentTaskTracker::new());
+    let (events, mut event_rx) = tokio::sync::broadcast::channel(32);
+    let long_sandbox = Arc::new(DeterministicBackgroundSandbox::new(
+        workspace.path().to_path_buf(),
+        "long",
+        0,
+        true,
+    ));
+    let quick_sandbox = Arc::new(DeterministicBackgroundSandbox::new(
+        workspace.path().to_path_buf(),
+        "quick",
+        7,
+        false,
+    ));
+    let owned = TestRun::in_workspace(workspace, Some(long_sandbox));
+    let mut long_ctx = owned.ctx.clone();
+    long_ctx.agent_event_tx = Some(events);
+    let mut quick_ctx = long_ctx.clone();
+    quick_ctx.sandbox = Some(quick_sandbox);
+    let tool = BackgroundTool::with_subagent_tracker(Arc::clone(&tracker));
+
+    assert!(start(&tool, &long_ctx, "long", "sleep 30").await.success);
+    assert!(start(&tool, &quick_ctx, "quick", "exit 7").await.success);
+    let long = task(&tool, &long_ctx, "long");
+    let quick = task(&tool, &quick_ctx, "quick");
+    assert_ne!(long.task_id, quick.task_id);
+    wait_settled(&quick).await;
+    assert!(tool.stop("long", &long_ctx).await.unwrap().success);
+    wait_settled(&long).await;
+
+    let long_snapshot = tracker.get(&long.task_id).await.unwrap();
+    assert_eq!(long_snapshot.status, SubagentStatus::Cancelled);
+    assert!(long_snapshot.finished_ms.is_some());
+    assert!(long_snapshot
+        .progress
+        .iter()
+        .any(|entry| entry.metadata["command"] == "sleep 30"));
+    let quick_snapshot = tracker.get(&quick.task_id).await.unwrap();
+    assert_eq!(quick_snapshot.status, SubagentStatus::Failed);
+    assert!(quick_snapshot.finished_ms.is_some());
+    assert!(quick_snapshot
+        .progress
+        .iter()
+        .any(|entry| entry.metadata["command"] == "exit 7" && entry.metadata["exitCode"] == 7));
+
+    let mut terminal = Vec::new();
+    while terminal.len() < 2 {
+        let event = tokio::time::timeout(Duration::from_secs(2), event_rx.recv())
+            .await
+            .expect("background lifecycle event")
+            .unwrap();
+        if let crate::agent::AgentEvent::SubagentEnd {
+            task_id, success, ..
+        } = event
+        {
+            terminal.push((task_id, success));
+        }
+    }
+    assert!(terminal.contains(&(long.task_id.clone(), false)));
+    assert!(terminal.contains(&(quick.task_id.clone(), false)));
     owned.close().await;
 }

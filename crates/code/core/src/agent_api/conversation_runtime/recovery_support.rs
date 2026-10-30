@@ -121,46 +121,82 @@ pub(super) async fn await_host_confirmation(
     let Some(manager) = &surface.confirmation else {
         return false;
     };
-    let receiver = manager
-        .request_confirmation(&pending.tool_call_id, &pending.name, &pending.args)
-        .await;
-    emit_interactive_host_event(
-        surface,
-        AgentEvent::ConfirmationRequired {
-            tool_id: pending.tool_call_id.clone(),
-            tool_name: pending.name.clone(),
-            args: pending.args.clone(),
-            timeout_ms: 0,
-        },
-    )
-    .await;
-    let reason = Some("Confirmation cancelled".to_string());
-    tokio::select! {
-        biased;
-        _ = surface.cancel.cancelled() => {
-            let _ = manager
-                .confirm(&pending.tool_call_id, false, reason.clone())
+    let mut requested = false;
+    let mut announced = false;
+    let response = {
+        let protocol = async {
+            requested = true;
+            let receiver = manager
+                .request_confirmation(&pending.tool_call_id, &pending.name, &pending.args)
                 .await;
-            emit_interactive_host_event(surface, AgentEvent::ConfirmationReceived {
-                        tool_id: pending.tool_call_id.clone(),
-                        approved: false,
-                        reason,
-                    }).await;
-            false
+            emit_interactive_host_event(
+                surface,
+                AgentEvent::ConfirmationRequired {
+                    tool_id: pending.tool_call_id.clone(),
+                    tool_name: pending.name.clone(),
+                    args: pending.args.clone(),
+                    timeout_ms: 0,
+                },
+            )
+            .await;
+            announced = true;
+            receiver.await
+        };
+        tokio::select! {
+            biased;
+            _ = surface.cancel.cancelled() => None,
+            response = protocol => Some(response),
         }
-        response = receiver => {
+    };
+    let reason = Some("Confirmation cancelled".to_string());
+    let approved = match response {
+        Some(response) => {
             let response = response.unwrap_or(crate::hitl::ConfirmationResponse {
                 approved: false,
                 reason: reason.clone(),
             });
-            emit_interactive_host_event(surface, AgentEvent::ConfirmationReceived {
-                        tool_id: pending.tool_call_id.clone(),
-                        approved: response.approved,
-                        reason: response.reason.clone(),
-                    }).await;
+            emit_interactive_host_event(
+                surface,
+                AgentEvent::ConfirmationReceived {
+                    tool_id: pending.tool_call_id.clone(),
+                    approved: response.approved,
+                    reason: response.reason,
+                },
+            )
+            .await;
             response.approved
         }
-    }
+        None => {
+            let cleanup = if requested {
+                crate::tool_confirmation::cancel_confirmation(
+                    manager.as_ref(),
+                    &pending.tool_call_id,
+                )
+                .await
+            } else {
+                Some(false)
+            };
+            if cleanup.is_none() {
+                emit_interactive_host_event(
+                    surface,
+                    crate::tool_confirmation::cancellation_unresolved_event(&pending.tool_call_id),
+                )
+                .await;
+            } else if announced {
+                emit_interactive_host_event(
+                    surface,
+                    AgentEvent::ConfirmationReceived {
+                        tool_id: pending.tool_call_id.clone(),
+                        approved: false,
+                        reason,
+                    },
+                )
+                .await;
+            }
+            false
+        }
+    };
+    approved
 }
 
 #[cfg(test)]

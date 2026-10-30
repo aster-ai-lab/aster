@@ -34,6 +34,7 @@ export function DocumentMailMergeImportDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.mailMerge.import.title')}
       description={officeMessage(
         messages,

@@ -1,4 +1,5 @@
 .ds-button {
+  position: relative;
   display: inline-flex;
   min-height: 36px;
   align-items: center;
@@ -8,21 +9,18 @@
   border: 1px solid transparent;
   border-radius: var(--a3s-radius-sm);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
   transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease,
-    transform 150ms ease;
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
 }
 
 .ds-button.compact {
-  min-height: 28px;
+  min-height: 30px;
   gap: 6px;
   padding: 0 9px;
-  border-radius: 7px;
-  font-size: 11px;
 }
 
 .ds-button.primary {
@@ -35,7 +33,7 @@
 }
 
 .ds-button.secondary {
-  border-color: var(--a3s-line-strong);
+  border-color: var(--spec-button-border);
   background: var(--a3s-panel);
 }
 
@@ -50,9 +48,8 @@
   color: var(--a3s-red);
 }
 
-.ds-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(1.02);
+.ds-button.secondary:hover:not(:disabled) {
+  background: var(--spec-quiet-button-hover);
 }
 
 .ds-button.quiet:hover:not(:disabled) {
@@ -62,16 +59,40 @@
 
 .ds-button:disabled {
   cursor: not-allowed;
-  opacity: 0.46;
+  opacity: 0.4;
+}
+
+.ds-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+
+.ds-button[aria-busy="true"] > .ds-button-content {
+  opacity: 0;
 }
 
 .ds-button-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
   width: 13px;
   height: 13px;
   border: 2px solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: a3s-office-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-button {
+    transition: none;
+  }
+
+  .ds-button-spinner {
+    animation: none;
+  }
 }
 
 .work-office-tooltip {
@@ -125,8 +146,9 @@
 }
 
 .ds-icon-button:focus-visible {
-  outline: 2px solid rgb(0 0 0 / 10%);
-  outline-offset: -2px;
+  outline: 2px solid var(--a3s-ink);
+  outline-offset: 2px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .ds-icon-button.selected {
@@ -540,7 +562,7 @@ html[data-ds-resizing="horizontal"] * {
 }
 
 .ds-tabs {
-  --ds-tabs-accent: var(--a3s-blue);
+  --ds-tabs-accent: var(--a3s-ink);
 
   display: flex;
   min-width: 0;
@@ -550,7 +572,7 @@ html[data-ds-resizing="horizontal"] * {
 .ds-tabs.segment {
   gap: 2px;
   padding: 2px;
-  border-radius: 9px;
+  border-radius: 8px;
   background: var(--a3s-panel-soft);
 }
 
@@ -565,24 +587,24 @@ html[data-ds-resizing="horizontal"] * {
   background: transparent;
   color: var(--a3s-muted);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 400;
   white-space: nowrap;
 }
 
 .ds-tabs.standard > button {
   min-height: 32px;
   padding: 0 10px;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .ds-tabs.compact > button {
   min-height: 30px;
   padding: 0 9px;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .ds-tabs.segment > button {
-  border-radius: 7px;
+  border-radius: 6px;
 }
 
 .ds-tabs > button:hover:not(:disabled) {
@@ -593,6 +615,7 @@ html[data-ds-resizing="horizontal"] * {
   background: var(--a3s-panel);
   box-shadow: 0 1px 3px rgb(20 24 40 / 8%);
   color: var(--ds-tabs-accent);
+  font-weight: 500;
 }
 
 .ds-tabs.line {
@@ -618,6 +641,7 @@ html[data-ds-resizing="horizontal"] * {
 
 .ds-tabs.line > button[aria-selected="true"] {
   color: var(--a3s-ink);
+  font-weight: 500;
 }
 
 .ds-tabs.line > button[aria-selected="true"]::after {
@@ -626,7 +650,7 @@ html[data-ds-resizing="horizontal"] * {
 
 .ds-tabs > button:disabled {
   cursor: not-allowed;
-  opacity: 0.42;
+  opacity: 0.4;
 }
 
 .ds-tabs-icon {

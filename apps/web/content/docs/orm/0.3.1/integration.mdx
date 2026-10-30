@@ -1,0 +1,87 @@
+export const meta = {
+  title: 'ORM 查询与接入',
+  description: '类型化 Schema、不可变 Query、异步 Executor 和受控原生 SQL。',
+  label: '查询与接入',
+  updated: '2026-10-29',
+};
+
+先声明表结构，再组合类型化查询。编译查询与执行查询是两个独立步骤。
+
+## 编译类型化查询
+
+```rust
+use a3s_orm::{orm_table, select_from, OrderDirection, PostgresDialect, Query};
+
+orm_table! {
+    pub struct Person => "person" {
+        id: i64 => "id",
+        name: String => "name",
+        age: i32 => "age",
+    }
+}
+
+fn main() -> Result<(), a3s_orm::Error> {
+    let query = select_from::<Person>()
+        .select((Person::id(), Person::name()))
+        .filter(Person::age().gte(18))
+        .order_by(Person::name(), OrderDirection::Asc)
+        .limit(20)
+        .compile(&PostgresDialect)?;
+
+    println!("sql = {}", query.sql);
+    println!("parameters = {:?}", query.parameters);
+    assert_eq!(query.parameters.len(), 2);
+    Ok(())
+}
+```
+
+生成的 SQL 使用方言占位符。年龄和 LIMIT 都作为绑定参数传递。方言会拒绝不支持的语法，不会生成近似 SQL。
+
+## 选择运行时
+
+默认 SQLite 运行时：
+
+```toml
+[dependencies]
+a3s-orm = "0.3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+```
+
+使用内置 PostgreSQL 驱动：
+
+```toml
+a3s-orm = { version = "0.3", default-features = false, features = ["postgres"] }
+```
+
+只使用 Builder 和 Dialect：
+
+```toml
+a3s-orm = { version = "0.3", default-features = false }
+```
+
+## 执行 SQLite 往返
+
+`SqliteExecutor::open_in_memory` 创建真实的内存数据库。`Database::new(SqliteDialect, executor)` 把方言与 Executor 组合。
+
+<DocTable caption="常用执行接口" headers={['接口', '用途']} rows={[
+  ['execute_schema', '执行受控 Schema 初始化语句'],
+  ['execute', '执行 INSERT、UPDATE 或 DELETE Builder'],
+  ['fetch_one_as', '把单行结果解码为指定 Rust 类型'],
+  ['sql_query::<Output>', '执行经过审查的静态 SQL，并绑定运行时值'],
+]} />
+
+一行和可选行接口会拒绝意外基数。数组、UUID、JSON、时间和 Decimal 使用经过检查的转换。
+
+## 组合复杂 SQL
+
+Builder 覆盖 Join、CTE、子查询、聚合、窗口、集合操作、Cast 和冲突处理。PostgreSQL 行锁、表锁、事务策略和超时保持类型化。
+
+需要 `SKIP LOCKED` 任务租赁时，把候选 CTE、`UPDATE FROM` 和表达式赋值放在同一个参数化语句中。不要拼接 SQL 片段。
+
+`sql_query` 是受控逃生口。SQL 文本必须经过审查且保持静态，动态值仍通过 `bind` 传入。
+
+## 实现依据
+
+- [查询合同与快速开始](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/README.md)
+- [PostgreSQL Worker Queue 示例](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/README.md)
+- [架构与 Executor 合同](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/docs/architecture.md)

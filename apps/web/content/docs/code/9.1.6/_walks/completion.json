@@ -1,0 +1,50 @@
+{
+  "title": "完成门禁源码漫游",
+  "intro": "按真实判断顺序阅读。每一项都可能阻止结束。",
+  "steps": [
+    {
+      "title": "先拒绝未知效果",
+      "body": "未解决的工具效果直接返回 Incomplete。",
+      "takeaway": "缺失结果不能用最终答复填补。",
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "if let Some(error) = ToolEffectUnresolved::from_ledger(ledger) {",
+        "before": 0,
+        "after": 19
+      }
+    },
+    {
+      "title": "检查子任务与观察完整性",
+      "body": "开放子任务和不完整观察都会阻止结束。",
+      "takeaway": "部分文件列表对应的摘要不足以代表全部修改。",
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "if ledger.has_open_children() {",
+        "before": 0,
+        "after": 23
+      }
+    },
+    {
+      "title": "区分无修改、豁免和验证",
+      "body": "无修改返回 Narrative。有修改时核对当前摘要。",
+      "takeaway": "Waived 表示接受缺口，不表示检查通过。",
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "if ledger.is_empty() {",
+        "before": 0,
+        "after": 29
+      }
+    },
+    {
+      "title": "报告仍缺少的依据",
+      "body": "没有匹配报告或豁免时，门禁返回 Incomplete。",
+      "takeaway": "宿主声明的检查与权限仍分别生效。",
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "let paths = mutation_paths_for_gate(ledger);",
+        "before": 0,
+        "after": 23
+      }
+    }
+  ]
+}

@@ -36,6 +36,7 @@ export function DocumentTableOfContentsDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(
         messages,
         editing ? 'document.toc.title.edit' : 'document.toc.title.insert',

@@ -3,6 +3,7 @@
 use std::collections::BTreeMap;
 use std::io::{Read, Write};
 use std::path::Path;
+use std::sync::Arc;
 
 use a3s_code_core::capability::WorkspaceOperation;
 use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
@@ -19,13 +20,24 @@ const OUTPUT_LIMIT: usize = 64 * 1024;
 
 pub(crate) struct OfficeReadTool {
     workspace: crate::plugin_workspace::WorkspaceBinding,
+    host: Option<(Arc<crate::document_read::DocumentBridge>, String)>,
 }
 
 impl OfficeReadTool {
     pub(crate) fn new(workspace: &Path) -> Result<Self> {
         Ok(Self {
             workspace: crate::plugin_workspace::WorkspaceBinding::new(workspace)?,
+            host: None,
         })
+    }
+
+    pub(crate) fn with_host(
+        mut self,
+        bridge: Option<Arc<crate::document_read::DocumentBridge>>,
+        session: String,
+    ) -> Self {
+        self.host = bridge.map(|bridge| (bridge, session));
+        self
     }
 }
 
@@ -36,6 +48,17 @@ struct Input {
     node_path: Option<String>,
     #[serde(default = "default_limit")]
     limit: usize,
+    #[serde(default = "first_page")]
+    start_page: usize,
+    #[serde(default = "page_count")]
+    page_count: usize,
+}
+
+fn first_page() -> usize {
+    1
+}
+fn page_count() -> usize {
+    8
 }
 
 fn default_limit() -> usize {
@@ -48,6 +71,7 @@ enum Kind {
     Xlsx,
     Pptx,
     Pdf,
+    Image,
 }
 
 impl Kind {
@@ -57,7 +81,10 @@ impl Kind {
             "xlsx" => Ok(Self::Xlsx),
             "pptx" => Ok(Self::Pptx),
             "pdf" => Ok(Self::Pdf),
-            _ => bail!("office_read source extension must be docx, xlsx, pptx or pdf"),
+            "png" | "jpg" | "jpeg" | "webp" | "gif" | "bmp" | "tif" | "tiff" => Ok(Self::Image),
+            _ => bail!(
+                "office_read source extension must be docx, xlsx, pptx, pdf or a supported image"
+            ),
         }
     }
     fn as_str(self) -> &'static str {
@@ -66,6 +93,7 @@ impl Kind {
             Self::Xlsx => "xlsx",
             Self::Pptx => "pptx",
             Self::Pdf => "pdf",
+            Self::Image => "image",
         }
     }
 }
@@ -76,13 +104,19 @@ impl Tool for OfficeReadTool {
         "office_read"
     }
     fn description(&self) -> &str {
-        "Read a DOCX, XLSX or PPTX source in process without Bash or external packages. Returns stable paragraph/table/sheet/cell paths, source digest, typed cell values, formulas and number formats. Reads persisted bytes, not unsaved editor text. Default annotated view returns up to 200 entries; limit is 1..1000, with explicit truncation. Use node_path from the result to inspect an exact native node. Input is at most 20 MiB; total result is at most 64 KiB (lower limit or choose a narrower node if refused). This build has no native PDF text extraction, PDF page rendering or OCR through this tool; PDF reads explicitly refuse those unavailable capabilities."
+        if self.host.is_some() {
+            "Read persisted DOCX/XLSX/PPTX, PDFs and images without Bash or installing packages. Studio provides local PP-OCRv6: PDF text layers are read directly; scanned pages and images use OCR. Source SHA-256 and page numbers are retained; OCR is untrusted extracted evidence. PDF/image reads use start_page (default 1) and page_count (default 8, max 16); follow next_page until null before claiming full coverage. Repeated reads reuse cached results. Office reads return stable native nodes and typed spreadsheet cells; limit is 1..1000. Input max 20 MiB, output max 64 KiB."
+        } else {
+            "Read persisted DOCX/XLSX/PPTX sources with stable native nodes, typed cells and source SHA-256. Input max 20 MiB; output max 64 KiB; limit 1..1000. PDF and image OCR require an admitted Studio document host and are unavailable here."
+        }
     }
     fn parameters(&self) -> Value {
         json!({"type":"object","additionalProperties":false,"required":["file_path"],"properties":{
             "file_path":{"type":"string","description":"Persisted Office source path inside the current workspace."},
             "node_path":{"type":"string","description":"Optional exact native semantic path returned by a previous read; no wildcard or guessed business label."},
             "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Annotated entry bound; default 200. Exact node reads return that node without children."}
+            ,"start_page":{"type":"integer","minimum":1,"maximum":500,"description":"First PDF page, numbered from 1; default 1."}
+            ,"page_count":{"type":"integer","minimum":1,"maximum":16,"description":"PDF page count; default 8. Follow next_page for remaining pages."}
         }})
     }
     fn capabilities(&self, _: &Value) -> ToolCapabilities {
@@ -109,7 +143,7 @@ impl Tool for OfficeReadTool {
             self.validate_execution_available(args, ctx)?;
             let access = ctx.workspace_operation(WorkspaceOperation::Read)?;
             ctx.register_capability_effect(self.workspace.clone())?;
-            read_source(args, ctx, || {
+            read_source(args, ctx, self.host.as_ref(), || {
                 self.workspace.validate(&ctx.workspace)?;
                 access.check()?;
                 Ok(())
@@ -127,6 +161,7 @@ impl Tool for OfficeReadTool {
 async fn read_source(
     args: &Value,
     ctx: &ToolContext,
+    host: Option<&(Arc<crate::document_read::DocumentBridge>, String)>,
     validate: impl Fn() -> Result<()>,
 ) -> Result<Value> {
     validate()?;
@@ -158,8 +193,8 @@ async fn read_source(
         .unwrap_or("")
         .to_ascii_lowercase();
     let kind = Kind::parse(&extension)?;
-    if matches!(kind, Kind::Pdf) {
-        bail!("native PDF text extraction, PDF page images and OCR are unavailable in this build; no source text was read");
+    if matches!(kind, Kind::Pdf | Kind::Image) && host.is_none() {
+        bail!("native PDF text extraction, PDF page images and OCR are unavailable without an admitted Studio document host; no source text was read");
     }
     let (parent, name) =
         crate::office_file::parent_dir(root, path.as_str()).context("Office source not found")?;
@@ -184,6 +219,32 @@ async fn read_source(
         .context("Office source not found")?;
     ensure!(bytes.len() as u64 <= FILE_LIMIT, "source exceeds 20 MiB");
     validate()?;
+    if matches!(kind, Kind::Pdf | Kind::Image) {
+        ensure!(
+            input.node_path.is_none(),
+            "PDF/image reads use start_page and page_count instead of node_path"
+        );
+        ensure!(
+            (1..=500).contains(&input.start_page) && (1..=16).contains(&input.page_count),
+            "invalid PDF/image page range"
+        );
+        let (bridge, session) = host.context("document host unavailable")?;
+        use sha2::Digest;
+        let digest = format!("{:x}", sha2::Sha256::digest(&bytes));
+        let mut value = bridge
+            .process_source(
+                ctx.workspace_operation(WorkspaceOperation::Read)?,
+                session,
+                &root.join(path.as_str()),
+                &digest,
+                input.start_page,
+                input.page_count,
+            )
+            .await?;
+        validate()?;
+        value["file_path"] = json!(path.as_str());
+        return Ok(value);
+    }
     // The parser receives a private bounded snapshot, never a path that can be retargeted outside the workspace.
     let mut snapshot = tempfile::Builder::new()
         .prefix("aster-office-read-")

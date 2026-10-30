@@ -21,10 +21,26 @@ const CONCEPTS_DIR: &str = "concepts";
 
 mod maintenance;
 pub use maintenance::{
-    abandon_knowledge_maintenance, begin_knowledge_maintenance, fail_knowledge_maintenance,
-    finish_knowledge_maintenance, knowledge_change, knowledge_maintenance_job,
-    knowledge_maintenance_plan, review_knowledge_change, KnowledgeChangeDetail, KnowledgeJob,
-    KnowledgePlan, MaintenanceOperation,
+    abandon_knowledge_maintenance, begin_knowledge_maintenance, cancel_knowledge_maintenance,
+    fail_knowledge_maintenance, fail_workspace_knowledge_job, finish_knowledge_maintenance,
+    knowledge_change, knowledge_compile_workspace, knowledge_maintenance_job,
+    knowledge_maintenance_plan, knowledge_page_path, review_knowledge_change,
+    try_workspace_knowledge_read, with_knowledge_source_mutation, workspace_knowledge_read,
+    KnowledgeChangeDetail, KnowledgeJob, KnowledgePlan, KnowledgeSourceMutationBlocked,
+    MaintenanceOperation, WorkspaceKnowledgeRead,
+};
+pub use maintenance::{
+    abandon_workspace_knowledge_job, abandon_workspace_knowledge_maintenance,
+    begin_workspace_knowledge_maintenance, cancel_workspace_knowledge_job,
+    cancel_workspace_knowledge_maintenance, fail_workspace_knowledge_maintenance,
+    finish_workspace_knowledge_maintenance, retained_workspace_document_projection,
+    retire_workspace_knowledge, reuse_workspace_knowledge_maintenance,
+    review_workspace_knowledge_change, workspace_knowledge_change, workspace_knowledge_citation,
+    workspace_knowledge_compile_workspace, workspace_knowledge_maintenance_enabled,
+    workspace_knowledge_maintenance_job, workspace_knowledge_maintenance_plan,
+    workspace_knowledge_output_root, workspace_knowledge_page, workspace_knowledge_summary,
+    WorkspaceKnowledgeCitation, WorkspaceKnowledgeInput, WorkspaceKnowledgePage,
+    WorkspaceKnowledgeSource, WorkspaceKnowledgeStatus, WorkspaceKnowledgeSummary,
 };
 
 /// `wiki/local` is the only directory the personal compile command accepts.
@@ -1210,7 +1226,7 @@ mod tests {
         assert!(concept.contains("type: Document"));
         assert!(concept.contains("resource: \"../甲.md\""));
         assert!(concept.contains(&format!("source_generation: \"{generation}\"")));
-        assert!(concept.contains("parser_generation: \"builtin:1\""));
+        assert_eq!(crate::published_parser(&concept), Some(PARSER_GENERATION));
         assert!(concept.contains("by: a3s-okf-compiler/0.2"));
         assert!(concept.contains("句子仍在。"));
         assert!(concept.contains("[[乙]]"));

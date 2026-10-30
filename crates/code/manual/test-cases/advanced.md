@@ -45,18 +45,18 @@ Host language service. Feature: host provides the service. Tools:
 - **Fail:** outside path returned to the model.
 - **Home:** `core/src/tools/builtin/code_intelligence/tests.rs` `registration_is_capability_gated_and_tools_are_structured_query_reads`. Registry execution of `../outside.rs` returns `Workspace boundary check failed` and does not call the provider.
 
-## cognitive_packages (CP)
+## packages (CP)
 
 Host supplies cited knowledge generations.
 
 ### U-CP-01
 
-- **Invariant:** with no host binding, `session.cognitive_package_binding` fail-closes and recall does not invent a package.
+- **Invariant:** with no host binding, `session.package_binding` fail-closes and recall does not invent a package.
 - **Pre:** default session, no host.
 - **Stimulus:** read current binding and ask context assembly for package text.
 - **Oracle:** binding absent; prompt contains no package body.
 - **Fail:** an empty package id is treated as bound.
-- **Home:** `core/src/agent_api/tests/cognitive.rs` `unbound_session_does_not_invent_a_cognitive_package`. Both binding accessors are `None`, so no package body is installed.
+- **Home:** `core/src/agent_api/tests/package.rs` `unbound_session_does_not_invent_a_package`. Both binding accessors are `None`, so no package body is installed.
 
 ### U-CP-02
 
@@ -65,7 +65,7 @@ Host supplies cited knowledge generations.
 - **Stimulus:** read binding and the injected context.
 - **Oracle:** generation id G; bytes match G's digest.
 - **Fail:** G+1 text in the prompt.
-- **Home:** `cognitive_provider_failure_and_generation_drift_fail_closed_without_fallback` in `core/src/agent_api/tests/cognitive.rs`. `DriftGeneration` increments the provider generation; the turn fails closed, the model is not called, and no recalled-memory event is recorded.
+- **Home:** `package_provider_failure_and_generation_drift_fail_closed_without_fallback` in `core/src/agent_api/tests/package.rs`. `DriftGeneration` increments the provider generation; the turn fails closed, the model is not called, and no recalled-memory event is recorded.
 
 ### I-CP-01
 
@@ -74,7 +74,7 @@ Host supplies cited knowledge generations.
 - **Stimulus:** assemble again.
 - **Oracle:** G digest absent; G+1 digest present.
 - **Fail:** both bodies present.
-- **Home:** Product bind keeps one generation. A different generation returns `RunCognitiveBindingError::Conflict` and does not replace G. Proven by `soak_alternating_cognitive_binds_keep_one_generation` in `core/src/run/tests/run_cognitive_binding_soak.rs` (`#[ignore]`). Host CAR stays external.
+- **Home:** Product bind keeps one generation. A different generation returns `RunPackageBindingError::Conflict` and does not replace G. Proven by `soak_alternating_package_binds_keep_one_generation` in `core/src/run/tests/run_package_binding_soak.rs` (`#[ignore]`). Host CAR stays external.
 
 Host CAR qualification (CAR-01…05) stays external. These cases do not replace it.
 
@@ -177,7 +177,7 @@ Feature: `advanced-harness`.
 - **Stimulus:** fork, patch the fork, diff twice.
 - **Oracle:** parent head unchanged; both diffs equal.
 - **Fail:** parent head moves, or diffs differ.
-- **Home:** `test_state_graph_integration.rs`; Go `sdk/go/state_graph_test.go`.
+- **Home:** `test_state_graph_integration.rs`.
 
 ### I-SG-01
 
@@ -212,12 +212,12 @@ Always compiled. Host owns publication.
 
 ### I-AR-01
 
-- **Invariant:** Node release-manifest script and Rust verify agree on the fixture.
+- **Invariant:** the Rust release validator accepts a valid fixture and rejects malformed variants.
 - **Pre:** shared fixture.
-- **Stimulus:** both verifiers.
-- **Oracle:** same accept/reject.
-- **Fail:** Node accepts what Rust rejects.
-- **Home:** `sdk/node/scripts/release-manifest.test.mjs`, `agent_release_manifest.rs`.
+- **Stimulus:** parse valid and invalid fixture variants.
+- **Oracle:** valid input is accepted; invalid values have named validation errors.
+- **Fail:** the validator accepts malformed input.
+- **Home:** `core/tests/agent_release_manifest.rs`.
 
 ## agent_protocol (AP)
 
@@ -308,7 +308,7 @@ Feature: `advanced-harness`.
 - **Fail:** cross-delete.
 - **Home:** `session_close_leaves_the_host_evaluation_digest` in `core/src/evaluation/result.rs` (`--features evaluation`). Host-owned result digest `record_digest` survives `session.close()`, and `SESSION-SURVIVOR-91` survives dropping the result store.
 
-SDK: `sdk/python/tests/test_evaluation_protocol.py`, `sdk/go/evaluation_protocol_v1_test.go`.
+Rust wire boundary: `core/src/evaluation/protocol.rs`.
 
 ## moli_runtime (MO)
 
@@ -453,7 +453,7 @@ review decisions. See [RESEARCH_CONTRACTS.md](../RESEARCH_CONTRACTS.md).
 - **Stimulus:** encode, decode, persist, read back.
 - **Oracle:** decoded value equals the original; digest unchanged.
 - **Fail:** a field dropped on the wire.
-- **Home:** `provenance_receipt_round_trips_after_reopen` in `core/tests/research_protocol_v1.rs` (`--features research`). `ResearchWireEnvelopeV1::from_provenance_receipt` is written, read back, and `receipt_digest` is unchanged. Go: `TestProvenanceReceiptEnvelopeSurvivesReopen` in `sdk/go/research_protocol_v1_test.go`. The Go projection keeps the payload opaque; the test persists the envelope and checks the digest bytes survive decode. Python: `sdk/python/tests/test_research_protocol.py`.
+- **Home:** `provenance_receipt_round_trips_after_reopen` in `core/tests/research_protocol_v1.rs` (`--features research`). `ResearchWireEnvelopeV1::from_provenance_receipt` is written, read back, and `receipt_digest` is unchanged.
 
 ### I-RX-02
 

@@ -1,8 +1,8 @@
 export const meta = {
-  "title": "保存会话，也管理记忆的来源和版本",
+  "title": "会话保存与记忆版本",
   "description": "候选激活、语义刷新、命名空间、转录分页和前缀分支。",
   "label": "记忆、保存与分支",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## 三种数据不要混在一起
@@ -13,9 +13,13 @@ export const meta = {
 
 ## 从候选到可召回事实
 
+<PeleAtlasDiagram name="memory-lifecycle" label="候选激活与语义分区发布" description="激活决定事实是否有资格召回；语义刷新为完整 Active 快照建立索引。两步都保留各自的身份与证据。" />
+
 提取产生有证据的候选，不直接获得 Active 召回资格。宿主用 `DurableMemoryActivation::try_new` 构造激活请求，再调用 `activate_candidate`；请求绑定候选 ID、精确 revision、独立决策证据和幂等 key。
 
 建议流程是：读取候选及其来源，核对是否适合长期保留，提交明确激活，再查询当前状态。候选 revision 已变化时重新审查，不要把旧决定套到新内容。
+
+写入激活决定的入口见 <SourceRef path="crates/code/core/src/durable_memory.rs" match="pub async fn activate_candidate(">DurableMemorySession::activate_candidate</SourceRef>；后续实际使用通过 <SourceRef path="crates/code/core/src/durable_memory.rs" match="pub async fn record_use(">record_use</SourceRef> 留下依据。
 
 Active 召回只使用已激活节点。`record_use(DurableMemoryUse)` 记录一次实际使用及结果依据；不能只因为文本被检索到就认定它帮助任务成功。错误、过时或需撤销的记忆通过管理接口处理，保留变更依据。
 
@@ -25,11 +29,15 @@ Active 召回只使用已激活节点。`record_use(DurableMemoryUse)` 记录一
 
 后端不支持要求的一致性时，在读快照和 embedding 前拒绝。刷新应携带取消 token；取消或构建失败不能发布一个只包含部分记忆的新分区。SQLite 向量路线需要 `durable-memory-sqlite`，远程索引的连接、租约和清理由宿主负责。
 
+默认一致性与显式要求的分界见 <SourceRef path="crates/code/core/src/durable_memory.rs" match="pub async fn refresh_semantic_recall(">refresh_semantic_recall</SourceRef> 和 <SourceRef path="crates/code/core/src/durable_memory.rs" match="pub async fn refresh_semantic_recall_requiring(">refresh_semantic_recall_requiring</SourceRef>。
+
 ## 数据范围和恢复绑定
 
 tenant、principal、workspace 和 namespace 都由可信宿主确定，不能从问题文本推断。`binding()` 返回不含密钥的身份信息；恢复时要求范围、模式、策略及语义绑定一致。换用户或换索引不能静默复用旧绑定。
 
 会话保存使用 `save()` 与注入的 SessionStore，恢复通过 `resume_session_async`。持久化的是状态和身份，不是活着的模型连接、浏览器、MCP 或凭据；这些都需要重新注入。恢复失败时显示缺少哪项绑定，不能退回到更宽的默认范围。
+
+恢复入口见 <SourceRef path="crates/code/core/src/agent_api/agent_facade.rs" match="pub async fn resume_session_async(">Agent::resume_session_async</SourceRef>。
 
 ## 完整历史、分页与前缀分支
 
@@ -39,7 +47,7 @@ tenant、principal、workspace 和 namespace 都由可信宿主确定，不能�
 
 ## 验收
 
-准备两个 namespace，确认召回互不泄漏；未激活候选不得进入 Active 召回；旧 revision 激活应拒绝。随后保存、重启并恢复，分别测试正确与错误的语义绑定。最后在工具调用前后尝试前缀分支，核对边界校验和外部状态说明。
+准备两个 namespace，确认召回互不泄漏。未激活候选不能进入 Active 召回，旧 revision 激活应被拒绝。随后保存、重启并恢复，分别测试正确与错误的语义绑定。最后在工具调用前后尝试前缀分支，核对边界校验和外部状态说明。
 
 ## 实现依据
 

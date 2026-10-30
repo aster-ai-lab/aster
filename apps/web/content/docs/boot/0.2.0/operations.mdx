@@ -1,0 +1,82 @@
+export const meta = {
+  title: 'Boot 运行与验证',
+  description: 'Feature 选择、PostgreSQL 持久队列、安全边界和测试。',
+  label: '运行与验证',
+  updated: '2026-10-29',
+};
+
+Boot 把外部基础设施放在 feature 和适配器边界之后。部署方仍需验证实际服务、凭据、持久性和故障行为。
+
+## 按需选择 Feature
+
+不使用默认 HTTP、宏和关闭信号处理时，可以只构建核心：
+
+```toml
+[dependencies]
+a3s-boot = { version = "0.2.0", default-features = false }
+```
+
+启用应用实际使用的集成：
+
+```toml
+[dependencies]
+a3s-boot = { version = "0.2.0", features = ["auth", "security", "openapi-schemas"] }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+```
+
+不要因为 feature 可编译就推断外部后端可用。Broker、数据库和传输服务需要自己的部署验收。
+
+## PostgreSQL 持久队列
+
+`queue-postgres` 使用 A3S ORM 保存任务。`PostgresQueueBackend` 通过 `SKIP LOCKED` 租赁任务，并处理续租、fencing 和过期恢复。
+
+交付语义是 at-least-once。任务处理器必须让业务副作用幂等。
+
+<DocTable caption="队列启动权限分离" headers={['入口', '权限', '用途']} rows={[
+  ['connect', '执行规范迁移', '单进程或开发环境'],
+  ['migrate_postgres_queue', '由终止的迁移进程执行', '生产迁移'],
+  ['connect_verified / from_executor_verified', '只读核对迁移账本', '生产 Serving Worker'],
+]} />
+
+为 Boot 使用独立 PostgreSQL schema。宿主创建 schema，Boot 管理自己的队列表和迁移账本。不要与 Flow 或业务表共享迁移历史。
+
+## 安全与共享状态
+
+`security` 的默认全局速率限制是进程内实现。跨进程共享预算需要实现并注册 `RateLimitProvider`。
+
+同一策略在所有进程中必须使用相同限制和窗口。Provider 故障会拒绝受保护请求，不会绕过限制。
+
+Provider 接收策略 ID、主题摘要、限制和窗口。选定 Header 与 Bearer 凭据不会以明文跨越 Provider 边界。
+
+Boot 不捆绑分布式速率限制后端。该边界也不覆盖流式断开、背压或优雅排空。
+
+## 生命周期与故障检查
+
+1. 构建 Testing Module 并覆盖测试 Provider。
+2. 验证 Guard、Pipe 和 Exception Filter 的顺序。
+3. 验证初始化与关闭钩子各执行一次。
+4. 对 at-least-once Handler 验证重复副作用。
+5. 对外部 Transport 验证断线和重连。
+6. 对持久队列验证过期租赁与 Worker 隔离。
+7. 对迁移进程和 Serving Worker 分离 DDL 权限。
+
+## 开发检查
+
+从 `crates/boot` 目录运行：
+
+```bash
+cargo fmt --all -- --check
+cargo test
+cargo test --all-features
+cargo clippy --all-targets --all-features -- -D warnings
+RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
+```
+
+外部 Transport 测试可能需要对应服务或环境配置。单元测试通过不等于外部服务验收完成。
+
+## 实现依据
+
+- [持久队列与安全边界](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)
+- [开发与测试矩阵](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)
+- [后续能力路线图](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/ROADMAP.md)

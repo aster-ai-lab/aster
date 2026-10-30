@@ -135,6 +135,8 @@ pub trait ConfirmationProvider: Send + Sync {
     /// Providers that do not inspect arguments inherit the tool-level behavior.
     /// Composed child-run providers override this method so an Ask introduced by
     /// the parent boundary cannot be auto-approved by a child-local policy.
+    /// Policy queries may be dropped on Run cancellation; they must not grant
+    /// consent or start work from an abandoned operation.
     async fn requires_confirmation_for(&self, tool_name: &str, _args: &serde_json::Value) -> bool {
         self.requires_confirmation(tool_name).await
     }
@@ -165,6 +167,8 @@ pub trait ConfirmationProvider: Send + Sync {
     /// Request confirmation for a tool execution
     ///
     /// Returns a receiver that will receive the confirmation response.
+    /// Run cancellation may drop this future before registration returns. A
+    /// provider must not later grant consent from that abandoned operation.
     async fn request_confirmation(
         &self,
         tool_id: &str,
@@ -198,6 +202,8 @@ pub trait ConfirmationProvider: Send + Sync {
     /// provider implementations remain source-compatible. Session shutdown
     /// should use [`Self::cancel_all`]; invocation cancellation must use this
     /// method so concurrent, unrelated confirmations remain pending.
+    /// A stalled cancellation callback may be dropped after a bounded grace;
+    /// that is reported as unconfirmed host cleanup, never as consent.
     async fn cancel(&self, tool_id: &str) -> bool {
         self.confirm(tool_id, false, Some("Confirmation cancelled".to_string()))
             .await
@@ -368,17 +374,19 @@ impl ConfirmationManager {
         };
 
         if let Some(confirmation) = pending {
+            let response = ConfirmationResponse {
+                approved,
+                reason: reason.clone(),
+            };
+            if confirmation.response_tx.send(response).is_err() {
+                return Ok(false);
+            }
             // Emit confirmation received event
             let _ = self.event_tx.send(AgentEvent::ConfirmationReceived {
                 tool_id: tool_id.to_string(),
                 approved,
                 reason: reason.clone(),
             });
-
-            // Send the response
-            let response = ConfirmationResponse { approved, reason };
-            let _ = confirmation.response_tx.send(response);
-
             Ok(true)
         } else {
             Ok(false)

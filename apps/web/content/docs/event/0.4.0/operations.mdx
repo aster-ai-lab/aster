@@ -1,0 +1,60 @@
+export const meta = {
+  title: 'Event 交付与运行验证',
+  description: 'At-least-once、Ack、DLQ、加密、Broker 限制和故障测试。',
+  label: '交付与验证',
+  updated: '2026-10-29',
+};
+
+持久 Broker 的 Durable Subscription 使用 at-least-once 语义。消费者可能看到重复事件，业务处理必须按事件身份控制重复副作用。
+
+## Ack 与恢复
+
+手动 Ack 把业务处理和投递确认分开。处理成功后调用 `ack`，需要重投递时调用 `nak`。
+
+恢复测试必须覆盖未 Ack 重投、客户端重连、Consumer Group 重建和迟订阅回放。仅验证进程内 Broadcast 不能证明 Broker 恢复能力。
+
+`DeliverPolicy::ByStartTime` 使用 Broker 的接收时间。选择起点时要考虑发布方与 Broker 的时钟偏差。
+
+## DLQ、Schema 与加密
+
+`DlqHandler` 提供统一死信接口，`MemoryDlqHandler` 用于进程内处理。`routing` 的 `SinkDlqHandler` 可以把死信转发到 Topic、进程内或日志 Sink。
+
+Schema 校验在发布或处理边界执行。Payload 加密在发布前和解密后处理，密钥轮换必须独立验证。
+
+Provider 的原生重试和 BackOff 保持原生配置。EventBus 不复制 Broker 的队列控制。
+
+## Provider 限制
+
+<DocTable caption="当前 Provider 运行边界" headers={['Provider', '限制']} rows={[
+  ['MemoryProvider', '只覆盖单进程，历史顺序为 newest-first'],
+  ['NatsProvider', '0.4.0 修改 Durable Consumer 命名与 history 语义，升级需阅读迁移说明'],
+  ['IggyProvider', '部分 Redelivery 参数被忽略，Topic 单分区，部分 DeliverPolicy 失败闭合'],
+]} />
+
+Iggy 的 `msg_id` 目前只是 Header，不构成 Broker 端去重。Group Membership 绑定客户端连接。
+
+Iggy 的上游重启缺陷尚未解除 GA 限制。采用前必须验证实际 Server 版本的恢复路径，不能用 crate 测试数量替代该判断。
+
+TLS 路径已有构建能力，但 GA 审计记录缺少端到端证据。生产部署需要补充真实证书和 Broker 验证。
+
+## 运行验收
+
+1. 在目标 Broker 上验证发布、订阅和 Ack。
+2. 验证重复事件不会重复产生业务副作用。
+3. 重启 Broker 并核对 Offset 与未 Ack 重投。
+4. 验证 DLQ 的容量、过滤和通知行为。
+5. 验证 Schema 兼容性与加密密钥轮换。
+6. 验证历史读取策略，不假设跨 Provider 顺序。
+7. 核对 Provider 原生重试参数是否真正生效。
+
+## 测试边界
+
+单元测试和内存基准不能替代 Broker 验收。Iggy Chaos 测试需要显式环境配置，并在测试后确认 Broker 仍然存活。
+
+NATS 集成测试需要 JetStream。网络 Broker 的性能主要由网络往返决定，不能使用 MemoryProvider 基准代替。
+
+## 实现依据
+
+- [Provider 运维与限制](https://github.com/aster-ai-lab/aster/blob/main/crates/event/README.md)
+- [GA 证据与外部阻断](https://github.com/aster-ai-lab/aster/blob/main/crates/event/docs/ga-readiness.md)
+- [Iggy 重启缺陷记录](https://github.com/aster-ai-lab/aster/blob/main/crates/event/docs/upstream-iggy-restart-panic.md)

@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use super::{A3sCodeAgent, SessionSetup};
+use super::{test_launch, A3sCodeAgent, SessionSetup};
 use a3s_code_core::{
     CodeConfig, EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProvider,
     EmbeddingProviderDescriptor, EmbeddingProviderError, ModelConfig, ProviderConfig,
@@ -13,6 +13,245 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tokio::sync::Notify;
 use tokio_util::sync::CancellationToken;
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn embedded_local_vectors_publish_before_search_and_are_released_on_close() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(
+        root.path().join("settings.rs"),
+        "// Read application configuration settings from disk.\npub fn load_settings() {}\n",
+    )
+    .unwrap();
+    std::fs::write(
+        root.path().join("weather.md"),
+        "The weather is sunny today.\n",
+    )
+    .unwrap();
+    std::fs::write(root.path().join(".env"), "qxz_vector_secret=excluded\n").unwrap();
+    let config = fixture_config();
+    let agent = a3s_code_core::Agent::from_config(config.clone())
+        .await
+        .unwrap();
+    let provider = Arc::new(a3s_embedding::LightTierProvider::load().unwrap());
+    let options = host_options(
+        root.path(),
+        &config,
+        "offline-vector-fixture",
+        Some(provider),
+    );
+    let started = std::time::Instant::now();
+    let session = open_session(&agent, root.path(), options).await;
+    let opened = started.elapsed();
+    assert!(session.prepare_workspace_index().await.unwrap());
+    let status = tokio::time::timeout(Duration::from_secs(10), async {
+        loop {
+            let status = session.workspace_retrieval_status();
+            if status.phase == WorkspaceRetrievalPhase::Ready && status.indexed_files == 2 {
+                break status;
+            }
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .unwrap_or_else(|_| {
+        panic!(
+            "vectors must publish without a search triggering the build: {:?}",
+            session.workspace_retrieval_status()
+        )
+    });
+    assert!(status.vector_records > 0 && status.vector_bytes > 0);
+    assert_eq!(status.coverage_bps, 10_000);
+    assert_eq!(status.model.as_ref().unwrap().provider, "light");
+    let found = session
+        .semantic_search(
+            a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new(
+                "parse application configuration",
+            ),
+        )
+        .await
+        .unwrap();
+    assert!(found
+        .hits
+        .iter()
+        .any(|hit| hit.chunk.path.as_ref() == "settings.rs"));
+    assert!(found
+        .hits
+        .iter()
+        .all(|hit| hit.chunk.path.as_ref() != ".env"));
+    eprintln!(
+        "ORACLE vector-open-ms={} vector-ready-ms={} vector-records={} vector-bytes={}",
+        opened.as_millis(),
+        started.elapsed().as_millis(),
+        status.vector_records,
+        status.vector_bytes
+    );
+    session.close().await;
+    let closed = session.workspace_retrieval_status();
+    assert_eq!(closed.phase, WorkspaceRetrievalPhase::Closed);
+    assert_eq!(closed.vector_records, 0);
+    assert!(session
+        .semantic_search(
+            a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new("configuration")
+        )
+        .await
+        .is_err());
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn offline_vectors_index_a_large_fixture_before_search_with_bounded_state() {
+    for files in [512, 5_000] {
+        let root = tempfile::tempdir().unwrap();
+        for index in 0..files - 1 {
+            std::fs::write(root.path().join(format!("module_{index:04}.md")),
+            format!("# Data module {index}\n\nThis module transforms warehouse inventory records and calculates stock quantities.\n")).unwrap();
+        }
+        std::fs::write(root.path().join("billing.md"),
+        "# Customer billing\n\nLoad payment ledger invoices, reconcile customer charges, and calculate billing balances.\n").unwrap();
+        let config = fixture_config();
+        let agent = a3s_code_core::Agent::from_config(config.clone())
+            .await
+            .unwrap();
+        let provider = Arc::new(a3s_embedding::LightTierProvider::load().unwrap());
+        let options = host_options(
+            root.path(),
+            &config,
+            "large-offline-vector-fixture",
+            Some(provider),
+        );
+        let started = std::time::Instant::now();
+        let session = open_session(&agent, root.path(), options).await;
+        let opened = started.elapsed();
+        assert!(session.prepare_workspace_index().await.unwrap());
+        let status = tokio::time::timeout(Duration::from_secs(15), async {
+            loop {
+                let status = session.workspace_retrieval_status();
+                if status.phase == WorkspaceRetrievalPhase::Ready && status.indexed_files == files {
+                    break status;
+                }
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        })
+        .await
+        .unwrap_or_else(|_| {
+            panic!(
+                "large index did not finish: {:?}",
+                session.workspace_retrieval_status()
+            )
+        });
+        let ready = started.elapsed();
+        assert_eq!(status.coverage_bps, 10_000);
+        assert!(status.vector_bytes > 0 && status.vector_bytes < 128 * 1024 * 1024);
+        let mut searches = Vec::new();
+        for _ in 0..5 {
+            let query_started = std::time::Instant::now();
+            let found = session
+                .semantic_search(
+                    a3s_code_core::workspace::WorkspaceSemanticSearchRequest::new(
+                        "payment ledger invoices and customer billing",
+                    ),
+                )
+                .await
+                .unwrap();
+            assert!(found
+                .hits
+                .iter()
+                .any(|hit| hit.chunk.path.as_ref() == "billing.md"));
+            searches.push(query_started.elapsed().as_micros());
+        }
+        eprintln!("ORACLE large-vector-files={} open-ms={} ready-ms={} vector-records={} vector-bytes={} search-max-us={}",
+        files, opened.as_millis(), ready.as_millis(), status.vector_records, status.vector_bytes, searches.iter().max().unwrap());
+        session.close().await;
+        assert_eq!(session.workspace_retrieval_status().vector_records, 0);
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn restricted_review_skips_the_host_enabled_embedding_provider() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.config.workspace_retrieval = Some(a3s_code_core::config::WorkspaceRetrievalConfig {
+        enabled: true,
+        local_cpu: true,
+    });
+    let model = launch.model_id.clone();
+    let agent = A3sCodeAgent::new(launch);
+    let options = agent
+        .session_options_for(
+            "isolated-review",
+            &SessionSetup {
+                workspace: root.path().to_path_buf(),
+                model_id: &model,
+                effort: None,
+                host: crate::host_context::StudioHost {
+                    source_review: true,
+                    ..Default::default()
+                },
+                components: &[],
+                mcp_servers: Vec::new(),
+            },
+            &root.path().join("sessions"),
+        )
+        .await
+        .unwrap();
+    assert!(options.workspace_retrieval.is_none());
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn workspace_index_builds_asynchronously_after_acp_session_open_without_a_query() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::write(
+        workspace.join("source.rs"),
+        "pub fn acp_index_marker() {}\n",
+    )
+    .unwrap();
+    let workspace = workspace.canonicalize().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = workspace.clone();
+    launch.config.memory_dir = Some(root.path().join("memory"));
+    let model = launch.model_id.clone();
+    let agent = A3sCodeAgent::new(launch);
+    let live = agent
+        .open_core_session(
+            "automatic-workspace-index",
+            SessionSetup {
+                workspace: workspace.clone(),
+                model_id: &model,
+                effort: None,
+                host: Default::default(),
+                components: &[],
+                mcp_servers: Vec::new(),
+            },
+            false,
+        )
+        .await
+        .unwrap();
+    tokio::time::timeout(Duration::from_secs(15), async {
+        while !workspace.join(".a3s-code/index/CURRENT").is_file() {
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .expect("ACP session must publish its workspace index before the first search");
+    let result = live
+        .session
+        .tool(
+            "search",
+            serde_json::json!({
+                "mode":"bm25","query":"acp_index_marker","limit":1
+            }),
+        )
+        .await
+        .unwrap();
+    assert_eq!(result.exit_code, 0, "{}", result.output);
+    assert!(result.output.contains("acp_index_marker"));
+    assert_eq!(
+        result.metadata.unwrap()["index_kind"],
+        "persistent_a3s_vec_fts"
+    );
+    live.session.close().await;
+}
 
 fn fixture_config() -> CodeConfig {
     CodeConfig {
@@ -59,8 +298,8 @@ fn host_options(
         components: &[],
         mcp_servers: Vec::new(),
     };
-    let store = root.join("store");
-    let trust = root.join("hooks-trust.json");
+    let store = root.join(".a3s/store");
+    let trust = root.join(".a3s/hooks-trust.json");
     let options = A3sCodeAgent::core_session_options(session_id, setup.model_id, setup.effort);
     let mut slots = crate::host_context::merge_studio_host(
         options.prompt_slots.clone().unwrap_or_default(),

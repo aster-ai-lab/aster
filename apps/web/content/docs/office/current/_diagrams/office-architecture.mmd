@@ -1,0 +1,8 @@
+flowchart TB
+  accTitle: Aster Office 的双执行平面
+  accDescr: 宿主产品控制内容、持久化、身份、授权和协作传输。浏览器编辑平面支持五种格式。原生文件命令覆盖 DOCX、XLSX 和 PPTX，协作副本覆盖五种格式。
+  host["宿主产品<br/>内容 / 持久化 / 身份 / 授权 / 传输"] --> browser["浏览器编辑平面<br/>React / Vue / Web Components / Core"]
+  host --> native["原生自动化平面<br/>a3s-office / CLI / MCP"]
+  browser --> editors["五种格式原生编辑器<br/>Document / Spreadsheet / Presentation / Markdown / PDF"]
+  native --> files["OOXML 文件命令<br/>DOCX / XLSX / PPTX"]
+  native --> collab["Yjs/Yrs 协作副本<br/>五种格式与类型化修改"]

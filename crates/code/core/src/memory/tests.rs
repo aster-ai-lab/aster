@@ -823,3 +823,52 @@ fn llm_judge_classifies_the_closed_set_and_refuses_anything_else() {
         .block_on(ConsolidationJudge::same_fact(&negated, &left, &right))
         .is_err(),);
 }
+
+#[tokio::test]
+async fn extraction_queue_observations_follow_fifo_results_and_preserve_scope() {
+    let memory = AgentMemory::new(Arc::new(InMemoryStore::new()));
+    let mut first = memory.enqueue_llm_extraction("first");
+    let mut second = memory.enqueue_llm_extraction("second");
+    assert_eq!(
+        memory.extraction_tasks("first")[0].status,
+        MemoryExtractionStatus::Pending
+    );
+    assert_eq!(
+        memory.extraction_tasks("second")[0].status,
+        MemoryExtractionStatus::Pending
+    );
+    assert!(memory.extraction_tasks("other").is_empty());
+    first.wait_for_turn().await;
+    assert_eq!(
+        memory.extraction_tasks("first")[0].status,
+        MemoryExtractionStatus::Running
+    );
+    assert!(
+        tokio::time::timeout(std::time::Duration::from_millis(5), second.wait_for_turn())
+            .await
+            .is_err()
+    );
+    first.finish(MemoryExtractionStatus::Completed, "no_items".into());
+    drop(first);
+    second.wait_for_turn().await;
+    assert_eq!(
+        memory.extraction_tasks("first")[0].status,
+        MemoryExtractionStatus::Completed
+    );
+    second.finish(MemoryExtractionStatus::Cancelled, "cancelled".into());
+    drop(second);
+    assert_eq!(
+        memory.extraction_tasks("second")[0].status,
+        MemoryExtractionStatus::Cancelled
+    );
+    assert!(memory.extraction_tasks("first")[0].completed_ms.is_some());
+    for _ in 0..110 {
+        drop(memory.enqueue_llm_extraction("retained"));
+    }
+    assert_eq!(memory.extraction_tasks("retained").len(), 100);
+    assert!(memory
+        .extraction_tasks("retained")
+        .iter()
+        .all(|task| task.status == MemoryExtractionStatus::Failed));
+    assert_eq!(memory.stats().await.unwrap().long_term_count, 0);
+}

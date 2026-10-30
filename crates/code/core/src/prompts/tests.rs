@@ -93,6 +93,7 @@ fn test_slots_default_builds_system_default() {
     assert!(built.contains("Tool Usage Strategy"));
     assert!(built.contains("Evidence and completion"));
     assert!(built.contains("Response Format"));
+    assert!(built.contains("use standard Markdown"));
     assert!(built.contains("A3S Code"));
     assert!(built.contains("## Runtime Contract"));
     assert_eq!(built.matches("## Runtime Contract").count(), 1);

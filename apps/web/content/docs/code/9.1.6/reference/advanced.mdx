@@ -1,11 +1,11 @@
 export const meta = {
-  "title": "接入高级能力时，保留证据和授权",
+  "title": "高级能力、证据与授权",
   "description": "状态图、发布合同、Agent Protocol、评估、类型化决策、S3 与遥测。",
   "label": "高级宿主与研究接口",
   "updated": "2026-10-26"
 };
 
-## 这些不是默认全部启用的工具
+## 默认启用范围
 
 能力目录中的 advanced 描述可接入的合同。实现是否编入、宿主 provider 是否存在、运行时是否获准，需要分别检查。`sdk_capabilities()` 列出名字不证明当前 Session 能执行。
 
@@ -13,13 +13,13 @@ export const meta = {
 
 `state-graph` 提供创建、恢复、patch 提议与 diff。宿主维护图 revision、节点与边身份，先检查差异再准入修改。图结构合法不代表外部工具有权限，更不代表历史副作用已经完成。
 
-Agent Release Contract 将制品准入、publication 绑定与验证分开。宿主应持有原始制品、来源 revision、能力及发布身份；不得把可变目录名称或文件路径当成完整发布身份。发布验证的对象是这份合同及其证据，不是模型对自身能力的描述。
+Agent Release Contract 将制品准入、publication 绑定与验证分开。宿主应持有原始制品、来源 revision、能力及发布身份。可变目录名称或文件路径不能作为完整发布身份。发布验证的对象是这份合同及其证据，不是模型对自身能力的描述。
 
 ## Agent Protocol
 
-`agent_protocol`、`agent_protocol_harness`、`agent_protocol_host` 为宿主提供 start、cancel、recover、events 等执行合同。这不是 ACP 的另一个名称，也不是新的公开 HTTP 服务。调用方需要提供持久事件、准入和恢复依赖，保持 Run 与操作身份一致。
+`agent_protocol`、`agent_protocol_harness`、`agent_protocol_host` 为宿主提供 start、cancel、recover 和 events 执行合同。这不是 ACP 的另一个名称，也不是新的公开 HTTP 服务。调用方需要提供持久事件、准入和恢复依赖，保持 Run 与操作身份一致。
 
-取消应有终态；恢复应核对当前源与原证据。来源改变、检查点缺失或外部操作未知时明确拒绝或等待核实，不能通过创建新 ID 冒充原执行已恢复。
+取消应有终态，恢复应核对当前源与原证据。来源改变、检查点缺失或外部操作未知时，应明确拒绝或等待核实。创建新 ID 不能冒充原执行已恢复。
 
 ## 评估与研究
 

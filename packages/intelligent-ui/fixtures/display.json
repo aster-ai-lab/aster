@@ -1,0 +1,97 @@
+{
+  "root": "root",
+  "elements": {
+    "root": {
+      "type": "Form",
+      "props": {
+        "submitAction": "submit"
+      },
+      "children": [
+        "card"
+      ]
+    },
+    "card": {
+      "type": "Card",
+      "props": {
+        "title": "Summary"
+      },
+      "children": [
+        "grid",
+        "days",
+        "submit"
+      ]
+    },
+    "grid": {
+      "type": "Grid",
+      "props": {
+        "columns": 2
+      },
+      "children": [
+        "stack",
+        "chart"
+      ]
+    },
+    "stack": {
+      "type": "Stack",
+      "props": {
+        "direction": "horizontal",
+        "gap": 12
+      },
+      "children": [
+        "text",
+        "metric"
+      ]
+    },
+    "text": {
+      "type": "Text",
+      "props": {
+        "content": "<b>literal</b>"
+      }
+    },
+    "metric": {
+      "type": "Metric",
+      "props": {
+        "label": "Count",
+        "value": 2,
+        "unit": "items"
+      }
+    },
+    "chart": {
+      "type": "BarChart",
+      "props": {
+        "labels": [
+          "A",
+          "B"
+        ],
+        "values": [
+          1,
+          2
+        ]
+      }
+    },
+    "days": {
+      "type": "Slider",
+      "props": {
+        "label": "Days",
+        "value": {
+          "$bindState": "/form/days"
+        },
+        "min": 1,
+        "max": 14,
+        "step": 1
+      }
+    },
+    "submit": {
+      "type": "Button",
+      "props": {
+        "action": "submit",
+        "label": "Continue"
+      }
+    }
+  },
+  "state": {
+    "form": {
+      "days": 5
+    }
+  }
+}

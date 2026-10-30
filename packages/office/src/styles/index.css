@@ -1,4 +1,7 @@
 @import "./tokens.css";
+@import "@a3s-lab/ui/styles/search-select.css";
+@import "@a3s-lab/ui/styles/popup-motion.css";
+@import "@a3s-lab/ui/styles/dialog-motion.css";
 @import "@fortune-sheet/react/dist/index.css";
 @import "./design-system.css";
 @import "./design-system-forms.css";

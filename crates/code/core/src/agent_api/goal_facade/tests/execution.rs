@@ -12,7 +12,12 @@ mod completion;
 mod continuation;
 mod control;
 mod cumulative;
+mod deadline;
 mod evidence;
+mod feedback;
+mod novelty;
+mod recovery_limits;
+mod refusal;
 mod review_binding;
 mod settlement;
 mod tick;
@@ -23,6 +28,7 @@ type ResponseHook = Box<dyn Fn(usize) + Send>;
 #[derive(Default)]
 struct GoalClient {
     calls: AtomicUsize,
+    stall_at: AtomicUsize,
     inputs: Mutex<Vec<String>>,
     scripted: Mutex<std::collections::VecDeque<LlmResponse>>,
     before_response: Mutex<Option<ResponseHook>>,
@@ -49,6 +55,9 @@ impl LlmClient for GoalClient {
                 .collect::<Vec<_>>()
                 .join("\n")
         ));
+        if self.stall_at.load(Ordering::SeqCst) == call {
+            return std::future::pending().await;
+        }
         Ok(self
             .scripted
             .lock()

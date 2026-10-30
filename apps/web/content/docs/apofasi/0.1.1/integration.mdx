@@ -1,0 +1,100 @@
+export const meta = {
+  title: 'Apofasi 接入',
+  description: 'SystemOneRequest、类型化答案、置信度、门禁和 checkpoint 路由。',
+  label: '接入指南',
+  updated: '2026-10-29',
+};
+
+宿主通过 `SystemOneRequest` 提交状态与问题映射。响应包含模型名、答案映射和 token 使用量。JSON 合同与 TypeSafe System One / Jev 对齐。
+
+## 提交类型化问题
+
+```rust
+use a3s_apofasi::{Client, Criteria, DecisionKind, Question, State, SystemOneRequest};
+use indexmap::IndexMap;
+use serde_json::json;
+
+fn main() -> a3s_apofasi::Result<()> {
+    let mut options = IndexMap::new();
+    options.insert("billing".into(), Some(json!("refunds")));
+    options.insert("other".into(), Some(json!("else")));
+
+    let mut questions = IndexMap::new();
+    questions.insert(
+        "department".into(),
+        Question::new(
+            DecisionKind::Choice,
+            json!("Which department?"),
+            Some(Criteria::Choice(options)),
+        )?,
+    );
+
+    let response = Client::default().system_one(SystemOneRequest {
+        model: None,
+        state: State::Text("Please refund my invoice.".into()),
+        questions,
+    })?;
+    assert!(response.answers.contains_key("department"));
+    Ok(())
+}
+```
+
+`Client::default` 使用词法引擎，不加载权重。示例只验证答案结构，不把词法结果当作神经模型的分类准确率。
+
+## 答案与置信度
+
+<DocTable caption="答案字段与门禁信号" headers={['答案类型', '主要字段', '门禁信号']} rows={[
+  ['choice', 'choice、probabilities、confidence', 'confidence 越高，分布越集中'],
+  ['score', 'score、legend、probabilities、confidence', '使用 confidence 选择自动或升级路径'],
+  ['noul', 'noul', 'max(noul, 1 - noul) 越高，答案越极端'],
+]} />
+
+`confidence_from_probs` 使用归一化熵计算置信度。`TemperatureTable` 按决策类型和选项数量选择温度。
+
+## 宿主门禁
+
+```rust
+use a3s_apofasi::{gate_response, GatePolicy};
+
+let gates = gate_response(&response, &GatePolicy::default());
+```
+
+默认门禁要求 `confidence >= 0.7`。`noul` 的极端程度也必须达到 `0.7`。满足条件时返回 `GateAction::Auto`，否则返回 `Escalate`。
+
+这些阈值只是默认值。宿主必须根据任务风险、评测集和人工复核成本设置自己的策略。
+
+## Checkpoint 路由
+
+路由在模型加载前完成，优先级如下：
+
+1. 显式 `model=`。
+2. 显式任务或 typed-decisions 工作流 ID。
+3. 显式 `lang=`。
+4. 检测到的文字与语言。
+5. 默认 `english`。
+
+`CheckpointRegistry` 使用 LRU 限制常驻 checkpoint 数量。宿主可以预加载常用 checkpoint，避免语言切换时重复冷加载。
+
+路由只选择模型，不加载模型。脚本检测不依赖神经网络。
+
+## 问题打包与分组
+
+问题按 `[CLS]、类型与说明、选项标记、状态` 打包。`head_max_len` 限制选项和说明的预算，`max_len` 限制完整序列。
+
+当所有选项能放入预算时，一批问题执行一次 encoder forward。选项过多时，Apofasi 先分组执行，再比较各组胜者。高基数选择会产生多次 forward，不能仍按一次调用估算延迟。
+
+## 验收
+
+1. 分别构造 `choice`、`score` 和 `noul` 问题，核对答案字段。
+2. 使用均匀概率与集中概率，检查 confidence 差异。
+3. 验证低置信度答案进入 `Escalate`。
+4. 验证显式模型、语言和脚本路由的优先级。
+5. 使用超过 `head_max_len` 的选项，确认分组结果和 forward 次数。
+
+公开接口见 <SourceRef path="crates/apofasi/src/lib.rs" match="pub use client::Client;">Client</SourceRef>。门禁实现见 <SourceRef path="crates/apofasi/src/gate.rs" match="pub fn gate_response(">gate_response</SourceRef>。
+
+## 实现依据
+
+- [请求与答案示例](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/README.md)
+- [路由与序列布局](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/ARCHITECTURE.md)
+- [置信度与温度](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/src/confidence.rs)

@@ -94,6 +94,29 @@ fn child_debt_requires_exact_committed_terminal_and_never_a_local_scan_alone() {
 }
 
 #[test]
+fn exact_background_gap_settlement_preserves_unrelated_unknown_operations() {
+    let mut ledger = MutationLedger::default();
+    let owned = [
+        "workspace-child:one",
+        "background-receipt-incomplete:terminal-one",
+        "background-evidence:one",
+    ];
+    let unknown = [
+        "invocation:unknown",
+        "external-operation:uncertain",
+        "background-evidence:",
+    ];
+    let all = owned.into_iter().chain(unknown).collect::<Vec<_>>();
+    ledger.set_unresolved_tool_effects(keys(&all));
+    ledger.restore_unresolved_tool_effects(BTreeSet::new(), &keys(&all));
+    assert_eq!(ledger.unresolved_tool_effects, keys(&unknown));
+    assert!(matches!(
+        decide_completion(&ledger, &[], &[], false),
+        CompletionGate::Incomplete { .. }
+    ));
+}
+
+#[test]
 fn exact_durable_terminal_settles_a_cached_nongit_child_without_a_local_registry() {
     let id = "cached-terminal-child-no-local-slot";
     assert!(!crate::porcelain::workspace_child_pending(id));

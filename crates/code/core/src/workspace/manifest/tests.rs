@@ -1,10 +1,167 @@
-use super::watcher::normalize_file_changes;
+#![cfg(test)]
+
+use super::watcher::{normalize_file_changes, snapshot_file_changes};
 use super::*;
 use notify::{
     event::{ModifyKind, RenameMode},
     Event, EventKind,
 };
 use std::collections::HashSet;
+
+#[cfg(unix)]
+#[test]
+fn workspace_wiki_source_discovery_refuses_an_unreadable_subtree() {
+    use std::os::unix::fs::PermissionsExt;
+    let root = tempfile::tempdir().unwrap();
+    let denied = root.path().join("unreadable");
+    write(
+        &denied.join("evidence.md"),
+        b"Must not silently disappear\n",
+    );
+    std::fs::set_permissions(&denied, std::fs::Permissions::from_mode(0)).unwrap();
+    let enforced = std::fs::read_dir(&denied).is_err();
+    let result = scan_workspace_source_files(
+        root.path(),
+        100,
+        std::time::Instant::now() + Duration::from_secs(2),
+        &Default::default(),
+    );
+    std::fs::set_permissions(&denied, std::fs::Permissions::from_mode(0o700)).unwrap();
+    if enforced {
+        assert!(
+            result.is_err(),
+            "an unreadable subtree must not look like an empty workspace"
+        );
+    }
+}
+
+#[test]
+fn workspace_wiki_source_discovery_enforces_entry_deadline_and_cancellation_bounds() {
+    use std::io::ErrorKind;
+    use std::time::Instant;
+    use tokio_util::sync::CancellationToken;
+
+    let root = tempfile::tempdir().unwrap();
+    write(&root.path().join("code.rs"), b"pub fn source() {}\n");
+    write(&root.path().join("brief.docx"), b"PK source document");
+    write(&root.path().join("ignored/file.md"), b"Build output");
+    write(&root.path().join(".gitignore"), b"ignored/\n");
+    write(&root.path().join(".git/HEAD"), b"ref: refs/heads/main\n");
+    let cancellation = CancellationToken::new();
+    let scan =
+        |limit, deadline| scan_workspace_source_files(root.path(), limit, deadline, &cancellation);
+    let files = scan(100, Instant::now() + Duration::from_secs(2)).unwrap();
+    assert!(files.iter().any(|file| file.path == "code.rs"));
+    assert!(files
+        .iter()
+        .any(|file| file.path == "brief.docx" && file.binary));
+    assert!(!files.iter().any(|file| file.path.starts_with("ignored/")));
+    assert_eq!(
+        scan(1, Instant::now() + Duration::from_secs(2))
+            .unwrap_err()
+            .kind(),
+        ErrorKind::InvalidData
+    );
+    assert_eq!(
+        scan(100, Instant::now()).unwrap_err().kind(),
+        ErrorKind::TimedOut
+    );
+    assert_eq!(
+        scan(100_001, Instant::now() + Duration::from_secs(2))
+            .unwrap_err()
+            .kind(),
+        ErrorKind::InvalidInput
+    );
+    assert_eq!(
+        scan_workspace_source_files(
+            Path::new("/"),
+            100,
+            Instant::now() + Duration::from_secs(2),
+            &cancellation
+        )
+        .unwrap_err()
+        .kind(),
+        ErrorKind::InvalidInput
+    );
+    cancellation.cancel();
+    assert_eq!(
+        scan(100, Instant::now() + Duration::from_secs(2))
+            .unwrap_err()
+            .kind(),
+        ErrorKind::Interrupted
+    );
+    #[cfg(unix)]
+    {
+        let outside = tempfile::tempdir().unwrap();
+        write(&outside.path().join("private.unknown"), b"Outside source");
+        std::os::unix::fs::symlink(
+            outside.path().join("private.unknown"),
+            root.path().join("linked.unknown"),
+        )
+        .unwrap();
+        let files = scan_workspace_source_files(
+            root.path(),
+            100,
+            Instant::now() + Duration::from_secs(2),
+            &CancellationToken::new(),
+        )
+        .unwrap();
+        assert!(!files.iter().any(|file| file.path == "linked.unknown"));
+    }
+}
+
+#[test]
+fn workspace_wiki_source_discovery_prunes_excluded_trees_before_its_budget() {
+    let root = tempfile::tempdir().unwrap();
+    write(&root.path().join("source.rs"), b"pub fn source() {}\n");
+    write(
+        &root.path().join("wiki-sources/reference.md"),
+        b"Admitted reference\n",
+    );
+    for index in 0..5000 {
+        write(
+            &root
+                .path()
+                .join(format!("wiki/workspace/history/{index}.md")),
+            b"Generated\n",
+        );
+        write(
+            &root.path().join(format!("state/private/{index}.txt")),
+            b"Private\n",
+        );
+    }
+    let started = std::time::Instant::now();
+    let files = scan_workspace_source_files_excluding(
+        root.path(),
+        10,
+        std::time::Instant::now() + Duration::from_secs(2),
+        &Default::default(),
+        &[
+            crate::workspace::WorkspacePath::from_normalized("wiki"),
+            crate::workspace::WorkspacePath::from_normalized("state"),
+        ],
+    )
+    .unwrap();
+    eprintln!(
+        "workspace-wiki large-tree: 10000 excluded files, {} admitted files, scan={}ms",
+        files.len(),
+        started.elapsed().as_millis()
+    );
+    assert_eq!(
+        files
+            .iter()
+            .map(|file| file.path.as_str())
+            .collect::<Vec<_>>(),
+        ["source.rs", "wiki-sources/reference.md"]
+    );
+    assert!(scan_workspace_source_files(
+        root.path(),
+        10,
+        std::time::Instant::now() + Duration::from_secs(2),
+        &Default::default()
+    )
+    .is_err());
+}
 
 fn write(path: &Path, body: &[u8]) {
     if let Some(parent) = path.parent() {
@@ -44,6 +201,39 @@ fn test_file(path: &str) -> LocalWorkspaceFile {
         binary: false,
         generated: false,
     }
+}
+
+#[test]
+fn startup_reconciliation_reports_same_size_changes_creations_and_deletions() {
+    let before = LocalWorkspaceManifestSnapshot {
+        version: 1,
+        root: PathBuf::from("/workspace"),
+        files: vec![
+            test_file("same.rs"),
+            test_file("deleted.rs"),
+            test_file("stable.rs"),
+        ],
+        scanned_at_ms: 1,
+    };
+    let mut changed = test_file("same.rs");
+    changed.modified_ms = Some(2);
+    let next = LocalWorkspaceManifestSnapshot {
+        version: 2,
+        files: vec![changed, test_file("created.rs"), test_file("stable.rs")],
+        ..before.clone()
+    };
+    let changes = snapshot_file_changes(&before, &next);
+    assert_eq!(changes.len(), 3);
+    for (path, kind) in [
+        ("same.rs", WorkspaceFileChangeKind::Changed),
+        ("created.rs", WorkspaceFileChangeKind::Created),
+        ("deleted.rs", WorkspaceFileChangeKind::Deleted),
+    ] {
+        assert!(changes
+            .iter()
+            .any(|change| change.path.as_str() == path && change.kind == kind));
+    }
+    assert!(snapshot_file_changes(&next, &next).is_empty());
 }
 
 #[test]
@@ -880,7 +1070,13 @@ async fn manifest_change_subscription_reports_same_size_content_changes() {
         },
     )
     .await
-    .unwrap();
+    .unwrap_or_else(|error| {
+        panic!(
+            "source-change subscription failed: {error}; manifest={:?}; watcher_task_finished={}",
+            manifest.snapshot(),
+            manifest.task.is_finished()
+        )
+    });
 
     assert_eq!(received.kind, WorkspaceFileChangeKind::Changed);
 }

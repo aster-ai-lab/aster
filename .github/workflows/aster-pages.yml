@@ -1,31 +1,23 @@
 name: Aster website
 
 on:
+  release:
+    types: [published, edited, unpublished, deleted]
+  workflow_run:
+    workflows: [Release aster-cli, Release aster-desktop]
+    types: [completed]
   push:
     branches: [main]
     paths:
-      - apps/web/public/download/**
-      - apps/web/public/tenant/aster/logo.svg
-      - apps/web/public/tenant/aster/mark-light.png
-      - apps/web/public/index.html
-      - apps/web/public/home.css
-      - apps/web/public/home.js
-      - apps/web/public/cosmic.js
-      - apps/web/scripts/**
-      - apps/web/tests/**
-      - apps/web/README.md
+      - apps/web/**
+      - assets/readme/**
+      - README.md
       - .github/workflows/aster-pages.yml
   pull_request:
     paths:
-      - apps/web/public/download/**
-      - apps/web/public/tenant/aster/logo.svg
-      - apps/web/public/tenant/aster/mark-light.png
-      - apps/web/public/index.html
-      - apps/web/public/home.css
-      - apps/web/public/home.js
-      - apps/web/public/cosmic.js
-      - apps/web/scripts/**
-      - apps/web/tests/**
+      - apps/web/**
+      - assets/readme/**
+      - README.md
       - .github/workflows/aster-pages.yml
   workflow_dispatch:
 
@@ -38,24 +30,29 @@ concurrency:
 
 jobs:
   validate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ (github.event_name == 'release' || github.event_name == 'workflow_run') && 'refs/heads/main' || github.ref }}
+          fetch-depth: 0
           submodules: false
           persist-credentials: false
-      - name: Test and validate the public site
-        run: |
-          python3 -m unittest discover -s apps/web/tests -p 'test_*.py' -v
-          python3 apps/web/scripts/check_site.py
-          node --check apps/web/public/download/app.js
-          node --check apps/web/public/download/canvas.js
-          node --check apps/web/public/home.js
-          node --check apps/web/public/cosmic.js
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "24.12.0"
+      - name: Install isolated MDX build dependencies
+        run: npm --prefix apps/web ci --workspaces=false --ignore-scripts --no-audit --no-fund
+      - name: Resolve latest published installation packages
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node apps/web/scripts/build_releases.mjs --refresh
       - name: Install isolated public DOM test dependency
         run: npm install --prefix "$RUNNER_TEMP/download-test-deps" --ignore-scripts --no-save --package-lock=false jsdom@26.1.0
-      - name: Test public site interactions
-        run: JS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" node --test apps/web/tests/download.test.cjs apps/web/tests/canvas.test.cjs apps/web/tests/cosmic.test.cjs apps/web/tests/home.test.cjs
+      - name: Test and validate the public site
+        run: JS_DOM_MODULE="$RUNNER_TEMP/download-test-deps/node_modules/jsdom" npm --prefix apps/web test
       - name: Stage only the public deployment files
         run: |
           python3 apps/web/scripts/stage_site.py _aster_site
@@ -64,7 +61,7 @@ jobs:
           path: _aster_site
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || github.event_name == 'workflow_run')
     needs: validate
     runs-on: ubuntu-latest
     permissions:

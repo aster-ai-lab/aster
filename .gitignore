@@ -1,5 +1,6 @@
 /target/
 **/target/
+/crates/capture/.build/
 .DS_Store
 
 .env

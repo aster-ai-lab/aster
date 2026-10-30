@@ -182,6 +182,15 @@ impl Skill {
             }
         }
 
+        // Keep the resource base with the body across registry and capability projections.
+        let file = std::fs::canonicalize(path.as_ref())?;
+        if let Some(directory) = file.parent() {
+            skill.content = format!(
+                "Skill directory (SKILL_DIR): {}\nResolve relative resource paths from this directory. Resource reads still require the session's normal permissions.\n\n{}",
+                directory.display(), skill.content
+            );
+        }
+
         Ok(skill)
     }
 
@@ -306,6 +315,23 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn file_skill_keeps_resource_directory_through_projection_but_inline_skill_has_none() {
+        let root = tempfile::tempdir().unwrap();
+        let file = root.path().join("SKILL.md");
+        let content = "---\nname: card\ndescription: Explain\n---\nRead assets/card.html";
+        std::fs::write(&file, content).unwrap();
+        let skill = Skill::from_file(&file).unwrap();
+        let directory = std::fs::canonicalize(root.path()).unwrap();
+        assert!(skill.content.contains(&format!(
+            "Skill directory (SKILL_DIR): {}",
+            directory.display()
+        )));
+        assert!(skill.content.contains("normal permissions"));
+        assert!(skill.content.ends_with("Read assets/card.html"));
+        assert!(!Skill::parse(content).unwrap().content.contains("SKILL_DIR"));
+    }
 
     #[test]
     fn test_parse_skill() {

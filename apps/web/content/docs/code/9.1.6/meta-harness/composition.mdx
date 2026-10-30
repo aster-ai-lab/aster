@@ -78,7 +78,7 @@ async fn run(agent: &Agent) -> anyhow::Result<()> {
 token 压缩依赖模型适配器报告输入 token 数。接入自定义模型时，需要确认它确实提供这个数据，不能只设置阈值就认为压缩一定会触发。
 
 <Callout title="删除一个组件，不等于取消对应限制">
-默认调度器从 HarnessConfig 读取工具预算和压缩设置。只从列表中删掉 budget 或 compact，并不能据此认定调用次数已不限或压缩已关闭。需要检查配方参数和会话配置。
+默认调度器从 HarnessConfig 读取工具预算和压缩设置。只从列表中删除 budget 或 compact，并不能据此认定调用次数已不限或压缩已关闭。需要检查配方参数和会话配置。
 </Callout>
 
 ## ACP 可以选择哪些组合

@@ -3,8 +3,8 @@ mod r0_cross_project_support;
 use std::path::Path;
 
 use a3s_code_core::{
-    AgentProtocolRunIdentityV1, CognitiveContextLimits, CognitiveKnowledgeBindingV1,
-    CognitiveKnowledgeCitationV1, CognitivePackageBindingV1,
+    AgentProtocolRunIdentityV1, PackageBindingV1, PackageContextLimits, PackageKnowledgeBindingV1,
+    PackageKnowledgeCitationV1,
 };
 use r0_cross_project_support::{
     canonical_digest, read_fixture, verify_fixture_package, CodeBinding, Contract, ContractError,
@@ -118,7 +118,7 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
         Contract::parse(&read_fixture(root, "fixtures/r0-cross-project.valid.json")).unwrap();
     let knowledge: KnowledgeBinding = read_json(root, "fixtures/knowledge-lease-binding.json");
     assert_eq!(knowledge, contract.knowledge);
-    let runtime_knowledge: CognitiveKnowledgeBindingV1 =
+    let runtime_knowledge: PackageKnowledgeBindingV1 =
         read_json(root, "fixtures/knowledge-lease-binding.json");
     runtime_knowledge.validate().unwrap();
     let capability: CapabilitySnapshotFixture =
@@ -159,19 +159,18 @@ fn code_binds_one_use_generation_capability_and_cited_result() {
         capability.snapshot_digest,
         contract.code.capability_snapshot_digest
     );
-    let runtime_binding = CognitivePackageBindingV1::new(
+    let runtime_binding = PackageBindingV1::new(
         capability.package_id.clone(),
         capability.package_version.clone(),
         capability.lifecycle_generation,
         capability.generation_digest.clone(),
         capability.snapshot_digest.clone(),
         runtime_knowledge,
-        CognitiveContextLimits::default(),
+        PackageContextLimits::default(),
     )
     .unwrap();
 
-    let citation: CognitiveKnowledgeCitationV1 =
-        read_json(root, "fixtures/knowledge-citation.json");
+    let citation: PackageKnowledgeCitationV1 = read_json(root, "fixtures/knowledge-citation.json");
     citation.validate_for(&runtime_binding).unwrap();
     assert_eq!(citation.schema, knowledge.citation_schema);
     assert_eq!(citation.package_id, contract.code.package_id);

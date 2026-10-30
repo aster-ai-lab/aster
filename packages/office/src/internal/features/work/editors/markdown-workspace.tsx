@@ -127,8 +127,8 @@ export function MarkdownWorkspace({
   const [workspaceWidth, setWorkspaceWidth] = useState(0);
   const [compactPane, setCompactPane] = useState<MarkdownCompactPane>('source');
   const [resizing, setResizing] = useState(false);
-  const showSource = !readOnly && mode !== 'visual';
-  const showVisual = readOnly || mode !== 'source';
+  const showSource = mode !== 'visual';
+  const showVisual = mode !== 'source';
   const visualIsReadOnly = readOnly || visualReadOnly;
 
   const releaseScrollLock = useCallback(() => {
@@ -341,8 +341,10 @@ export function MarkdownWorkspace({
               officeMessage(messages, 'markdown.workspace.sourcePlaceholder')
             }
             value={markdown}
+            readOnly={readOnly}
             spellCheck
             onBeforeInput={(event: FormEvent<HTMLTextAreaElement>) => {
+              if (readOnly) return;
               const inputType = (event.nativeEvent as InputEvent).inputType;
               if (inputType === 'historyUndo') {
                 event.preventDefault();
@@ -357,6 +359,7 @@ export function MarkdownWorkspace({
               sourceInputTypeRef.current = inputType || undefined;
             }}
             onChange={(event) => {
+              if (readOnly) return;
               onSourceIntent?.();
               const source = event.currentTarget;
               onSourceChange(
@@ -376,6 +379,7 @@ export function MarkdownWorkspace({
                 return;
               }
               if (!(event.metaKey || event.ctrlKey) || event.nativeEvent.isComposing) return;
+              if (readOnly) return;
               const key = event.key.toLocaleLowerCase();
               if (!event.altKey && key === 'z') {
                 event.preventDefault();

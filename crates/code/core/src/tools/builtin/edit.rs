@@ -14,7 +14,12 @@ impl Tool for EditTool {
     }
 
     fn description(&self) -> &str {
-        "Edit a file by replacing a specific string with another. The old_string must be unique in the file unless replace_all is true. LF and CRLF match each other, and the file keeps its own line ending. Mixed or CR-only endings are refused."
+        "Edit a file by replacing exact strings. Pass old_string/new_string for one replacement, \
+         or an `edits` array to change several places in the same file in ONE call: every entry is \
+         validated in memory first and the whole call is atomic, so one call per file costs one \
+         model round trip instead of one per hunk. The old_string must be unique in the file \
+         unless replace_all is true. LF and CRLF match each other, and the file keeps its own line \
+         ending. Mixed or CR-only endings are refused."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -26,13 +31,39 @@ impl Tool for EditTool {
                     "type": "string",
                     "description": "Required. Path to the file to edit. Always provide this exact field name: 'file_path'."
                 },
+                "edits": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Several replacements for this one file, applied in order and atomically. \
+                     Use this instead of one call per hunk when a change touches more than one place. \
+                     Mutually exclusive with old_string/new_string.",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "old_string": {
+                                "type": "string",
+                                "description": "The exact string to replace. It must be unique unless replace_all=true."
+                            },
+                            "new_string": {
+                                "type": "string",
+                                "description": "The replacement string. Empty deletes the match."
+                            },
+                            "replace_all": {
+                                "type": "boolean",
+                                "description": "Replace every occurrence of this entry. Default: false."
+                            }
+                        },
+                        "required": ["old_string", "new_string"]
+                    }
+                },
                 "old_string": {
                     "type": "string",
-                    "description": "Required. The exact string to replace. It must be unique unless replace_all=true."
+                    "description": "Required for a single replacement (omit when edits is used). The exact string to replace; unique unless replace_all=true."
                 },
                 "new_string": {
                     "type": "string",
-                    "description": "Required. The replacement string."
+                    "description": "Required for a single replacement (omit when edits is used). The replacement string."
                 },
                 "replace_all": {
                     "type": "boolean",
@@ -45,15 +76,15 @@ impl Tool for EditTool {
                 "max_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Optional safety ceiling. Reject the edit before writing when it would replace more occurrences."
+                    "description": "Optional safety ceiling for the whole call. Reject the edit before writing when it would replace more occurrences."
                 },
                 "expected_replacements": {
                     "type": "integer",
                     "minimum": 1,
-                    "description": "Optional compare guard. Reject the edit before writing unless the observed replacement count is exactly this value."
+                    "description": "Optional compare guard for the whole call. Reject the edit before writing unless the observed replacement count is exactly this value."
                 }
             },
-            "required": ["file_path", "old_string", "new_string"],
+            "required": ["file_path"],
             "examples": [
                 {
                     "file_path": "src/lib.rs",
@@ -91,23 +122,13 @@ impl Tool for EditTool {
             Some(p) => p,
             None => return Ok(ToolOutput::error("file_path parameter is required")),
         };
-        let old_string = match args.get("old_string").and_then(|v| v.as_str()) {
-            Some(s) => s,
-            None => return Ok(ToolOutput::error("old_string parameter is required")),
+        let requests = match edit_requests(args) {
+            Ok(requests) => requests,
+            Err(error) => return Ok(ToolOutput::error(error)),
         };
+        let edit_count = requests.len();
+        let multi = args.get("edits").is_some();
 
-        let new_string = match args.get("new_string").and_then(|v| v.as_str()) {
-            Some(s) => s,
-            None => return Ok(ToolOutput::error("new_string parameter is required")),
-        };
-        if old_string.is_empty() {
-            return Ok(ToolOutput::error("old_string must not be empty"));
-        }
-
-        let replace_all = args
-            .get("replace_all")
-            .and_then(|v| v.as_bool())
-            .unwrap_or(false);
         let dry_run = args
             .get("dry_run")
             .and_then(|v| v.as_bool())
@@ -137,33 +158,42 @@ impl Tool for EditTool {
             }
         };
 
-        let applied = match crate::text::apply_line_ending_edit(
-            &content,
-            old_string,
-            new_string,
-            replace_all,
-        ) {
-            Ok(applied) => applied,
-            Err(crate::text::LineEndingEditError::NotFound) => {
-                return Ok(ToolOutput::error(format!(
-                    "old_string not found in {}",
-                    display_path
-                )));
+        // Every entry is applied to the in-memory copy first: a bad hunk anywhere leaves the file
+        // untouched, so one call is exactly as safe as a single edit while costing one round trip.
+        let mut new_content = content.clone();
+        let mut replacement_count = 0usize;
+        for (index, request) in requests.iter().enumerate() {
+            match crate::text::apply_line_ending_edit(
+                &new_content,
+                &request.old_string,
+                &request.new_string,
+                request.replace_all,
+            ) {
+                Ok(applied) => {
+                    new_content = applied.content;
+                    replacement_count += applied.count;
+                }
+                Err(error) => {
+                    let label = if multi {
+                        format!("edits[{index}]: ")
+                    } else {
+                        String::new()
+                    };
+                    let message = match error {
+                        crate::text::LineEndingEditError::NotFound => {
+                            format!("{label}old_string not found in {display_path}")
+                        }
+                        crate::text::LineEndingEditError::Ambiguous(count) => format!(
+                            "{label}old_string found {count} times in {display_path}. Use replace_all=true to replace all occurrences, or provide a more specific string."
+                        ),
+                        crate::text::LineEndingEditError::Unsafe => format!(
+                            "{label}Refusing to edit {display_path}: the file or the replacement mixes LF and CRLF, or a match would split a CRLF pair. Normalize the file to one line ending and retry."
+                        ),
+                    };
+                    return Ok(ToolOutput::error(message));
+                }
             }
-            Err(crate::text::LineEndingEditError::Ambiguous(count)) => {
-                return Ok(ToolOutput::error(format!(
-                    "old_string found {} times in {}. Use replace_all=true to replace all occurrences, or provide a more specific string.",
-                    count, display_path
-                )));
-            }
-            Err(crate::text::LineEndingEditError::Unsafe) => {
-                return Ok(ToolOutput::error(format!(
-                    "Refusing to edit {display_path}: the file or the replacement mixes LF and CRLF, or a match would split a CRLF pair. Normalize the file to one line ending and retry."
-                )));
-            }
-        };
-        let new_content = applied.content;
-        let replacement_count = applied.count;
+        }
         if let Some(expected) = expected_replacements {
             if replacement_count != expected {
                 return Ok(ToolOutput::error(format!(
@@ -197,16 +227,23 @@ impl Tool for EditTool {
                 "before": content,
                 "after": new_content,
                 "dry_run": dry_run,
+                "edit_count": edit_count,
                 "replacement_count": replacement_count,
                 "expected_replacements": expected_replacements,
                 "max_replacements": max_replacements,
             })
         };
         if dry_run {
-            return Ok(ToolOutput::success(format!(
-                "Dry run: would replace {replacement_count} occurrence(s) in {display_path}; nothing was written"
-            ))
-            .with_metadata(change_metadata()));
+            let message = if multi {
+                format!(
+                    "Dry run: would apply {edit_count} edit(s) ({replacement_count} replacement(s)) in {display_path}; nothing was written"
+                )
+            } else {
+                format!(
+                    "Dry run: would replace {replacement_count} occurrence(s) in {display_path}; nothing was written"
+                )
+            };
+            return Ok(ToolOutput::success(message).with_metadata(change_metadata()));
         }
 
         let session_id = ctx.session_id.as_deref().filter(|id| !id.trim().is_empty());
@@ -226,11 +263,16 @@ impl Tool for EditTool {
             .write_for_edit(&workspace_path, &new_content, version.as_deref())
             .await
         {
-            Ok(_) => Ok(ToolOutput::success(format!(
-                "Replaced {} occurrence(s) in {}",
-                replacement_count, display_path
-            ))
-            .with_metadata(change_metadata())),
+            Ok(_) => {
+                let message = if multi {
+                    format!(
+                        "Applied {edit_count} edit(s) ({replacement_count} replacement(s)) to {display_path}"
+                    )
+                } else {
+                    format!("Replaced {replacement_count} occurrence(s) in {display_path}")
+                };
+                Ok(ToolOutput::success(message).with_metadata(change_metadata()))
+            }
             Err(e) => {
                 if newly_acquired {
                     if let Some(id) = session_id {
@@ -263,6 +305,70 @@ impl Tool for EditTool {
     }
 }
 
+/// One replacement inside a file edit call.
+struct EditRequest {
+    old_string: String,
+    new_string: String,
+    replace_all: bool,
+}
+
+/// Accept either the single `old_string`/`new_string` pair or the `edits` array that batches
+/// several hunks of the same file into one call. The two forms are mutually exclusive so a
+/// half-merged payload cannot silently drop one of them.
+fn edit_requests(args: &serde_json::Value) -> std::result::Result<Vec<EditRequest>, String> {
+    let single_old = args.get("old_string").and_then(|v| v.as_str());
+    let single_new = args.get("new_string").and_then(|v| v.as_str());
+
+    if let Some(value) = args.get("edits") {
+        if single_old.is_some() || single_new.is_some() {
+            return Err("Provide either old_string/new_string or edits, not both.".to_string());
+        }
+        let entries = value.as_array().ok_or_else(|| {
+            "edits must be an array of {old_string, new_string} entries".to_string()
+        })?;
+        if entries.is_empty() {
+            return Err("edits must contain at least one replacement".to_string());
+        }
+        let mut requests = Vec::with_capacity(entries.len());
+        for (index, entry) in entries.iter().enumerate() {
+            let old_string = entry
+                .get("old_string")
+                .and_then(|v| v.as_str())
+                .ok_or_else(|| format!("edits[{index}].old_string is required"))?;
+            if old_string.is_empty() {
+                return Err(format!("edits[{index}].old_string must not be empty"));
+            }
+            let new_string = entry
+                .get("new_string")
+                .and_then(|v| v.as_str())
+                .ok_or_else(|| format!("edits[{index}].new_string is required"))?;
+            requests.push(EditRequest {
+                old_string: old_string.to_string(),
+                new_string: new_string.to_string(),
+                replace_all: entry
+                    .get("replace_all")
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false),
+            });
+        }
+        return Ok(requests);
+    }
+
+    let old_string = single_old.ok_or_else(|| "old_string parameter is required".to_string())?;
+    if old_string.is_empty() {
+        return Err("old_string must not be empty".to_string());
+    }
+    let new_string = single_new.ok_or_else(|| "new_string parameter is required".to_string())?;
+    Ok(vec![EditRequest {
+        old_string: old_string.to_string(),
+        new_string: new_string.to_string(),
+        replace_all: args
+            .get("replace_all")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false),
+    }])
+}
+
 fn positive_usize_arg(
     args: &serde_json::Value,
     name: &str,
@@ -281,6 +387,129 @@ fn positive_usize_arg(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn one_call_applies_several_hunks_atomically() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(
+            temp.path().join("verify.py"),
+            "def check():
+    return 1
+
+result = check()
+",
+        )
+        .unwrap();
+        let tool = EditTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("edit-multi");
+
+        let result = tool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "verify.py",
+                    "edits": [
+                        { "old_string": "return 1", "new_string": "return 0" },
+                        { "old_string": "result = check()", "new_string": "result = check() + 1" }
+                    ]
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(result.success, "{}", result.content);
+        assert!(
+            result.content.contains("Applied 2 edit(s)"),
+            "{}",
+            result.content
+        );
+        assert_eq!(
+            std::fs::read_to_string(temp.path().join("verify.py")).unwrap(),
+            "def check():
+    return 0
+
+result = check() + 1
+"
+        );
+        let metadata = result.metadata.expect("diff metadata");
+        assert_eq!(metadata["edit_count"], 2);
+        assert_eq!(metadata["replacement_count"], 2);
+        crate::external_observation::release_session("edit-multi");
+    }
+
+    #[tokio::test]
+    async fn a_failed_hunk_writes_nothing_and_names_its_index() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(
+            temp.path().join("verify.py"),
+            "alpha
+beta
+",
+        )
+        .unwrap();
+        let tool = EditTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("edit-atomic");
+
+        let result = tool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "verify.py",
+                    "edits": [
+                        { "old_string": "alpha", "new_string": "ALPHA" },
+                        { "old_string": "missing", "new_string": "unused" }
+                    ]
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(!result.success);
+        assert!(result.content.contains("edits[1]"), "{}", result.content);
+        assert_eq!(
+            std::fs::read_to_string(temp.path().join("verify.py")).unwrap(),
+            "alpha
+beta
+",
+            "an atomic call must not leave the first hunk applied"
+        );
+        crate::external_observation::release_session("edit-atomic");
+    }
+
+    #[tokio::test]
+    async fn rejects_a_payload_with_both_edit_forms() {
+        let temp = tempfile::tempdir().unwrap();
+        std::fs::write(
+            temp.path().join("verify.py"),
+            "alpha
+",
+        )
+        .unwrap();
+        let tool = EditTool;
+        let ctx = ToolContext::new(temp.path().to_path_buf()).with_session_id("edit-mixed");
+
+        let result = tool
+            .execute(
+                &serde_json::json!({
+                    "file_path": "verify.py",
+                    "old_string": "alpha",
+                    "new_string": "beta",
+                    "edits": [{ "old_string": "alpha", "new_string": "gamma" }]
+                }),
+                &ctx,
+            )
+            .await
+            .unwrap();
+
+        assert!(!result.success);
+        assert!(result.content.contains("not both"), "{}", result.content);
+        assert_eq!(
+            std::fs::read_to_string(temp.path().join("verify.py")).unwrap(),
+            "alpha
+"
+        );
+        crate::external_observation::release_session("edit-mixed");
+    }
 
     #[tokio::test]
     async fn test_edit_single_replace() {
@@ -674,9 +903,13 @@ mod tests {
         let tool = EditTool;
         let params = tool.parameters();
         assert_eq!(params["additionalProperties"], false);
+        // The payload is either one replacement or an `edits` batch, so only the path is required.
+        assert_eq!(params["required"], serde_json::json!(["file_path"]));
+        assert_eq!(params["properties"]["edits"]["type"], "array");
+        assert_eq!(params["properties"]["edits"]["minItems"], 1);
         assert_eq!(
-            params["required"],
-            serde_json::json!(["file_path", "old_string", "new_string"])
+            params["properties"]["edits"]["items"]["required"],
+            serde_json::json!(["old_string", "new_string"])
         );
         let examples = params["examples"].as_array().unwrap();
         assert_eq!(examples[0]["file_path"], "src/lib.rs");

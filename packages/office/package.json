@@ -79,9 +79,11 @@
   "scripts": {
     "build": "bash scripts/build-office-kernel.sh && rslib",
     "kernel:build": "bash scripts/build-office-kernel.sh",
+    "test": "bun test --preload ../ui/src/__tests__/preload.ts ./tests",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@a3s-lab/ui": "workspace:*",
     "@embedpdf/fonts-arabic": "1.0.0",
     "@embedpdf/fonts-hebrew": "1.0.0",
     "@embedpdf/fonts-latin": "1.0.0",
@@ -96,9 +98,11 @@
     "@tiptap/extension-collaboration": "3.31.3",
     "@tiptap/extension-collaboration-caret": "3.31.3",
     "@tiptap/extension-color": "3.31.3",
+    "@tiptap/extension-heading": "3.31.3",
     "@tiptap/extension-highlight": "3.31.3",
     "@tiptap/extension-image": "3.31.3",
     "@tiptap/extension-list": "3.31.3",
+    "@tiptap/extension-paragraph": "3.31.3",
     "@tiptap/extension-placeholder": "3.31.3",
     "@tiptap/extension-strike": "3.31.3",
     "@tiptap/extension-subscript": "3.31.3",
@@ -119,13 +123,12 @@
     "jszip": "3.10.1",
     "lucide-react": "0.544.0",
     "mammoth": "1.12.0",
+    "motion": "12.42.0",
     "pdf-lib": "1.17.1",
     "pptxgenjs": "4.0.1",
     "xlsx": "file:./deps/xlsx-0.20.3.tgz",
     "y-protocols": "1.0.7",
-    "yjs": "13.6.32",
-    "@tiptap/extension-paragraph": "3.31.3",
-    "@tiptap/extension-heading": "3.31.3"
+    "yjs": "13.6.32"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20",
@@ -150,6 +153,7 @@
   },
   "private": true,
   "patchedDependencies": {
+    "@embedpdf/snippet@2.14.3": "patches/@embedpdf__snippet@2.14.3.patch",
     "@fortune-sheet/core@1.0.4": "patches/@fortune-sheet%2Fcore@1.0.4.patch",
     "@fortune-sheet/react@1.0.4": "patches/@fortune-sheet%2Freact@1.0.4.patch",
     "@tiptap/y-tiptap@3.0.8": "patches/@tiptap%2Fy-tiptap@3.0.8.patch",

@@ -3,28 +3,43 @@ import { cva } from 'class-variance-authority'
 import * as React from 'react'
 
 import { cn } from '../../lib/utils'
+import { SelectionHighlight } from './selection-highlight'
 
 const TabsContext = React.createContext<{
   variant?: 'default' | 'line' | 'underline' | 'workflow'
   orientation?: 'horizontal' | 'vertical'
+  value?: string
+  highlightId: string
 }>({
   variant: 'default',
-  orientation: 'horizontal'
+  orientation: 'horizontal',
+  highlightId: ''
 })
 
 function Tabs({
   className,
   variant = 'default',
   orientation = 'horizontal',
+  value,
+  defaultValue,
+  onValueChange,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root> & {
   variant?: 'default' | 'line' | 'underline' | 'workflow'
 }) {
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? '')
+  const selectedValue = value ?? internalValue
+  const highlightId = React.useId()
   return (
-    <TabsContext value={{ variant, orientation }}>
+    <TabsContext value={{ variant, orientation, value: selectedValue, highlightId }}>
       <TabsPrimitive.Root
         data-slot="tabs"
         orientation={orientation}
+        value={selectedValue}
+        onValueChange={(next) => {
+          if (value === undefined) setInternalValue(next)
+          onValueChange?.(next)
+        }}
         className={cn('flex flex-col gap-2', orientation === 'vertical' && 'flex-row', className)}
         {...props}
       />
@@ -78,7 +93,7 @@ const tabsTriggerVariants = cva(
   [
     'inline-flex items-center justify-center text-sm font-medium whitespace-nowrap',
     'disabled:pointer-events-none disabled:opacity-50',
-    'transition-all outline-none',
+    'relative isolate motion-safe:transition-colors motion-safe:duration-150 outline-none',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4'
   ],
   {
@@ -89,8 +104,8 @@ const tabsTriggerVariants = cva(
           'border border-transparent text-foreground',
           'dark:text-muted-foreground',
           'focus-visible:border-transparent focus-visible:bg-accent',
-          'data-[state=active]:bg-white data-[state=active]:text-[#171717] data-[state=active]:shadow-[0_1px_2px_rgba(0,0,0,0.06)]',
-          'dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-[#3a3a3a] dark:data-[state=active]:text-[#f5f5f5]'
+          'data-[state=active]:text-[#171717]',
+          'dark:data-[state=active]:border-transparent dark:data-[state=active]:text-[#f5f5f5]'
         ],
         line: [
           'relative gap-2 px-2 py-2',
@@ -98,7 +113,7 @@ const tabsTriggerVariants = cva(
           'focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4',
           'data-[state=active]:text-foreground',
           'after:absolute after:rounded-full after:bg-transparent',
-          'data-[state=active]:after:bg-foreground'
+          'after:pointer-events-none'
         ],
         underline: [
           'relative gap-1.5 px-2.5 py-2',
@@ -106,7 +121,7 @@ const tabsTriggerVariants = cva(
           'focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4',
           'data-[state=active]:text-foreground',
           'after:absolute after:rounded-none after:bg-transparent',
-          'data-[state=active]:after:bg-foreground'
+          'after:pointer-events-none'
         ],
         workflow: [
           'relative gap-1.5 px-1 py-1.5 text-sm font-normal',
@@ -129,13 +144,13 @@ const tabsTriggerVariants = cva(
       {
         variant: 'line',
         orientation: 'horizontal',
-        class: 'after:bottom-0 after:left-0 after:h-[2px] after:w-full data-[state=active]:after:h-[4px]'
+        class: 'after:bottom-0 after:left-0 after:h-[2px] after:w-full'
       },
       {
         variant: 'line',
         orientation: 'vertical',
         class: [
-          'justify-center after:bottom-0 after:left-0 after:h-[4px] after:w-full after:bg-transparent data-[state=active]:after:bg-foreground',
+          'justify-center after:bottom-0 after:left-0 after:h-[4px] after:w-full after:bg-transparent',
           'hover:bg-[#f5f5f5] hover:text-[#171717] dark:hover:bg-[#2c2c2c] dark:hover:text-[#f5f5f5]'
         ]
       },
@@ -152,19 +167,46 @@ const tabsTriggerVariants = cva(
   }
 )
 
-function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  const { variant, orientation } = React.use(TabsContext)
+function TabsTrigger({ className, children, value, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+  const { variant, orientation, value: selectedValue, highlightId } = React.use(TabsContext)
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
+      value={value}
       className={cn(tabsTriggerVariants({ variant, orientation }), className)}
-      {...props}
-    />
+      {...props}>
+      {variant !== 'workflow' && value === selectedValue && (
+        <SelectionHighlight
+          data-slot="tabs-indicator"
+          layoutId={highlightId}
+          className={
+            variant === 'default'
+              ? 'bg-white dark:bg-[#3a3a3a]'
+              : cn('inset-x-0 top-auto bottom-0 bg-foreground', variant === 'line' ? 'h-1' : 'h-0.5')
+          }
+          style={
+            variant === 'default'
+              ? { borderRadius: 6, boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)' }
+              : { borderRadius: 2 }
+          }
+        />
+      )}
+      {children}
+    </TabsPrimitive.Trigger>
   )
 }
 
 function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return <TabsPrimitive.Content data-slot="tabs-content" className={cn('flex-1 outline-none', className)} {...props} />
+  return (
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      className={cn(
+        'flex-1 outline-none motion-safe:data-[state=active]:animate-in motion-safe:data-[state=active]:fade-in motion-safe:duration-150',
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 export { Tabs, TabsContent, TabsList, TabsTrigger }

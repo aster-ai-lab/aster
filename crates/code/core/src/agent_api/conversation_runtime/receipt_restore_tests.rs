@@ -419,7 +419,7 @@ impl crate::llm::LlmClient for DetachedAdmissionClient {
 async fn detached_session(
     workspace: &std::path::Path,
     client: Arc<DetachedAdmissionClient>,
-    cognitive: bool,
+    package: bool,
 ) -> AgentSession {
     let mut config = crate::agent_api::tests::test_config();
     config.memory = Some(crate::memory::MemoryConfig {
@@ -435,11 +435,11 @@ async fn detached_session(
         .with_manual_delegation_enabled(false)
         .with_continuation(false)
         .with_permission_policy(crate::permissions::PermissionPolicy::new().allow("*"));
-    if cognitive {
-        let (context, _) = crate::agent_api::tests::test_cognitive_context(
-            crate::agent_api::tests::TestCognitiveProviderMode::Valid,
+    if package {
+        let (context, _) = crate::agent_api::tests::test_package_context(
+            crate::agent_api::tests::TestPackageProviderMode::Valid,
         );
-        options = options.with_cognitive_context(context);
+        options = options.with_package_context(context);
     }
     agent
         .build_session(workspace.to_string_lossy().into_owned(), client, &options)
@@ -478,7 +478,7 @@ impl crate::capability::CapabilityEffect for AdmissionCloseEffect {
 mod owned_admission;
 
 #[tokio::test]
-async fn detached_binding_uses_the_pinned_capability_cognitive_and_control_identity() {
+async fn detached_binding_uses_the_pinned_capability_package_and_control_identity() {
     owned_admission::binding_identity().await;
 }
 

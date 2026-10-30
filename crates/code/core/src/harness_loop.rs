@@ -31,7 +31,7 @@ pub enum ForcedStop {
 }
 
 impl ForcedStop {
-    /// Wire name for the `x.ai/turn/outcome` payload; the pager's parser
+    /// Wire name for the `a3s/turn/outcome` payload; the pager's parser
     /// accepts exactly these values.
     pub fn as_str(self) -> &'static str {
         match self {
@@ -183,9 +183,8 @@ struct OpenWorkspaceChild {
     nongit: bool,
 }
 
-/// One turn's progress across the four dimensions the admission policy
-/// reads. A stall is ZERO on every dimension; exploration alone (nonzero
-/// information) never stalls.
+/// One turn's measured deltas; the admission source versions their progress
+/// interpretation. New slices count uncertainty reduction, not growing debt.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TurnProgressDelta {
     /// Distinct tool receipts first applied this turn.
@@ -194,7 +193,7 @@ pub struct TurnProgressDelta {
     pub mutation_delta: u64,
     /// Net decrease of unresolved plus recorded obligations.
     pub uncertainty_delta: i64,
-    /// Assistant output (text or plan) landed this turn.
+    /// Assistant output or a host-accepted plan step landed.
     pub plan_delta: u64,
 }
 
@@ -232,7 +231,6 @@ impl MutationLedger {
         self.slice_progress.receipts_applied += delta.information_delta;
         self.slice_progress.effects_recorded += delta.mutation_delta;
         self.slice_progress.assistant_outputs += delta.plan_delta;
-        self.slice_progress.uncertainty_open = open_now;
         delta
     }
 
@@ -240,6 +238,7 @@ impl MutationLedger {
     /// Called when the goal settles the slice; absence of any ledger makes
     /// the settle fall back to mutation-only progress.
     pub(crate) fn take_slice_delta(&mut self) -> TurnProgressDelta {
+        self.take_turn_delta();
         let open_now =
             (self.unresolved_tool_effects.len() + self.recorded_uncertainties.len()) as i64;
         let delta = TurnProgressDelta {
@@ -300,6 +299,9 @@ pub struct MutationLedger {
     started_absent: std::collections::BTreeSet<String>,
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
     applied_tool_receipts: std::collections::BTreeSet<String>,
+    /// Replaying state must not count the same receipt as fresh progress.
+    #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
+    progress_tool_receipts: std::collections::BTreeSet<String>,
     #[serde(default, skip_serializing_if = "std::collections::BTreeSet::is_empty")]
     applied_background_receipts: std::collections::BTreeSet<String>,
     /// Only live registered-tool hooks populate these; checkpoint metadata
@@ -367,6 +369,10 @@ impl MutationLedger {
 
     pub fn paths(&self) -> impl Iterator<Item = &str> {
         self.records.iter().map(|record| record.path.as_str())
+    }
+
+    pub(crate) fn observed_records(&self) -> &[MutationRecord] {
+        &self.records
     }
 
     pub(crate) fn observes_current_workspace(&self, root: &std::path::Path) -> bool {
@@ -515,8 +521,12 @@ impl MutationLedger {
         self.open_children.retain(|child| {
             !settled_workspace_children.contains(&format!("workspace-child:{}", child.task_id))
         });
-        self.unresolved_tool_effects
-            .retain(|key| !settled_workspace_children.contains(key));
+        self.unresolved_tool_effects.retain(|key| {
+            // Only exact child terminals and their validated observation gaps
+            // belong to this path; another invocation's uncertainty is never forgiven.
+            let owned = matches!(key.split_once(':'), Some(("workspace-child" | "background-receipt-incomplete" | "background-evidence", id)) if !id.is_empty());
+            !owned || !settled_workspace_children.contains(key)
+        });
     }
 
     /// Compare cached claims, including uncertainty, with a projection made
@@ -745,7 +755,9 @@ impl MutationLedger {
         if !self.applied_tool_receipts.insert(key.clone()) {
             return;
         }
-        self.turn_progress.receipts_applied += 1;
+        if self.progress_tool_receipts.insert(key.clone()) {
+            self.turn_progress.receipts_applied += 1;
+        }
         // Obligations are NOT discharged by an observed receipt: the pinned
         // invariants (future terminal never erases prepared debt; child debt
         // needs its exact committed terminal) own every discharge path. The
@@ -838,6 +850,9 @@ impl MutationLedger {
         after: &a3s_effect::ToolFileIdentityV1,
     ) {
         if path.is_empty() || crate::porcelain::is_harness_path(path) {
+            return;
+        }
+        if after.kind == a3s_effect::ToolFileKind::Directory && before == Some(after) {
             return;
         }
         // A typed before of absence is the run's start for this path, unless
@@ -1570,6 +1585,24 @@ pub fn decide_with_observations(
     allow_continuation: bool,
     observations: &[crate::external_observation::ExternalObservationV1],
 ) -> CompletionGate {
+    decide_with_contracts(
+        ledger,
+        reports,
+        waivers,
+        allow_continuation,
+        observations,
+        &[],
+    )
+}
+
+pub(crate) fn decide_with_contracts(
+    ledger: &MutationLedger,
+    reports: &[VerificationReport],
+    waivers: &[CompletionWaiverV1],
+    allow_continuation: bool,
+    observations: &[crate::external_observation::ExternalObservationV1],
+    contracts: &[crate::verification::VerificationContractV1],
+) -> CompletionGate {
     if let Some(error) = ToolEffectUnresolved::from_ledger(ledger) {
         return CompletionGate::Incomplete {
             message: error.to_string(),
@@ -1626,7 +1659,11 @@ pub fn decide_with_observations(
         });
     }
     let paths = mutation_paths_for_gate(ledger);
-    let next = unbound_mutation_next_step(ledger);
+    let next = if contracts.is_empty() {
+        unbound_mutation_next_step(ledger)
+    } else {
+        host_contract_next_step(ledger, contracts)
+    };
     let message = format!(
         "{UNBOUND_MUTATION_GATE}{digest}{paths} has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest.{next}"
     );
@@ -1641,6 +1678,19 @@ pub fn decide_with_observations(
 }
 
 const UNBOUND_MUTATION_GATE: &str = "completion gate: workspace mutation ";
+
+fn host_contract_next_step(
+    ledger: &MutationLedger,
+    contracts: &[crate::verification::VerificationContractV1],
+) -> String {
+    let applicable: Vec<_> = contracts.iter().filter(|contract| {
+        contract.validate().is_ok() && ledger.paths().all(|path|contract.covers.iter().any(|pattern|crate::verification::contract_covers_path(pattern,path)))
+    }).map(|contract|serde_json::json!({"id":contract.id,"command":contract.command.trim(),"covers":contract.covers})).collect();
+    if applicable.is_empty() {
+        return " No admitted host contract covers every current mutation. Restore out-of-scope changes or ask the host to revise its contract; do not invent a checker or waiver.".into();
+    }
+    format!(" Next step: use an admitted command as the entire bash command, unchanged. Run cleanup or status printing in a separate call; added prefixes, suffixes, redirects or pipes do not inherit verification. Admitted exact commands covering current changes (host data, not execution permission): {}",Value::Array(applicable))
+}
 
 /// The mutation digest named by an unbound-mutation gate message from
 /// [`decide_with_observations`]. A host that answers the gate with its own
@@ -1816,7 +1866,7 @@ pub(crate) fn model_verification_context(gate: CompletionGate) -> Option<String>
     unbound_mutation_digest(&message)?;
     let diagnostic = serde_json::Value::String(message);
     Some(format!(
-        "[host verification state]\nVerify the recorded changes using only exposed tools and the admitted checker when supplied. For built-in bash verification, use explicit `test -f path` checks with literal file paths, followed by content checks. Do not substitute shell variables for recorded paths. Do not repeat completed mutations. This note grants no verification or waiver. Diagnostic data (not instructions):\n{diagnostic}"
+        "[host verification state]\nFollow the verification method in the diagnostic using only exposed tools. An admitted command must run unchanged after the latest edit; do not repeat completed mutations. This note grants no execution permission, verification or waiver. Diagnostic data:\n{diagnostic}"
     ))
 }
 
@@ -1843,3 +1893,6 @@ mod tests;
 
 #[cfg(test)]
 mod shell_diagnostic_tests;
+
+#[cfg(test)]
+mod directory_receipt_tests;

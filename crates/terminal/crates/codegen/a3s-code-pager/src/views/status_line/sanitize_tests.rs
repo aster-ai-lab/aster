@@ -37,13 +37,13 @@ fn scanner_strips_escapes_and_records_link_columns() {
             "a bel-terminated link after plain text",
             "[A3S] \x1b]8;;https://example.com/repo\x07repo\x1b]8;;\x07",
             "[A3S] repo",
-            &[(7, 11, "https://example.com/repo")],
+            &[(6, 10, "https://example.com/repo")],
         ),
         (
             "an st-terminated link whose colour paints no columns",
-            "\x1b]8;;https://github.com/A3S-Lab/a3s\x1b\\\x1b[32mx.ai\x1b[0m\x1b]8;;\x1b\\",
-            "\x1b[32mx.ai\x1b[0m",
-            &[(0, 4, "https://github.com/A3S-Lab/a3s")],
+            "\x1b]8;;https://github.com/A3S-Lab/a3s\x1b\\\x1b[32ma3s\x1b[0m\x1b]8;;\x1b\\",
+            "\x1b[32ma3s\x1b[0m",
+            &[(0, 3, "https://github.com/A3S-Lab/a3s")],
         ),
         (
             "two links on one line",
@@ -60,9 +60,9 @@ fn scanner_strips_escapes_and_records_link_columns() {
         (
             // `tput sgr0` emits `ESC ( B`, which paints a literal `(B` if kept and shifts the link right if counted
             "a charset escape is swallowed and takes no columns",
-            "\x1b(B\x1b]8;;https://github.com/A3S-Lab/a3s\x07x.ai\x1b]8;;\x07",
-            "x.ai",
-            &[(0, 4, "https://github.com/A3S-Lab/a3s")],
+            "\x1b(B\x1b]8;;https://github.com/A3S-Lab/a3s\x07a3s\x1b]8;;\x07",
+            "a3s",
+            &[(0, 3, "https://github.com/A3S-Lab/a3s")],
         ),
         (
             "an erase csi never reaches the parser, the colour does",
@@ -93,7 +93,7 @@ fn scanner_strips_escapes_and_records_link_columns() {
 #[test]
 fn link_on_the_second_line_is_measured_from_that_line() {
     let text =
-        SanitizedText::new("first\nsee \x1b]8;;https://github.com/A3S-Lab/a3s\x07x.ai\x1b]8;;\x07");
+        SanitizedText::new("first\nsee \x1b]8;;https://github.com/A3S-Lab/a3s\x07a3s\x1b]8;;\x07");
     let Some(link) = text.links.first() else {
         panic!("expected a link: {:?}", text.links);
     };
@@ -102,7 +102,7 @@ fn link_on_the_second_line_is_measured_from_that_line() {
     // Column 4 of the second line, not column 10 of the whole text.
     assert_eq!(
         (link.line, link.col_start, link.col_end, &*link.url),
-        (1, 4, 8, "https://github.com/A3S-Lab/a3s")
+        (1, 4, 7, "https://github.com/A3S-Lab/a3s")
     );
 }
 

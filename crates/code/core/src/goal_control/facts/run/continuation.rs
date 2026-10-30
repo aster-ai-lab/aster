@@ -3,13 +3,12 @@
 use super::*;
 use crate::goal_control::GoalContinuationPolicyV1;
 
-// The delta basis counts any of the four turn dimensions (information,
-// mutation, uncertainty, plan) recorded on the settled slice; hosts that
-// feed deltas keep long read-only tasks alive that the mutation-only
-// basis would starve.
+// Historical bases replay unchanged; V3 counts net, previously unseen states.
 closed_set!(ProgressBasis {
     ObservedWorkspaceMutationV1 => "observed_workspace_mutation_v1",
     TurnProgressDeltaV1 => "turn_progress_delta_v1",
+    TurnProgressDeltaV2 => "turn_progress_delta_v2",
+    TurnProgressDeltaV3 => "turn_progress_delta_v3",
 });
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -20,7 +19,7 @@ pub(crate) struct ContinuationSource {
     // Absence preserves the original accepted-receipt admission semantics and
     // exact command digest of old facts. All new host sources name this basis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    progress_basis: Option<ProgressBasis>,
+    pub(crate) progress_basis: Option<ProgressBasis>,
 }
 
 impl ContinuationSource {
@@ -39,7 +38,7 @@ impl ContinuationSource {
         Self {
             policy,
             observed_unix_ms,
-            progress_basis: Some(ProgressBasis::TurnProgressDeltaV1),
+            progress_basis: Some(ProgressBasis::TurnProgressDeltaV3),
         }
     }
 }
@@ -56,9 +55,17 @@ pub(crate) struct ContinuationUsage {
     /// Identity of the currently accepted plan, and of the plan the last slice ran under.
     pub accepted_plan: Option<ExecutionIdentityV1>,
     slice_plan: Option<ExecutionIdentityV1>,
+    mutation_progress: super::mutation_progress::MutationProgress,
 }
 
 impl ContinuationUsage {
+    pub(in crate::goal_control::facts) fn observe_workspace_changes(
+        &mut self,
+        changes: Option<Vec<a3s_effect::ToolPathChangeV1>>,
+    ) -> Result<bool, GoalControlError> {
+        self.mutation_progress.observe(changes)
+    }
+
     pub(crate) fn accepted_legacy_receipt(&mut self, mutated: bool) {
         if mutated {
             self.legacy_slices_since_progress = 0;
@@ -81,7 +88,10 @@ impl ContinuationUsage {
         let since_progress = match source.progress_basis {
             None => self.legacy_slices_since_progress,
             Some(
-                ProgressBasis::ObservedWorkspaceMutationV1 | ProgressBasis::TurnProgressDeltaV1,
+                ProgressBasis::ObservedWorkspaceMutationV1
+                | ProgressBasis::TurnProgressDeltaV1
+                | ProgressBasis::TurnProgressDeltaV2
+                | ProgressBasis::TurnProgressDeltaV3,
             ) => self.slices_since_progress,
         };
         let replanned = since_progress == stall && self.accepted_plan != self.slice_plan;

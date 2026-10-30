@@ -16,7 +16,7 @@ pub(super) async fn scenario<F, Fut, T>(
     action: F,
 ) -> (T, OwnerDisposition)
 where
-    F: FnOnce(OwnedPinnedFact, Option<crate::cognitive_context::CognitivePackageBindingV1>) -> Fut
+    F: FnOnce(OwnedPinnedFact, Option<crate::package_context::PackageBindingV1>) -> Fut
         + Send
         + 'static,
     Fut: Future<Output = T> + Send + 'static,
@@ -26,7 +26,7 @@ where
         .await
         .unwrap();
     let mut captured = OwnedConversationCapture::capture(session, false).unwrap();
-    let cognitive = captured.preparation.cognitive_binding.clone();
+    let package = captured.preparation.package_binding.clone();
     let cancellation = captured.preparation.cancellation.clone();
     let (handoff, start, original) = ExecutionCoordinator::prepare_original_handoff(
         session,
@@ -59,7 +59,7 @@ where
         )
         .await
         .unwrap();
-        assert!(result_tx.send(action(pinned, cognitive).await).is_ok());
+        assert!(result_tx.send(action(pinned, package).await).is_ok());
     });
     let (disposition_tx, disposition_rx) = tokio::sync::oneshot::channel();
     let proxy = handoff.supervise(worker, Vec::new(), disposition_tx);
@@ -103,12 +103,12 @@ pub(super) async fn binding_identity() {
     let (_, disposition) = scenario(
         &session,
         "detached-binding",
-        move |pinned, cognitive| async move {
+        move |pinned, package| async move {
             let surface = pinned.parts.surface.as_ref().unwrap();
             let expected = surface.agent.checkpoint_capability_binding().unwrap();
             assert_eq!(pinned.snapshot.capability_binding.as_ref(), Some(expected));
-            assert_eq!(pinned.snapshot.cognitive_package_binding, cognitive);
-            assert!(pinned.snapshot.cognitive_package_binding.is_some());
+            assert_eq!(pinned.snapshot.package_binding, package);
+            assert!(pinned.snapshot.package_binding.is_some());
             assert_eq!(surface.run_id.as_deref(), Some(pinned.run.id()));
             assert_eq!(
                 surface.agent.checkpoint_run_id.as_deref(),

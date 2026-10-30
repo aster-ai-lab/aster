@@ -1,0 +1,68 @@
+export const meta = {
+  title: 'Flow 恢复、存储与运行验证',
+  description: '追加式历史、至少一次副作用、未明结果、持久等待、Worker 与兼容部署。',
+  label: '恢复与验证',
+  updated: '2026-10-30',
+};
+
+恢复应从权威事件历史开始。内存栈、Worker 是否还活着、客户端是否收到响应，都不能替代已提交事件。
+
+## 选择 Store
+
+<DocTable caption="Flow 的存储选择" headers={['Store', '适用范围', 'Feature']} rows={[
+  ['InMemoryEventStore', '测试与临时嵌入；进程退出后不保留历史', '内置'],
+  ['LocalFileEventStore', '单进程本地 JSONL 持久历史', '内置'],
+  ['SqliteEventStore', '单节点持久应用', 'sqlite'],
+  ['PostgresEventStore', '多进程 Worker 共享权威历史', 'postgres'],
+]} />
+
+所有 Store 遵守相同的事件封装与重放合同。SQL Store 使用 `a3s-orm`；部署时应由明确的迁移所有者执行迁移，再接纳服务 Worker。见 <SourceRef path="crates/flow/src/store/mod.rs" match="pub trait FlowEventStore: Send + Sync">事件 Store 合同</SourceRef>。
+
+`checkpoint` 是可丢弃的投影缓存，不是新的事实来源。`history_page` 使用有界分页和排他序列游标；归档时使用固定历史顶点的导出接口。长历史可通过 `continue_as_new` 连接新流，不应删除历史中间的一段来加快重放。
+
+## 未明结果与幂等性
+
+物理副作用按至少一次边界处理。外部操作已成功但 `StepCompleted` 尚未保存时，崩溃恢复可能再次投递。宿主必须使用稳定幂等键，并核对结果未知的调用。
+
+一等 Activity 提供尝试 ID、幂等键、fencing token、心跳检查点和期限。提供方响应丢失时，返回 `FlowError::UnknownOutcome`；期限超时同样不能自动解释为外部操作失败。宿主核实结果后，使用 <SourceRef path="crates/flow/src/engine/activities.rs" match="pub async fn resolve_unknown_activity(">未明 Activity 结果核对</SourceRef>，再决定后续执行。
+
+不得通过直接重试、忽略 fencing token 或显示“已回滚”来掩盖未明结果。
+
+## 持久等待与调度
+
+定时器、延迟重试、Signal 和 Hook 在等待时释放计算资源，不保留 Worker 的内存栈。持久 Store 保存等待状态，宿主的 Scheduler 或 Worker 在到期或收到外部事件后推进运行。
+
+外部审批还需要业务身份、权限和准确运行绑定。Flow 管理等待生命周期，宿主管理谁可以回答、哪份结果可以发布。
+
+## Worker 与部署版本
+
+Worker 接任务前应通过 `ensure_compatible` 核对 `FlowWorkerCapabilities`。运行时 Build 身份和不可变补丁标记用于选择兼容重放路径；不能把“新代码可以编译”当成“可以恢复旧历史”。
+
+队列租约使用 fencing，过期任务需要按队列合同重新接管；死信恢复应使用已有 redrive 接口。需要公平预算时使用 `run_until_idle_bounded`，零预算会在取得租约前被拒绝。
+
+<DocTable caption="Flow 可选接入能力" headers={['Feature', '增加的能力', '宿主仍需决定']} rows={[
+  ['native-ts（默认）', '原生 TypeScript 编译与调用适配', '编译器、Bun、依赖与产物接纳'],
+  ['sqlite / postgres', 'SQL 历史与相应持久能力', '连接、迁移、备份与租户策略'],
+  ['boot', 'Boot 任务管理器接入', '调度准入、处理器生命周期与资源预算'],
+  ['a3s-event', '提交后的事件观测出口', '事件目的地、保留与观测策略'],
+]} />
+
+TypeScript 是 Runtime 适配器，不是第二套工作流历史、调度器或生命周期。只用 Rust 时可关闭默认 feature。
+
+## 取消与验证
+
+普通取消进入清理流程，`force_cancel` 是显式的强制路径。取消并不自动撤销已发生的外部操作，补偿也必须保留自己的调用身份与结果。
+
+从仓库根目录运行既有恢复测试：
+
+```sh
+cargo test --locked -p a3s-flow --no-default-features --test engine
+```
+
+应用验收至少应覆盖：相同 ID 的创建重试、不同输入的冲突、已完成步骤重放、跨进程持久等待、未明 Activity 的结果核对、过期 Worker 拒绝、取消清理与不兼容 Build 拒绝。内存测试不能替代持久 Store 的重启和并发验收。
+
+## 实现依据
+
+- [错误闭集](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/src/error.rs)
+- [恢复与 Activity 回归](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/tests/engine.rs)
+- [持久存储与部署边界](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/README.md)

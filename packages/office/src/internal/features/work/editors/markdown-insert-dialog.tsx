@@ -97,6 +97,7 @@ export function MarkdownInsertDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={title}
       className="work-office-dialog work-markdown-insert-dialog"
       restoreFocusTarget={restoreFocusTarget}

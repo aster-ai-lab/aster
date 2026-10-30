@@ -151,12 +151,12 @@ async fn delegated_access(name: &str, allowed: bool) {
     session.close().await;
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn actual_task_inherits_the_accepted_projected_tool() {
     delegated_access("delegated-plugin-tool-allowed", true).await;
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn actual_task_cannot_obtain_a_denied_projected_tool_by_name() {
     delegated_access("delegated-plugin-tool-denied", false).await;
 }

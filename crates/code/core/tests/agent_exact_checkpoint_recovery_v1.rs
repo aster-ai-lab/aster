@@ -162,7 +162,7 @@ fn portable_export(checkpoint: &LoopCheckpoint) -> SessionCheckpointExportV1 {
         agent_template_id: None,
         correlation_id: None,
         durable_memory_binding: None,
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     };
     let source = RunRecord {
@@ -171,7 +171,7 @@ fn portable_export(checkpoint: &LoopCheckpoint) -> SessionCheckpointExportV1 {
             session_id: checkpoint.session_id.clone(),
             status: RunStatus::Executing,
             prompt: "portable source".into(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: checkpoint.capability_binding.clone(),
             created_at_ms: 1_723_000_000_000,
             updated_at_ms: checkpoint.checkpoint_ms,

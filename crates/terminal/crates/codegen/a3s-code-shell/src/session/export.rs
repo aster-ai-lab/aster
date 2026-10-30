@@ -21,7 +21,7 @@ struct A3sJsonRpcNotification<'a> {
 }
 
 const ACP_SESSION_UPDATE_METHOD: &str = "session/update";
-const A3S_SESSION_UPDATE_METHOD: &str = "_x.ai/session/update";
+const A3S_SESSION_UPDATE_METHOD: &str = "_a3s/session/update";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExportedMessage {

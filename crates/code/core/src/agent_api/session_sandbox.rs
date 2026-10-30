@@ -152,6 +152,10 @@ struct UnavailableDefaultSandbox {
 
 #[async_trait::async_trait]
 impl BashSandbox for UnavailableDefaultSandbox {
+    fn allows_host_execution_override(&self) -> bool {
+        true
+    }
+
     fn validate_execution_available(&self) -> anyhow::Result<()> {
         anyhow::bail!(self.message.clone())
     }
@@ -1214,6 +1218,70 @@ mod tests {
         format!(
             "/bin/busybox setsid /bin/bash -c 'while :; do printf x >> {counter}; sleep 0.05; done' >/dev/null 2>&1 & wait"
         )
+    }
+
+    /// Code-task prerequisites must execute in the default guest, including
+    /// Python's Git child process and persistent workspace artifacts.
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    #[ignore = "requires signed HVF assets with Python and Git; run explicitly on Apple Silicon"]
+    async fn default_local_sandbox_runs_python_and_git_for_task_workspaces() {
+        use crate::tools::Tool;
+
+        let assets = std::env::var_os("ASTER_TEST_OCI_ASSETS")
+            .expect("explicit real OCI assets in ASTER_TEST_OCI_ASSETS");
+        let _assets_env = AssetsEnv::set(&assets);
+        let jobs = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../target/aster-task-jobs");
+        std::fs::create_dir_all(&jobs).unwrap();
+        let parent = tempfile::tempdir_in(jobs).unwrap();
+        let workspace = parent.path().join("task workspace");
+        std::fs::create_dir(&workspace).unwrap();
+        let workspace = workspace.canonicalize().unwrap();
+        std::fs::write(
+            workspace.join("check.py"),
+            r#"import json, os, pathlib, subprocess
+def git(*args):
+    return subprocess.run(["git", *args], check=True, capture_output=True, timeout=10)
+assert os.uname().sysname == "Linux"
+git("init", "--quiet", "fixture")
+pathlib.Path("fixture/README.md").write_text("task fixture\n")
+git("-C", "fixture", "add", "README.md")
+git("-C", "fixture", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--quiet", "-m", "fixture")
+assert git("-C", "fixture", "show", "HEAD:README.md").stdout == b"task fixture\n"
+pathlib.Path("result.json").write_text(json.dumps({"kernel": os.uname().sysname, "sum": sum(range(10)), "git": True}))
+print("python-git-guest-ok")
+raise SystemExit(7)
+"#,
+        )
+        .unwrap();
+        let mut opts = SessionOptions::new();
+        install_default_local_sandbox(&workspace, &mut opts);
+        let sandbox = Arc::clone(opts.sandbox_handle.as_ref().unwrap());
+        assert_eq!(sandbox.execution_overhead_ms(), 90_000);
+        let context =
+            crate::tools::ToolContext::new(workspace.clone()).with_sandbox(Arc::clone(&sandbox));
+        let output = crate::tools::builtin::bash::BashTool
+            .execute(
+                &serde_json::json!({"command": "PYTHONDONTWRITEBYTECODE=1 python3 check.py", "timeout": 120000}),
+                &context,
+            )
+            .await
+            .expect("Python and its Git child return a settled guest result");
+        sandbox.shutdown().await;
+        assert_eq!(exit_code_of(&output), Some(7), "{}", output.content);
+        assert!(
+            output.content.contains("python-git-guest-ok"),
+            "{}",
+            output.content
+        );
+        let result: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(workspace.join("result.json")).unwrap()).unwrap();
+        assert_eq!(
+            result,
+            serde_json::json!({"kernel":"Linux", "sum":45, "git":true})
+        );
+        assert!(workspace.join("fixture/.git/HEAD").is_file());
     }
 
     /// The session Aster installs: Bash, a Python program through that

@@ -28,7 +28,7 @@ A person runs headless, `aster agent stdio`, `models`, or `worktree`. Each comma
 
 ### User Story 2 - Initialize advertisements stay advisory (Priority: P2)
 
-The interactive client still sends its initialize capability advertisements. A single ordinary prompt does not send an `x.ai/` method. The shared agent is not required to implement those advertisements for the prompt to finish.
+The interactive client still sends its initialize capability advertisements. A single ordinary prompt does not send an `a3s/` method. The shared agent is not required to implement those advertisements for the prompt to finish.
 
 **Why this priority**: Treating a similarly named method as implemented would hide a real gap.
 
@@ -36,9 +36,9 @@ The interactive client still sends its initialize capability advertisements. A s
 
 **Acceptance Scenarios**:
 
-1. **Given** default connect flags and a leader connection, **When** initialize capabilities are built, **Then** the `x.ai/` keys are exactly `x.ai/bashOutputNoColor`, `x.ai/gitHeadChanged`, `x.ai/hunkTracker`, `x.ai/incrementalBashOutput`, `x.ai/statusLine`, and `x.ai/userMessageEcho`.
-2. **Given** default connect flags and an ACP sidecar connection, **When** initialize capabilities are built, **Then** no key starts with `x.ai/`.
-3. **Given** an ordinary text prompt, **When** its request meta is built, **Then** no key starts with `x.ai/`.
+1. **Given** default connect flags and a leader connection, **When** initialize capabilities are built, **Then** the `a3s/` keys are exactly `a3s/bashOutputNoColor`, `a3s/gitHeadChanged`, `a3s/hunkTracker`, `a3s/incrementalBashOutput`, `a3s/statusLine`, and `a3s/userMessageEcho`.
+2. **Given** default connect flags and an ACP sidecar connection, **When** initialize capabilities are built, **Then** no key starts with `a3s/`.
+3. **Given** an ordinary text prompt, **When** its request meta is built, **Then** no key starts with `a3s/`.
 
 ### Edge Cases
 
@@ -56,7 +56,7 @@ The interactive client still sends its initialize capability advertisements. A s
 - **FR-001**: Headless, `aster agent stdio`, `models`, and `worktree` MUST call the sidecar only after the same presence check the interactive pager uses.
 - **FR-002**: When that check finds no executable, each of those entries MUST fail closed with the interactive error text. They MUST NOT call `spawn_grok_shell` or `run_stdio_agent`.
 - **FR-003**: The switch order is headless, then stdio, then `models` and `worktree` together.
-- **FR-004**: Initialize sent to the ACP sidecar omits client-capability keys that start with `x.ai/`. Initialize sent to the leader advertises exactly `x.ai/bashOutputNoColor`, `x.ai/gitHeadChanged`, `x.ai/hunkTracker`, `x.ai/incrementalBashOutput`, `x.ai/statusLine`, and `x.ai/userMessageEcho`. The shared agent does not implement those keys. The client does not refuse initialize or one ordinary prompt when the agent omits them.
+- **FR-004**: Initialize sent to the ACP sidecar omits client-capability keys that start with `a3s/`. Initialize sent to the leader advertises exactly `a3s/bashOutputNoColor`, `a3s/gitHeadChanged`, `a3s/hunkTracker`, `a3s/incrementalBashOutput`, `a3s/statusLine`, and `a3s/userMessageEcho`. The shared agent does not implement those keys. The client does not refuse initialize or one ordinary prompt when the agent omits them.
 - **FR-005**: No new ACL or TOML setting is added. `A3S_ACP_AGENT_BIN` stays an environment override.
 
 ### Key Entities

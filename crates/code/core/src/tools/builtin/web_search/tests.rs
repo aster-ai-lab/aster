@@ -650,7 +650,59 @@ fn explicit_selection_does_not_invent_other_tiers() {
     assert!(headless.api().is_empty() && headless.http_rss().is_empty());
 }
 
-#[cfg(not(feature = "headless-search"))]
+#[cfg(all(not(feature = "headless-search"), target_os = "macos"))]
+fn browser_process_ids() -> std::collections::BTreeSet<(String, u32)> {
+    #[link(name = "proc")]
+    unsafe extern "C" {
+        fn proc_listchildpids(pid: i32, buffer: *mut std::ffi::c_void, size: i32) -> i32;
+    }
+
+    // Global ps can block on unrelated processes; observe only this test's descendants.
+    let mut pending = vec![std::process::id() as i32];
+    let mut ids = std::collections::BTreeSet::new();
+    while let Some(pid) = pending.pop() {
+        let mut children = [0_i32; 1024];
+        let count = unsafe {
+            proc_listchildpids(
+                pid,
+                children.as_mut_ptr().cast(),
+                std::mem::size_of_val(&children) as i32,
+            )
+        };
+        assert!(
+            count >= 0 && (count as usize) < children.len(),
+            "owned process inventory failed or exceeded its bound"
+        );
+        for child in children.into_iter().filter(|child| *child > 0) {
+            if ids.insert(("owned descendant".into(), child as u32)) {
+                pending.push(child);
+            }
+        }
+    }
+    ids
+}
+
+#[cfg(all(not(feature = "headless-search"), target_os = "macos"))]
+#[test]
+fn process_inventory_observes_an_owned_child_without_browser_name_filters() {
+    let mut child = std::process::Command::new("/bin/cat")
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::null())
+        .spawn()
+        .unwrap();
+    let pid = child.id();
+    let observed = browser_process_ids()
+        .iter()
+        .any(|(_, observed)| *observed == pid);
+    drop(child.stdin.take());
+    assert!(child.wait().unwrap().success());
+    assert!(observed, "the inventory must observe a real owned child");
+    assert!(browser_process_ids()
+        .iter()
+        .all(|(_, observed)| *observed != pid));
+}
+
+#[cfg(all(not(feature = "headless-search"), not(target_os = "macos")))]
 fn browser_process_ids() -> std::collections::BTreeSet<(String, u32)> {
     let mut command = if cfg!(windows) {
         let mut command = std::process::Command::new("tasklist");
@@ -1002,6 +1054,21 @@ fn json_search_result_preserves_published_date() {
             "leaked {secret}: {serialized}"
         );
     }
+}
+
+#[test]
+fn output_format_defaults_to_structured_results_and_honors_explicit_text() {
+    let default = serde_json::json!({"query": "q"});
+    assert_eq!(requested_output_format(&default, false), "json");
+    assert_eq!(requested_output_format(&default, true), "text");
+    assert_eq!(
+        requested_output_format(&serde_json::json!({"query": "q", "format": "text"}), false),
+        "text"
+    );
+    assert_eq!(
+        requested_output_format(&serde_json::json!({"query": "q", "format": "json"}), true),
+        "json"
+    );
 }
 
 #[test]
@@ -1593,14 +1660,41 @@ async fn web_search_returns_saved_notes_without_searching_the_web() {
     assert_eq!(calls.load(std::sync::atomic::Ordering::SeqCst), 1);
 }
 
+#[cfg(feature = "headless-search")]
+#[test]
+fn moli_preparation_is_lazy_without_an_executor() {
+    let (browser, pending) = headless_runtime(HeadlessConfig::default(), true);
+    assert!(matches!(browser, HeadlessBrowser::Moli));
+    assert!(pending.is_some());
+}
+
+#[cfg(feature = "headless-search")]
 #[tokio::test]
-async fn unawaited_provisioning_is_aborted_on_drop() {
-    let task = tokio::spawn(async {
-        tokio::time::sleep(std::time::Duration::from_secs(30)).await;
-    });
-    drop(AbortOnDrop(task.abort_handle()));
-    let joined = tokio::time::timeout(std::time::Duration::from_secs(2), task)
+async fn deferred_moli_resolution_uses_the_configured_executable() {
+    let directory = tempfile::tempdir().unwrap();
+    let executable = directory.path().join("moli-fixture");
+    std::fs::write(&executable, b"fixture: never executed").unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o700)).unwrap();
+    }
+    let config = HeadlessConfig {
+        browser_path: Some(executable.to_string_lossy().into_owned()),
+        max_tabs: 3,
+        ..HeadlessConfig::default()
+    };
+    assert!(headless_runtime(config.clone(), false).1.is_none());
+    let pending = headless_runtime(config.clone(), true).1.unwrap();
+    let runtime = pending
         .await
-        .expect("an aborted prep must not block the fast path");
-    assert!(joined.unwrap_err().is_cancelled());
+        .expect("explicit runtime resolves without downloading");
+    assert_eq!(runtime.executable.as_ref(), Some(&executable));
+    assert_eq!(runtime.max_tabs, Some(3));
+    let pending = headless_runtime(config, true).1.unwrap();
+    std::fs::remove_file(&executable).unwrap();
+    assert!(pending
+        .await
+        .unwrap_err()
+        .contains("configured Moli executable"));
 }

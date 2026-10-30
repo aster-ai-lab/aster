@@ -4,6 +4,10 @@ use super::*;
 
 mod cache_proof;
 pub(super) use cache_proof::CacheProofCursor;
+mod novelty;
+pub(super) use novelty::novel_information;
+mod refusal;
+pub(super) use refusal::{child_execution_cycle, execution_cycle, ExecutionCycle};
 
 use a3s_effect::{
     Effect, PreparedToolExecution, ToolAdmissionIdentityV1, ToolEffectObservationV1,
@@ -18,6 +22,7 @@ pub(super) fn runner_result_value(
     images: &[crate::llm::Attachment],
     exit_code: i32,
     metadata: Option<&serde_json::Value>,
+    observation_digest: Option<&str>,
 ) -> serde_json::Value {
     let evidence_incomplete = metadata
         .and_then(|value| value.get("evidence_incomplete"))
@@ -27,7 +32,7 @@ pub(super) fn runner_result_value(
         "media_type": image.media_type,
         "data": base64::Engine::encode(&base64::engine::general_purpose::STANDARD, &image.data),
     })).collect();
-    serde_json::Value::String(serde_json::json!({
+    let mut envelope = serde_json::json!({
         "kind": FACT_TOOL_RESULT_KIND,
         "text": output,
         "is_error": is_error,
@@ -38,7 +43,11 @@ pub(super) fn runner_result_value(
         "workspace_child": metadata.and_then(|value| value.get("workspace_child")).and_then(|value| value.as_str()),
         "observation_incomplete": metadata.and_then(|value| value.get("observation_incomplete")).and_then(|value| value.as_bool()).unwrap_or(false),
         "metadata": metadata,
-    }).to_string())
+    });
+    if let Some(digest) = observation_digest {
+        envelope["observation_digest"] = digest.into();
+    }
+    serde_json::Value::String(envelope.to_string())
 }
 
 pub(super) fn runner_interrupted_value(output: &str) -> serde_json::Value {
@@ -241,22 +250,23 @@ pub(super) async fn prepare_tools(
     // park; it is not proof that the call was refused. Recheck that same
     // authority when no actor confirmation was required. Rewritten Ask
     // arguments never inherit approval of the original arguments.
-    let unconfirmed_ask =
-        if effective_permission == PermissionDecision::Ask && !request.call.needs_confirmation {
-            match tools.agent.as_ref() {
-                Some(agent) => match agent.confirmation_provider() {
-                    Some(manager) => {
-                        manager
-                            .requires_confirmation_for(&request.call.name, &request.call.args)
-                            .await
-                    }
-                    None => false,
+    let unconfirmed_ask = if effective_permission == PermissionDecision::Ask
+        && !request.call.needs_confirmation
+    {
+        match tools.agent.as_ref() {
+            Some(agent) => match agent.confirmation_provider() {
+                Some(manager) => tokio::select! {
+                    biased;
+                    _ = cancel.cancelled() => false,
+                    required = manager.requires_confirmation_for(&request.call.name, &request.call.args) => required,
                 },
-                None => true,
-            }
-        } else {
-            false
-        };
+                None => false,
+            },
+            None => true,
+        }
+    } else {
+        false
+    };
     // Keep a pre-spawn refusal. Replacing it with "unapproved" would hide
     // that the command cannot start, and the body still does not run.
     if !execution_unavailable

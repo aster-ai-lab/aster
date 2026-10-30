@@ -82,8 +82,7 @@ impl Agent {
 
     /// Create from a config file path or inline ACL-compatible string.
     ///
-    /// Alias for [`Agent::new()`] — provides a consistent API with
-    /// the Python and Node.js SDKs.
+    /// Compatibility alias for [`Agent::new()`].
     pub async fn create(config_source: impl Into<String>) -> Result<Self> {
         Self::new(config_source).await
     }
@@ -192,6 +191,17 @@ impl Agent {
         options: SessionOptions,
     ) -> Result<AgentSession> {
         agent_sessions::fork_session_async(self, snapshot, workspace.into(), options).await
+    }
+
+    /// Fork one verified completed prefix without modifying the source. The
+    /// expected full-source cut prevents copying across a concurrent change.
+    pub async fn fork_session_prefix_async(
+        &self,
+        source: &AgentSession,
+        request: crate::store::PrefixForkRequest,
+        options: SessionOptions,
+    ) -> Result<AgentSession> {
+        agent_sessions::fork_session_prefix_async(self, source, request, options).await
     }
 
     /// Open a protocol-owned session, resuming its complete persisted snapshot

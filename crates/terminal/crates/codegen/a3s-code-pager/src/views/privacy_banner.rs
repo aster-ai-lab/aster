@@ -9,14 +9,14 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Paragraph, Widget};
 
 /// Shares its row with the buttons.
-const PRIVACY_BANNER_TITLE: &str = "Help improve A3S Code";
+const PRIVACY_BANNER_TITLE: &str = "Help improve Aster";
 
-const PRIVACY_BANNER_DESC: &str = "Off by default. Opt-in to allow A3S Lab to retain coding \
+const PRIVACY_BANNER_DESC: &str = "Off by default. Opt-in to allow Aster to retain coding \
      data, e.g., prompts, traces, & metrics, for training and debugging purposes. Change \
      anytime via settings.";
 
-pub(crate) const PRIVACY_BANNER_TERMS_URL: &str = "https://github.com/A3S-Lab/a3s";
-pub(crate) const PRIVACY_BANNER_POLICY_URL: &str = "https://github.com/A3S-Lab/a3s";
+pub(crate) const PRIVACY_BANNER_TERMS_URL: &str = "https://github.com/kense-labs/aster";
+pub(crate) const PRIVACY_BANNER_POLICY_URL: &str = "https://github.com/kense-labs/aster";
 
 /// `(text, url_when_link)`.
 type LegalSegment = (&'static str, Option<&'static str>);
@@ -198,7 +198,7 @@ pub(crate) fn render(
                         width: w,
                         height: 1,
                     };
-                    if *url == PRIVACY_BANNER_TERMS_URL {
+                    if *text == "Terms" {
                         terms_rect = rect;
                     } else {
                         policy_rect = rect;

@@ -6,6 +6,7 @@
 //! when that generation is being replaced, and never waits for the build.
 
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -13,7 +14,6 @@ use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use async_trait::async_trait;
-use notify::Watcher;
 use tokio::sync::{mpsc, oneshot};
 use tokio_util::sync::CancellationToken;
 
@@ -117,6 +117,7 @@ struct WikiState {
     builds: AtomicU64,
     stop: AtomicBool,
     version: AtomicU64,
+    workspace_owned: AtomicBool,
     fingerprint: Mutex<Option<u64>>,
     indexed_paths: Mutex<Vec<String>>,
     lifetime: CancellationToken,
@@ -136,7 +137,6 @@ pub struct WikiIndex {
     command_tx: Option<mpsc::UnboundedSender<ReconcileCommand>>,
     command_task: Option<tokio::task::JoinHandle<()>>,
     publisher: Option<std::thread::JoinHandle<()>>,
-    watcher: Option<std::thread::JoinHandle<()>>,
 }
 
 impl WikiIndex {
@@ -186,6 +186,7 @@ impl WikiIndex {
             builds: AtomicU64::new(0),
             stop: AtomicBool::new(false),
             version: AtomicU64::new(0),
+            workspace_owned: AtomicBool::new(false),
             fingerprint: Mutex::new(None),
             indexed_paths: Mutex::new(Vec::new()),
             lifetime: CancellationToken::new(),
@@ -212,16 +213,12 @@ impl WikiIndex {
             )
             .await;
         });
-        let watcher = auto
-            .then(|| spawn_watcher(root, command_tx.clone(), Arc::clone(&state)))
-            .flatten();
         let index = Self {
             state,
             storage: Some(storage),
             command_tx: Some(command_tx),
             command_task: Some(command_task),
             publisher: Some(publisher),
-            watcher,
         };
         if auto {
             index.enqueue(None, None);
@@ -251,6 +248,23 @@ impl WikiIndex {
     /// [`WikiSearchPhase::NotReady`] without waiting and without unpublished text.
     pub fn search(&self, query: impl Into<String>) -> WorkspaceIndexResult<WikiSearchResult> {
         let engine = WorkspaceLexicalEngine::A3sVec.stable_id();
+        let publication = match a3s_okf::try_workspace_knowledge_read(&self.state.root) {
+            Ok(guard) => guard,
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                return Ok(not_ready(engine));
+            }
+            Err(error) => {
+                return Err(WorkspaceIndexError::ReadFailed {
+                    path: self.state.root.display().to_string(),
+                    message: error.to_string(),
+                });
+            }
+        };
+        if publication.is_some() {
+            self.state.workspace_owned.store(true, Ordering::Release);
+        } else if self.state.workspace_owned.load(Ordering::Acquire) {
+            return Ok(not_ready(engine));
+        }
         let idle = match self.state.gate.try_read() {
             Ok(guard) => guard,
             Err(std::sync::TryLockError::WouldBlock) => return Ok(not_ready(engine)),
@@ -268,11 +282,30 @@ impl WikiIndex {
             .search(&LexicalSearchRequest::new(query.into()))?;
         drop(idle);
         let mut hits = Vec::with_capacity(result.hits.len());
+        let mut pages = HashSet::new();
+        let mut passages = HashSet::new();
         for hit in result.hits {
+            if pages.contains(hit.chunk.path.as_ref()) {
+                continue;
+            }
+            if publication.is_some() {
+                let path = WorkspacePath::from_normalized(hit.chunk.path.to_string());
+                let Some(current) = self.state.file_system.inner.read_search_file(&path) else {
+                    continue;
+                };
+                if super::chunk::digest_content(&current) != hit.chunk.content_digest {
+                    continue;
+                }
+            }
+            let passage = bounded_passage(hit.chunk.text.as_ref(), &result.query_terms);
+            pages.insert(hit.chunk.path.to_string());
+            if !passages.insert(passage.trim().to_owned()) {
+                continue;
+            }
             hits.push(WikiSearchHit {
                 name: page_name(&hit.chunk),
                 path: hit.chunk.path.to_string(),
-                passage: bounded_passage(hit.chunk.text.as_ref(), &result.query_terms),
+                passage,
                 score: hit.score,
                 source_revision: hit.chunk.source_revision,
             });
@@ -354,9 +387,6 @@ impl WikiIndex {
             // fresh runtime never observes cancellation and blocks Drop.
             task.abort();
         }
-        if let Some(watcher) = self.watcher.take() {
-            let _ = watcher.join();
-        }
         if let Some(publisher) = self.publisher.take() {
             let _ = publisher.join();
         }
@@ -417,7 +447,27 @@ async fn reconcile_once(
     changed: Option<Vec<String>>,
     publish_tx: &std::sync::mpsc::Sender<super::catalog::ChunkCatalogSnapshot>,
 ) -> WorkspaceIndexResult<WikiReconcileReport> {
-    let files = scan_wiki(&state.root);
+    let root = state.root.clone();
+    let _publication =
+        tokio::task::spawn_blocking(move || a3s_okf::workspace_knowledge_read(&root))
+            .await
+            .map_err(|error| WorkspaceIndexError::ReadFailed {
+                path: state.root.display().to_string(),
+                message: error.to_string(),
+            })?
+            .map_err(|error| WorkspaceIndexError::ReadFailed {
+                path: state.root.display().to_string(),
+                message: error.to_string(),
+            })?;
+    if _publication.is_some() {
+        state.workspace_owned.store(true, Ordering::Release);
+    } else if state.workspace_owned.load(Ordering::Acquire) {
+        return Err(WorkspaceIndexError::ReadFailed {
+            path: state.root.display().to_string(),
+            message: "workspace Wiki publication is unavailable".into(),
+        });
+    }
+    let files = scan_wiki(&state.root, state.workspace_owned.load(Ordering::Acquire));
     let next_fingerprint = fingerprint(&files);
     let unchanged = state
         .fingerprint
@@ -540,40 +590,6 @@ fn publish_loop(
     }
 }
 
-fn spawn_watcher(
-    root: PathBuf,
-    command_tx: mpsc::UnboundedSender<ReconcileCommand>,
-    state: Arc<WikiState>,
-) -> Option<std::thread::JoinHandle<()>> {
-    std::thread::Builder::new()
-        .name("a3s-wiki-watch".to_owned())
-        .spawn(move || {
-            let (tx, rx) = std::sync::mpsc::channel();
-            let mut watcher =
-                notify::recommended_watcher(move |event: Result<notify::Event, notify::Error>| {
-                    if let Ok(event) = event {
-                        let _ = tx.send(event);
-                    }
-                });
-            if let Ok(watcher) = watcher.as_mut() {
-                let _ = watcher.watch(&root, notify::RecursiveMode::Recursive);
-            }
-            while !state.stop.load(Ordering::Acquire) {
-                match rx.recv_timeout(Duration::from_millis(50)) {
-                    Ok(_) => {
-                        let _ = command_tx.send(ReconcileCommand {
-                            changed: None,
-                            reply: None,
-                        });
-                    }
-                    Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
-                    Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
-                }
-            }
-        })
-        .ok()
-}
-
 fn is_newer(
     candidate: &super::catalog::ChunkCatalogSnapshot,
     current: &super::catalog::ChunkCatalogSnapshot,
@@ -582,15 +598,26 @@ fn is_newer(
         > (current.source_revision(), current.revision())
 }
 
-fn scan_wiki(root: &Path) -> Vec<LocalWorkspaceFile> {
+fn scan_wiki(root: &Path, published_only: bool) -> Vec<LocalWorkspaceFile> {
     let policy = WorkspaceEligibilityPolicy::default();
     let mut files = Vec::new();
-    let mut pending = vec![root.to_path_buf()];
+    let mut pending = vec![if published_only {
+        root.join("concepts")
+    } else {
+        root.to_path_buf()
+    }];
     while let Some(dir) = pending.pop() {
         let Ok(entries) = std::fs::read_dir(&dir) else {
             continue;
         };
         for entry in entries.flatten() {
+            if entry
+                .file_name()
+                .to_str()
+                .is_none_or(|name| name.starts_with('.'))
+            {
+                continue;
+            }
             let path = entry.path();
             let Ok(metadata) = std::fs::symlink_metadata(&path) else {
                 continue;

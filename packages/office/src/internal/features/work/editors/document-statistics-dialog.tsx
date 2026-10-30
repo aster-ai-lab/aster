@@ -33,6 +33,7 @@ export function DocumentStatisticsDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.statistics.title')}
       description={officeMessage(messages, 'document.statistics.description')}
       className="work-document-statistics-dialog"

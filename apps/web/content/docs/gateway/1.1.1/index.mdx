@@ -1,0 +1,59 @@
+export const meta = {
+  title: 'Aster Gateway 产品概览',
+  description: 'a3s-gateway 的流量职责、部署模式、产品边界和当前能力。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-gateway` 是本地流量数据平面。它位于客户端与模型或 HTTP 后端之间，负责请求准入、路由、健康选择和流式响应。
+
+Gateway 不负责租户、人工运维界面、模型训练或长期计费账本。当前源码版本为 `1.1.1`。
+
+<GatewayArchitectureDiagram />
+
+## 产品边界
+
+<DocTable caption="Gateway 与其他组件的职责" headers={['组件', '职责', '不属于该组件的职责']} rows={[
+  ['Gateway', '请求准入、路由、健康、流保真和快照激活', '租户、人工发布、模型训练和长期账本'],
+  ['A3S Cloud', '运维、发布、放置和长期用量账本', '每个请求的同步转发'],
+  ['A3S Box', 'Sandbox 工作负载与就绪副本端点', '客户端请求准入和路由'],
+  ['Aster ACP', '客户端与 Core 之间的进程协议', '模型后端的网络代理'],
+  ['Power', '模型推理与分布式工作负载', '客户端入口和通用中间件'],
+]} />
+
+## 部署模式
+
+<DocTable caption="Gateway 的两种部署模式" headers={['模式', '期望状态所有者', 'Gateway 职责']} rows={[
+  ['standalone', '本地操作员与 ACL', '校验并执行路由、中间件、提供方、健康、修订权重和可选扩缩'],
+  ['cloud-managed', 'A3S Cloud', '校验并执行绑定身份、修订、摘要、CAS 和过期的完整快照'],
+]} />
+
+更改部署模式需要重启进程。Gateway 在本地执行流量决策，不要求每个请求都经过 Cloud。
+
+## 当前能力状态
+
+<DocTable caption="主要能力与边界" headers={['领域', '状态', '边界']} rows={[
+  ['协议、路由、健康与快照', '已交付', 'HTTP 族协议、TCP、UDP、TLS、四种均衡、故障转移和原子激活'],
+  ['OpenAI 兼容策略', 'Gateway 基础', '模型授权、别名、准入、响应前回退和临时 tokenizer 预约'],
+  ['静态对象目标', 'Gateway 基础', 'standalone 使用本地摘要存储；cloud-managed 等待对象权威'],
+  ['standalone 自动扩缩', '实验性', '已有 Box 与 Kubernetes 证据，真实 MicroVM 工作负载门仍开放'],
+  ['文本模型的多模态适配', '仅设计', '原生多模态内容透传；VLM/OCR/ASR 适配未交付'],
+  ['传统 WAF 与自动渐进发布', '不在默认数据平面', 'wire 是可选 LLM/MCP 检查；rollout 由 Cloud 决定'],
+]} />
+
+“Gateway 基础”表示本 crate 已有实现与测试，但跨产品交付仍未完成。文档不会把这些状态写成生产就绪承诺。
+
+## 文档入口
+
+- [standalone 快速开始](./quickstart/)：ACL、校验、启动和配置检查。
+- [模型路由与 P/D](./model-routing/)：目标选择、P/D 分离和缓存亲和。
+- [流量与快照](./traffic/)：协议、流边界、健康选择、Cloud 与 Box。
+- [部署与安全](./operations/)：静态对象、用量投递、Node API 和验收。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Gateway 架构与能力状态](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/README.md)
+- [威胁模型](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/threat-model.md)
+- [成熟度路线图](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/ROADMAP.md)

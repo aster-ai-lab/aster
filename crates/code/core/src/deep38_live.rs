@@ -899,33 +899,33 @@ async fn deep38_web_fetch() {
 }
 
 #[tokio::test]
-async fn deep38_cognitive_packages() {
+async fn deep38_packages() {
     let model = complete().await;
     let store = InMemoryRunStore::new();
     let run = store.create_run("session-1", "query knowledge").await;
-    let binding = cognitive_binding();
+    let binding = package_binding();
     store
-        .bind_cognitive_package(&run.id, binding.clone())
+        .bind_package(&run.id, binding.clone())
         .await
         .expect("first binding");
     store
-        .bind_cognitive_package(&run.id, binding.clone())
+        .bind_package(&run.id, binding.clone())
         .await
         .expect("exact replay");
     let mut conflict = binding.clone();
     conflict.limits.max_results -= 1;
     conflict.validate().unwrap();
     let error = store
-        .bind_cognitive_package(&run.id, conflict)
+        .bind_package(&run.id, conflict)
         .await
         .expect_err("a different binding conflicts");
     assert!(matches!(
         error,
-        crate::run::RunCognitiveBindingError::Conflict
+        crate::run::RunPackageBindingError::Conflict
     ));
     let snapshot = store.snapshot(&run.id).await.expect("snapshot");
-    assert_eq!(snapshot.cognitive_package_binding.as_ref(), Some(&binding));
-    pass("cognitive_packages", &model, "RunCognitiveBindingError");
+    assert_eq!(snapshot.package_binding.as_ref(), Some(&binding));
+    pass("packages", &model, "RunPackageBindingError");
 }
 
 #[tokio::test]
@@ -1565,10 +1565,10 @@ fn use_execution(generation: u64) -> crate::UseRuntimeTaskExecutionV1 {
     }
 }
 
-fn cognitive_binding() -> crate::CognitivePackageBindingV1 {
+fn package_binding() -> crate::PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = crate::CognitiveKnowledgeBindingV1::new(
+    let knowledge = crate::PackageKnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -1576,14 +1576,14 @@ fn cognitive_binding() -> crate::CognitivePackageBindingV1 {
         generation_digest,
     )
     .unwrap();
-    crate::CognitivePackageBindingV1::new(
+    crate::PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        crate::CognitiveContextLimits::default(),
+        crate::PackageContextLimits::default(),
     )
     .unwrap()
 }

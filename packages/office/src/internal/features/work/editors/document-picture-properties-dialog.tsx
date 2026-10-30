@@ -15,7 +15,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Dialog } from '../../../design-system/primitives';
+import { DialogPresence, Button, Dialog } from '../../../design-system/primitives';
 import { officeMessage } from '../../../i18n/office-locale';
 import type { OfficeMessageCatalog } from '../../../i18n/office-messages';
 import {
@@ -224,14 +224,16 @@ export function DocumentPicturePropertiesControl({
       >
         <Settings2 size={18} />
       </WorkOfficeRibbonButton>
-      {source && (
-        <DocumentPicturePropertiesDialog
-          editor={editor}
-          source={source}
-          restoreFocusTarget={() => triggerRef.current}
-          onClose={() => setSource(null)}
-        />
-      )}
+      <DialogPresence>
+        {source && (
+          <DocumentPicturePropertiesDialog
+            editor={editor}
+            source={source}
+            restoreFocusTarget={() => triggerRef.current}
+            onClose={() => setSource(null)}
+          />
+        )}
+      </DialogPresence>
     </>
   );
 }
@@ -279,6 +281,7 @@ function DocumentPicturePropertiesDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.picture.title')}
       description={officeMessage(messages, 'document.picture.description')}
       className="work-document-picture-properties-dialog"

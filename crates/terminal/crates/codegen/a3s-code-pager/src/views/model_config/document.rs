@@ -1098,7 +1098,12 @@ providers "openai" {
     fn user_home_uses_userprofile_when_home_is_empty() {
         let home = user_home_from(None, Some(std::ffi::OsStr::new(r"C:\Users\ada")));
         let path = config_path_from(None, None, home.as_deref(), &|_| false);
-        assert_eq!(path, PathBuf::from(r"C:\Users\ada\.a3s\config.acl"));
+        assert_eq!(
+            path,
+            PathBuf::from(r"C:\Users\ada")
+                .join(".a3s")
+                .join("config.acl")
+        );
         let empty_home = user_home_from(
             Some(std::ffi::OsStr::new("")),
             Some(std::ffi::OsStr::new(r"C:\Users\ada")),

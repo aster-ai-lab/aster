@@ -1,5 +1,5 @@
 export const meta = {
-  "title": "推进目标，并核对每次完成的依据",
+  "title": "目标推进与完成依据",
   "description": "默认工程策略、目标命令、计划与等待、审阅和完成证明。",
   "label": "工程任务与长期目标",
   "updated": "2026-10-26"
@@ -23,7 +23,10 @@ export const meta = {
 /goal clear
 ```
 
-只有用户明确要求暂停才发送 pause。普通临时失败、等待输入和权限拒绝不是用户暂停。clear 的语义是清除目标，不等同于一次停止生成。
+只有用户明确要求暂停才发送 pause。
+临时故障、等待输入和权限拒绝不等于用户暂停。
+对绑定目标发送 clear 会取消目标，并保留原始历史。
+停止本轮生成与取消长期目标使用不同的控制对象。
 
 ## 类型化目标扩展
 
@@ -59,3 +62,7 @@ export const meta = {
 - [目标导入](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/goal/import.rs)
 - [工程策略与审阅](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/engineering.rs)
 - [宿主元数据](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/host_context.rs)
+
+## 续跑与终态的内部机制
+
+[目标与无人值守内部](../internals/goals/)说明默认上限、可信覆盖、切片准入和结果依据。

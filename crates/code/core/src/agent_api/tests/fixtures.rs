@@ -279,20 +279,20 @@ pub(crate) struct CapturingContextProvider {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub(crate) enum TestCognitiveProviderMode {
+pub(crate) enum TestPackageProviderMode {
     Valid,
     DriftGeneration,
     Fail,
 }
 
 #[derive(Debug)]
-pub(crate) struct TestCognitiveProvider {
-    pub(crate) mode: TestCognitiveProviderMode,
-    pub(crate) requests: std::sync::Mutex<Vec<crate::cognitive_context::CognitiveContextRequestV1>>,
+pub(crate) struct TestPackageProvider {
+    pub(crate) mode: TestPackageProviderMode,
+    pub(crate) requests: std::sync::Mutex<Vec<crate::package_context::PackageContextRequestV1>>,
 }
 
-impl TestCognitiveProvider {
-    pub(crate) fn new(mode: TestCognitiveProviderMode) -> Self {
+impl TestPackageProvider {
+    pub(crate) fn new(mode: TestPackageProviderMode) -> Self {
         Self {
             mode,
             requests: std::sync::Mutex::new(Vec::new()),
@@ -416,25 +416,25 @@ impl crate::context::ContextProvider for CapturingContextProvider {
 }
 
 #[async_trait::async_trait]
-impl crate::cognitive_context::CognitiveContextProvider for TestCognitiveProvider {
+impl crate::package_context::PackageContextProvider for TestPackageProvider {
     fn name(&self) -> &str {
-        "test-a3s-use-cognitive-package"
+        "test-a3s-use-package"
     }
 
     async fn query(
         &self,
-        request: &crate::cognitive_context::CognitiveContextRequestV1,
-    ) -> crate::cognitive_context::CognitiveContextResult<
-        crate::cognitive_context::CognitiveContextResponseV1,
+        request: &crate::package_context::PackageContextRequestV1,
+    ) -> crate::package_context::PackageContextResult<
+        crate::package_context::PackageContextResponseV1,
     > {
         self.requests.lock().unwrap().push(request.clone());
-        if matches!(self.mode, TestCognitiveProviderMode::Fail) {
-            return Err(crate::cognitive_context::CognitiveContextError::Provider(
+        if matches!(self.mode, TestPackageProviderMode::Fail) {
+            return Err(crate::package_context::PackageContextError::Provider(
                 "exact generation lease is unavailable".to_string(),
             ));
         }
 
-        let citation = crate::cognitive_context::CognitiveKnowledgeCitationV1::new(
+        let citation = crate::package_context::PackageKnowledgeCitationV1::new(
             &request.binding,
             "concepts/retry-policy.md",
             "Retry policy",
@@ -443,26 +443,23 @@ impl crate::cognitive_context::CognitiveContextProvider for TestCognitiveProvide
                     .to_string(),
             ],
         )?;
-        let document = crate::cognitive_context::CognitiveContextDocumentV1::new(
+        let document = crate::package_context::PackageContextDocumentV1::new(
             citation,
             "Retry only before an observable side effect.",
         )?;
-        let mut response = crate::cognitive_context::CognitiveContextResponseV1::new(
-            request,
-            vec![document],
-            false,
-        )?;
-        if matches!(self.mode, TestCognitiveProviderMode::DriftGeneration) {
+        let mut response =
+            crate::package_context::PackageContextResponseV1::new(request, vec![document], false)?;
+        if matches!(self.mode, TestPackageProviderMode::DriftGeneration) {
             response.binding.lifecycle_generation += 1;
         }
         Ok(response)
     }
 }
 
-pub(crate) fn test_cognitive_binding() -> crate::cognitive_context::CognitivePackageBindingV1 {
+pub(crate) fn test_package_binding() -> crate::package_context::PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = crate::cognitive_context::CognitiveKnowledgeBindingV1::new(
+    let knowledge = crate::package_context::PackageKnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -470,32 +467,29 @@ pub(crate) fn test_cognitive_binding() -> crate::cognitive_context::CognitivePac
         generation_digest,
     )
     .unwrap();
-    crate::cognitive_context::CognitivePackageBindingV1::new(
+    crate::package_context::PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        crate::cognitive_context::CognitiveContextLimits::default(),
+        crate::package_context::PackageContextLimits::default(),
     )
     .unwrap()
 }
 
-pub(crate) fn test_cognitive_context(
-    mode: TestCognitiveProviderMode,
+pub(crate) fn test_package_context(
+    mode: TestPackageProviderMode,
 ) -> (
-    crate::cognitive_context::CognitiveContextSession,
-    Arc<TestCognitiveProvider>,
+    crate::package_context::PackageContextSession,
+    Arc<TestPackageProvider>,
 ) {
-    let provider = Arc::new(TestCognitiveProvider::new(mode));
-    let provider_port: Arc<dyn crate::cognitive_context::CognitiveContextProvider> =
-        provider.clone();
-    let context = crate::cognitive_context::CognitiveContextSession::new(
-        test_cognitive_binding(),
-        provider_port,
-    )
-    .unwrap();
+    let provider = Arc::new(TestPackageProvider::new(mode));
+    let provider_port: Arc<dyn crate::package_context::PackageContextProvider> = provider.clone();
+    let context =
+        crate::package_context::PackageContextSession::new(test_package_binding(), provider_port)
+            .unwrap();
     (context, provider)
 }
 

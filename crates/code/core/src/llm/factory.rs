@@ -50,8 +50,7 @@ pub struct LlmConfig {
     /// Explicit native structured-output support. None means infer from provider
     /// and base URL; custom OpenAI-compatible endpoints default to prompt mode.
     pub native_structured_support: Option<NativeStructuredSupport>,
-    /// Test and embedding hook. When set, the Cursor account client uses this
-    /// transport instead of constructing its own HTTP client.
+    /// Provider transport override for embedding and hermetic HTTP tests.
     pub http_override: Option<Arc<dyn super::http::HttpClient>>,
 }
 
@@ -209,41 +208,43 @@ fn default_openai_native_structured_support(
     // HTTP 400.  Match the hostname as well for callers that label the
     // provider "openai" while pointing at the official DeepSeek endpoint.
     let provider_is_deepseek = provider.eq_ignore_ascii_case("deepseek");
-    let url_is_deepseek = base_url.is_some_and(is_official_deepseek_url);
+    let url_is_deepseek = base_url.is_some_and(|url| has_api_host(url, "api.deepseek.com"));
     if provider_is_deepseek || url_is_deepseek {
         return NativeStructuredSupport::JsonObject;
     }
 
     match base_url {
         None => NativeStructuredSupport::JsonSchema,
-        Some(url) if url.contains("api.openai.com") => NativeStructuredSupport::JsonSchema,
+        Some(url) if has_api_host(url, "api.openai.com") => NativeStructuredSupport::JsonSchema,
         Some(_) => NativeStructuredSupport::None,
     }
 }
 
-fn is_official_deepseek_url(base_url: &str) -> bool {
-    Url::parse(base_url)
-        .ok()
-        .and_then(|url| url.host_str().map(str::to_owned))
-        .is_some_and(|host| host.eq_ignore_ascii_case("api.deepseek.com"))
+fn has_api_host(base_url: &str, expected: &str) -> bool {
+    Url::parse(base_url).ok().is_some_and(|url| {
+        url.host_str()
+            .is_some_and(|host| host.eq_ignore_ascii_case(expected))
+    })
 }
 
 /// Create LLM client with full configuration (supports custom base_url)
 pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
     let retry = config.retry_config.clone().unwrap_or_default();
-    let http = config.api_timeout_ms.map(|timeout_ms| {
-        match ReqwestHttpClient::with_timeout(Duration::from_millis(timeout_ms)) {
-            Ok(client) => Arc::new(client) as Arc<dyn super::http::HttpClient>,
-            // Environment-dependent (TLS init), not a construction
-            // invariant: degrade to a client whose every request names
-            // the reason — a session-start path must never panic the
-            // process (a panic in the exec path kills colocated
-            // workloads).
-            Err(error) => Arc::new(super::http::UnavailableHttpClient::new(format!(
-                "building the LLM HTTP client with the {} ms API timeout failed: {error:#}",
-                timeout_ms
-            ))) as Arc<dyn super::http::HttpClient>,
-        }
+    let http = config.http_override.clone().or_else(|| {
+        config.api_timeout_ms.map(|timeout_ms| {
+            match ReqwestHttpClient::with_timeout(Duration::from_millis(timeout_ms)) {
+                Ok(client) => Arc::new(client) as Arc<dyn super::http::HttpClient>,
+                // Environment-dependent (TLS init), not a construction
+                // invariant: degrade to a client whose every request names
+                // the reason — a session-start path must never panic the
+                // process (a panic in the exec path kills colocated
+                // workloads).
+                Err(error) => Arc::new(super::http::UnavailableHttpClient::new(format!(
+                    "building the LLM HTTP client with the {} ms API timeout failed: {error:#}",
+                    timeout_ms
+                ))) as Arc<dyn super::http::HttpClient>,
+            }
+        })
     });
     let api_key = config.api_key.expose().to_string();
     let headers = config.resolved_headers();
@@ -252,6 +253,7 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
         "anthropic" | "claude" | "cc-switch" => {
             let mut client = AnthropicClient::new(api_key, config.model)
                 .with_provider_name(config.provider.clone())
+                .with_headers(headers.clone())
                 .with_retry_config(retry);
             if let Some(http) = http.clone() {
                 client = client.with_http_client(http);
@@ -364,6 +366,11 @@ pub fn create_client_with_config(config: LlmConfig) -> Arc<dyn LlmClient> {
             }
             Arc::new(client)
         }
+        "openai-responses" => Arc::new(CodexLoginClient::for_api(
+            config,
+            headers,
+            http.unwrap_or_else(default_http_client),
+        )),
         // Codex account sessions speak the ChatGPT Responses API with an
         // OAuth bearer from the account import. `base_url` is deliberately
         // not honored: the endpoint is the account contract, and a redirect

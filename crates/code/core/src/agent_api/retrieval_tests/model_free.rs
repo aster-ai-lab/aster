@@ -2,6 +2,94 @@
 
 use super::*;
 
+#[cfg(feature = "a3s-vec-fts")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn model_free_workspace_index_preparation_keeps_late_attached_projection_current() {
+    let _permit = crate::test_support::resource_intensive_test_permit().await;
+    let root = tempfile::tempdir().unwrap();
+    let source = root.path().join("source.rs");
+    std::fs::write(&source, "pub fn initial_workspace_marker() {}\n").unwrap();
+    std::fs::write(root.path().join(".env"), "SECRET=xqzconfidentialsentinel").unwrap();
+    let agent = Agent::from_config(super::super::tests::test_config())
+        .await
+        .unwrap();
+    let session = agent
+        .session_async(root.path().to_string_lossy(), None)
+        .await
+        .unwrap();
+    let services = &session.tool_context.workspace_services;
+    let catalog = services.chunk_catalog().unwrap();
+    tokio::time::timeout(Duration::from_secs(15), async {
+        while catalog.snapshot().unwrap().source_revision() == 0 {
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert!(!root.path().join(".a3s-code/index/CURRENT").exists());
+    assert!(session.prepare_workspace_index().await.unwrap());
+    let index = services.persistent_index().unwrap();
+    for marker in ["initial_workspace_marker", "updated_workspace_marker"] {
+        std::fs::write(&source, format!("pub fn {marker}() {{}}\n")).unwrap();
+        tokio::time::timeout(Duration::from_secs(15), async {
+            loop {
+                if index
+                    .search(&crate::workspace::LexicalSearchRequest::new(marker))
+                    .is_ok_and(|result| {
+                        result
+                            .hits
+                            .iter()
+                            .any(|hit| hit.chunk.text.contains(marker))
+                    })
+                {
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+        })
+        .await
+        .expect("late-attached a3s-vec must follow the original manifest updates");
+        tokio::time::timeout(Duration::from_secs(15), async {
+            loop {
+                let found = session
+                    .tool(
+                        "search",
+                        serde_json::json!({
+                            "mode":"hybrid","query":marker,"limit":1
+                        }),
+                    )
+                    .await
+                    .unwrap();
+                assert_eq!(found.exit_code, 0, "{}", found.output);
+                if found
+                    .metadata
+                    .as_ref()
+                    .is_some_and(|metadata| metadata["index_kind"] == "persistent_a3s_vec_fts")
+                {
+                    assert!(found.output.contains(marker));
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+        })
+        .await
+        .expect("hybrid must reuse the already-published a3s-vec generation");
+    }
+    assert!(root.path().join(".a3s-code/index/CURRENT").is_file());
+    assert!(index
+        .search(&crate::workspace::LexicalSearchRequest::new(
+            "xqzconfidentialsentinel"
+        ))
+        .unwrap()
+        .hits
+        .is_empty());
+    session.close().await;
+    assert!(matches!(
+        session.prepare_workspace_index().await,
+        Err(crate::CodeError::SessionClosed { .. })
+    ));
+}
+
 #[tokio::test]
 async fn model_free_session_returns_late_evidence_and_refuses_calls_after_close() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;

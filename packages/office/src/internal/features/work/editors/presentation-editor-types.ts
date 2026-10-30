@@ -10,6 +10,7 @@ export interface PresentationEditorProps {
   collaboration?: WorkOfficeCollaborationSession;
   content: WorkPresentationContent;
   preview: boolean;
+  previewMode?: 'inline' | 'slideshow';
   saveStatus?: string;
   fileActions?: readonly WorkOfficeFileAction[];
   kernelWasmUrl?: string;

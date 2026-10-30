@@ -57,7 +57,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Popover } from '../../../design-system/primitives';
+import { DialogPresence, Popover } from '../../../design-system/primitives';
 import { officeMessage } from '../../../i18n/office-locale';
 import {
   activeDocumentBookmark,
@@ -1447,65 +1447,69 @@ export function DocumentToolbar({
           ) : null,
         }}
       />
-      {fontDialogRequest && (
-        <DocumentFontDialog
-          source={fontDialogRequest.source}
-          layoutFonts={layoutFonts}
-          restoreFocusTarget={() =>
-            fontDialogRequest.editor.isDestroyed
-              ? null
-              : fontDialogRequest.editor.view.dom
-          }
-          onApply={(patch) =>
-            applyDocumentFontDialogPatch(
-              fontDialogRequest.editor,
-              fontDialogRequest.selection,
-              patch,
-            )
-          }
-          onClose={() => {
-            const { editor: dialogEditor, selection } = fontDialogRequest;
-            setFontDialogRequest(null);
-            requestAnimationFrame(() => {
-              if (dialogEditor.isDestroyed) return;
-              dialogEditor
-                .chain()
-                .setTextSelection(selection)
-                .focus(null, { scrollIntoView: false })
-                .run();
-            });
-          }}
-        />
-      )}
-      {proofingDialogRequest && (
-        <DocumentProofingDialog
-          source={proofingDialogRequest.source}
-          restoreFocusTarget={() =>
-            proofingDialogRequest.editor.isDestroyed
-              ? null
-              : proofingDialogRequest.editor.view.dom
-          }
-          onApply={(patch) =>
-            applyDocumentProofingDialogPatch(
-              proofingDialogRequest.editor,
-              proofingDialogRequest.selection,
-              patch,
-            )
-          }
-          onClose={() => {
-            const { editor: dialogEditor, selection } = proofingDialogRequest;
-            setProofingDialogRequest(null);
-            requestAnimationFrame(() => {
-              if (dialogEditor.isDestroyed) return;
-              dialogEditor
-                .chain()
-                .setTextSelection(selection)
-                .focus(null, { scrollIntoView: false })
-                .run();
-            });
-          }}
-        />
-      )}
+      <DialogPresence>
+        {fontDialogRequest && (
+          <DocumentFontDialog
+            source={fontDialogRequest.source}
+            layoutFonts={layoutFonts}
+            restoreFocusTarget={() =>
+              fontDialogRequest.editor.isDestroyed
+                ? null
+                : fontDialogRequest.editor.view.dom
+            }
+            onApply={(patch) =>
+              applyDocumentFontDialogPatch(
+                fontDialogRequest.editor,
+                fontDialogRequest.selection,
+                patch,
+              )
+            }
+            onClose={() => {
+              const { editor: dialogEditor, selection } = fontDialogRequest;
+              setFontDialogRequest(null);
+              requestAnimationFrame(() => {
+                if (dialogEditor.isDestroyed) return;
+                dialogEditor
+                  .chain()
+                  .setTextSelection(selection)
+                  .focus(null, { scrollIntoView: false })
+                  .run();
+              });
+            }}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {proofingDialogRequest && (
+          <DocumentProofingDialog
+            source={proofingDialogRequest.source}
+            restoreFocusTarget={() =>
+              proofingDialogRequest.editor.isDestroyed
+                ? null
+                : proofingDialogRequest.editor.view.dom
+            }
+            onApply={(patch) =>
+              applyDocumentProofingDialogPatch(
+                proofingDialogRequest.editor,
+                proofingDialogRequest.selection,
+                patch,
+              )
+            }
+            onClose={() => {
+              const { editor: dialogEditor, selection } = proofingDialogRequest;
+              setProofingDialogRequest(null);
+              requestAnimationFrame(() => {
+                if (dialogEditor.isDestroyed) return;
+                dialogEditor
+                  .chain()
+                  .setTextSelection(selection)
+                  .focus(null, { scrollIntoView: false })
+                  .run();
+              });
+            }}
+          />
+        )}
+      </DialogPresence>
       {officeDialog.dialog}
     </>
   );

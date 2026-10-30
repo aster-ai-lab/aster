@@ -103,6 +103,34 @@ default_model = "repository/local"
 }
 
 #[tokio::test]
+async fn first_run_template_is_loaded_before_opening_a_session() {
+    let home = tempfile::tempdir().expect("home");
+    let workspace = tempfile::tempdir().expect("workspace");
+    let (mut child, mut stdout) = start(workspace.path(), home.path());
+    let initialized = request(
+        &mut child,
+        &mut stdout,
+        "initialize",
+        json!({"protocolVersion":1}),
+    )
+    .await;
+    assert!(initialized.get("error").is_none(), "{initialized}");
+    let opened = request(
+        &mut child,
+        &mut stdout,
+        "session/new",
+        json!({"cwd":workspace.path(),"mcpServers":[]}),
+    )
+    .await;
+    assert_eq!(
+        opened["result"]["models"]["currentModelId"], "deepseek/deepseek-flash",
+        "{opened}"
+    );
+    assert!(home.path().join(".a3s/config.acl").is_file());
+    child.kill().await.expect("stop owned agent");
+}
+
+#[tokio::test]
 async fn trusted_provider_still_initializes_without_contacting_the_model() {
     let home = tempfile::tempdir().expect("home");
     let workspace = tempfile::tempdir().expect("workspace");

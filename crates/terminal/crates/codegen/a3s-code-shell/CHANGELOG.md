@@ -148,7 +148,7 @@
 
 ## Bug Fixes
 
-- **Plugin and skill listings** from x.ai/plugins/list and x.ai/skills/* now reflect the latest config.toml even before the first session.
+- **Plugin and skill listings** from a3s/plugins/list and a3s/skills/* now reflect the latest config.toml even before the first session.
 - **Fixed crashes** on the first TLS handshake for Windows on ARM64 builds.
 - **Slash commands** like `/feedback` typed during plan approval now execute correctly.
 
@@ -1446,7 +1446,7 @@
 ## Features
 
 - **System notifications** now carry structured kind/title/body for better rendering.
-- **x.ai/pr/status** now reports whether an open PR is in the merge queue.
+- **a3s/pr/status** now reports whether an open PR is in the merge queue.
 - **Compact mode** now activates automatically on very small terminals.
 - **Up arrow** on an empty prompt now browses prompt history; `/history` searches it.
 - **Stop hook runs** now appear inline on the turn-completed line instead of a separate block.
@@ -2845,7 +2845,7 @@
 
 ## Features
 
-- Memory system: /remember command, note modal with raw/enhanced preview, x.ai/memory/rewrite ACP extension, Ctrl+F fullscreen toggle for /memory modal.
+- Memory system: /remember command, note modal with raw/enhanced preview, a3s/memory/rewrite ACP extension, Ctrl+F fullscreen toggle for /memory modal.
 - Agent configuration: /config-agents modal with agents, personas, and defaults.
 - Goal classifier: end-to-end goal tracking with subagent-powered classification.
 

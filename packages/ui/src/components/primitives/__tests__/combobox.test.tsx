@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest'
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { Combobox, type ComboboxOption } from '../combobox'
@@ -11,6 +12,65 @@ const options: ComboboxOption[] = [
   { value: 'beta', label: 'Beta' },
   { value: 'gamma', label: 'Gamma' }
 ]
+
+describe('Combobox external search keyboard', () => {
+  it('keeps the input focused and the suggestions closed after a pointer selection', async () => {
+    const user = userEvent.setup()
+    const change = vi.fn()
+    render(<Combobox options={options} searchPlacement="trigger" onChange={change} />)
+    const input = screen.getByRole('combobox')
+    await user.click(input)
+    await user.click(screen.getByRole('option', { name: 'Beta' }))
+    await waitFor(() => expect(input).toHaveAttribute('aria-expanded', 'false'))
+    expect(input).toHaveFocus()
+    expect(change).toHaveBeenCalledExactlyOnceWith('beta')
+  })
+
+  it('commits the keyboard-active suggestion without requiring a search query', () => {
+    const change = vi.fn()
+    render(<Combobox options={options} searchPlacement="trigger" defaultValue="alpha" onChange={change} />)
+    const input = screen.getByRole('combobox')
+    fireEvent.focus(input)
+    fireEvent.keyDown(input, { key: 'ArrowDown' })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(change).toHaveBeenCalledExactlyOnceWith('beta')
+    expect(input).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('closes suggestions on Tab without preventing normal focus traversal', () => {
+    render(<Combobox options={options} searchPlacement="trigger" />)
+    const input = screen.getByRole('combobox')
+    fireEvent.focus(input)
+    const tab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true })
+    fireEvent(input, tab)
+    expect(input).toHaveAttribute('aria-expanded', 'false')
+    expect(tab.defaultPrevented).toBe(false)
+  })
+
+  it('navigates suggestions from the input and exposes the active descendant', () => {
+    const change = vi.fn()
+    render(<Combobox options={options} searchPlacement="trigger" onChange={change} />)
+    const input = screen.getByRole('combobox')
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'a' } })
+    expect(input).toHaveAttribute('aria-controls', screen.getByRole('listbox').id)
+    fireEvent.keyDown(input, { key: 'ArrowDown' })
+    expect(input).toHaveAttribute('aria-activedescendant', screen.getByRole('option', { name: 'Beta' }).id)
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(change).toHaveBeenCalledExactlyOnceWith('beta')
+  })
+
+  it('does not commit a suggestion during IME composition', () => {
+    const change = vi.fn()
+    render(<Combobox options={options} searchPlacement="trigger" onChange={change} />)
+    const input = screen.getByRole('combobox')
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'gam' } })
+    fireEvent.keyDown(input, { key: 'Enter', isComposing: true })
+    expect(change).not.toHaveBeenCalled()
+    expect(input).toHaveAttribute('aria-expanded', 'true')
+  })
+})
 
 beforeAll(() => {
   globalThis.ResizeObserver = class {

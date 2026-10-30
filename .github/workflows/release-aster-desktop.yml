@@ -7,11 +7,14 @@ on:
         description: "Desktop version to publish (x.y.z); assets attach to the desktop-stable channel release"
         required: true
         type: string
-      notes:
-        description: "Release notes for the About page"
-        required: false
+      notes_en:
+        description: "Required English notes under ## New Features, ## Improvements, and ## Bug Fixes"
+        required: true
         type: string
-        default: ""
+      notes_zh_cn:
+        description: "Required Simplified Chinese notes under ## 新功能, ## 改进, and ## 错误修复"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -37,7 +40,9 @@ jobs:
         with:
           token: ${{ secrets.STUDIO_READ_TOKEN }}
       - name: Install macOS build tools
-        run: brew install protobuf just
+        run: |
+          brew install protobuf just coreutils e2fsprogs llvm jq xz gnu-tar
+          rustup target add aarch64-unknown-linux-musl
       - name: Install pinned toolchain
         shell: bash
         run: rustup show active-toolchain
@@ -70,6 +75,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out pinned desktop validation sources
+        uses: ./.github/actions/checkout-studio
+        with:
+          token: ${{ secrets.STUDIO_READ_TOKEN }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: aster-desktop-*
@@ -81,22 +90,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           DESKTOP_VERSION: ${{ inputs.version }}
-          DESKTOP_NOTES: ${{ inputs.notes }}
+          DESKTOP_NOTES_EN: ${{ inputs.notes_en }}
+          DESKTOP_NOTES_ZH_CN: ${{ inputs.notes_zh_cn }}
         run: |
           set -euo pipefail
           asset="Aster-darwin-aarch64-v${DESKTOP_VERSION}.zip"
           test -f "dist/$asset"
           # The currently published manifest gates the regression refusal.
-          if gh release download desktop-stable --pattern desktop-latest.json --output current.json --clobber 2>/dev/null; then
-            existing_args=(--existing current.json)
-          else
-            existing_args=()
-          fi
-          notes_args=()
-          if [[ -n "$DESKTOP_NOTES" ]]; then
-            printf '%s' "$DESKTOP_NOTES" > notes.txt
-            notes_args=(--notes notes.txt)
-          fi
+          gh release download desktop-stable --pattern desktop-latest.json --output current.json --clobber
+          python3 scripts/desktop_release_manifest.py check --manifest current.json
+          existing_args=(--existing current.json)
+          printf '%s' "$DESKTOP_NOTES_EN" > notes-en.txt
+          printf '%s' "$DESKTOP_NOTES_ZH_CN" > notes-zh-cn.txt
+          notes_args=(--notes-en notes-en.txt --notes-zh-cn notes-zh-cn.txt)
           python3 scripts/desktop_release_manifest.py generate \
             --zip "dist/$asset" \
             --asset "$asset" \

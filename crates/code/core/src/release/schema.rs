@@ -96,8 +96,7 @@ pub(crate) fn release_schema() -> Schema {
         )
         .block(
             "inference",
-            BlockSchema::new(inference)
-                .occurrences(Cardinality::new(0, Some(1)).expect("bounded cardinality")),
+            BlockSchema::new(inference).occurrences(Cardinality::at_most(1)),
         )
         .block(
             "provenance",

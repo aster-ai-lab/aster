@@ -353,10 +353,9 @@ mod tests {
             ["Skill", "read"],
         );
         assert!(generation.skills().contains("review"));
-        assert_eq!(
-            registry.get("review").unwrap().content,
-            "Quote the document."
-        );
+        let content = &registry.get("review").unwrap().content;
+        assert!(content.contains("Skill directory (SKILL_DIR):"));
+        assert!(content.ends_with("Quote the document."));
 
         let broken = snapshot(Some((&path, &"ab".repeat(32))), serde_json::json!({}));
         let empty = SkillRegistry::new();
@@ -385,10 +384,9 @@ mod tests {
             &snapshot(Some((&path, &digest)), serde_json::json!({})),
             ["Skill"],
         );
-        assert_eq!(
-            registry.get("review").unwrap().content,
-            "Quote the document."
-        );
+        let content = &registry.get("review").unwrap().content;
+        assert!(content.contains("Skill directory (SKILL_DIR):"));
+        assert!(content.ends_with("Quote the document."));
         assert_eq!(fs::read_to_string(&user).unwrap(), user_body);
         let _ = fs::remove_dir_all(&root);
     }

@@ -38,8 +38,10 @@ impl ChildRun {
         let (permission, yolo_lanes, max_tool_rounds) = agent.fact_execution_policy();
         let confirmation = agent.confirmation_provider();
         let surface = crate::fact_control::SessionSurface {
+            response_meta: Default::default(),
             agent,
             session_id: child_id.clone(),
+            persistence: None,
             fact_log: Arc::new(std::sync::Mutex::new(Some(log))),
             checkpoint: None,
             events,

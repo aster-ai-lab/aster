@@ -459,6 +459,12 @@
   );
 }
 
+[data-office-content-only] .work-document-page .tiptap .work-document-table-page-spacer {
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .work-document-page .tiptap .work-document-table-page-spacer::before {
   position: absolute;
   top: var(--work-document-page-gap-offset);
@@ -1195,6 +1201,26 @@
     var(--work-table-cell-margin-left, 7.2px);
   border: 1px solid #cfd5df;
   vertical-align: top;
+}
+
+.work-document-editor[data-fit-to-container-width] .work-document-page .tiptap table {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.work-document-editor[data-fit-to-container-width] .work-document-page .tiptap :is(th, td) {
+  min-width: 25px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
+.work-document-editor[data-fit-to-container-width] .work-document-page .tiptap :is(th, td) > * {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
 }
 
 .work-document-page .tiptap th {

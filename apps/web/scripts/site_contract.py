@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 import re
 
+SHARED_FILES = (
+    "transitions.css",
+)
 PAGE_FILES = (
     "download/index.html",
     "download/styles.css",
@@ -91,7 +94,9 @@ DOCS_ROUTES = documentation_routes(json.loads(
     (Path(__file__).resolve().parents[1] / "content/docs/catalog.json").read_text(encoding="utf-8")))
 DOCS_PAGES = tuple(DOCS_ROUTES)
 
-DOCS_FILES = DOCS_PAGES + ("docs/styles.css", "docs/generated.css", "docs/navigation.js")
+ATLAS = json.loads((Path(__file__).resolve().parents[1] / "content/docs/atlas.json").read_text(encoding="utf-8"))
+ATLAS_FILES = tuple(f"docs/atlas/{entry['product']}-{entry['name']}.svg" for entry in ATLAS["diagrams"])
+DOCS_FILES = DOCS_PAGES + ("docs/styles.css", "docs/harness-demo.css", "docs/generated.css", "docs/navigation.js", "docs/search.js", "docs/search-index.json") + ATLAS_FILES
 DOCS_REFERENCE_URLS = frozenset((
     "https://developers.openai.com/blog/codex-as-a-platform",
     "https://code.claude.com/docs/en/agent-sdk/overview",
@@ -121,18 +126,17 @@ DOWNLOAD_BRAND_FILES = (
     "tenant/aster/logo.svg",
     "tenant/aster/favicon.png",
 )
-SITE_FILES = PAGE_FILES + SCREENSHOT_FILES + FONT_FILES + BRAND_FILES
+LEGAL_FILES = (
+    "terms/index.html",
+    "privacy/index.html",
+    "legal/styles.css",
+)
+SITE_FILES = PAGE_FILES + SCREENSHOT_FILES + FONT_FILES + BRAND_FILES + LEGAL_FILES + SHARED_FILES
 
 REPOSITORY_URL = "https://github.com/aster-ai-lab/aster"
 PAGES_URL = "https://aster-ai-lab.github.io/aster/"
 
-# These are existing public stable artifacts, not a claim that a new desktop
-# generation has been published. Updating this set requires checking the release.
-DOWNLOAD_MANIFEST = (
-    ("desktop", "macos", "0.1.1", "aarch64", REPOSITORY_URL + "/releases/download/v0.1.1/aster_0.1.1_aarch64.dmg"),
-    ("desktop", "windows", "0.1.1", "x64", REPOSITORY_URL + "/releases/download/v0.1.1/aster_0.1.1_x64-setup.exe"),
-    ("desktop", "kylin", "0.1.2", "x86_64", REPOSITORY_URL + "/releases/download/v0.1.2/aster_0.1.2_kylin-v10_x86_64.run"),
-    ("cli", "macos", "0.1.1", "release archive", REPOSITORY_URL + "/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-macos.tar.gz"),
-    ("cli", "linux", "0.1.1", "release archive", REPOSITORY_URL + "/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-linux.tar.gz"),
-    ("cli", "windows", "0.1.1", "release archive", REPOSITORY_URL + "/releases/download/aster-cli-v0.1.1/aster-cli-v0.1.1-windows.zip"),
-)
+# Published artifact snapshot, refreshed from GitHub release metadata at deployment.
+DOWNLOAD_SNAPSHOT = json.loads((Path(__file__).resolve().parents[1] / "content/releases.json").read_text(encoding="utf-8"))
+DOWNLOAD_MANIFEST = tuple((item["product"], item["platform"], item["version"], item["arch"], item["url"])
+                          for item in DOWNLOAD_SNAPSHOT["downloads"])

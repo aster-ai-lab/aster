@@ -38,7 +38,7 @@ interpret a review finding as approval.
 | `ResearchEventV1` | `a3s.code.science-event.v1` | Digest-only project/run event projection for Desktop and other hosts. |
 
 Hosts that need a process-boundary envelope use `ResearchWireEnvelopeV1`
-(`a3s.code.research-wire.v1`) with the generated Node/Python/Go projections
+(`a3s.code.research-wire.v1`) with the generated Rust/ACP projections
 under `sdk/research/`. Regenerate with
 `node scripts/generate_research_protocol_artifacts.mjs`.
 

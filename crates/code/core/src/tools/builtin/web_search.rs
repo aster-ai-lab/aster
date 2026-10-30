@@ -161,6 +161,15 @@ fn json_search_payload(results: Vec<serde_json::Value>) -> serde_json::Value {
     serde_json::Value::Array(results)
 }
 
+/// Degraded outcomes keep model-visible notices out of host-only metadata.
+fn requested_output_format(args: &serde_json::Value, preserve_text_context: bool) -> &str {
+    match args.get("format").and_then(|value| value.as_str()) {
+        Some(format) => format,
+        None if preserve_text_context => "text",
+        None => "json",
+    }
+}
+
 fn safe_search_result_url(result: &SearchResult) -> String {
     let Some(url) = super::safe_http_source_url(&result.url) else {
         return String::new();
@@ -299,18 +308,6 @@ fn cascade_controls(ctx: &ToolContext, metrics: Arc<Metrics>) -> CascadeControls
     }
 }
 
-/// Aborts provisioning the cascade never awaited, so a satisfied fast path
-/// never pays for the slow one.
-#[cfg(any(test, feature = "headless-search"))]
-struct AbortOnDrop(tokio::task::AbortHandle);
-
-#[cfg(any(test, feature = "headless-search"))]
-impl Drop for AbortOnDrop {
-    fn drop(&mut self) {
-        self.0.abort();
-    }
-}
-
 #[cfg(feature = "headless-search")]
 async fn prepare_moli(config: &HeadlessConfig) -> std::result::Result<PathBuf, String> {
     let timeout = Duration::from_secs(config.moli_download_timeout_secs.clamp(1, 600));
@@ -324,17 +321,12 @@ async fn prepare_moli(config: &HeadlessConfig) -> std::result::Result<PathBuf, S
     }
 }
 
-/// The browser backend and the runtime Code prepares for it. Moli
-/// provisioning starts now on its own budget and overlaps the earlier tiers.
+/// Moli preparation starts only when the browser tier polls this shared future.
 #[cfg(feature = "headless-search")]
 fn headless_runtime(
     config: HeadlessConfig,
     needed: bool,
-) -> (
-    HeadlessBrowser,
-    Option<PendingHeadlessRuntime>,
-    Option<AbortOnDrop>,
-) {
+) -> (HeadlessBrowser, Option<PendingHeadlessRuntime>) {
     use futures::FutureExt;
 
     let browser = match config.backend {
@@ -343,7 +335,7 @@ fn headless_runtime(
         BrowserBackend::Lightpanda => HeadlessBrowser::Lightpanda,
     };
     if !needed {
-        return (browser, None, None);
+        return (browser, None);
     }
     let max_tabs = Some(config.max_tabs);
     if !config.backend.is_moli() {
@@ -355,25 +347,19 @@ fn headless_runtime(
         return (
             browser,
             Some(futures::future::ready(Ok(runtime)).boxed().shared()),
-            None,
         );
     }
-    let task = tokio::spawn(async move { prepare_moli(&config).await });
-    let guard = AbortOnDrop(task.abort_handle());
     let pending = async move {
-        match task.await {
-            Ok(Ok(path)) => Ok(a3s_search::product::HeadlessRuntime {
-                executable: Some(path),
-                max_tabs,
-                launch_args: Vec::new(),
-            }),
-            Ok(Err(error)) => Err(error),
-            Err(error) => Err(format!("Moli provisioning task failed: {error}")),
-        }
+        let path = prepare_moli(&config).await?;
+        Ok(a3s_search::product::HeadlessRuntime {
+            executable: Some(path),
+            max_tabs,
+            launch_args: Vec::new(),
+        })
     }
     .boxed()
     .shared();
-    (browser, Some(pending), Some(guard))
+    (browser, Some(pending))
 }
 
 fn web_escalations() -> &'static std::sync::Mutex<std::collections::VecDeque<(String, String)>> {
@@ -491,7 +477,7 @@ impl Tool for WebSearchTool {
                 "format": {
                     "type": "string",
                     "enum": ["text", "json"],
-                    "description": "Optional. Output format. Default: text."
+                    "description": "Optional. Output format. Default: json for complete results; degraded-source context stays text. Explicit text is always honored."
                 },
                 "full_text_bytes": {
                     "type": "integer",
@@ -648,10 +634,6 @@ impl Tool for WebSearchTool {
         // provisioning runs on its own budget.
         let request_deadline = search_started + total_timeout;
 
-        let output_format = args
-            .get("format")
-            .and_then(|v| v.as_str())
-            .unwrap_or("text");
         let full_text_bytes = match args.get("full_text_bytes") {
             None => None,
             Some(value) => match value.as_u64().and_then(|value| usize::try_from(value).ok()) {
@@ -728,14 +710,14 @@ impl Tool for WebSearchTool {
         #[cfg_attr(not(feature = "headless-search"), allow(unused_mut))]
         let mut controls = cascade_controls(ctx, Arc::clone(&search_metrics));
         #[cfg(feature = "headless-search")]
-        let (browser, _moli_provision) = {
+        let browser = {
             let headless = effective_headless_config(
                 config.and_then(|config| config.headless.as_ref()),
                 proxy_url.as_deref(),
             );
-            let (browser, runtime, guard) = headless_runtime(headless, !plan.headless().is_empty());
+            let (browser, runtime) = headless_runtime(headless, !plan.headless().is_empty());
             controls.headless_runtime = runtime;
-            (browser, guard)
+            browser
         };
         #[cfg(not(feature = "headless-search"))]
         let browser = HeadlessBrowser::default();
@@ -871,7 +853,11 @@ impl Tool for WebSearchTool {
             return Ok(output);
         }
 
-        let (output, source_anchors, returned_result_count) = if output_format == "json" {
+        let (output, source_anchors, returned_result_count) = if requested_output_format(
+            args,
+            !notice_note.is_empty() || !error_note.is_empty(),
+        ) == "json"
+        {
             let json_results = bounded_json_search_results(&results, full_text_bytes);
             let returned_result_count = json_results.len();
             if returned_result_count < results.len() {

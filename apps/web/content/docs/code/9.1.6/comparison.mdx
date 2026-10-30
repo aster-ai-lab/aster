@@ -1,5 +1,5 @@
 export const meta = {
-  title: '与其他 Harness 的区别',
+  title: 'Harness 实现对比',
   description: '比较 A3S Code、Codex、Claude Agent SDK、Deep Agents 和 LangGraph 的用途与接入方式。',
   updated: '2026-10-26',
   label: '框架对比',
@@ -7,7 +7,7 @@ export const meta = {
 
 ## Harness 与编排框架各做什么
 
-A3S Code、Codex、Claude Agent SDK 和 Deep Agents 都提供模型调用、工具执行和上下文管理等能力，负责组织模型使用工具完成多步任务。
+A3S Code、Codex、Claude Agent SDK 和 Deep Agents 都提供模型调用、工具执行和上下文管理能力，组织模型使用工具完成多步任务。
 
 LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢复任务。具体使用什么工具、如何组织 agent、怎样验收结果，需要由上层应用决定。Deep Agents 就是在 LangGraph 上构建的一套 harness。
 
@@ -33,14 +33,14 @@ LangGraph 主要负责流程编排：保存状态、安排步骤、暂停和恢�
 
 发生修改后，需要有一份对应当前修改的检查通过报告。如果没有，宿主必须明确批准任务按未验证状态结束。报告能证明多少，取决于实际运行了什么检查。文件存在检查只能证明文件还在，覆盖业务行为的测试才能进一步检查代码是否正确。
 
-## 如何按需求选择
+## 选型依据
 
-已有 Rust 应用、希望直接嵌入执行循环时，可以从 A3S Code 的会话接口入手。围绕 Codex 或 Claude Code 开发应用时，先看对应的 SDK；它们已经处理了会话、工具和上下文，能省去这部分开发工作。
+已有 Rust 应用且需要嵌入执行循环时，可以使用 A3S Code 的会话接口。围绕 Codex 或 Claude Code 开发应用时，使用对应 SDK 可以减少会话、工具和上下文管理的开发工作。
 
-如果要自己规定固定步骤、模型步骤和人工审批之间的流程，LangGraph 提供了较底层的控制能力。希望直接使用文件系统、子代理和记忆等常用组件时，可以看 Deep Agents。
+需要自行规定固定步骤、模型步骤和人工审批流程时，LangGraph 提供较底层的控制能力。需要文件系统、子代理和记忆组件时，可以选择 Deep Agents。
 
 <Callout title="本页没有比较运行性能">
-以上比较依据源码和官方文档。我们没有使用相同模型、任务和预算做对照测试，因此不比较成功率、速度或成本。
+以上比较依据源码和官方文档。这些资料没有使用相同模型、任务和预算开展对照测试，因此不支持成功率、速度或成本结论。
 </Callout>
 
 ## 官方资料

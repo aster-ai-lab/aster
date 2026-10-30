@@ -135,6 +135,11 @@ struct BackgroundTask {
     run: uuid::Uuid,
     log: Arc<FileLog>,
     thread: String,
+    parent_session_id: String,
+    command: String,
+    started_ms: u64,
+    events: Option<tokio::sync::broadcast::Sender<crate::agent::AgentEvent>>,
+    tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
     /// Request to terminate; the reaper owns the child and performs the
     /// kill so exactly one owner waits on it.
     kill_switch: tokio_util::sync::CancellationToken,
@@ -163,6 +168,10 @@ impl BackgroundTask {
         run: uuid::Uuid,
         log: Arc<FileLog>,
         thread: String,
+        parent_session_id: String,
+        command: String,
+        events: Option<tokio::sync::broadcast::Sender<crate::agent::AgentEvent>>,
+        tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
     ) -> Self {
         Self {
             name,
@@ -171,6 +180,11 @@ impl BackgroundTask {
             run,
             log,
             thread,
+            parent_session_id,
+            command,
+            started_ms: unix_now_ms(),
+            events,
+            tracker,
             kill_switch: tokio_util::sync::CancellationToken::new(),
             status: std::sync::Mutex::new(None),
             failure: std::sync::Mutex::new(None),
@@ -182,6 +196,83 @@ impl BackgroundTask {
             emitted: std::sync::atomic::AtomicU64::new(0),
             truncated_noted: std::sync::atomic::AtomicBool::new(false),
             notify: tokio::sync::Notify::new(),
+        }
+    }
+
+    async fn emit_start(&self) {
+        let start = crate::agent::AgentEvent::SubagentStart {
+            task_id: self.task_id.clone(),
+            session_id: self.task_id.clone(),
+            parent_session_id: self.parent_session_id.clone(),
+            agent: "local_bash".to_string(),
+            description: self.name.clone(),
+            started_ms: self.started_ms,
+        };
+        let progress = crate::agent::AgentEvent::SubagentProgress {
+            task_id: self.task_id.clone(),
+            session_id: self.task_id.clone(),
+            status: "started".to_string(),
+            metadata: serde_json::json!({
+                "command": self.command,
+                "disposition": "in_progress",
+            }),
+        };
+        if let Some(tracker) = &self.tracker {
+            tracker.record_event(&start).await;
+            tracker.record_event(&progress).await;
+        }
+        if let Some(events) = &self.events {
+            let _ = events.send(start);
+            let _ = events.send(progress);
+        }
+    }
+
+    async fn emit_end(
+        &self,
+        disposition: BackgroundDisposition,
+        exit_code: Option<i32>,
+        status: &str,
+    ) {
+        let progress = crate::agent::AgentEvent::SubagentProgress {
+            task_id: self.task_id.clone(),
+            session_id: self.task_id.clone(),
+            status: "finished".to_string(),
+            metadata: serde_json::json!({
+                "command": self.command,
+                "disposition": disposition.as_str(),
+                "exitCode": exit_code,
+            }),
+        };
+        let success = disposition == BackgroundDisposition::Completed && exit_code == Some(0);
+        let end = crate::agent::AgentEvent::SubagentEnd {
+            task_id: self.task_id.clone(),
+            session_id: self.task_id.clone(),
+            agent: "local_bash".to_string(),
+            output: status.to_string(),
+            success,
+            finished_ms: unix_now_ms(),
+        };
+        if let Some(tracker) = &self.tracker {
+            tracker.record_event(&progress).await;
+            tracker.record_event(&end).await;
+        }
+        if let Some(events) = &self.events {
+            let _ = events.send(progress);
+            let _ = events.send(end);
+        }
+    }
+
+    async fn register_canceller(&self) {
+        if let Some(tracker) = &self.tracker {
+            tracker
+                .register_canceller(&self.task_id, self.kill_switch.clone())
+                .await;
+        }
+    }
+
+    async fn clear_canceller(&self) {
+        if let Some(tracker) = &self.tracker {
+            tracker.clear_canceller(&self.task_id).await;
         }
     }
 
@@ -297,8 +388,16 @@ impl BackgroundTask {
         }
     }
 
-    fn finish(&self, status: String, mut metadata: serde_json::Value) {
+    async fn finish(&self, status: String, mut metadata: serde_json::Value) {
         let status = truncate_utf8(&status, BG_MAX_LINE_BYTES);
+        let disposition = metadata
+            .get("disposition")
+            .and_then(serde_json::Value::as_str)
+            .and_then(|value| BackgroundDisposition::parse(value).ok());
+        let exit_code = metadata
+            .get("exit_code")
+            .and_then(serde_json::Value::as_i64)
+            .and_then(|value| i32::try_from(value).ok());
         self.finish_partial_output();
         let retained = !self
             .output_evidence_failed
@@ -312,6 +411,7 @@ impl BackgroundTask {
             metadata["process_settlement_basis"] =
                 serde_json::json!(ProcessSettlementBasis::Unproven.as_str());
         }
+        let disposition = disposition.unwrap_or(BackgroundDisposition::Unknown);
         let seq = self
             .emitted
             .fetch_add(1, std::sync::atomic::Ordering::SeqCst)
@@ -326,9 +426,17 @@ impl BackgroundTask {
         *self
             .status
             .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(status);
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(status.clone());
+        self.emit_end(disposition, exit_code, &status).await;
         self.notify.notify_waiters();
     }
+}
+
+fn unix_now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_millis() as u64)
+        .unwrap_or(0)
 }
 
 #[async_trait]
@@ -455,6 +563,7 @@ impl crate::capability::CapabilityEffect for BackgroundSettlementEffect {
                 self.task.name
             )));
         }
+        self.task.clear_canceller().await;
         self.runs
             .remove(self.run, &self.task.name, &self.task.task_id);
         if let Some(failure) = self.task.failure() {
@@ -466,12 +575,25 @@ impl crate::capability::CapabilityEffect for BackgroundSettlementEffect {
 
 pub struct BackgroundTool {
     runs: Arc<BackgroundRuns>,
+    tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
 }
 
 impl Default for BackgroundTool {
     fn default() -> Self {
         Self {
             runs: Arc::new(BackgroundRuns::default()),
+            tracker: None,
+        }
+    }
+}
+
+impl BackgroundTool {
+    pub(crate) fn with_subagent_tracker(
+        tracker: Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>,
+    ) -> Self {
+        Self {
+            runs: Arc::new(BackgroundRuns::default()),
+            tracker: Some(tracker),
         }
     }
 }
@@ -676,6 +798,10 @@ impl BackgroundTool {
             run,
             log,
             crate::fact_control::thread_for_session(session_id),
+            session_id.to_string(),
+            command.to_string(),
+            ctx.agent_event_tx.clone(),
+            self.tracker.clone(),
         ));
 
         if !self.runs.insert(run, Arc::clone(&task)) {
@@ -699,6 +825,8 @@ impl BackgroundTool {
             &task_id,
             task.kill_switch.clone(),
         );
+        task.register_canceller().await;
+        task.emit_start().await;
         let worker = execute_background(
             Arc::clone(&task),
             sandbox,
@@ -713,8 +841,15 @@ impl BackgroundTool {
             crate::porcelain::settle_workspace_child_paths(&task_id, Vec::new());
             task.finish(
                 format!("worker admission refused: {error}"),
-                serde_json::json!({ "workspace_child": task_id, "changed_paths": [] }),
-            );
+                serde_json::json!({
+                    "workspace_child": task_id,
+                    "changed_paths": [],
+                    "disposition": BackgroundDisposition::Failed.as_str(),
+                    "exit_code": null,
+                }),
+            )
+            .await;
+            task.clear_canceller().await;
             self.runs.remove(run, name, &task_id);
             return Ok(ToolOutput::error(format!(
                 "background worker could not be registered to the Run: {error}"
@@ -1007,7 +1142,9 @@ async fn execute_background(
             "output_complete": !cancelled && summary.is_some(),
             "output_observed_bytes": task.observed_output_bytes.load(std::sync::atomic::Ordering::Relaxed),
         }),
-    );
+    )
+    .await;
+    task.clear_canceller().await;
     child_guard.settle_paths(paths);
     match task.failure() {
         Some(failure) => Err(crate::capability::CapabilityEffectError::new(failure)),

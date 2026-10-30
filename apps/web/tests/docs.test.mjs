@@ -7,13 +7,16 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { createProcessor } from '@mdx-js/mdx';
 import remarkGfm from 'remark-gfm';
+import { createElement as h, Fragment } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { buildDocs, pages, validateProjects } from '../scripts/build_docs.mjs';
+import { createSourceReferences } from '../scripts/docs_sources.mjs';
 import { projects } from '../scripts/docs_components.mjs';
 import { documentPages } from '../scripts/docs_catalog.mjs';
 
 const require = createRequire(import.meta.url);
 const root = fileURLToPath(new URL('../../../', import.meta.url));
-const publicRoot = path.join(root, 'apps/web/public');
+const publicRoot = path.join(root, 'apps/web/dist');
 const { JSDOM } = require(process.env.JS_DOM_MODULE || path.join(root, 'packages/ui/node_modules/jsdom'));
 
 test('the product catalog refuses unsafe paths, duplicate versions and invalid defaults', () => {
@@ -71,6 +74,12 @@ test('two products and two versions keep content, navigation, source refs and de
     }
   }
   await buildDocs({ entries, contentRoot, outputRoot });
+  const searchIndex = JSON.parse(await readFile(path.join(outputRoot, 'search-index.json'), 'utf8'));
+  assert.equal(searchIndex.format, 1);
+  assert.equal(searchIndex.documents.length, documentPages(entries).filter((entry) => !entry.alias).length);
+  assert.equal(new Set(searchIndex.documents.map((entry) => entry.route)).size, searchIndex.documents.length);
+  assert.equal(searchIndex.documents.some((entry) => entry.route === 'alpha/guide/'), false);
+  assert.ok(searchIndex.documents.find((entry) => entry.route === 'alpha/2.0/guide/').text.includes('alpha-2.0-guide'));
   const read = async (route) => {
     const dom = new JSDOM(await readFile(path.join(outputRoot, route, 'index.html'), 'utf8'), { url: `https://aster-ai-lab.github.io/aster/docs/${route}` });
     t.after(() => dom.window.close());
@@ -98,6 +107,8 @@ test('two products and two versions keep content, navigation, source refs and de
   await writeFile(path.join(contentRoot, 'alpha/2.0/_diagrams/same.mmd'), 'flowchart TB\naccTitle: Version diagram\naccDescr: Scoped source\nA[Changed version two] --> B[End node]\n');
   await buildDocs({ entries, contentRoot, outputRoot });
   assert.equal(await readFile(path.join(outputRoot, 'alpha/1.0/guide/index.html'), 'utf8'), previous);
+  const updatedIndex = JSON.parse(await readFile(path.join(outputRoot, 'search-index.json'), 'utf8'));
+  assert.ok(updatedIndex.documents.find((entry) => entry.route === 'alpha/2.0/guide/').text.includes('Only version two changed.'));
   assert.equal(documentPages(entries).filter((entry) => entry.alias).length, 4);
   await mkdir(path.join(outputRoot, 'handwritten'));
   await writeFile(path.join(outputRoot, 'handwritten/index.html'), '<h1>Handwritten</h1>');
@@ -118,10 +129,11 @@ test('section navigation and chapter cards keep introductory and Meta Harness gu
   const dom = new JSDOM(source, { url: `https://aster-ai-lab.github.io/aster/docs/code/${version.id}/meta-harness/` });
   t.after(() => dom.window.close());
   const { document } = dom.window;
-  assert.deepEqual([...document.querySelectorAll('.chapter-nav .nav-section')].map((node) => node.textContent), ['设计原理', '构建终端智能体', 'Meta Harness', '功能参考']);
+  assert.deepEqual([...document.querySelectorAll('.chapter-nav .nav-section')].map((node) => node.textContent), ['内核原理', '设计原理', '构建终端智能体', 'Meta Harness', '功能参考']);
   assert.equal(document.querySelectorAll('.chapter-cards > a').length, sectionPages.length - 1);
   assert.ok(document.querySelector('.breadcrumb').textContent.includes('Meta Harness'));
   assert.equal(document.querySelector('.chapter-nav a[aria-current]').href, dom.window.location.href);
+  assert.ok([...document.querySelectorAll('.chapter-nav a')].every((node) => node.textContent !== '文档首页'));
   for (const card of document.querySelectorAll('.chapter-cards > a')) assert.ok(new URL(card.href).pathname.startsWith(`/aster/docs/code/${version.id}/meta-harness/`));
   const overview = new JSDOM(await readFile(path.join(publicRoot, 'docs/code/index.html'), 'utf8'));
   t.after(() => overview.window.close());
@@ -134,13 +146,14 @@ test('MDX builds deterministically and refuses stale generated pages', async (t)
   const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'aster-mdx-'));
   t.after(() => rm(outputRoot, { recursive: true, force: true }));
   const files = await buildDocs({ outputRoot });
-  assert.equal(files.length, pages.length + 1);
+  const atlas = JSON.parse(await readFile(path.join(root, 'apps/web/content/docs/atlas.json'), 'utf8'));
+  assert.equal(files.length, pages.length + 1 + atlas.diagrams.length + atlas.diagrams.filter((entry) => entry.readme).length + 1);
   await buildDocs({ check: true, outputRoot });
   const original = await readFile(files[0], 'utf8');
   await writeFile(files[0], '<h1>stale</h1>');
   await assert.rejects(buildDocs({ check: true, outputRoot }), /Stale MDX output/);
   await writeFile(files[0], original);
-  await writeFile(files.at(-1), '/* stale */');
+  await writeFile(path.join(outputRoot, 'generated.css'), '/* stale */');
   await assert.rejects(buildDocs({ check: true, outputRoot }), /Stale syntax CSS/);
 });
 
@@ -151,7 +164,7 @@ test('highlighted code preserves every authored character and remains labelled a
     const fences = createProcessor().parse(mdx).children.filter((node) => node.type === 'code');
     const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs', page.route, 'index.html'), 'utf8'));
     t.after(() => dom.window.close());
-    const blocks = [...dom.window.document.querySelectorAll('pre')];
+    const blocks = [...dom.window.document.querySelectorAll('pre:not([data-codehike])')];
     assert.equal(blocks.length, fences.length);
     for (const [index, block] of blocks.entries()) {
       const fence = fences[index];
@@ -165,7 +178,7 @@ test('highlighted code preserves every authored character and remains labelled a
       if (language !== 'text') assert.ok(block.querySelectorAll('code span[class^="syntax-"]').length > 1);
     }
   }
-  assert.deepEqual([...languages].sort(), ['acl', 'bash', 'javascript', 'json', 'rust', 'sh', 'text', 'toml']);
+  assert.deepEqual([...languages].sort(), ['acl', 'bash', 'javascript', 'json', 'rust', 'sh', 'text', 'toml', 'ts', 'tsx']);
 });
 
 test('the generated syntax palette meets 4.5:1 text contrast against its light background', async (t) => {
@@ -191,18 +204,64 @@ test('the generated syntax palette meets 4.5:1 text contrast against its light b
   }
 });
 
-test('Pele renders the six architecture diagrams as labelled static SVG with external styling', async (t) => {
-  for (const [route, type] of [['code/', 'flowchart'], ['code/workflow/', 'sequence'], ['code/meta-harness/', 'flowchart'], ['code/tutorial/', 'flowchart'], ['code/tutorial/permissions/', 'flowchart'], ['code/design/rsi/', 'flowchart']]) {
+test('Pele renders current architecture figures with labels and extracted styles', async (t) => {
+  for (const [route, name, type] of [['code/', 'architecture', 'flowchart'], ['code/workflow/', 'workflow', 'flowchart'], ['code/internals/', 'meta-harness', 'block'], ['code/tutorial/', 'tutorial-architecture', 'flowchart'], ['code/tutorial/permissions/', 'tutorial-permissions', 'sequence'], ['code/design/rsi/', 'rsi-cycle', 'flowchart'], ['code/workflow/', 'context-assembly', 'flowchart'], ['code/reference/run-control/', 'run-control', 'sequence'], ['code/reference/governance/', 'completion-gate', 'flowchart'], ['code/reference/memory/', 'memory-lifecycle', 'flowchart'], ['acp/', 'architecture', 'flowchart'], ['acp/protocol/', 'protocol-lifecycle', 'sequence'], ['acp/permissions/', 'permission-roundtrip', 'sequence'], ['acp/events/', 'event-routing', 'sequence']]) {
     const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs', route, 'index.html'), 'utf8'));
     t.after(() => dom.window.close());
-    const svg = dom.window.document.querySelector(`.pele-diagram svg.pele-${type}`);
+    const svg = dom.window.document.querySelector(`.atlas-figure[data-diagram="${name}"] svg.pele-${type}`);
     assert.ok(svg, route);
     assert.equal(svg.getAttribute('role'), 'img');
     assert.ok(svg.querySelector('title').textContent.trim());
     assert.ok(svg.querySelector('desc').textContent.trim());
-    assert.equal(svg.querySelectorAll('[style], style, script, foreignObject, image, a').length, 0);
+    assert.equal(svg.querySelectorAll('[style], style, script, foreignObject, a').length, 0);
     assert.equal(svg.hasAttribute('style'), false);
     assert.ok(svg.getAttribute('class').includes('pele-style-'));
+    assert.equal(svg.querySelectorAll('image').length, 0);
+  }
+});
+
+test('source citations resolve exact lines from the registered Git snapshot and refuse drift', () => {
+  const revision = projects.find((project) => project.id === 'code').versions.find((version) => version.id === '9.1.6').sourceRef;
+  const { SourceRef, SourceList } = createSourceReferences(revision, root);
+  const file = 'crates/code/core/src/agent_api/run_facade.rs';
+  const citation = { path: file, match: 'pub async fn steer(\n        &self,' };
+  const html = renderToStaticMarkup(h(Fragment, null,
+    h(SourceRef, citation, 'AgentSession::steer'), h(SourceRef, citation, 'AgentSession::steer'), h(SourceList)));
+  const dom = new JSDOM(html);
+  try {
+    const refs = [...dom.window.document.querySelectorAll('.source-ref')];
+    assert.equal(refs.length, 2);
+    assert.equal(refs[0].href, `https://github.com/aster-ai-lab/aster/blob/${revision}/${file}#L6-L7`);
+    assert.equal(refs[0].textContent, 'AgentSession::steer L6-L7 ↗');
+    assert.equal(dom.window.document.querySelectorAll('.page-sources a').length, 1);
+    assert.equal(dom.window.document.querySelector('.page-sources a').href, refs[0].href);
+    assert.ok(dom.window.document.querySelector('.page-sources').textContent.includes('run_facade.rs'));
+    assert.equal(renderToStaticMarkup(h(createSourceReferences(revision, root).SourceList)), '');
+  } finally {
+    dom.window.close();
+  }
+  for (const match of ['', 'function_that_no_longer_exists', 'pub async fn']) {
+    assert.throws(() => renderToStaticMarkup(h(SourceRef, { path: file, match })), /exact match|exactly once/);
+  }
+  assert.throws(() => renderToStaticMarkup(h(SourceRef, { ...citation, path: '../private/file.rs' })), /Invalid source path/);
+  assert.throws(() => renderToStaticMarkup(h(SourceRef, { ...citation, path: 'crates/missing/file.rs' })), /git show/);
+});
+
+test('current reading paths expose ordered page sources at fixed revisions in canonical and alias routes', async (t) => {
+  const routes = ['code/', 'code/workflow/', 'code/reference/run-control/', 'code/reference/governance/', 'code/reference/memory/', 'acp/', 'acp/protocol/', 'acp/permissions/', 'acp/events/'];
+  for (const route of routes) {
+    const [product, ...slug] = route.split('/');
+    let expected;
+    for (const address of [route, `${product}/9.1.6/${slug.join('/')}`]) {
+      const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs', address, 'index.html'), 'utf8'));
+      t.after(() => dom.window.close());
+      const refs = [...dom.window.document.querySelectorAll('.prose .source-ref')].map((link) => link.href);
+      assert.ok(refs.length >= 3, address);
+      assert.ok(refs.every((href) => /\/blob\/[a-f0-9]{40}\/.+#L\d+(?:-L\d+)?$/.test(href)), address);
+      assert.deepEqual([...dom.window.document.querySelectorAll('.page-sources a')].map((link) => link.href), [...new Set(refs)], address);
+      if (expected) assert.deepEqual(refs, expected, address);
+      expected = refs;
+    }
   }
 });
 
@@ -242,12 +301,20 @@ test('generated documents preserve project URLs, active navigation and accessibl
     assert.equal(document.querySelector('link[rel=canonical]').href, `https://aster-ai-lab.github.io/aster/docs/${page.canonicalRoute}`);
     assert.equal(document.querySelectorAll('select, datalist, iframe').length, 0);
     const scripts = [...document.querySelectorAll('script')];
-    assert.equal(scripts.length, 1);
+    assert.equal(scripts.length, 2);
     assert.ok(scripts[0].src.endsWith('/docs/navigation.js'));
-    assert.ok(scripts[0].defer);
-    assert.equal(scripts[0].textContent, '');
-    assert.equal(document.querySelector('.chapter-nav a[aria-current]').href, `https://aster-ai-lab.github.io/aster/docs/${page.canonicalRoute}`);
-    assert.equal(document.querySelector('.mobile-navigation a[aria-current]').href, `https://aster-ai-lab.github.io/aster/docs/${page.canonicalRoute}`);
+    assert.ok(scripts[1].src.endsWith('/docs/search.js'));
+    assert.ok(scripts.every((script) => script.defer && script.textContent === ''));
+    assert.equal(document.querySelectorAll('.chapter-nav .nav-home').length, page.project ? 1 : 0);
+    assert.equal(document.querySelectorAll('.mobile-navigation .nav-home').length, page.project ? 1 : 0);
+    if (page.project) {
+      assert.equal(document.querySelector('.chapter-nav .nav-home').href, 'https://aster-ai-lab.github.io/aster/docs/');
+      assert.equal(document.querySelector('.chapter-nav a[aria-current]').href, `https://aster-ai-lab.github.io/aster/docs/${page.canonicalRoute}`);
+      assert.equal(document.querySelector('.mobile-navigation a[aria-current]').href, `https://aster-ai-lab.github.io/aster/docs/${page.canonicalRoute}`);
+    } else {
+      assert.equal(document.querySelector('.chapter-nav a[aria-current]'), null);
+      assert.equal(document.querySelector('.mobile-navigation a[aria-current]'), null);
+    }
     assert.equal(document.querySelector('.docs-brand').href, 'https://aster-ai-lab.github.io/aster/');
     const ids = [...document.querySelectorAll('[id]')].map((node) => node.id);
     assert.equal(ids.length, new Set(ids).size);
@@ -435,4 +502,82 @@ test('navigation remains usable when session storage is unavailable or corrupt',
     assert.doesNotThrow(() => dom.window.dispatchEvent(new dom.window.Event('pagehide')));
     assert.ok(menu.querySelector('a[aria-current="page"]'));
   }
+});
+
+test('document search loads one index, filters project and version, and supports keyboard navigation', async (t) => {
+  const code = await readFile(path.join(publicRoot, 'docs/search.js'), 'utf8');
+  const dom = new JSDOM(await readFile(path.join(publicRoot, 'docs/code/index.html'), 'utf8'), { url: 'https://aster-ai-lab.github.io/aster/docs/code/', runScripts: 'outside-only' });
+  t.after(() => dom.window.close());
+  const { window } = dom;
+  const { document } = window;
+  const dialog = document.querySelector('[data-docs-search-dialog]');
+  dialog.showModal = () => dialog.setAttribute('open', '');
+  dialog.close = () => {
+    dialog.removeAttribute('open');
+    dialog.dispatchEvent(new window.Event('close'));
+  };
+  const entry = (project, version) => ({
+    route: `${project}/${version}/permissions/`, title: `权限与确认 ${version}`, description: '权限说明',
+    project, projectTitle: project === 'code' ? 'Aster Code' : 'Aster ACP', version, versionLabel: version,
+    section: '指南', text: 'workspace write permission and confirmation',
+  });
+  const fixture = { format: 1, documents: [entry('code', '9.1.6'), entry('code', '9.1.5'), entry('acp', '9.1.6')] };
+  let requests = 0;
+  window.fetch = async (url) => {
+    requests += 1;
+    assert.match(url, /search-index\.json$/);
+    return { ok: true, json: async () => fixture };
+  };
+  window.eval(code);
+
+  const input = dialog.querySelector('input');
+  const list = dialog.querySelector('[data-docs-search-results]');
+  const flush = () => new Promise((resolve) => setImmediate(resolve));
+  document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }));
+  await flush();
+  assert.equal(dialog.open, true);
+  assert.equal(document.activeElement, input);
+  input.value = 'permission';
+  input.dispatchEvent(new window.Event('input', { bubbles: true }));
+  assert.equal(list.querySelectorAll('a').length, 1);
+  assert.match(list.querySelector('a').href, /code\/9\.1\.6\/permissions\/$/);
+  dialog.querySelector('[data-docs-search-project=""]').click();
+  dialog.querySelector('[data-docs-search-version=""]').click();
+  assert.equal(list.querySelectorAll('a').length, 3);
+
+  dialog.querySelector('[data-docs-search-project="acp"]').click();
+  assert.equal(list.querySelectorAll('a').length, 1);
+  assert.match(list.querySelector('a').href, /acp\/9\.1\.6\/permissions\/$/);
+  dialog.querySelector('[data-docs-search-version="9.1.5"]').click();
+  assert.equal(list.querySelectorAll('a').length, 0);
+  assert.match(dialog.querySelector('[data-docs-search-status]').textContent, /没有匹配/);
+  dialog.querySelector('[data-docs-search-project=""]').click();
+  assert.equal(list.querySelectorAll('a').length, 1);
+  assert.match(list.querySelector('a').href, /code\/9\.1\.5\/permissions\/$/);
+
+  dialog.querySelector('[data-docs-search-version=""]').click();
+  assert.equal(list.querySelectorAll('a').length, 3);
+  input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+  assert.equal(document.activeElement, list.querySelector('a'));
+  dialog.dispatchEvent(new window.Event('cancel', { bubbles: true, cancelable: true }));
+  assert.equal(dialog.open, false);
+  assert.equal(requests, 1);
+
+  document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
+  await flush();
+  assert.equal(dialog.open, true);
+  assert.equal(requests, 1);
+  assert.equal(dialog.querySelector('[data-docs-search-project="code"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(dialog.querySelector('[data-docs-search-version="9.1.6"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(list.querySelectorAll('a').length, 1);
+});
+
+test('shared cross-document transitions are progressive and respect reduced motion', async () => {
+  const css = await readFile(path.join(publicRoot, 'transitions.css'), 'utf8');
+  const page = await readFile(path.join(publicRoot, 'docs/code/9.1.6/index.html'), 'utf8');
+  assert.match(page, /<link rel="stylesheet" href="\.\.\/\.\.\/\.\.\/transitions\.css"\s*\/?>/);
+  assert.match(css, /@view-transition\s*\{\s*navigation:\s*auto;\s*\}/);
+  assert.match(css, /::view-transition-old\(root\)\s*\{\s*animation:\s*site-page-out\s+120ms/);
+  assert.match(css, /::view-transition-new\(root\)\s*\{\s*animation:\s*site-page-in\s+180ms/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*::view-transition-old\(root\),\s*::view-transition-new\(root\)\s*\{\s*animation:\s*none !important;\s*\}\s*\}/);
 });

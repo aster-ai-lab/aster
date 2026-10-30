@@ -27,6 +27,8 @@
 use crate::llm::TokenUsage;
 use async_trait::async_trait;
 
+pub mod local;
+
 /// Outcome of a budget check.
 ///
 /// The framework treats this purely as a decision — it never inspects

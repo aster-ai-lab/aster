@@ -11,7 +11,7 @@ const checkboxVariants = cva(
   cn(
     // 16px box. Radius stays 4px: 8px would be a circle, and pills are reserved for the session dot.
     'inline-flex shrink-0 items-center justify-center border p-0 leading-none outline-none',
-    'aspect-square rounded-[4px] border-[#e5e5e5] bg-white text-white shadow-none',
+    'aspect-square rounded-[4px] border-[#e5e5e5] bg-white text-white shadow-none motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150',
     'hover:border-[#171717] hover:bg-white',
     'data-[state=checked]:border-[#171717] data-[state=checked]:bg-[#171717] data-[state=checked]:text-white',
     'data-[state=indeterminate]:border-[#171717] data-[state=indeterminate]:bg-[#171717] data-[state=indeterminate]:text-white',
@@ -61,7 +61,7 @@ function Checkbox({
       {...props}>
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className="group/indicator flex items-center justify-center">
+        className="group/indicator flex items-center justify-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-150">
         <CheckIcon
           strokeWidth={1.7}
           className={cn(

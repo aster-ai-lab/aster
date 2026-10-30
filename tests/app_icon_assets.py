@@ -1,17 +1,20 @@
 """Keep the Aster app icon shippable: sources current, rasters consistent, identity shared.
 
-The icon is generated (`scripts/app-icon.py`, `scripts/app-icon-assets.py`) rather
-than hand-drawn per size, so the committed files can drift from the generator and
-still look plausible in a diff. These checks make the drift visible without a
-rasteriser or a node install: `--check` reads what is on disk.
+All exports come from logo.png through the existing icon scripts. These checks
+detect source and export drift without a rasteriser or a node install.
 """
 
 from __future__ import annotations
 
+import base64
+import importlib.util
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,19 +40,37 @@ class IconSources(unittest.TestCase):
         result = run("app-icon.py", "--check")
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_every_source_is_a_1024_canvas(self) -> None:
+    def test_website_svg_embeds_the_only_master(self) -> None:
+        svg = ET.parse(TENANT / "logo.svg").getroot()
+        self.assertEqual(svg.attrib["viewBox"], "0 0 1024 1024")
+        image = svg.find("{http://www.w3.org/2000/svg}image")
+        self.assertIsNotNone(image)
+        prefix, payload = image.attrib["href"].split(",", 1)
+        self.assertEqual(prefix, "data:image/png;base64")
+        self.assertEqual(base64.b64decode(payload), (TENANT / "icon.png").read_bytes())
+
+    def test_retired_drawings_are_removed(self) -> None:
         for name in ("app-icon.svg", "app-icon-small.svg", "app-icon-micro.svg"):
-            text = (TENANT / name).read_text(encoding="utf-8")
-            self.assertIn('viewBox="0 0 1024 1024"', text, name)
-            # The plate keeps the platform's optical margin: no drawing reaches
-            # the canvas edge, which is what stops an icon from looking clipped.
-            self.assertNotIn('x="0" y="0" width="1024"', text, name)
+            self.assertFalse((TENANT / name).exists(), name)
 
 
 class IconRasters(unittest.TestCase):
     def test_rasters_match_the_sources(self) -> None:
         result = run("app-icon-assets.py", "--check")
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_generation_receipt_detects_a_changed_tray_export(self) -> None:
+        spec = importlib.util.spec_from_file_location("app_icon_assets", SCRIPTS / "app-icon-assets.py")
+        assets = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(assets)
+        with tempfile.TemporaryDirectory() as scratch:
+            assets.TENANT_DIR = Path(scratch) / "aster"
+            assets.ICON_DIR = assets.TENANT_DIR / "icons"
+            shutil.copytree(TENANT, assets.TENANT_DIR)
+            self.assertEqual(assets.verify(), [])
+            tray = assets.TENANT_DIR / "tray.png"
+            tray.write_bytes(tray.read_bytes() + b"changed")
+            self.assertTrue(any("generation receipt" in error for error in assets.verify()))
 
     def test_ladder_covers_the_scales_a_dock_asks_for(self) -> None:
         # 1x through 8x for the sizes panels, launchers, taskbars and Finder
@@ -60,18 +81,17 @@ class IconRasters(unittest.TestCase):
         }
         self.assertLessEqual({16, 24, 32, 48, 64, 128, 256, 512, 1024}, present)
 
-    def test_every_scale_is_drawn_not_resampled(self) -> None:
-        # Each band has its own source drawing, so the smallest frame is not a
-        # downscale of the master. Gloss, the orbit's multi-stop gradient and the
-        # contact shadow are dropped below 48 px where they read as noise, and
-        # the orbit is drawn heavier so it keeps a pixel of coverage at 16 px.
-        micro = (TENANT / "app-icon-micro.svg").read_text(encoding="utf-8")
-        master = (TENANT / "app-icon.svg").read_text(encoding="utf-8")
-        for dropped in ("url(#gloss)", "url(#orbit)", "url(#lift)"):
-            self.assertNotIn(dropped, micro)
-            self.assertIn(dropped, master)
-        self.assertIn('stroke-width="36"', micro)
-        self.assertIn('stroke-width="22"', master)
+    def test_brand_exports_share_the_same_artwork(self) -> None:
+        self.assertEqual((TENANT / "icon.png").read_bytes(),
+                         (TENANT / "icons/1024x1024.png").read_bytes())
+        for name in ("logo-light.png", "logo-dark.png"):
+            self.assertEqual((TENANT / name).read_bytes(),
+                             (TENANT / "icons/512x512.png").read_bytes(), name)
+        for name in ("mark-light.png", "mark-dark.png"):
+            self.assertEqual((TENANT / name).read_bytes(),
+                             (TENANT / "icons/256x256.png").read_bytes(), name)
+        self.assertEqual((TENANT / "favicon.png").read_bytes(),
+                         (TENANT / "icons/32x32.png").read_bytes())
 
 
 class BundleIconList(unittest.TestCase):

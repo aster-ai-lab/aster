@@ -1,11 +1,13 @@
 export const meta = {
-  "title": "把文本、工具与执行状态显示完整",
+  "title": "文本、工具与执行状态的显示",
   "description": "文本片段、推理、工具输出、图片和可选 Run 观测。",
   "label": "流式展示与执行观测",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## 分开渲染不同更新
+
+<PeleAtlasDiagram name="event-routing" label="事件投影与 Run 观测" description="会话更新负责可见内容，可选执行观测负责 Run 与模型轮次状态；两者保留各自身份，最后等待原 prompt 终态。" />
 
 代理把 Core 事件适配为 ACP session/update。客户端至少按 sessionId 与工具调用 ID 建立状态，不要把所有更新追加成一段聊天文本。
 
@@ -20,6 +22,8 @@ export const meta = {
 | 错误、最终停止 | 记录停止原因，区分成功、取消、预算与故障 |
 
 工具开始时没有输出很正常；工具结束时可能有工具级错误。内容预览被裁剪时展示截断信息，保留 artifact URI。未知内容类型给出受控的降级提示，不应悄悄丢掉附件。
+
+事件分派入口见 <SourceRef path="crates/code/acp/src/agent/turn.rs" match="pub(super) async fn handle_event(">handle_event</SourceRef>，事件消费与终态结算见 <SourceRef path="crates/code/acp/src/agent/turn.rs" match="pub(super) async fn drain_turn(">drain_turn</SourceRef>。
 
 ## 图片与文档产物
 
@@ -41,9 +45,11 @@ promptId 需为 1–128 字节的受支持标识，允许 ASCII 字母、数字�
 
 观测只读，不改变执行权限。run-closed 表示 Run 状态，不直接证明所有业务需求通过独立验收。
 
+启用条件见 <SourceRef path="crates/code/acp/src/run_observation.rs" match="pub(crate) fn from_meta(">Binding::from_meta</SourceRef>；事件到 kind 的映射见 <SourceRef path="crates/code/acp/src/run_observation.rs" match="pub(crate) fn event(">Observer::event</SourceRef>，终态读取见 <SourceRef path="crates/code/acp/src/run_observation.rs" match="pub(crate) async fn closed(">Observer::closed</SourceRef>。
+
 ## 重放和断线
 
-加载会话时有 ACP 标准通知，也有 `a3s/session/transcript/update/v1` 类型化补充。保存重放标记和转录条目身份，避免把历史工具渲染成仍在运行。
+加载会话时，代理通过标准 `session/update` 重放可显示的历史文本。本版没有独立的类型化转录通知或分页接口；客户端应区分加载阶段与实时 prompt 阶段，不把历史消息渲染成仍在运行的任务。工具卡片的完整结构不属于当前重放保证。
 
 流关闭却没有终态时显示连接或执行异常，不能显示“完成”。重新连接前核对原 Run 与保存状态，不能自动重新发出可能带写入的完整任务。
 

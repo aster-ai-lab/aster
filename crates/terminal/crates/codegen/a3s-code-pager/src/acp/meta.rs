@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 /// Extracted once in [`acp_handler`](super::super::app::acp_handler) and passed downstream to the tracker and agent state.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct NotificationMeta {
+    pub output_language: Option<String>,
     /// Accumulated token count across the session (`totalTokens`).
     pub total_tokens: Option<u64>,
     /// UTC ms when this notification was sent (`agentTimestampMs`).
@@ -112,6 +113,10 @@ impl NotificationMeta {
             .map(|s| s.to_string());
         let event_seq = event_id.as_deref().and_then(event_id_counter);
         Self {
+            output_language: m
+                .get("outputLanguage")
+                .and_then(|v| v.as_str())
+                .map(str::to_owned),
             total_tokens: m.get("totalTokens").and_then(|v| v.as_u64()),
             agent_timestamp_ms: m.get("agentTimestampMs").and_then(|v| v.as_i64()),
             stream_start_ms: m.get("streamStartMs").and_then(|v| v.as_i64()),

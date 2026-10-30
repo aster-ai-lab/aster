@@ -536,6 +536,13 @@ impl ScrollbackState {
 
         self.apply_edit_default_display_mode(&mut entry);
 
+        if matches!(entry.block, RenderBlock::Thinking(_))
+            && !entry.display_mode_pinned
+            && entry.display_mode == entry.block.default_display_mode()
+        {
+            entry.display_mode = self.thinking_display_mode;
+        }
+
         // Track if this entry is running
         if entry.is_running {
             self.running.insert(id);
@@ -742,7 +749,7 @@ impl ScrollbackState {
             && let RenderBlock::ToolCall(ToolCallBlock::Execute(ref mut exec)) = entry.block
         {
             // Replace output entirely: a3s-shell sends the full accumulated buffer each tick
-            // The shell now sends clean output (no ANSI codes) when the client sets x.ai/bashOutputNoColor: true, so no stripping is needed
+            // The shell now sends clean output (no ANSI codes) when the client sets a3s/bashOutputNoColor: true, so no stripping is needed
             exec.output = Some(output.to_string());
             entry.invalidate_cache();
             self.dirty_heights.insert(id);
@@ -3144,6 +3151,7 @@ mod tests {
         assert!(!state.is_committed(anchor));
     }
 
+    #[cfg(debug_assertions)]
     #[test]
     #[should_panic(expected = "already committed")]
     fn insert_block_before_rejects_an_already_committed_anchor() {
@@ -3241,7 +3249,7 @@ mod tests {
         state.push_chunk_to_thinking(id, "deep thoughts");
         assert_eq!(
             state.get_by_id(id).unwrap().display_mode,
-            DisplayMode::Truncated
+            DisplayMode::Collapsed
         );
 
         state.finish_running(id);

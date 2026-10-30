@@ -32,3 +32,70 @@ async fn missing_values_stay_missing_and_unknown_arguments_are_refused() {
         assert!(!OutputCheckTool.execute(&args, &ctx).await.unwrap().success);
     }
 }
+
+#[tokio::test]
+async fn provenance_reports_missing_unexpected_duplicate_and_changed_records() {
+    let output = OutputCheckTool
+        .execute(
+            &json!({
+                "action":"record_provenance",
+                "key":"id",
+                "source":[
+                    {"id":"A","category":"one","value":1},
+                    {"id":"B","category":"two","value":2}
+                ],
+                "output":[
+                    {"id":"A","category":"renamed","value":1},
+                    {"id":"A","category":"renamed","value":1},
+                    {"id":"C","category":"three","value":3}
+                ]
+            }),
+            &ToolContext::new(".".into()),
+        )
+        .await
+        .unwrap();
+    let result: Value = serde_json::from_str(&output.content).unwrap();
+    assert_eq!(result["valid"], false);
+    assert_eq!(result["missing"], json!(["B"]));
+    assert_eq!(result["unexpected"], json!(["C"]));
+    assert_eq!(result["duplicateOutputKeys"], json!(["A"]));
+    assert_eq!(result["changed"][0]["key"], "A");
+    assert_eq!(result["changed"][0]["fields"], json!(["category"]));
+}
+
+#[tokio::test]
+async fn provenance_accepts_source_records_and_task_authorized_derived_records() {
+    let output = OutputCheckTool
+        .execute(
+            &json!({
+                "action":"record_provenance",
+                "key":"id",
+                "source":[{"id":"A","category":"one","value":1}],
+                "output":[
+                    {"id":"A","category":"one","value":1},
+                    {"id":"TOTAL","category":"derived","value":1}
+                ],
+                "allow_derived_keys":["TOTAL"]
+            }),
+            &ToolContext::new(".".into()),
+        )
+        .await
+        .unwrap();
+    let result: Value = serde_json::from_str(&output.content).unwrap();
+    assert_eq!(result["valid"], true);
+    assert_eq!(result["unexpected"], json!([]));
+}
+
+#[tokio::test]
+async fn provenance_refuses_invalid_record_keys_and_unknown_arguments() {
+    for args in [
+        json!({"action":"record_provenance","key":"id","source":[{"value":1}],"output":[]}),
+        json!({"action":"record_provenance","key":"id","source":[],"output":[],"extra":true}),
+    ] {
+        let output = OutputCheckTool
+            .execute(&args, &ToolContext::new(".".into()))
+            .await
+            .unwrap();
+        assert!(!output.success, "{}", output.content);
+    }
+}

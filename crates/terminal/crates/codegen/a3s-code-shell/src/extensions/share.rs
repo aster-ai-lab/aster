@@ -1,4 +1,4 @@
-//! `x.ai/share_session` extension handler.
+//! `a3s/share_session` extension handler.
 //!
 //! Loads a local session, exports it, uploads the message payload to cloud storage via a signed URL, and asks the backend for a public share URL.
 //! The signed URL lets large sessions bypass the proxy/backend body-size limits.
@@ -19,7 +19,7 @@ use a3s_code_telemetry::id::agent_id;
 #[tracing::instrument(skip_all, fields(method = %args.method))]
 pub async fn handle(agent: &MvpAgent, args: &acp::ExtRequest) -> ExtResult {
     match args.method.as_ref() {
-        "x.ai/share_session" => {
+        "a3s/share_session" => {
             tracing::info!("handling share session request");
             handle_share_session(agent, args).await
         }

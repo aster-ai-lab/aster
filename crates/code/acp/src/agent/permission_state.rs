@@ -64,13 +64,13 @@ impl PermissionPosture {
         acp::SessionModeState::new(
             self.as_str(),
             vec![
-                acp::SessionMode::new("default", "Normal").description("Ask before changes"),
+                acp::SessionMode::new("default", "Normal").description("Allow workspace reads; ask before changes and commands; host execution requires approval"),
                 acp::SessionMode::new("plan", "Plan")
                     .description("Read and plan without workspace writes"),
                 acp::SessionMode::new("auto", "Auto")
-                    .description("Allow known reads and ask before changes"),
-                acp::SessionMode::new("yolo", "Always approve")
-                    .description("Allow execution while preserving explicit denies"),
+                    .description("Allow workspace edits and sandboxed commands; host execution and network grants require approval"),
+                acp::SessionMode::new("yolo", "Full access")
+                    .description("Run local commands on the host without sandboxing or approval prompts; explicit tool denies still apply"),
             ],
         )
     }
@@ -109,16 +109,19 @@ impl LiveSession {
             research_admission: state.research_admission,
         };
         next.denies.extend(extra_denies);
+        let policy = if self.host.knowledge_compile.is_some() {
+            crate::knowledge_compile::policy(&next.denies)
+        } else {
+            next.policy()
+        };
+        let planning = match (&self.host.knowledge_compile, posture) {
+            _ if self.host.source_review => a3s_code_core::PlanningMode::Disabled,
+            (None, PermissionPosture::Plan) => a3s_code_core::PlanningMode::Enabled,
+            _ => a3s_code_core::PlanningMode::Disabled,
+        };
         self.session
-            .set_permission_policy(next.policy())
-            .and_then(|()| {
-                self.session
-                    .set_planning_mode(if posture == PermissionPosture::Plan {
-                        a3s_code_core::PlanningMode::Enabled
-                    } else {
-                        a3s_code_core::PlanningMode::Disabled
-                    })
-            })
+            .set_permission_policy(policy)
+            .and_then(|()| self.session.set_planning_mode(planning))
             .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
         *self
             .asset_denies

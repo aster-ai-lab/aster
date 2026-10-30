@@ -126,7 +126,7 @@ function DialogContent({
         className={cn(
           // no-drag punches the dialog's area out of any titlebar drag region it overlaps,
           // so the close button stays clickable when the dialog reaches max height (Electron).
-          'fixed top-[50%] left-[50%] z-[80] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[12px] border-0 bg-card p-6 text-card-foreground shadow-[0_12px_32px_rgba(0,0,0,0.12)] [-webkit-app-region:no-drag]',
+          'pointer-events-auto fixed top-[50%] left-[50%] z-[80] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[12px] border-0 bg-card p-6 text-card-foreground shadow-[0_12px_32px_rgba(0,0,0,0.12)] [-webkit-app-region:no-drag]',
           'motion-reduce:animate-none',
           dialogContentSizeClass[size],
           className,

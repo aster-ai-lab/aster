@@ -123,7 +123,7 @@ struct Args {
         action = clap::ArgAction::Set,
     )]
     project_lsp_trusted: bool,
-    /// Confine `x.ai/fs/*` resolution to the workspace root (reject `..`, absolute-outside-root, symlink escapes).
+    /// Confine `a3s/fs/*` resolution to the workspace root (reject `..`, absolute-outside-root, symlink escapes).
     /// On by default: the standalone server always backs a remote-sandbox workspace, a real tenant boundary.
     /// Override with `GROK_WORKSPACE_CONFINE_FS_TO_ROOT=false` (e.g. local dev).
     #[arg(

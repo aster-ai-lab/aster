@@ -25,6 +25,9 @@ mod version;
 #[cfg(test)]
 mod metadata_tests;
 
+#[cfg(test)]
+mod archive_tests;
+
 pub(crate) use version::{guest_agent_hello, host_runtime_version};
 
 /// Explicit asset-directory override for installed or development companions.
@@ -75,11 +78,15 @@ impl OciSandboxAssets {
             &self.shim,
             &self.image,
             &self.bundle.join("config.json"),
-            &self.bundle.join("rootfs/bin/bash"),
         ] {
             if !path.is_file() {
                 bail!("sandbox companion is missing: {}", path.display());
             }
+        }
+        if !self.bundle.join("rootfs.tar").is_file()
+            && !self.bundle.join("rootfs/bin/bash").is_file()
+        {
+            bail!("sandbox companion is missing: bundle/rootfs.tar or bundle/rootfs/bin/bash");
         }
         Ok(())
     }
@@ -161,6 +168,10 @@ impl Drop for OciBashSandbox {
 
 #[async_trait]
 impl BashSandbox for OciBashSandbox {
+    fn allows_host_execution_override(&self) -> bool {
+        true
+    }
+
     fn execution_target(&self) -> super::ShellExecutionTarget {
         super::ShellExecutionTarget::LinuxGuestBash
     }

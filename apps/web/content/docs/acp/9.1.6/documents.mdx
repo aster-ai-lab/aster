@@ -1,5 +1,5 @@
 export const meta = {
-  "title": "读取真正的来源，再生成和核对产物",
+  "title": "文档来源、产物生成与核对",
   "description": "编辑器文本、Office 读写、SVG/PNG 和数值检查的区别。",
   "label": "文档、Office 与内容核对",
   "updated": "2026-10-26"
@@ -24,7 +24,7 @@ PDF、页面图像和 OCR 不能从上述工具名推断为全部支持。Office
 {"a3sHost":{"officeTools":true}}
 ```
 
-缺省或 false 不注册原生 Office 工具，类型错误拒绝。源快照审阅仍不暴露工具，Office 声明也不会授予工作区读写权。普通会话可保留 output_check 的有界文本与数值检查。
+默认或 false 不注册原生 Office 工具，类型错误拒绝。源快照审阅仍不暴露工具，Office 声明也不会授予工作区读写权。普通会话可保留 output_check 的有界文本与数值检查。
 
 ## 读取与创建示例
 
@@ -66,7 +66,7 @@ DocumentBridge 的保留引用注册为 Run effect，取消或结束要调用原
 
 代理使用标准 `fs/read_text_file` 读取客户端文本，要求客户端 initialize 时明确声明 readTextFile。请求绑定 sessionId 与文件路径，需要 Run 保留时附 `_meta.a3sDocument.runId`。普通读取仍可作为 Core 的文本 overlay 使用，不能从磁盘读成功推断客户端未保存文本已同步。
 
-客户端的响应 content 必须是有界 UTF-8 文本；富文档观测放在 `_meta.a3sDocument`，包含匹配的 path、released、runId 和 snapshot。snapshot 绑定 documentId、version、磁盘冲突状态及诊断来源。代理拒绝不同路径、不同 Run、已冲突或无效的观测，文本上限 64 KiB，调用默认五秒期限。
+客户端的响应 content 必须是有界 UTF-8 文本；富文档观测放在 `_meta.a3sDocument`，包含匹配的 path、released、runId 和 snapshot。snapshot 绑定 documentId、version、磁盘冲突状态及诊断来源。代理拒绝不同路径、不同 Run、已冲突或无效的观测，文本上限 64 KiB，调用默认 5 秒期限。
 
 Run 清理时代理发送 `a3s/document/release_run`，参数为 sessionId 与 runId。客户端释放原引用后响应；不要仅返回成功而继续保留旧文档模型。诊断按 publisherId、sequence 和 snapshot version 绑定，不能把其他编辑器实例的诊断拼进当前快照。
 

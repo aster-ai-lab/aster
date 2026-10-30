@@ -1,26 +1,12 @@
-flowchart TB
-  accTitle: Aster 运行时架构
-  accDescr: 终端和桌面通过 ACP 接入 Core，Rust 应用直接创建会话。Core 调用模型和受控工具，并记录事实日志。
-  subgraph host[产品宿主]
-    terminal[Aster 终端]
-    desktop[Aster 桌面]
-    acp[ACP]
-    rust[Rust 应用]
-    terminal --> acp
-    desktop --> acp
-  end
-  subgraph core[A3S Code / Core]
-    session[AgentSession]
-    harness[Meta Harness / FactRun]
-    session --> harness
-  end
-  subgraph environment[工作环境]
-    model[模型服务]
-    tools[受控工具 / 工作区 / MCP]
-    facts[事实日志]
-  end
-  acp --> session
-  rust --> session
-  harness <--> model
-  harness --> tools
-  harness --> facts
+flowchart LR
+  accTitle: 谁负责把目标变成结果
+  accDescr: Rust 应用也支持直接接入 Core。模型提出动作，Core 检查动作。
+  person["你提出目标<br/>用户"]
+  host["界面接收输入<br/>CLI / Studio"]
+  acp["协议转接<br/>ACP"]
+  core["执行与检查<br/>Core"]
+  world["项目与模型<br/>工具 / LLM"]
+  person --> host
+  host --> acp
+  acp --> core
+  core --> world

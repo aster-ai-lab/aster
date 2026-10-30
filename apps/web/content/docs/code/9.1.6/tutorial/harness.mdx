@@ -1,15 +1,15 @@
 export const meta = {
-  title: '07 · 给编码助手配置自己的 Harness',
+  title: '07 · Harness 配置',
   description: '在已有会话上调整工具预算、模型尝试和压缩，再决定是否需要自定义组件。',
   label: '07 Harness 组合',
   updated: '2026-10-26',
 };
 
-## 从实际症状选配置
+## 根据运行症状选择配置
 
-现在应用已经能显示工具、确认、验证和恢复。先观察一个任务：花了几次模型推理、调用了多少工具、是否因为上下文太长触发压缩。不要为了扩展而先写完整组件树。
+应用已经能显示工具、确认、验证和恢复。先记录任务的模型推理次数、工具调用次数和上下文压缩情况，再决定配置。无需为了扩展而先写完整组件树。
 
-本章希望每次任务最多调用 12 次工具，最多执行 96 次状态转换，并要求修改后运行项目检查。把配方接到已有的 SessionOptions 上，保留前几章的权限和存储。
+本练习把每次任务的工具调用限制为 12 次，把状态转换限制为 96 次，并要求修改后运行项目检查。配方接入已有的 `SessionOptions`，保留前几章的权限和存储。
 
 ## 建立一份配方
 
@@ -32,37 +32,37 @@ fn coding_harness() -> anyhow::Result<HarnessComposeOptions> {
 
 在运行层的 options 上调用 `with_harness(coding_harness()?)`。`system` 非空会替换这个配方槽的列表；它不会去掉 Core 加入的权限要求，也不自动替换独立的工作策略。
 
-## 不要混淆三种计数
+## 三种计数的区别
 
-<DocTable caption="本章预算的验收方法" headers={['配置', '限制什么', '怎样观察']} rows={[
+<DocTable caption="预算的验收方法" headers={['配置', '限制对象', '观察方法']} rows={[
   ['tool_budget = 12', '工具调用次数', '连续请求工具，检查停止原因及最后一次实际执行'],
   ['step_limit = 96', '状态转换次数', '模型请求、压缩和确认也可能消耗转换'],
   ['model_attempts = 2', 'Harness 对一次推理的尝试次数', '包括第一次；供应商 HTTP 重试另有策略'],
 ]} />
 
-`tool_budget: None` 表示继承，不表示取消限制。只删掉列表里的 `budget` 或 `compact`，也不能认定调度器已经不限次数或关闭压缩。
+`tool_budget: None` 表示继承，不表示取消限制。只删除列表里的 `budget` 或 `compact`，也不能认定调度器已经不限次数或关闭压缩。
 
-## 压缩后保留什么
+## 压缩后的保留内容
 
-当前 `compact_after_chars` 按 UTF-8 字节累计。中文文本不能按字数直接估算。需要 token 压缩时，确认模型适配器会报告输入 token 数；只设置阈值而没有使用量数据，不能保证触发。
+当前 `compact_after_chars` 按 UTF-8 字节累计。中文文本不能按字数直接估算。需要 token 压缩时，确认模型适配器会报告输入 token 数。只设置阈值而没有使用量数据，不能保证触发。
 
-把临时日志和完整工具输出持续塞回系统提示会挤占预算。长期要求放在提示槽或工作策略，项目资料走上下文来源，执行记录留在原有日志。压缩后的摘要也不能替代修改与验证记录。
+临时日志和完整工具输出持续进入系统提示会挤占预算。长期要求放在提示槽或工作策略，项目资料使用上下文来源，执行记录留在原有日志。压缩后的摘要不能替代修改与验证记录。
 
-## 什么时候才增加组件
+## 增加组件的条件
 
-要补一段固定系统说明，优先使用提示槽。要接一个检索来源，使用 ContextProvider。只有确实要根据事实日志维护状态并提供动作时，才实现 `HostHarnessRegistry` 的 `host:` 组件。
+补充固定系统说明时，优先使用提示槽。接入检索来源时，使用 `ContextProvider`。只有需要根据事实日志维护状态并提供动作时，才实现 `HostHarnessRegistry` 的 `host:` 组件。
 
-需要完全自己搭建树时再使用 Assembler。它优先选择组件树，但会话可能已经把配方的 `step_limit`、`model_attempts` 写入传入配置。动作 key 与恢复记录有关；换 key 后先用新会话测试，避免旧操作被当作新动作。
+需要自行搭建完整组件树时再使用 Assembler。组件树优先，但会话可能已经把配方的 `step_limit`、`model_attempts` 写入传入配置。动作 key 与恢复记录有关。更换 key 后先用新会话测试，避免旧操作被当作新动作。
 
 ## 验收
 
-用同一条任务对比修改前后的调用数和停止原因。刻意把工具预算设成 0，检查工具没有执行。再恢复正常预算，确认读取、批准、修改、验证和保存仍走原来的路径。不要只看模型是否遵守了提示文字。
+用同一条任务对比修改前后的调用数和停止原因。把工具预算设成 0，检查工具没有执行。再恢复正常预算，确认读取、批准、修改、验证和保存仍走原来的路径。不要只看模型是否遵守了提示文字。
 
-## 继续查阅
+## 相关文档
 
 - [组件、预算与压缩](../../meta-harness/composition/)
 - [自定义组件与调度](../../meta-harness/extensions/)
 
 ## 可编译的接入函数
 
-本章的 Rust 函数也收录在参考工程的 [chapters.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/chapters.rs)。它们随 `cargo check --locked -p tutorial-agent --all-targets` 检查；调用时仍需本章说明的配置与宿主对象。编译这些函数不表示所有外部后端都已验证。
+这些 Rust 函数也收录在参考工程的 [chapters.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/chapters.rs)。它们随 `cargo check --locked -p tutorial-agent --all-targets` 检查。调用时仍需上述配置与宿主对象。编译这些函数不表示所有外部后端都已验证。

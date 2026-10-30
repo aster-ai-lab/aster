@@ -2787,10 +2787,10 @@ ul {
   }
 }
 
-/* Cosmic download theme */
+/* Cosmic download experience: a violet galaxy with a quiet reading space. */
 .download {
-  background: #070910;
-  color: #f3f5fb;
+  background: #03030a;
+  color: #f5f5f5;
 }
 
 .download-cosmos {
@@ -2805,121 +2805,134 @@ ul {
 .download-inner {
   position: relative;
   z-index: 1;
+  text-align: center;
+  isolation: isolate;
+}
+
+.download-inner::before {
+  position: absolute;
+  z-index: -1;
+  inset: -40px -60px;
+  background: radial-gradient(ellipse 62% 48% at 50% 32%, rgba(3, 3, 10, 0.9) 0%, rgba(3, 3, 10, 0.42) 45%, transparent 76%);
+  content: "";
+  pointer-events: none;
 }
 
 .download-kicker {
-  background: rgba(255, 255, 255, 0.07);
-  color: #aeb7cb;
+  background: rgba(170, 145, 255, 0.08);
+  color: #c0b4dc;
 }
 
 .download-kicker > span {
-  color: #77839b;
+  color: #8f83aa;
 }
 
 .download h2 {
-  color: #f4f6fb;
+  color: #f5f5f5;
 }
 
 .download-description {
-  color: #98a2b8;
+  color: #aaa3ba;
 }
 
 .download-group-heading h3 {
-  color: #a3adc2;
+  color: #b7aec9;
 }
 
 .download-card {
-  border-color: rgba(157, 174, 224, 0.16);
-  background: rgba(15, 19, 29, 0.76);
-  color: #eff2fa;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012)), rgba(10, 9, 18, 0.42);
+  color: #f1edf9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 32px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
 }
 
 .download-card:hover {
-  border-color: rgba(175, 192, 240, 0.36);
-  background: rgba(24, 29, 43, 0.86);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)), rgba(18, 15, 30, 0.56);
 }
 
 .download-card.is-current {
-  border-color: rgba(157, 181, 235, 0.38);
-  background: rgba(55, 70, 111, 0.38);
+  border-color: rgba(196, 181, 253, 0.34);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.014)), rgba(64, 45, 107, 0.34);
 }
 
 .current-badge {
-  background: rgba(145, 167, 220, 0.16);
-  color: #c0cdec;
+  background: rgba(170, 145, 255, 0.14);
+  color: #d3c6f1;
 }
 
 .platform-icon {
-  color: #e9edf8;
+  color: #f1ebff;
 }
 
 .platform-name {
-  color: #f0f2f8;
+  color: #f4f0fb;
 }
 
 .cli-downloads > a {
-  border-color: rgba(157, 174, 224, 0.14);
-  background: rgba(14, 18, 28, 0.74);
-  color: #e6eaf4;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(143, 120, 255, 0.14);
+  background: rgba(12, 12, 22, 0.74);
+  color: #e9e3f4;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .cli-downloads > a:hover {
-  border-color: rgba(175, 192, 240, 0.3);
-  background: rgba(24, 29, 43, 0.84);
+  border-color: rgba(170, 145, 255, 0.32);
+  background: rgba(24, 19, 39, 0.86);
 }
 
 .cli-downloads > a > .icon:first-child,
 .cli-downloads > a > .icon:last-child {
-  color: #94a1ba;
+  color: #a99bbd;
 }
 
 .cli-downloads strong {
-  color: #e6eaf4;
+  color: #e9e3f4;
 }
 
 .cli-downloads small {
-  color: #8994aa;
+  color: #9b90ad;
 }
 
 .quickstart {
-  border-color: rgba(157, 174, 224, 0.14);
-  background: rgba(14, 18, 28, 0.78);
+  border-color: rgba(143, 120, 255, 0.14);
+  background: rgba(12, 12, 22, 0.78);
 }
 
 .quickstart > div > span {
-  color: #8590a6;
+  color: #9b90ad;
 }
 
 .quickstart code {
-  color: #d6ddf0;
+  color: #ded5ee;
 }
 
 .quickstart button {
-  border-color: rgba(157, 174, 224, 0.18);
-  background: rgba(255, 255, 255, 0.06);
-  color: #c7d0e5;
+  border-color: rgba(143, 120, 255, 0.2);
+  background: rgba(170, 145, 255, 0.08);
+  color: #cfc3e4;
 }
 
 .quickstart button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(170, 145, 255, 0.16);
   color: #ffffff;
 }
 
 .cli-note {
-  color: #77839a;
+  color: #b6abc6;
+  text-shadow: 0 1px 8px #03030a, 0 0 3px #03030a;
 }
 
 .download-footer-cta {
-  color: #8994a9;
+  color: #b6abc6;
+  text-shadow: 0 1px 8px #03030a, 0 0 3px #03030a;
 }
 
 .text-link-light {
-  color: #d3dcf0;
+  color: #ded5ee;
 }
 
 .text-link-light:hover {

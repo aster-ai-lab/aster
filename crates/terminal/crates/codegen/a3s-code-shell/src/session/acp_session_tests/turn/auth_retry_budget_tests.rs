@@ -63,7 +63,7 @@ fn expired_auth_manager(
     (dir, am)
 }
 
-/// `x.ai/session_notification` payloads the client was sent.
+/// `a3s/session_notification` payloads the client was sent.
 type A3sUpdates = Arc<parking_lot::Mutex<Vec<serde_json::Value>>>;
 
 fn drain_gateway(

@@ -3,7 +3,8 @@
 
 use super::*;
 use crate::unattended::result::{
-    classify_failure, persist_result, ExecutionPhase, RunProgress, TerminalReason,
+    classify_failure, persist_result, ExecutionDeadline, ExecutionPhase, RunProgress,
+    TerminalReason,
 };
 use crate::unattended::{
     bind_continuation, first_prompt, host_admission_step, host_verification_report,
@@ -14,7 +15,7 @@ use crate::unattended::{
 use a3s_code_core::execution_identity::ExecutionResultOutcomeV1;
 use anyhow::{bail, Context};
 
-enum Attempt {
+pub(super) enum Attempt {
     Ended {
         turn_permit: OwnedMutexGuard<()>,
         facts: AttemptFacts,
@@ -119,7 +120,7 @@ impl A3sCodeAgent {
         };
         loop {
             if progress.duration_ms() >= unattended.max_execution_ms {
-                bail!("A3S Code execution deadline exceeded");
+                return Err(ExecutionDeadline.into());
             }
             progress.turns += 1;
             progress.phase = ExecutionPhase::Streaming;
@@ -309,7 +310,7 @@ impl A3sCodeAgent {
     /// Past `remaining` the core run is cancelled, drained and the run fails
     /// on the execution deadline.
     #[allow(clippy::too_many_arguments)]
-    async fn unattended_attempt(
+    pub(super) async fn unattended_attempt(
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
@@ -319,57 +320,39 @@ impl A3sCodeAgent {
         progress: &mut RunProgress,
         remaining: std::time::Duration,
     ) -> anyhow::Result<Attempt> {
-        let mut rx = stream.events;
-        let join = stream.worker;
-        let mut state = TurnState::default();
         let mut facts = AttemptFacts::default();
-        let session_key = session_id.0.to_string();
-        let deadline = tokio::time::sleep(remaining);
-        tokio::pin!(deadline);
-        let mut expired = false;
-        loop {
-            let notified = self.turn_cancel.notified();
-            if self.turn_was_cancelled(&session_key, generation).await {
-                let response = self
-                    .leave_cancelled_turn(
-                        session_id,
-                        session,
-                        &mut state,
-                        &mut rx,
-                        join,
-                        turn_permit,
-                    )
-                    .await;
+        let attempt::AttemptCompletion {
+            mut state,
+            join_failure,
+            deadline_exceeded,
+            turn_permit,
+            ..
+        } = match self
+            .drive_attempt(
+                session_id,
+                session,
+                stream,
+                generation,
+                turn_permit,
+                None,
+                Some(remaining),
+                |event| note_event(progress, &mut facts, event),
+            )
+            .await
+        {
+            attempt::AttemptDrive::Ended(completion) => completion,
+            attempt::AttemptDrive::Cancelled(response) => {
                 return Ok(Attempt::Cancelled(response));
             }
-            tokio::select! {
-                biased;
-                _ = notified => continue,
-                _ = &mut deadline, if !expired => {
-                    expired = true;
-                    tracing::warn!("run deadline reached mid-attempt; cancelling the core run");
-                    session.cancel().await;
-                }
-                event = rx.recv() => match event {
-                    Some(event) => {
-                        note_event(progress, &mut facts, &event);
-                        self.handle_event(session_id, session, &mut state, event).await;
-                    }
-                    None => break,
-                },
-            }
-        }
+        };
         progress.phase = ExecutionPhase::Joining;
-        let join_failure = join.await.err().map(worker_join_failure);
         if let Some(failure) = &join_failure {
             progress.remember_error(failure);
             facts.failed = true;
         }
-        if let Some(outcome) = state.end_outcome.take() {
-            self.emit_turn_outcome(session_id, outcome).await;
-        }
-        if expired {
-            bail!("A3S Code execution deadline exceeded");
+        self.publish_attempt_outcome(session_id, &mut state).await;
+        if deadline_exceeded {
+            return Err(ExecutionDeadline.into());
         }
         Ok(Attempt::Ended {
             turn_permit,

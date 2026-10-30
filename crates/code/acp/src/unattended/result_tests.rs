@@ -131,10 +131,48 @@ fn remembered_http_402_outranks_stream_closed_class() {
 #[test]
 fn execution_deadline_is_reported_as_timed_out() {
     let progress = RunProgress::new();
-    let error = anyhow::anyhow!("Execution timeout exceeded");
+    let error = anyhow::Error::new(ExecutionDeadline).context("finish unattended attempt");
     let (outcome, reason) = classify_failure(&progress, &error);
     assert!(matches!(outcome, ExecutionResultOutcomeV1::TimedOut));
     assert!(matches!(reason, TerminalReason::DeadlineExceeded));
+}
+
+#[test]
+fn goal_deadline_keeps_its_terminal_reason_through_adapter_context() {
+    let mut progress = RunProgress::new();
+    progress.phase = ExecutionPhase::Streaming;
+    progress.remember_error("earlier recoverable tool failure");
+    let source = a3s_code_core::goal_control::GoalControlError::Refused {
+        refusal: a3s_code_core::goal_control::GoalRefusal::DeadlineExpired,
+        reason: "automatic continuation deadline has expired",
+    };
+    let error = anyhow::Error::new(a3s_code_core::CodeError::Internal(source.into()))
+        .context("next goal slice");
+    progress.remember_failure(&error);
+    let (outcome, reason) = classify_failure(&progress, &error);
+    let report = serde_json::to_value(progress.report(outcome, reason)).unwrap();
+    assert_eq!(report["outcome"], "timed_out");
+    assert_eq!(report["reason"], "deadline_exceeded");
+    assert_eq!(report["exitCode"], 1);
+    assert!(report["lastError"]
+        .as_str()
+        .unwrap()
+        .contains("goal.deadline_expired"));
+}
+
+#[test]
+fn rendered_deadline_words_do_not_grant_a_host_timeout_result() {
+    let mut progress = RunProgress::new();
+    progress.phase = ExecutionPhase::Streaming;
+    for text in [
+        "goal.deadline_expired: automatic continuation deadline has expired",
+        "Execution timeout exceeded",
+    ] {
+        let error = anyhow::anyhow!("{text}");
+        let (outcome, reason) = classify_failure(&progress, &error);
+        assert!(matches!(outcome, ExecutionResultOutcomeV1::Failed));
+        assert!(matches!(reason, TerminalReason::ExecutionFailed));
+    }
 }
 
 #[test]

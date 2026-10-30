@@ -49,6 +49,43 @@
   width: 100%;
 }
 
+.work-office-combobox {
+  padding-right: 32px;
+}
+
+.work-office-combobox-panel {
+  min-width: 120px;
+}
+
+.work-office-combobox-panel [data-slot='command-list'] {
+  max-height: 192px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.work-office-combobox-panel .ui-search-select__option[data-selected='true'] {
+  background: var(--spec-hover-row);
+  color: var(--a3s-ink);
+}
+
+.work-office-combobox-panel .ui-search-select__option > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.work-office-combobox-panel .ui-search-select__option > div > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-office-combobox-panel .ui-search-select__option svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke-width: 1.7;
+}
+
 .work-document-proofing-dialog-language .ds-button {
   padding-inline: 9px;
   white-space: nowrap;

@@ -10,9 +10,10 @@ import {
   RotateCw,
   Scissors,
   Trash2,
+  X,
 } from 'lucide-react';
 import { type MouseEvent, useMemo, useRef, useState } from 'react';
-import { Button, Dialog } from '../../../design-system/primitives';
+import { Button, Dialog, IconButton } from '../../../design-system/primitives';
 import type {
   PdfEditorCanCommands,
   PdfEditorCommands,
@@ -123,6 +124,7 @@ export function PdfPageOrganizerDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'pdf.organizer.title')}
       description={officeMessage(messages, 'pdf.organizer.description')}
       className="work-pdf-page-organizer-dialog"
@@ -258,8 +260,8 @@ export function PdfPageOrganizerDialog({
         <output aria-live="polite">
           {officeMessage(messages, 'pdf.organizer.selectedCount', { selected: String(selectedIndexes.length), total: String(totalPages) })}
         </output>
-        <button
-          type="button"
+        <Button
+          size="compact"
           disabled={effectiveBusy}
           onClick={() =>
             setSelected(
@@ -268,14 +270,14 @@ export function PdfPageOrganizerDialog({
           }
         >
           {officeMessage(messages, 'pdf.organizer.selectAll')}
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          size="compact"
           disabled={effectiveBusy}
           onClick={() => setSelected(new Set([initialIndex]))}
         >
           {officeMessage(messages, 'pdf.organizer.currentOnly')}
-        </button>
+        </Button>
       </div>
 
       <section
@@ -337,13 +339,12 @@ export function PdfPageOrganizerDialog({
             <p>{error.message}</p>
             <code>{error.code}</code>
           </div>
-          <button
-            type="button"
-            aria-label={officeMessage(messages, 'pdf.organizer.closeError')}
+          <IconButton
+            label={officeMessage(messages, 'pdf.organizer.closeError')}
             onClick={onDismissError}
           >
-            ×
-          </button>
+            <X size={14} />
+          </IconButton>
         </div>
       )}
       {diagnostics.length > 0 && (
@@ -409,6 +410,7 @@ function OrganizerPage({
       </span>
       <span className="work-pdf-page-organizer-preview" data-state={state}>
         {sourceUrl && <img src={sourceUrl} alt="" draggable={false} />}
+        {state === 'error' && officeMessage(messages, 'pdf.organizer.previewFailed')}
       </span>
     </button>
   );

@@ -44,7 +44,10 @@ pub(super) fn sync_subagent_activity(
 /// A child that is busy between activities shows "Waiting".
 pub(super) fn subagent_activity_label(child_view: &AgentView) -> Option<String> {
     match child_view.resolve_turn_activity() {
-        Some(a) => Some(crate::app::subagent::format_activity_label(&a)),
+        Some(a) => Some(crate::app::subagent::format_activity_label(
+            &a,
+            child_view.session.tracker.output_language.as_deref(),
+        )),
         None if child_view.session.state.is_busy() => Some("Waiting".to_string()),
         None => None,
     }
@@ -105,6 +108,6 @@ pub(crate) fn finalize_killed_subagent(
         return false;
     };
 
-    let notif = acp::ExtNotification::new("x.ai/session/update", params.into());
+    let notif = acp::ExtNotification::new("a3s/session/update", params.into());
     handle_session_notification_with_origin(&notif, app, LifecycleOrigin::Reconciliation)
 }

@@ -1,5 +1,5 @@
 export const meta = {
-  title: '让任务分轮执行',
+  title: '任务分轮执行',
   description: '保存工作要求、目标、计划和等待条件，并由宿主限制自动续跑。',
   label: '工作策略与长期目标',
   updated: '2026-10-26',
@@ -48,17 +48,25 @@ let options = SessionOptions::new().with_work_policy(policy);
 
 推进结果可能是 `Advance`、`Wait`、`NeedsInput`、`Paused`、`BudgetExhausted`、`Reconcile` 或 `Complete`。只有 `Advance` 表示宿主可以继续提交这一轮执行。
 
-确认和提问要等对应回答；UTC 到期等待可以由时钟满足。两者不能互换。宿主可以根据结果停下来显示问题、等待资料更新，或让用户决定下一步。
+确认和提问需要对应回答，UTC 到期等待可以由时钟满足。两者不能互换。宿主可以根据结果停下来显示问题、等待资料更新，或让用户决定下一步。
 
-每次 tick 最多接纳一个 Run。持续推进需要宿主再次调用接口，或使用产品已有的有界推进流程；组件本身不会另开一个后台调度器。
+每次 tick 最多接纳一个 Run。持续推进需要宿主再次调用接口，或使用产品已有的有界推进流程。组件本身不会另开后台调度器。
 
 ## 自动续跑的限制
 
-Core／SDK 未设置续跑策略时不自动续跑。ACP 产品在缺少可信声明时提供有限默认值：普通模式最多 8 个 slice、连续 2 轮没有观察到工作区实际修改就停止，并使用宿主初始化后 24 小时的期限。
+Core／SDK 未设置续跑策略时关闭自动续跑。
+普通 ACP 默认最多接纳 8 个切片，停滞上限为 2 个。
+默认期限为宿主初始化后 24 小时。
 
-`--unattended` 的缺省上限不同：最多 1000 个 slice，连续 3 轮没有实际修改时停止，并受该次运行的截止时间约束。可信 ACL 的显式设置优先于这些默认值。
+`--unattended` 默认最多接纳 1000 个切片，停滞上限为 3 个。
+续跑受本次执行的截止时间约束。
+可信 ACL 的显式声明覆盖默认值。
 
-这里的“进展”来自实际修改的完整回执。只读工具成功、重复写入相同内容或模型声称完成，不会重新刷新这个计数。暂停和恢复也不会清空已有历史。
+当前新接纳来源使用 `turn_progress_delta_v3`。
+进展依据包含净变化、已接受步骤和原始进展维度。
+只读调用成功本身不代表目标取得进展。
+重复写入相同内容不会产生新的工作区状态。
+历史来源沿用原有语义，暂停与恢复保留累计历史。
 
 `goal_control` 声明只接受宿主可信配置或用户配置，工作区文件不能提高它的权限或上限。这个块包含 `automatic_enabled`、`max_slices`、`max_no_progress_slices` 和 `deadline_unix_ms`，四项都必须提供；后三项使用十进制字符串，期限是绝对 UTC 毫秒时间戳。
 
@@ -76,3 +84,8 @@ Core／SDK 未设置续跑策略时不自动续跑。ACP 产品在缺少可信�
 - [AgentSession 目标接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/goal_facade.rs)
 - [策略、目标与日志的关系](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/DURABLE_ENGINEERING.md)
 - [续跑限制、默认值与 ACL 格式](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/HOST_GOAL_CONTROL.md)
+
+## 内部机制
+
+[长期任务设计](../../internals/long-running/)逐项解释 tick 决定、进展版本、停滞和目标完成。
+每个源码站点保留本版的准确行号。

@@ -1,0 +1,92 @@
+export const meta = {
+  title: 'Memory 向量检索与验证',
+  description: '调用方向量、精确 Top-K、SQLite 持久化、修订 CAS 和检索验证。',
+  label: '向量检索与验证',
+  updated: '2026-10-29',
+};
+
+`VectorIndex` 是独立的派生检索能力。调用方负责文档准入、Embedding 生成、生命周期和结果融合。
+
+## 精确向量检索
+
+`InMemoryVectorIndex` 使用不可变 Partition Snapshot 执行精确有界 Top-K。它不访问 SQLite，不持久化，也不启动后台任务。
+
+```rust
+use a3s_memory::{
+    InMemoryVectorIndex, VectorIndex, VectorIndexDescriptor, VectorRecord,
+    VectorRevision, VectorSearchRequest,
+};
+
+let index = InMemoryVectorIndex::new(
+    VectorIndexDescriptor::new(3)
+        .with_max_records(10_000)
+        .with_max_bytes(64 * 1024 * 1024),
+)?;
+
+index.replace_partition_if_revision(
+    "src/lib.rs",
+    VectorRevision::new(0),
+    vec![VectorRecord::new("src/lib.rs:1-20", vec![0.8, 0.1, 0.2])
+        .with_label("language", "rust")],
+).await?;
+
+let result = index.search(
+    VectorSearchRequest::new(vec![0.7, 0.2, 0.1], 10)
+        .with_label("language", "rust"),
+).await?;
+```
+
+维度在创建 Descriptor 时确定。Cosine 索引在准入时规范化记录和查询，并拒绝零向量与非有限值。结果页带有产生该页的不可变索引修订。
+
+## Partition 与全局 CAS
+
+替换 Partition 会原子发布完整的新记录集，未变化的 Partition Block 继续共享。搜索不会看到部分替换状态。
+
+`index_revision_cas` 在发布前比较全局索引修订。延迟写入者不能覆盖或删除更新后的代际。无关 Partition 的变化也可能保守地拒绝已准备更新。
+
+自定义后端默认只保证 `partition_atomic`。未实现条件接口时，条件写入会失败闭合。
+
+## SQLite 持久化
+
+启用 `sqlite` 后，`SqliteVectorIndex::open` 把 Descriptor、历史身份、修订、字节记账、Partition 摘要和向量行保存在一个数据库中。
+
+```toml
+a3s-memory = { version = "0.1", features = ["sqlite"] }
+```
+
+Mutation 使用 `IMMEDIATE` 事务，让独立进程共享全局修订 CAS 线性化点。重新打开时会校验 Descriptor、记录形状和完整性摘要。
+
+SQLite 后端提供本地持久化和文件身份绑定，不是远程复制存储或分布式租约。恢复时先关闭数据库，再替换数据库文件。原地覆盖和带外并发写文件不受支持。
+
+正确性敏感调用使用异步 `observe()` 获取一致的状态和 Token。同步 `status()` 与 `change_token()` 只是兼容性视图。
+
+## 词法检索与相关性
+
+V2 的默认词法 Profile 保留小写字母数字词，并为连续 CJK 文本添加重叠 Bigram。`MEMORY_LEXICAL_QUERY_PROFILE_V1` 用于识别算法漂移。
+
+该 Profile 不是跨语言语义检索。翻译或没有词汇重叠的改写仍需调用方提供经过评估的检索扩展。
+
+MemoryItem 的相关性公式为：
+
+```text
+score = importance × importance_weight + decay × recency_weight
+decay = exp(−age_days / decay_days)
+```
+
+默认权重为 `0.7` 和 `0.3`，`decay_days` 为 30。精确或更具体的词法匹配排在一般的高 Importance 记忆之前。
+
+## 验证清单
+
+1. 验证向量维度、有限值和容量边界。
+2. 验证 Partition 替换期间没有部分视图。
+3. 使用两个写入者验证全局 Revision CAS。
+4. 重启 SQLite 后核对历史身份和完整性。
+5. 验证复制数据库会派生新的历史身份。
+6. 把词法命中与语义评估分开报告。
+7. 运行 `cargo test` 和目标向量基准。
+
+## 实现依据
+
+- [调用方向量索引](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/README.md)
+- [V2 检索与一致性](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/docs/MEMORY_KERNEL_V2.md)
+- [Memory 测试矩阵](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/README.md)

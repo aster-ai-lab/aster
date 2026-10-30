@@ -84,6 +84,16 @@ Color is reserved for meaning inside a feature, not for navigation.
 Feature-card marks stay on those cards: writing `#69b9c9`, plan blue `#4c6fff`, slides `#e07848`, PDF
 `#5b35d4`. They are not navigation colors and they are not the tenant brand.
 
+Office editors retain their familiar format colors: Word blue `#185abd`, Excel green `#107c41`, and
+PowerPoint orange `#c43e1c`. Use these within each editor for ribbon selection, editing selections, and
+feature controls. Keep the application rail, file tabs, dialogs, typography, sizing, and neutral surfaces
+on the shared roles above. File tabs own switching and closing; do not add a second back-to-files header
+or a duplicate save-status row above the editor. Save status belongs in the editor footer and dirty tab dot.
+Library row and context menus are non-modal. A press on blank space, a filter, another row, or the sidebar
+closes the open menu and reaches the pressed control on that same interaction. Escape and choosing an
+action also close the menu. Report saved only after the host accepts the write; do not imply automatic saving
+when the host requires an explicit save.
+
 ## 3. Type
 
 The UI font is `--font-family`. The default face is Ubuntu. On Windows the default is Microsoft YaHei UI, then
@@ -114,6 +124,10 @@ headings are 12px with no extra line box. They are not buttons.
   Focus is the inset 2px `black/10` ring. Disabled opacity is 40%. Message actions load from
   `message-action-menu.css` through an unlayered `@import` in the main stylesheet.
 - Composer toolbar icons sit in a 32px hit target.
+- Workbench home and task inputs place the existing screenshot split control immediately after Plus.
+  Its scissors and chevron form one 48px-wide, 30px-high rounded group with a shared hover/open background;
+  the two actions retain separate focus and names. Toolbar minimum-width rules apply to standalone
+  buttons, not to the internal halves of this compound control. The loading placeholder uses the same order.
 - Rail menu glyphs are 22px at Lucide stroke 1.6. Selected rail glyphs use `fill: currentColor` and `stroke: none`.
   Unselected glyphs stay outlines. Do not set a CSS `stroke-width: 2px` on the rail.
 - A selected rail button is a 12px-radius gray plate. The rail avatar keeps a 4px radius.
@@ -143,6 +157,194 @@ frame.
 `rounded-full` is for the work session dot (20px, `#171717`) and for rail tooltips. Menu buttons are not pills.
 
 ## 6. Shared controls
+
+### Motion and emotional feedback
+
+Motion explains an action, preserves a place, or confirms a real result. The feeling Aster should leave is
+calm competence: the work is moving, the person can intervene, and the result is theirs to inspect. Every
+animation has a named trigger and an end state. A decorative effect is not a substitute for useful feedback.
+
+The references are Arc's public [motion guidance](https://uiarc.dev/r/skills/arc/motion.md),
+[action feedback](https://uiarc.dev/components/action-button),
+[confirmation morph](https://uiarc.dev/components/confirm-morph),
+[agent status](https://uiarc.dev/components/agent-status), and
+[activity terrain](https://uiarc.dev/components/blocks/activity-terrain). Adopt their continuity, restrained
+springs and feedback in the existing Aster controls. Keep this document's graphite palette, anatomy, focus,
+dialog placement and authority rules. Arc is a behavior reference, not a second design system or a reason to
+bulk-install components. Public examples with simulated events are not a production data source. Reusing
+licensed source requires the corresponding rights; reading a public preview does not provide that source.
+
+#### Emotional purpose
+
+| Moment | What the person needs | Aster's response |
+| --- | --- | --- |
+| Starting | Know that the action registered | The pressed control answers immediately; accepted work has a real pending state. Keep the draft until submission is confirmed |
+| Waiting | Know what is happening and retain control | One current activity, elapsed time where useful, and the existing Stop or pause action. Unknown duration stays indeterminate |
+| Deciding | Understand the consequence | Stable approval text names the target, scope and action. Details expand in place; animation never moves the confirm target or grants permission |
+| Finishing | See a useful accomplishment | Confirm the verified result once, then foreground its file, preview, sources or checks. Keep execution detail available behind one disclosure |
+| Recovering | Continue without starting over | Keep input, context and the failed item; explain the next safe action in place. Retry and undo follow the real operation contract |
+| Returning | Recover the working context | Preserve task, query, selection and reading position. Summarize actual changes since the last visit without replaying every entrance |
+
+Do not infer a mood from private content. Do not invent time saved, completion percentages, usage streaks or
+performance scores. Spending more tokens is not an achievement. A budget refusal, failure, or unverified
+result never receives a celebratory animation. Copy should be specific and useful, rather than praise the
+person for operating a control.
+
+#### Timing and physical behavior
+
+These are motion roles for shared components, not a new CSS variable or package API. Reuse the installed
+Motion/CSS mechanism. The explicit picker, dialog, settings overlay and row timings below take precedence;
+do not replace their geometry or timing while adding a microinteraction.
+
+| Role | Default | Use and constraint |
+| --- | --- | --- |
+| Direct response | 120ms | Hover color and press acknowledgement; never delay the action |
+| State exchange | 160ms | One short opacity exchange for an icon, action label or status; same baseline and stable slot |
+| Ordinary transition | 240ms | A local view or content change without a component-specific timing |
+| Responsive spring | 260ms, bounce at most 0.12 | Small press/feedback glyphs. A press may scale an inner visual to 0.97 while its hit target stays fixed |
+| Settling spring | 400ms, bounce 0 | Non-modal inline expansion or content-size change when the changing size conveys information |
+| Shared highlight | 420ms, bounce at most 0.16 | A small selection plate following a choice. It must stay inside the track and never suggest another selected value |
+
+Values, progress, switch positions, drawer edges and panel dimensions settle with **no overshoot**. A small
+feedback glyph may have a restrained spring; routine UI never visibly bounces. Exits use the component's
+established exit, rather than a global rule that would contradict the 160ms/200ms dialog contract.
+
+One interaction has one coordinated movement. A second input retargets the current position, not the start
+pose. Interrupted opening must reverse without a jump, duplicate overlay, replayed check or stranded focus.
+Business state and accessibility state change when the owner answers, not when an animation ends. Leave an
+exiting surface mounted only as required for its exit; it must not keep interactive descendants active.
+
+#### Component recipes
+
+| Pattern | Required behavior in Aster |
+| --- | --- |
+| Button and copy | Preserve the target and label baseline through idle, pending, success and failure. Exchange the inner glyph or label, not the whole button. Copy success uses the existing icon feedback in place; avoid a second success toast for the same foreground action. Failure remains readable |
+| Popup anchor | A menu, picker, popover or tooltip trigger answers by color. Do not press-scale its positioning element; the popup must not re-anchor against a temporarily smaller rectangle |
+| Segments and tabs | Move one neutral highlight between the existing options. Update `aria-checked`/selection at once. Scope shared motion to the control instance; initial paint and container resize do not replay selection motion |
+| Expand and preview | Keep the trigger, title and origin visible. Expand supporting content on demand, then return focus to the trigger. Only non-modal inline regions use a height spring; dialogs and PageSidePanel retain the in-place dialog contract |
+| Inline edit and confirm | Exchange read, edit, pending and result faces in the same place. Grow width only when the new content needs it, without stretching glyphs or text. Keep the error and draft on failure; do not animate a destructive action into completion before the owner confirms it |
+| Skeleton to content | Reserve the real layout. Resolve the region with a short exchange; do not blur the whole page, grow from zero, or restart skeletons on same-query refresh. Use progress/status for long work, not an indefinitely performing skeleton |
+| Empty and no-result states | Keep the unified illustration, explain the actual state and offer one primary next step. Use the existing 200ms / 4px row entrance once on mount; label changes do not replay it. Reduced motion shows the same content immediately; the illustration stays still after entry |
+| Lists and selection | Use the existing row-motion contract, stable identities and a bounded first entrance. Changed rows move or tint once. Filtering, scrolling, pagination, count changes and an unrelated selection do not replay every row |
+| Numbers and meters | Use tabular figures and reserve the value slot. Retarget the latest observed value without overshoot; screen readers receive the real value. Unknown, unit/currency changes and authoritative corrections switch directly rather than count through misleading values |
+| Streaming text | Append actual chunks; settled text does not re-render for letter effects. Keep selection, caret and the reader's scroll position. A working label may shimmer; the answer itself does not shimmer, blur, bounce or retype after completion |
+| Task and tool status | One active step carries the live signal. Pending, running, waiting for approval/input, stopped, failed and completed are distinct labels with stable controls. Freeze live motion while waiting; show a completion check only for the corresponding confirmed event |
+| Sources and artifacts | Reveal an actual source or deliverable when it arrives. Keep the title, path, preview and open action stable. Fold finished execution details only without hiding unresolved failures, approvals or checks |
+| Chart and terrain | Transition between the same records without inventing data. A 3D view needs a readable top view, visible legend, values, keyboard exploration, reset and explicit zoom. Drag follows the pointer; never auto-orbit while a person reads |
+
+Treat object continuity as a relationship, not a reason to make content fly across a page. An added file,
+memory or selected filter can be acknowledged at its destination with one quiet change. Preserve current
+filters; do not clear a query or move focus just to expose the animation.
+
+#### Aster identity and quiet companionship
+
+Use the existing tenant mark and Aster assistant character. Do not add a second mascot, permanent floating
+dock, or competing set of animated brand marks. The character may acknowledge work, waiting for input,
+confirmed completion and failure through the same observed status used by the task. State text remains
+available; facial expression and color are not the only signals. An unavailable status stays unknown.
+
+Keep the character subordinate to the work: one brief acknowledgement when a state changes, quiet while
+the person reads or edits, and no repeated celebration after a task settles. Continuous motion is reserved
+for the single active work signal and the explicitly bounded home-background behavior in section 7. No
+unrequested sound, full-screen celebration, persistent attention pulse or pressure to keep a streak.
+
+#### Accessibility and rendering
+
+- `prefers-reduced-motion: reduce` removes travel, press scale, shimmer, parallax, rolling digits, stagger
+  and autoplay. Show the same final state, content, controls and errors immediately. A manually operated 3D
+  view remains usable; remove camera interpolation and offer the same top view.
+- Focus and reading order do not depend on geometry or motion. Use the established keyboard focus style,
+  keyboard alternatives for dragging, and a polite announcement for meaningful state changes, not every
+  elapsed-time tick, counter frame, token, hover or camera move.
+- Prefer `transform`/`opacity`. Size animation is allowed only for a meaningful inline content change;
+  measure at content or container changes, not on every frame. Do not animate `filter`, all CSS properties,
+  or a popup's positioning transform. Keep the dialog's separate `scale` rule.
+- Share clocks where a list needs time; stop animation work when the view is hidden, offscreen, occluded,
+  paused or settled. Update one active row instead of re-rendering an entire transcript or collection per
+  frame. Cancel listeners, timers and frame loops with the owning component.
+- A status change never waits for an entrance, artificial typing delay, success dwell or exit to become
+  readable or operable. A visual acknowledgement cannot postpone Stop, dismissal or an error recovery.
+
+#### Fusion into existing surfaces
+
+| Existing surface | Arc behavior to reference | Integration boundary |
+| --- | --- | --- |
+| Shared Button, CopyButton, SearchSelect and SegmentedControl | Action feedback, icon exchange, shared highlight | Improve the house control once; preserve its API, dimensions, keyboard behavior and owner callbacks |
+| Current task, tool rows and approval cards | Agent status, Tool call, Agent plan, Agent approvals | Use existing run/tool/permission events and authority. Do not create a second task state, progress owner or approval system |
+| Task result, Changes and file preview | Agent run, AI answer, Source cards, Code suggestion | Reuse the current result, diff and Office renderers; the completion moment leads to a real artifact |
+| Existing model service and model configuration | Provider keys, Provider status, Model picker/card | One provider/model identity and configuration writer; show actual capability and pricing coverage rather than a new catalogue |
+| Existing Usage and API gateway | Usage meter, Generation stats, Activity terrain | One local accounting source for totals, details and export. Budget, routing and keys link to their current editors rather than duplicating them |
+| Work home, local memory and scheduled tasks | Starter prompts, Agent memory, Catch up, Agent routines | Add context-aware entry and return feedback to the existing navigation, preserving scope and saved state |
+
+When changing one of these surfaces, record its actual trigger, state owner, interruption behavior and
+reduced-motion result. A reference preview, this table, or a component test alone does not prove that a
+product workflow has been integrated.
+
+
+#### Evidence graphs and RSI evolution
+
+Reference: [Entelligence World Model](https://entelligence.ai/), plus Arc's
+[Timeline](https://uiarc.dev/components/timeline), [Stepper](https://uiarc.dev/components/stepper) and
+[Accordion](https://uiarc.dev/components/accordion). Inspection of the public World Model drawing module
+confirmed a Canvas 2D scene with projected positions, a focus lens, hierarchical branches, event paths,
+arrival pulses and linked explanation cards. These observations describe the reference; they do not claim
+that all of these behaviors already exist in Aster. Use the interaction relationships, not its source code.
+
+The RSI documentation figure is an explorable account of a change. Its dark scene is a figure-specific
+presentation, not another application theme. Keep the normal page and settings chrome on the roles above.
+Default to the graph, one quiet case selector and optional playback. An explicit focus view may hide the
+surrounding document. The evolution history and provenance stay behind separate, intentional disclosures.
+
+| Relationship to preserve | Required behavior |
+| --- | --- |
+| Global graph to inner view | The selected point remains the spatial origin. Move the context graph aside as a lens expands from that point; preserve a visible connection into the detail. Closing reverses to that same point and restores focus |
+| Overview to detail | The inner view represents a typed hierarchy: object, relationship groups, then concrete records. Place branches by their actual relationships and label them directly. Do not turn every explanation into an identical satellite or invent intermediate records to fill the circle |
+| Event to feedback | One sourced replay event activates its path. A light point travels to its destination; arrival triggers one short node ring and updates the matching explanation. The path, marker and card belong to the same event identity |
+| Current event to context | Emphasize the active chain and keep other relationships readable at lower contrast. Color distinguishes a relationship or result; distance, line weight and opacity convey hierarchy. Do not give every decorative connection equal brightness |
+| Reading position to replay | A selected event stays selected while its explanation is read. User selection pauses narration. Dragging follows the pointer; camera movement stops while reading, hovering a target or opening history. Pause, previous, next and reset operate the same replay state |
+| History to graph | Timeline markers, current-stage ring, expanded row and graph focus share one selected phase. Selecting a timeline stage focuses its nodes; drilling into a node closes the history panel without losing the selected case |
+| Graph to evidence | A detail card names the observed change, the evidence and the result boundary. Source links belong to that record. Show counts, costs, durations and successful outcomes only when supported by the supplied records |
+
+A semantic zoom may take 600–900ms to settle because the spatial relationship is the content. Camera and
+lens dimensions settle without overshoot. Use one coordinated transition rather than separate popup,
+background and text entrances. Opening a supporting timeline row uses the existing non-modal expansion
+role, retargets if interrupted, and keeps its trigger fixed. Do not animate blur or make text follow an
+unrelated decorative orbit.
+
+The trace owner, not the drawing clock, advances event identity. Geometry can interpolate on a frame
+clock, but the arrival feedback and card must advance together. A manually selected record does not
+pretend a model or tool is running. Background mesh points are texture, not additional experiment records.
+
+DGM and STOP reconstruction shows algorithm or evidence order, not invented wall-clock history. The Aster
+engineering case links to a fixed commit and historical acceptance record; it is not proof of autonomous
+RSI. Use ordinal stages when individual timestamps are unavailable. A visited marker means navigation
+position, not a passed evaluation. Do not manufacture event counts, glowing success states or performance
+curves to make a reference animation look busier.
+
+Reduced motion shows the same hierarchy, active path, result and timeline immediately, with no camera
+travel, autoplay, arrival ripple or moving light point. Pause and hidden/offscreen states stop frame work.
+Keyboard users can reach each actual record independently of its projected position, move through history
+with arrows and Home/End, dismiss a lens before dismissing focus view, and return to the original trigger.
+
+Code 9.1.6 implements this as authored object/category/record relationships and narrated reading events.
+The replay state owns the current record, travel, arrival and pause; it is not live execution telemetry.
+Keep context labels in a separate unscaled layer. Reproject the smaller graph at the device pixel ratio,
+retain 12–13px node/record type, and keep category and record labels horizontal.
+A reduced context may omit inactive labels, but selected labels must remain readable. Lower background
+mesh contrast before reducing the contrast or size of the evidence itself.
+
+Case selection, return and playback share a toolbar in normal flow; the scenario occupies its own row.
+They must not float over one another or over projected labels. Size the detail lens from the remaining
+stage height and reserve space for its evidence card. Resolve projected label collisions without changing
+the underlying relationship: move the caption and retain a quiet leader to its original point. Use neutral
+graphite surfaces and fine cool rims; relationship colors belong to markers and the active path rather than
+large tinted backgrounds. Keep the title, source and explanation at distinct reading levels.
+
+An RSI overview must state the scenario, baseline and goal, identify the actual decision condition, and
+show directed alternatives and their results. Label scenario, decision, option and outcome nodes directly.
+Use arrowheads for direction, readable condition labels for branches, and a distinct return path for the
+next iteration. A branch label opens its corresponding evidence. Keep algorithmic/configuration outcomes
+separate from observed run outcomes; a reported endpoint is not proof that a displayed change caused it.
 
 ### List row
 
@@ -198,6 +400,10 @@ A navigation row whose destination has sections (`服务` → `智能体`, `小�
   (46% on hover), with no arrows and no track fill. It shows only while the region is hovered, focused or
   scrolling. A host that paints its own overlay thumb sets `data-scrollbar="overlay"` and never sets
   `scrollbar-color`, which would bring back the thick system bar.
+- **Embedded diffs.** Message-flow cards and workspace Changes use the same quiet horizontal bar as
+  vertical scrollers, including hover/focus colors and transparent tracks. Apply it inside the diff's
+  shadow root; global selectors cannot reach that surface. Only overflowing code reserves a bar.
+  Workspace panes omit transcript-only folding/copy chrome and never inherit a folded card's body state.
 
 ### Segmented control
 
@@ -208,6 +414,12 @@ text `#171717`, shadow `0 1px 2px rgba(0, 0, 0, 0.06)`. Dark selected pill `#3a3
 
 Unselected labels are `#6f6f6f` and turn `#171717` on hover. On the plugin title row the control is size `sm`
 and the track is 30px tall.
+
+The selected plate follows the shared-highlight recipe in [Motion and emotional feedback](#motion-and-emotional-feedback).
+The label, option widths and keyboard focus stay still while it moves.
+The group has one tab stop. Arrow keys select the next enabled option and wrap; Home/End select the first/last
+enabled option. Controlled values remain owner-authoritative. Reduced motion removes the plate's travel and
+responds when the system preference changes while the control is mounted.
 
 ### Search field
 
@@ -275,6 +487,9 @@ Enforcement: `apps/studio/src/renderer/__tests__/noNativeSelect.test.ts` fails o
 - **Danger.** Text `#b42318` on an inline delete confirm. A PopConfirm danger confirm is the filled `#c23b3b` button. The row is not red before that confirm.
 
 Icon-only buttons need an accessible name.
+
+Pending and result faces follow [Motion and emotional feedback](#motion-and-emotional-feedback). Keep the
+same hit target through the exchange; a popup anchor uses color feedback rather than press scale.
 
 ### Cards
 
@@ -363,6 +578,18 @@ Management tables (section 14) add these rules:
 - **Pager.** Tables default to 20 rows per page (choices 10/20/50/100). The page-size picker is the
   design-system picker (`SearchSelect`/`Combobox`, `size="sm"`), not a native `<select>`.
 
+### Transient popups
+
+Menus, context menus, popovers and hover cards use the shared `@a3s-lab/ui` primitives.
+An outside press closes the popup and performs the clicked control's action on that first press.
+Outside clicks must not move focus back to the popup trigger. Escape closes a keyboard-opened
+popup and returns focus to its trigger. Nested portalled content remains inside its parent popup.
+Application focus loss dismisses transient popups. Confirmation and unsaved-change decisions use
+the existing dialog components. Page code does not recreate popup dismissal handlers.
+
+Boolean controls use the shared `Switch`, with its neutral checked colors in light and dark themes.
+Do not draw a second switch with a checkbox, button or page-specific blue background.
+
 ### Dialogs
 
 Use a dialog for a form, or for a choice that needs more than a title and one sentence. Removing a member
@@ -412,16 +639,60 @@ it are the field control: height 36px, radius 8px, fill `#f5f5f5`, 13px.
 | Dialog | Width | Placement |
 | --- | --- | --- |
 | Create project | 320px | centered |
-| Project list | 360px | centered, max height 70vh |
-| Task history | 360px | centered, max height 70vh |
+| Project / task Wiki catalog | content area | fills the content card; icon rail stays visible |
 | Task search | 420px | top, 14vh from the top, max height 70vh |
 
-The workbench dialogs keep those widths. The create title is 15px medium. The project list and the task
-history use a 14px medium title, then a 30px search field. Typing filters that list immediately and paints
-each matched span `#fff3b0`. Escape clears the field first, then closes the dialog. An empty source and a
-search with no match use different sentences. The task search dialog keeps its field as the header and uses
-the same mark. These three dialogs are portaled to the document root at z-index 220. The home composer
-card is z-index 80 inside the page, so a dialog left in the page is covered by that card.
+The create title is 15px medium. Project and task More open the Workspace Wiki catalog, inside the shell
+content area above its isolated workspace layer. Its list header has one working close icon at the right,
+with no duplicate return-to-work action. A centered 24px medium title and a 36px search field lead into a three-column card grid;
+use two columns below 900px and one below 560px of content width. Cards are at least 148px tall, have a
+14px radius, a quiet neutral fill, 1px card border, 16px padding, 14px medium names and two lines of
+12px secondary text. The catalog has no creation card or creation button; original creation actions stay on the work page. No invented summaries, stars or Wiki timestamps.
+Unavailable Wiki state is explicit; existing object timestamps are labeled as project/task updates.
+Wiki status comes from the saved binding and publication owner for the current bounded page, without
+scanning source folders or starting generation. A saved generation says "Wiki available", not that
+live sources are current; its own timestamp is labeled as a Wiki update. Busy and unavailable differ
+from not generated.
+The title has no explanatory subtitle, and the grid has no explanatory footer.
+
+Both More actions stay visible for small and empty collections. Query the complete original collection
+before returning a bounded page (20 by default); tasks keep the inbox scope, with project tasks reached
+through their project. Show distinct loading, unavailable, empty and no-match states. Escape first clears
+search, then closes. The shared dialog owns keyboard focus; background work stays mounted and inert,
+its commands are suspended, and closing restores the trigger. Enter/leave fades in place and honors reduced
+motion. The independent task search stays a 420px top dialog at document z-index 220.
+
+Task history renders as soon as its saved session and messages are available. Model initialization or refusal never replaces history with a page-level skeleton. The composer area shows a compact loading or recovery state until the original runtime admits sending; unlinked historical sessions remain readable without a composer.
+
+Workspace cards open that object's Wiki detail in this same layer. The former Knowledge page is the
+workspace Wiki reader. Reuse the existing KnowledgePage, tree, search, editor/reader, graph and maintenance components directly; do not replace them with a second detail layout. Its root comes from the selected workspace, never the background task or global preference. Browsing an empty scoped vault must not create directories.
+The detail uses one 48px header row containing a truncated workspace name and inline path, original page actions, resource tabs and close. There is no additional overlay header, back button or workspace-open button; narrow windows hide the secondary path rather than wrap. Resource order is Analysis / Encyclopedia / Outputs / Memory / Board. Analysis opens by default and presents measured execution metrics, event filters, timeline playback and event details from the selected task's real messages; project scope selects one of its tasks before analysis. Outputs opens the selected folder's actual file tree. File editors reuse the shared workspace tabs, preserve open documents across resource switches, and guard unsaved closes. Selecting a file tab also selects its tree entry. File tabs use the same extension-specific document icons as the file tree; their context menu supports closing through the existing dirty guard, copying the path and revealing the file in the sidebar. Dialog content explicitly restores pointer events inside page-level portals so save/discard confirmations stay operable. Embedded Markdown omits the redundant read-only preview/line-count bar already covered by its host toolbar. Code save/download actions share the existing bottom status bar instead of reserving a second header row. Empty editor chrome never reserves height.
+Outputs, Encyclopedia and Memory share a mouse-draggable sidebar seam, a remembered 260px default, a 200px minimum and a maximum of 480px or 45% of the available content width. The seam is keyboard accessible and cleans up drag state on blur or exit. Encyclopedia tree rows match Outputs: 32px height, consistent indentation, document/folder icons and a quiet selected fill. Reader/tab action rows stay 40px tall without wrapping; long labels truncate. Memory opens with readable prose, explicit editing, compact time/type/tags and collapsed technical details. It has no redundant displayed/total counter.
+Keep the catalog mounted so Escape restores its query, page, scroll and selected-card focus. Returning refreshes that bounded owner page while retaining its existing cards; query/page changes clear old results, late responses are ignored and failed refreshes expose retry. Reading a Wiki does not change the background selection. An unavailable Wiki shows its real empty state,
+not sample pages or a pretend generation. Knowledge is removed from the ActivityBar, including stored
+and custom rail orders; old unscoped Knowledge routes return to Work.
+
+The Board is a derived view of the existing task owner, scoped by project ID or exact task ID. Project cards are real sessions from the bounded owner query (20 per page), searched by stored name/description and filtered by the exact execution status before paging. Column counts describe the loaded page, not an invented collection total. Task cards are the latest structured agent plan, retaining original step IDs and states; the existing conversation source supplies live updates and bounded older-history continuation. A missing plan is explicit and can open the original task. Invalid plans or unavailable reads never become successful empty boards.
+All five scoped resources use the shared EmptyState inbox illustration at 64px, a 14px muted regular title and the same 16px illustration gap. Center it horizontally and vertically in the remaining main content area, with a flex-filling parent. No resource substitutes a large standalone Lucide icon or a top-aligned empty block. A populated board may retain quiet empty-column text; a completely empty board uses the common centered empty state.
+The file-tree context menu uses the shared anchored Popover inside the owning dialog, with collision handling and an interactive portal boundary for its nested confirmations. Clicking outside or Escape dismisses the menu without closing the Wiki. Creating or renaming inline receives focus; Escape cancels that edit before the Wiki's catalog navigation runs. Do not portal an interactive file menu directly to body outside a modal's pointer/focus boundary.
+There is no standalone Encyclopedia question pane. Ordinary tasks use the existing scoped `search_wiki` tool. The Encyclopedia sidebar graph button and graph tab are the graph entry points; do not repeat them at the right edge or show the legacy related-information rail for a workspace Encyclopedia.
+
+`search_wiki` and `search_memory` are optional evidence tools: the agent decides whether a task needs retrieval. Tool availability or index preparation does not trigger a search. The message flow displays only actual calls, with localized query, scope, wait/run/result state, available coverage counts and numbered evidence cards. Incomplete coverage never becomes a complete no-match. Citations show the original task/workspace, page or independent memory layer/type; source details disclose path, time and available generation/revision. Source-workspace actions reuse the Encyclopedia/Memory surface and reject changed bindings. Search text stays inert evidence; no cross-workspace path is silently opened in the caller's editor.
+
+Memory reading uses a readable Markdown column. Layer and type are independent labels; creation time remains visible, useful properties have named values and confidence/importance use human-readable scales. Storage paths, identifiers and raw metadata live in secondary technical disclosures. Editing provides explicit save and cancel, preserves revision conflict feedback and discards only the current draft on cancel.
+In an admitted Studio session, `search_wiki` defaults to `scope=all` over the current profile's saved active task and project bindings; `scope=current` limits it to the caller's workspace publication. The model supplies a query and optional continuation cursor, never roots or another profile. The native owner resolves each binding before and after reads, and the original ACP WikiIndex/a3s-vec engine admits cold published collections. One call considers at most 32 bindings within a 3-second budget, returns at most 12 attributed page passages and 48 KiB of hits, and exposes pending/continuation coverage. Per-index relevance ranks are interleaved; they are not presented as a global similarity score. The bounded cold set retains 32 original indexes per ACP process. Personal `wiki/local`, source packets, historical files, unpublished candidates and archived/deleted/rebound task owners are not search collections. An incomplete search is never displayed as a complete no-match. Bare ACP clients without the Studio capability retain current-workspace search.
+Outputs are the workspace's source files; compiled Encyclopedia pages retain the original OKF format and owner. PDF/image/Office conversion supplies bounded frozen evidence with page, slide, paragraph or cell coordinates and never rewrites those source files. Native Office semantics and the existing local document worker are preferred; explicitly configured document processors may be used through their existing settings. Unsupported, failed and truncated inputs remain visible in coverage, and OCR/conversion observations require factual review before publication.
+Memory layer and memory type each have a separate 24px icon button in the sidebar header. Each opens its own short, single-choice menu directly; the selected row is checked, the current value is announced and shown in the tooltip, and a non-default filter marks its trigger. All layers merges bounded pages from the original three stores and retains each row's layer for reads, edits and deletion; changing type never changes layer. Escape or choosing an option closes only that menu and restores trigger focus. The reader retains its 40px “Memory details” header when empty, loading or failed; separate labels identify the selected record's layer and type. Readable Markdown prose uses a 720px measure and 16px text, with created time visible and tags/technical storage fields collapsed. Stored HTML and remote images remain inert. Edit/Preview, Save and Delete use the existing small-action style: 24px targets, 14px Lucide outlines at stroke 1.7, radius 6px, quiet hover/focus states and tooltips. File-tab menus close when their owning resource view hides.
+
+The Encyclopedia compile action admits the original workspace-bound maintenance controller once, disables while queued/running, selects Board, where that job opens its detail. Board combines original conversation execution, compile controllers/ledger and original memory-extraction FIFO observations; it does not create another queue or treat an unknown outcome as success. Project scope includes its own and its child sessions' exact compile bindings. All three task types share one status/time/action header and Process/Results dialog; process reuses original conversation messages and approvals, results use original outputs or generation-checked compile review. Historical compile jobs without a saved conversation show their durable job summary. Memory extraction observations are bounded runtime state, not a durable history across restarts.
+
+Studio's bundled `stc-answer` (“知识理解”) answers with short prose, then an optional scriptless hand-drawn HTML/SVG fragment for relationships, then qualifications. Simple factual questions remain text. The skill keeps its upstream writing rules and standalone-page exporter; assets ship through the existing bundled-skill inventory and native dev resource generation. File-backed skills carry their canonical resource directory through capability projection, without granting resource reads. Task conversation HTML fences reuse `MessageHtmlArtifact` and its existing sandbox/CSP and document consent boundaries; incomplete fences remain source. Never inject generated HTML into the host DOM or add a second preview renderer.
+
+All task kinds share the Task / Results dialog and the default delivery path: execution → validation → review → delivery. Workspaces do not require Git and never receive an automatic repository. Each stage uses its original owner's recorded results; execution completion alone never qualifies an unrecorded validation, review or delivery. Compile review and publication remain generation-checked; memory delivery uses its actual extraction outcome. The Aster tenant uses the product mark and name. The dialog content/scrim sit above the full Wiki surface at z-indices 91/90. Git projects may opt into the CI / PR evidence view for the exact checkout and commit. Unknown, stale, missing and truncated records remain explicit. Current GitHub Actions runs are bounded, newer runs supersede older attempts of the same workflow/event, and an old PR head never qualifies the current commit. Opening details is read-only and never commits, pushes, creates a PR or merges.
+
+Task row hover cards request only that task's summary after the hover/focus delay and unmount the reader when closed. They show published Wiki pages, processed knowledge sources and workspace memory counts beside recorded conversation, usage, tool and artifact facts. Wiki counts use the exact task binding; shared workspace memory counts are labelled as shared. Missing layers/timing remain unknown, including the aggregate memory total when any layer is missing. A refresh action is available; open live cards refresh at 2.5 seconds and idle cards at 10 seconds. The original message owner retains at most 64 derived summaries and invalidates the affected summary on every message mutation. Wiki statistics read bounded metadata rather than project source bodies. Memory counts use existing owner metadata, never start an ACP session, and respect a shared read deadline. The card has a bounded viewport height and scrolls when needed.
+
+The Board toolbar uses the shared 30px search, status picker, reset and refresh. Four columns (Pending, Running, Needs attention, Completed) have 13px medium headings and muted counts. Status icons and text share semantic foreground tokens: blue for running, amber for attention/input/unknown, green for completed, red for failed, and muted for pending/cancelled/skipped. Approval, input, failure, cancellation and unknown each have a distinct Lucide glyph; status is always readable as text. Cards use white, a 1px card border, 8px radius, 12px padding, a 13px title and 12px status/time metadata; no invented PR or agent facts. Columns have a 240px minimum and scroll horizontally at narrow widths. Loading, empty, no-match and failure are distinct. Search and filters remain available in every state; changes reset the project cursor. A card opens that task record's actual Outputs folder in the same Wiki, retaining the surrounding project context. Project tasks may use the shared project root or their own original task-ID folder; other folders fail closed. After opening multiple roots, a compact work-directory picker in the existing header switches between the project and visited task folders. Each folder retains its own mounted file tabs, buffers and dirty protection; the inline path follows the active Outputs folder. Its separate Open task action navigates to the original task; lifecycle/approval commands remain there. Neither board cards nor sidebar task rows can be dragged to change execution or project membership. Project association is chosen when creating the task; initial private-directory setup does not move existing files. Paused, failed, skipped, cancelled and unknown work never appears as completed.
 
 ### PopConfirm
 
@@ -451,21 +722,62 @@ icon button sits to its right.
 with a 13px `#8a8a8a` 更多 action. Empty copy is 13px `#8a8a8a` ("还没有项目", "尚无任务").
 
 Session rows use the list row. A current session is the selected row. Each row leads with a 20px black circle,
-then the title. The relative time is 12px `#8a8a8a` and hides while the row is hovered so rename, pin, and
-archive can show. The row has no delete control. Day headings stay above groups of tasks.
+then the title. The relative time is 12px `#8a8a8a` and hides while the row is hovered so Wiki, rename, pin,
+and archive can show. The row has no delete control. Day headings stay above groups of tasks.
+
+Project and task rows reveal a Wiki shortcut on hover or keyboard focus, using the same 14px Lucide
+PanelsTopLeft glyph, 1.7 stroke and 24px ghost button as the neighboring row actions. The project
+new-session action uses MessageSquarePlus. A shortcut resolves the original project/task record by
+ID before opening the existing Wiki details; it does not fabricate a path or navigate the background
+conversation. Missing or mismatched records show a retryable error. Project scope shows the project
+root and all its task cards; task scope shows that task's actual directory and execution/plan. If
+both scopes share a directory, Outputs and folder-scoped Memory can match; Encyclopedia binding and
+Board scope remain distinct.
+
+A 420ms hover opens a 304px card 10px to the right of the row: the task title on top, then 本地电脑 with a
+代码开发 badge when the task recorded a code session, 所属空间, the branch it runs on, and the absolute update
+stamp (`2026/10/25 12:04:30`). The card reads facts the row already holds plus that session record; hovering
+never fetches. Rows with an unusable stamp omit it rather than print a placeholder.
 
 The main column is white, horizontal padding 32px, and centers its content. The greeting, composer, and feature
 strip share a 920px column. The composer is centered inside that column at 760px. The three feature cards fill
 the 920px column in a 3-column grid, gap 12px, with 40px above the grid.
 
+Aster's home wordmark uses the same monoline geometry and flat terminals as the ToWork mark,
+at 64px high with 36px below it. The shared tenant mark elsewhere keeps its existing identity.
+
+The home uses a single neutral canvas color with a restrained blue-gray cloud, never separate warm
+and cool upper/lower panels. A decorative Canvas 2D starfield gives the background depth: perspective
+projection, larger/brighter near stars, subtle trails and pointer parallax. Initial stars populate
+all depths inside the viewport. The tilted orbital plane stays behind the content. Pointer events
+pass through this layer. Painting is capped at 30 fps, 180 stars and a 1600 by 1200 framebuffer; no
+React render runs per frame. Hidden/inactive windows and a covering Wiki pause animation. Reduced
+motion draws a still sky. The dark theme uses the same layout with adapted luminance.
+
 The static composer is a 14px-radius card with a `#ececec` border and the card shadow. The textarea is 15px,
 placeholder `#c5c5c5`, padding 20px horizontal and 16px top. The toolbar is a row of 32px ghost controls. When
 the live composer is mounted it occupies the same 760px slot.
 
-The work-mode switch sits outside the composer, centered 20px under the wordmark and 40px above the quick
-tasks. It is a `#f5f5f5` pill track, padding 4px, role `radiogroup` named 工作模式. Each mode is a 32px pill with a
-16px icon. The selected mode is `#171717`, white medium text, with a 1px shadow. The others are `#3f3f3f` and get a
-`#ececec` hover. The host mode is 日常办公 with a coffee-cup icon. A switch never moves inside the composer card.
+A shallow footer band attaches below both the live and loading composer. Its light background is
+`#f0f1f3` (`#282a2e` in dark mode), distinct from the page and the white input card. Project/directory
+selection sits on the left; the canonical draft or durable `/goal` objective sits at the right.
+The input's command token, footer objective and sent-message goal tag share a gold surface and Target
+glyph; live state remains available as text and a status dot. They never create a second goal owner.
+The scope menu offers No project, which restores a private task directory instead of inheriting the
+last project. Task conversations keep their directory locked. In a Git project the current-directory
+mode can switch or create local branches directly; worktree mode keeps its independent-directory
+workflow. The native checkout command rejects dirty files and never forces, stashes or discards them.
+
+Send and stop are the same 32px ink disk, differing only in a solid white glyph: an arrow up to send, a 10px
+rounded square to stop. One disk, one glyph weight — swapping the two must not read as a different button.
+A send that cannot fire yet drops the disk and keeps a muted arrow; stop is always the filled disk. The task
+conversation has no standing AI note below the card; its dock alone owns the bottom spacing. An empty
+Aster task uses the tenant logo above its greeting, while other tenants retain their assistant avatar.
+
+Home opens directly in code development. It has no work-mode switch or office mode; the wordmark leads
+directly into the composer. New drafts use the existing current-directory/worktree workflow and local
+Agent. Old office or unknown mode selections resolve to this default; explicit installed-app actions
+continue through their existing handlers and cannot change the default host runtime.
 
 Quick tasks are one row of chips directly above the composer, left-aligned with it, 12px above it. A chip is 32px,
 fully rounded, white, `#ececec` border, 16px `#3f3f3f` icon, 13px label, at most 220px with an ellipsis and the full
@@ -560,11 +872,26 @@ background is `--settings-nav-background` (`#ffffff`). Content on the other side
 to its right. Opening search replaces 返回应用 with a 36px search field and turns that icon into a 36px
 cancel button. 偏好 is the first group label. List rows do not add their own top margin. The first group
 label uses a 4px top margin. Each later group label uses 12px. Rows under a label keep the 2px stack gap.
-The model service page is not in this menu. A visit to `/settings/provider` opens 通用.
+Managed settings keep the existing tenant-specific destinations; the local Aster exception follows below.
 Nav groups are
 12px / 16px `#8a8a8a` labels, then the list row. The active item is the selected row. The visible groups are
 偏好 (通用, 外观, 快捷键, 用量), 连接 (渠道, 数据), 开发者 (自主进化, 执行轨迹, 环境依赖), and 系统 (归档, then 关于). 渠道 opens `/settings/channels` and that page draws a channel sidebar for 飞书, Telegram, QQ, 微信, Discord, and Slack. Each message channel binds ToBot and does not ask which agent to use. 数据 opens `/settings/data` and that page draws a data sidebar in the previous order: 数据目录, 本地备份, WebDAV, 坚果云配置, S3 兼容存储, 导入外部应用数据, 导出菜单设置, Markdown 导出, Notion 设置, 语雀配置, Joplin 配置, Obsidian 配置, 思源笔记配置. Configured backup and note channels belong to the default ToBot: naming one reads a short index, and asking to save or back up writes after the reply. A channel with missing credentials is not described as connected.
 编码, 声音, 账户, and a plugins, skills, MCP, or agents settings group are not in this menu.
+
+Local Aster exposes the existing 模型服务 at `/settings/provider` and 模型配置 under 智能. 模型配置 keeps
+默认模型, 路由计划 and 本地预算 in one page; switching a view preserves the existing provider/model identities
+and saved defaults. 用量 stays under 偏好 and reads the local accounting source. API 网关 lives under 连接
+and links to those same model, route, budget and usage editors. It does not own duplicate configuration or a
+second usage dashboard. A local account or cloud billing flow is not added.
+
+Settings destinations have distinct outline glyphs, shared with their settings-search entries: sliders for
+General, sun for Appearance, keyboard for Shortcuts, bars for Usage, server for Model services, CPU for Model
+configuration, globe for Web search, text document for Document processing, messages for Channels, network
+nodes for API gateway, database for Data, archive box for Archive and info for About. At 16px / stroke 1.7,
+the glyphs follow [useAnimations' hover/reverse interaction](https://useanimations.com/icons/settings): the
+whole row's hover or keyboard focus moves one small part, then leaving reverses it. Only the glyph moves;
+the hit target and label stay still. Selection does not loop or replay the gesture. Touch hover does not
+trigger it, and reduced motion removes the gesture immediately. Reuse the existing SVG and CSS mechanisms.
 
 Each row opens the matching settings job. 通用 keeps launch, proxy, and developer controls, and adds 应用,
 权限 (电脑操控权限 and Agent 控制权限), 语言 / 设置应用语言, and 关于. The 语言 row jumps to that control on
@@ -593,7 +920,11 @@ These pages sit in the icon-rail frame.
 - A wide labeled sidebar, when one is already open, uses radius 12px, a full 0.5px border, and 8px bottom padding.
   Dragging the icon rail does not expand it into that sidebar.
 - Rail tooltips are a black pill, white 13px medium text, no arrow.
-- The first visible rail item is 工作. When a team is selected, the visible rail is 工作, 知识, 消息, 团队, 插件. 日程 and 邮件 live in the team page sidebar. 插件 stays immediately after 团队. In the personal center, 团队 stays off the rail and 插件 stays on it. 文档 stays off the rail.
+- The first visible rail item is 工作. Wiki belongs to the selected workspace and has no ActivityBar entry. When a team is selected, the managed rail keeps 消息, 团队 and the permitted account destinations after 工作. 日程 and 邮件 live in the team page sidebar. In the personal center, 团队 stays off the rail. In the local Aster tenant, 资料 follows 工作 and opens the personal library at `/app/documents`. Managed 文档 stays off the rail. The personal collection is `materials` under the configured workspace; task/project files retain their existing owners. Its file viewport fills the available pane, with a sticky header and bottom pagination; it has no onboarding cards.
+- The personal library heading is 资料. Its folder tree and file list reuse the task workspace's `DocumentFolderIcon` and `DocumentFileIcon`, including type mapping, dimensions and expanded-folder state. Right-click actions target the actual row or folder, preserve a multiple-file selection, and confirm recoverable removal. Root and blank-space menus offer creation, import and refresh without file-specific actions. Page-size menus anchor beside their trigger within the viewport.
+- Opening a personal-library file uses the shared editable document surface inside the library, with retained file tabs and native document save receipts. The compact editor toolbar places Back and Hand to Agent on one row. Switching files or library views retains unsaved buffers; closing a dirty file requires confirmation. Rename, move, removal, search preparation and task handoff require saved content. Import and creation keep the current collection; creation opens the new file in place. Narrow panes hide secondary metadata while preserving file actions.
+- Search contents and Library wiki are sidebar destinations in the same page. Back preserves the folder, filename filter and selection; opening an original from search returns to the same question, result and captured source scope. Searches may finish in the background. Wiki reading tabs and filters remain mounted across view changes, with shortcuts enabled only while visible. Tasks created from library files reuse the existing conversation and composer in the library, retain their sidebar entry, and submit their staged originals once. Hidden conversations keep their state without claiming the page's shortcuts. The Content search column offers Enable search or Retry for supported files and shows Searchable after confirmed processing. Unsupported files do not offer the action. Model selection stays in place when no default model is configured.
+- Personal originals and derived encyclopedia pages remain separate. Aster continuously admits personal materials into the existing knowledge compiler, including first-time compilation without opening the page. The 资料百科 sidebar destination reuses the published knowledge reader, citation inspection and maintenance controls. Generated Wiki and index folders are excluded from source admission. OCR and parsing failures remain visible; partial evidence never claims complete extraction. The original ACP `search_wiki` includes published personal knowledge in `scope=all`, while `scope=current` retains the selected task only. Retrieval is an agent choice. Library evidence identifies its own profile-bound library instead of inventing a task or project, and opens the corresponding personal encyclopedia.
 
 ## 12. Page entry
 
@@ -601,11 +932,11 @@ A view that is not ready shows one legacy wordmark. The mark is a left-to-right 
 `#303030` on white. Dark uses `#f2f2f3`. This is the Aster page entry. The shared `PageLoading` in
 `packages/ui` stays a tenant-neutral mark and does not draw a tenant wordmark.
 
-The stroke runs for 500ms and repeats while the view is not ready. After the view is ready, the loader stays
-until at least 500ms from mount, then fades over 180ms. The leaving state pauses the stroke so the letters do
-not redraw during the fade. `prefers-reduced-motion: reduce` shows the finished mark and skips the draw.
-Each entry id plays once per session. The work, capabilities, and organization routes paint their own entry.
-The shell does not stack a second mark on those routes.
+### Local workspace gate
+
+The Aster build has no gate at all. There is no welcome screen, no sign-in page, no lock dialog and no product
+menu: the mark at the top of the rail is a mark, not a button, and the app opens on the work bench with the
+rail, the task list and the composer already live. The only chrome a personal build adds is the mark itself.
 
 ## 13. Work surface locks
 
@@ -1121,6 +1452,7 @@ with its resource reason; a disabled placeholder or a passing component snapshot
 | Concurrency and authority | Stale revision, idempotent replay/input mismatch and restart recovery, revoked grant, inactive member, other tenant and protected-cache withdrawal |
 | List and batch operations | Left checkboxes, keyboard selection, mixed check-all, clear/reset/refresh reconciliation and independent detail expansion; correct selection scope and ineligible rows, every addressed record authorized, partial/unknown outcomes and retry/export scope when supported |
 | Accessibility and layout | Actual keyboard/focus flow, screen-reader names/status, contrast, narrow window/zoom and both locales |
+| Motion and emotional feedback | Real event-to-state mapping, interruption/reversal, stable controls and reading position, hidden/settled work stopped, and equivalent reduced-motion content and actions |
 | Owner storage | Remote owner repository/authority campaigns run unchanged on memory and live PostgreSQL; local collections qualify their actual persistent adapter |
 | Delivery | Appropriate checks, actual HTTP/native/GUI persistence for the changed chain, evidence directory and ROADMAP gate update |
 
@@ -1138,6 +1470,7 @@ Selection scope / eligibility / batch outcome / removal dependencies:
 Affected detail / pages / totals / facets / badges / success outside current view:
 Loading / empty / errors / pending / conflicts / draft recovery:
 Keyboard / focus / responsive layout / locales:
+Motion triggers / state owner / interruption / reduced motion / result and recovery:
 Checks / retained evidence / ROADMAP gate / remaining gaps:
 ```
 
@@ -1166,3 +1499,5 @@ Before shipping chrome, check:
 - feature-card colors and the tenant brand are not used for rows, segments, or the rail;
 - a record list uses the hairline row, a data table uses the 48px member row, and a one-line confirm uses PopConfirm;
 - collection behavior and retained acceptance evidence satisfy section 14.
+- motion follows the shared recipes: real state, stable targets, interruptible movement, quiet completion,
+  useful failure recovery, reduced motion and no animation work in an inactive or settled view.

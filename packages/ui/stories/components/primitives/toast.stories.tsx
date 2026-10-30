@@ -1,6 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-
 import { Button, getToastUtilities, ToastViewport } from '@a3s-lab/ui'
+import type { Meta, StoryObj } from '@storybook/react'
 
 const toast = getToastUtilities()
 
@@ -109,4 +108,28 @@ export const Loading: Story = {
       </Button>
     </div>
   )
+}
+
+export const Compact: Story = {
+  ...Basic,
+  play: () => {
+    toast.success({ title: '你的软件已是最新版本', timeout: 0 })
+  }
+}
+
+export const LongMessage: Story = {
+  ...Basic,
+  play: () => {
+    toast.info({
+      title: '文档已保存，较长的提示会自然换行，完整展示这次操作的结果',
+      description: '你可以继续处理其他任务，也可以查看刚刚保存的文档。',
+      action: {
+        label: '查看',
+        onClick: () => {
+          toast.success('已打开文档')
+        }
+      },
+      timeout: 0
+    })
+  }
 }

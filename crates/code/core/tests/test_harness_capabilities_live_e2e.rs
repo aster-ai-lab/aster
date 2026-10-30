@@ -154,6 +154,9 @@ async fn observe_host(
                     }
                 }
                 AgentEvent::ContextCompacted { .. } => observed.compacted = true,
+                AgentEvent::AutoCompact { phase, .. } if phase == "completed" => {
+                    observed.compacted = true;
+                }
                 AgentEvent::PlanningEnd { .. } => observed.planned = true,
                 AgentEvent::GoalExtracted { .. } => observed.goal_extracted = true,
                 AgentEvent::StepEnd { .. } => observed.steps += 1,
@@ -678,12 +681,12 @@ async fn deepseek_flash_compaction_keeps_the_earlier_token() {
                     .with_read_only_session(true)
                     .with_auto_compact(true)
                     .with_auto_compact_threshold(0.05)
-                    .with_max_context_tokens(4_000),
+                    .with_max_context_tokens(32_768),
             ),
         )
         .await
         .expect("session");
-    let filler = "note ".repeat(2_000);
+    let filler = "note ".repeat(10_000);
     let first = session
         .send(
             &format!(

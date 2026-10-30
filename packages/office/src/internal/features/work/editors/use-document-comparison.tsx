@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Content, Editor } from '@tiptap/core';
 import { useRef, useState } from 'react';
 import { showToast } from '../../../state/app-state';
@@ -95,19 +96,23 @@ export function useDocumentComparison({
   };
 
   return {
-    dialog: dialog ? (
-      <DocumentCompareDialog
-        initialMode={dialog.mode}
-        restoreFocusTarget={() =>
-          dialog.restoreFocusTarget?.isConnected
-            ? dialog.restoreFocusTarget
-            : (editorRef.current?.view.dom ?? null)
-        }
-        onApplied={applied}
-        onClose={close}
-        onSubmit={submit}
-      />
-    ) : null,
+    dialog: (
+      <DialogPresence>
+        {dialog ? (
+          <DocumentCompareDialog
+            initialMode={dialog.mode}
+            restoreFocusTarget={() =>
+              dialog.restoreFocusTarget?.isConnected
+                ? dialog.restoreFocusTarget
+                : (editorRef.current?.view.dom ?? null)
+            }
+            onApplied={applied}
+            onClose={close}
+            onSubmit={submit}
+          />
+        ) : null}
+      </DialogPresence>
+    ),
     open,
   };
 }

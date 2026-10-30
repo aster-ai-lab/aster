@@ -1,0 +1,59 @@
+export const meta = {
+  title: 'ACL 诊断、限制与规范摘要',
+  description: '有界输入、诊断截断、确定性规范字节、Schema 接纳与验证。',
+  label: '诊断与验证',
+  updated: '2026-10-30',
+};
+
+ACL 的解析成功、结构校验成功和宿主接纳是三个不同结果。错误应停在对应边界，不应在后续层默默补默认值。
+
+## 输入限制
+
+<DocTable caption="ParseLimits 默认值" headers={['字段', '默认限制', '计量方式']} rows={[
+  ['max_document_bytes', '1 MiB', '整份输入的 UTF-8 字节'],
+  ['max_nesting_depth', '64', '块、列表、对象和调用的结构嵌套'],
+  ['max_collection_items', '10,000', '每个文档、块体、标签列表、集合或调用参数列表'],
+  ['max_token_bytes', '256 KiB', '一个源码 token 的 UTF-8 字节'],
+  ['max_diagnostics', '100', '收集返回的诊断数量'],
+]} />
+
+默认值来自 <SourceRef path="crates/acl/src/parse_limits.rs" match="pub const DEFAULT_PARSE_LIMITS: ParseLimits">解析限制常量</SourceRef>。宿主可以在输入边界收紧限制；不要用低层 Lexer 绕过高层解析器的限制。
+
+## 诊断与截断
+
+`parse` 与 `parse_with_limits` 返回首个解析错误。编辑器需要多条错误时，使用 `collect_diagnostics` 或 `collect_diagnostics_with_limits`。后者按确定性的恢复规则收集错误，不会把有错误的文本当成有效配置。
+
+位置包含完整 `Span`。行与列从 1 开始，偏移按 UTF-8 字节从 0 开始。显示错误时应使用诊断代码与位置；不要把完整配置、凭据值或函数实参写入日志。
+
+超过诊断预算后，报告以 `truncated` 标明仍有未返回的错误。预算为零也不能据此接受输入。见 <SourceRef path="crates/acl/src/diagnostic.rs" match="pub struct DiagnosticReport {">诊断报告</SourceRef>。
+
+## 规范字节与摘要
+
+`canonical_bytes` 输出无 BOM 的 UTF-8、LF 换行和恰好一个末尾 LF。`canonical_digest` 对这些字节计算 SHA-256，返回小写的 `sha256:` 加 64 位十六进制字符串。见 <SourceRef path="crates/acl/src/canonical.rs" match="pub fn canonical_digest(document: &Document)">摘要入口</SourceRef>。
+
+属性和对象字段按规范规则排序；块、标签、列表元素和函数参数的顺序仍有意义。解析会丢弃注释与源码空白，因此这些差异不进入摘要。字符串与标签保留原始 Unicode 标量序列，不执行 NFC/NFD 归一化。
+
+可信 Schema 可以用 `BlockSchema::unordered(true)` 声明同名重复块无序，再使用 `canonical_bytes_with_schema` 或 `canonical_digest_with_schema`。这两个接口使用 Schema 作为排序元数据，**不执行 Schema 接纳**；必须先调用校验接口。
+
+摘要证明内容身份，不证明签名可信、调用获准、凭据有效或配置可以激活。
+
+## 验证清单
+
+1. 输入超过字节、深度、集合或 token 限制时，确认返回对应错误。
+2. 未声明字段、错误值类型和标签数量错误必须被 Schema 拒绝。
+3. 零诊断预算下输入错误仍不能被接纳。
+4. 生成后重新解析，确认字符串与数字等值类型没有改变。
+5. 核对属性重排保持规范摘要一致，而有序列表重排改变摘要。
+6. 函数调用仍是 AST 数据；取值与授权由宿主显式完成。
+
+从仓库根目录运行现有测试：
+
+```sh
+cargo test --locked -p a3s-acl
+```
+
+## 实现依据
+
+- [规范字节与错误处理](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/canonical.rs)
+- [共享规范摘要用例](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/fixtures/canonical/digest-cases.json)
+- [Schema 校验实现](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/schema/validator.rs)

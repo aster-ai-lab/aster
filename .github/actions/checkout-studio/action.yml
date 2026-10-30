@@ -20,10 +20,12 @@ runs:
       id: revision
       shell: bash
       run: |
-        test "$(git ls-tree HEAD apps/studio | cut -d ' ' -f 1)" = 160000
-        echo "sha=$(git rev-parse HEAD:apps/studio)" >> "$GITHUB_OUTPUT"
-        test "$(git ls-tree HEAD crates/power | cut -d ' ' -f 1)" = 160000
-        echo "power_sha=$(git rev-parse HEAD:crates/power)" >> "$GITHUB_OUTPUT"
+        # Older container Git and later build scripts need this exact runner checkout.
+        git config --global --add safe.directory "${GITHUB_WORKSPACE:?}"
+        test "$(git -C "$GITHUB_WORKSPACE" ls-tree HEAD apps/studio | cut -d ' ' -f 1)" = 160000
+        echo "sha=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD:apps/studio)" >> "$GITHUB_OUTPUT"
+        test "$(git -C "$GITHUB_WORKSPACE" ls-tree HEAD crates/power | cut -d ' ' -f 1)" = 160000
+        echo "power_sha=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD:crates/power)" >> "$GITHUB_OUTPUT"
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         repository: kense-labs/studio

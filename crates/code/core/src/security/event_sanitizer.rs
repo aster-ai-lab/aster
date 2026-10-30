@@ -199,7 +199,9 @@ impl AgentEventStreamSanitizer {
                         self.active_turn = None;
                         self.attempt_checkpoint = None;
                     }
-                    AgentEvent::End { .. } | AgentEvent::Error { .. } => {
+                    AgentEvent::End { .. }
+                    | AgentEvent::Error { .. }
+                    | AgentEvent::ToolEffectUnresolved { .. } => {
                         self.take_all(&mut ready);
                         self.active_turn = None;
                         self.attempt_checkpoint = None;
@@ -762,5 +764,52 @@ mod tests {
             emitted.first(),
             Some(crate::agent::AgentEvent::Error { .. })
         ));
+    }
+    #[test]
+    fn typed_failure_flushes_all_redacted_domains_before_the_terminal() {
+        use crate::agent::AgentEvent;
+        let provider: Arc<dyn SecurityProvider> = Arc::new(DefaultSecurityProvider::new());
+        let mut stream = AgentEventStreamSanitizer::new(Some(provider));
+        for piece in ["sensitive@", "example.com"] {
+            assert!(stream
+                .push(AgentEvent::TextDelta { text: piece.into() })
+                .is_empty());
+            assert!(stream
+                .push(AgentEvent::ReasoningDelta { text: piece.into() })
+                .is_empty());
+            assert!(stream
+                .push(AgentEvent::ToolInputDelta {
+                    id: Some("tool".into()),
+                    delta: piece.into()
+                })
+                .is_empty());
+            assert!(stream
+                .push(AgentEvent::ToolOutputDelta {
+                    id: "tool".into(),
+                    name: "read".into(),
+                    delta: piece.into()
+                })
+                .is_empty());
+        }
+        let emitted = stream.push(AgentEvent::ToolEffectUnresolved {
+            error: crate::harness_loop::ToolEffectUnresolved {
+                obligation_ids: vec!["original-op".into()],
+            },
+        });
+        assert_eq!(emitted.len(), 5);
+        assert!(
+            matches!(emitted.last(), Some(AgentEvent::ToolEffectUnresolved { error }) if error.obligation_ids == ["original-op"])
+        );
+        assert!(matches!(emitted[0], AgentEvent::TextDelta { .. }));
+        assert!(matches!(emitted[1], AgentEvent::ReasoningDelta { .. }));
+        assert!(matches!(emitted[2], AgentEvent::ToolInputDelta { .. }));
+        assert!(matches!(emitted[3], AgentEvent::ToolOutputDelta { .. }));
+        let serialized = serde_json::to_string(&emitted).unwrap();
+        assert!(!serialized.contains("sensitive@example.com"));
+        assert!(!serialized.contains("sensitive@"));
+        assert!(
+            stream.finish().is_empty(),
+            "the terminal must not leave output waiting for EOF"
+        );
     }
 }

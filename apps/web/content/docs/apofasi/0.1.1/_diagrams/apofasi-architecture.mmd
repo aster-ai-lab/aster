@@ -1,0 +1,7 @@
+flowchart TB
+  accTitle: Apofasi 的类型化决策路径
+  accDescr: 状态与问题先经过路由，再由词法或神经引擎产生类型化答案。宿主根据置信度决定自动执行或人工复核。
+  input["State + Questions"] --> router["Router<br/>脚本与显式选择"]
+  router --> engine["Decision Engine<br/>词法默认 / 神经 infer"]
+  engine --> answers["choice / score / noul"]
+  answers --> host["宿主门禁<br/>Auto 或 Escalate"]

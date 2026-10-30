@@ -220,6 +220,7 @@ async fn benchmark_hybrid_search(
     let workspace = tempfile::tempdir()?;
     let source_bytes = write_hybrid_workspace(workspace.path())?;
     let provider = Arc::new(BenchmarkProvider::new());
+    let rerank_mode = rerank.mode;
     let retrieval = WorkspaceRetrievalOptions::new(provider.clone())
         .with_index_limits(WorkspaceSemanticIndexLimits {
             max_records: HYBRID_RECORD_COUNT,
@@ -305,13 +306,13 @@ async fn benchmark_hybrid_search(
     let rerank_observation = RerankObservation::default();
     for _ in 0..WARMUP_SAMPLES {
         let result = session.hybrid_search(request.clone()).await?;
-        validate_hybrid(&result, rerank.mode, lexical_engine)?;
+        validate_hybrid(&result, rerank_mode, lexical_engine)?;
         rerank_observation.observe(&result)?;
     }
     let document_inputs_before_measurement = provider.document_inputs.load(Ordering::Acquire);
     let latency = measure_async(MEASURED_SAMPLES, || async {
         let result = session.hybrid_search(request.clone()).await?;
-        validate_hybrid(&result, rerank.mode, lexical_engine)?;
+        validate_hybrid(&result, rerank_mode, lexical_engine)?;
         rerank_observation.observe(&result)?;
         Ok(())
     })

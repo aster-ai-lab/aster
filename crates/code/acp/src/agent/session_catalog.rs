@@ -25,7 +25,7 @@ struct ListRequest {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct ListMeta {
-    #[serde(rename = "x.ai/facetFilters")]
+    #[serde(rename = "a3s/facetFilters")]
     facets: Option<Facets>,
 }
 
@@ -183,7 +183,7 @@ impl A3sCodeAgent {
             Ok::<_, acp::Error>(json!({
                 "sessions": sessions,
                 "_meta": {
-                    "x.ai/listScope": "cwd",
+                    "a3s/listScope": "cwd",
                     "a3sCode/sessionCatalog": {
                         "schema": "a3s.code.session-catalog.v1",
                         "incomplete": page.incomplete,

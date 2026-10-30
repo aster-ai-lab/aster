@@ -1,5 +1,9 @@
 # Workspace Retrieval Release Qualification
 
+> Historical upstream record. Foreign-language SDK results and external publishing
+> references do not describe this repository's Rust/ACP delivery or qualify its current release.
+
+
 This document retains historical upstream qualification. Its SDK/CLI commands,
 commit identities and measurements are not current Aster release evidence.
 For the current root-workspace procedure and optional-semantic hybrid contract,

@@ -1185,7 +1185,7 @@ async fn turn_summary_generate_persists_and_broadcasts() {
                 let a3s_acp_lib::AcpClientMessage::ExtNotification(args) = msg else {
                     continue;
                 };
-                if args.request.method.as_ref() != "x.ai/session_notification" {
+                if args.request.method.as_ref() != "a3s/session_notification" {
                     continue;
                 }
                 let value: serde_json::Value =

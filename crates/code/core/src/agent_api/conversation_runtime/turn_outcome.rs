@@ -262,9 +262,9 @@ pub(super) async fn prepare_pinned(
                 "scoped Agent Run has no capability binding".into(),
             ));
         };
-        let cognitive = cognitive_binding_for_projection(session, capability_run.projection());
+        let package = package_binding_for_projection(session, capability_run.projection());
         let run = match RunControlState::from_session(session)
-            .start_run_with_bindings(prompt, cognitive.clone(), binding.clone())
+            .start_run_with_bindings(prompt, package.clone(), binding.clone())
             .await
         {
             Ok(run) => {
@@ -276,12 +276,12 @@ pub(super) async fn prepare_pinned(
                 return Err(error);
             }
         };
-        if let Some(binding) = cognitive {
+        if let Some(binding) = package {
             session
                 .run_store
                 .record_event(
                     run.id(),
-                    crate::agent::AgentEvent::CognitiveContextBound { binding },
+                    crate::agent::AgentEvent::PackageContextBound { binding },
                 )
                 .await;
         }
@@ -325,8 +325,12 @@ pub(super) async fn prepare_pinned(
     let parts = FactSession::from(session)
         .with_executor(agent_loop.tool_executor_handle())
         .with_surface(crate::fact_control::SessionSurface {
+            response_meta: Default::default(),
             agent: agent_loop,
             session_id: session.session_id.clone(),
+            persistence: Some(
+                super::super::session_persistence::SessionPersistenceContext::from_session(session),
+            ),
             checkpoint,
             events: None,
             pending_memory_telemetry: std::sync::Arc::new(std::sync::Mutex::new(Vec::new())),

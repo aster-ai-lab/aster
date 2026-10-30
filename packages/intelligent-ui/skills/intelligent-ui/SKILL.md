@@ -1,35 +1,40 @@
 ---
 name: intelligent-ui
-description: Show an interactive calculator, comparison, chart or input form directly inside the conversation, using Aster Intelligent UI.
+description: Show a JSON Render card, chart or structured input form directly inside an Aster conversation.
 ---
 
-Emit a fenced `openui` block when an interactive answer helps the user. `ask_user_form` takes the same source without a fence. Each line is `name = Component(args)`. Arguments follow the prop order below. The first statement assigns `root`. Child components are identifier lists. This is not executable JavaScript. A closed line can render before the fence ends. Do not invent another interface. JSON, MDX, and HTML are source, not a card. Do not copy a tool result into a json or openui fence. The host decides whether that data is a form, a view, or prose. If a card is already on screen, refer to it in one sentence. Author an openui fence only for an interaction you compose yourself.
+Use one JSON Render document with `root`, `elements` and optional `state.form`. Each element has `type`, named `props`, and optional `children` containing element IDs. Emit a `json-render` fence for a card in a reply. To wait for user input, call `ask_user_form` with this JSON document encoded as its `form` string, without the fence.
 
-```openui
-root = Card("旅行预算", [days, daily, total, submit])
-days = Slider("days", "天数", 5, 1, 14, 1)
-daily = Input("daily", "每天预算", 300, "number", 0, 10000)
-total = Metric("合计", {days * daily}, "元")
-submit = Button("submit", "使用这个预算")
-```
-
-Components and props:
+Bind input `value` (Checkbox `checked`) to `{"$bindState":"/form/name"}`. Names are unique ASCII identifiers, at most 48 characters. Initial values in `state.form` are strings, finite numbers or booleans. Missing defaults are empty text, zero or false. Submit is the only action. Required text must be nonempty; required checkboxes must be checked. Select options are unique nonempty strings. Numeric bounds use `min`, `max`, `step`.
 
 | Component | Props |
 | --- | --- |
+| BarChart | labels, values |
+| Button | action, label |
 | Card | title |
-| Stack | — |
-| Grid | columns (1–3) |
-| Text | — |
-| Input | name, label, initial, type (`text`, `number`, `email`, `tel`), min, max, step, required, placeholder |
-| Textarea | name, label, initial, required, placeholder |
-| Slider | name, label, initial, min, max, step |
-| Select | name, label, initial, options (array of unique nonempty strings), required, placeholder |
-| Checkbox | name, label, initial (boolean), required |
+| Checkbox | label, checked, required |
+| Form | submitAction |
+| Grid | columns |
+| Input | label, value, type, min, max, step, required, placeholder |
 | Metric | label, value, unit |
-| BarChart | labels (array of strings), values (array of numbers) |
-| Button | action (`submit`), label |
+| Select | label, value, options, required, placeholder |
+| Slider | label, value, min, max, step |
+| Stack | direction, gap |
+| Text | content |
+| Textarea | label, value, required, placeholder |
 
-Every input has a unique `name` (identifier). Input names become variables in expressions. Expressions may contain literals, arrays, objects, input identifiers, arithmetic, comparisons, logical operators and ternaries. Calls, member access, assignment, functions, imports, exports, spreads, DOM tags and event handlers are rejected. Required text fields must be nonempty and required checkboxes must be checked before submitting. Expressions cannot access the network or host. Do not request secrets.
+```json-render
+{
+  "root": "root",
+  "elements": {
+    "root": {"type": "Card", "props": {"title": "补全信息"}, "children": ["topic", "submit"]},
+    "topic": {"type": "Input", "props": {"label": "主题", "value": {"$bindState": "/form/topic"}, "required": true}},
+    "submit": {"type": "Button", "props": {"action": "submit", "label": "继续"}}
+  },
+  "state": {"form": {"topic": ""}}
+}
+```
 
-Changes calculate locally immediately. A fence does not submit. Submit is enabled only for a bound pending form. Those values return to the same tool call. Treat them as the confirmed input. Do not repeat the form. The plugin does not call tools, send requests, or continue a conversation by itself.
+The host validates the complete JSON document before rendering. Streaming incomplete JSON stays pending. Components are closed: no imports, scripts, DOM tags, event handlers, executable expressions, arbitrary actions or host/network access. Text is literal. Do not request secrets. Titles, labels, placeholders and option labels follow the user's language; field names remain ASCII identifiers.
+
+Message fences display cards but have no submit lease. Only a currently bound pending form can submit, and its typed values return to the same tool call. Do not start another conversation turn. If structured tool data is already displayed by the host, refer to it without copying its JSON or drawing another card.

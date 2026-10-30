@@ -1,6 +1,6 @@
 //! Changelog fetching from CDN with local disk cache.
 //!
-//! Both markdown (`*.external.md`) and JSON (`*.external.json`) changelogs are published per-version to the CDN at `x.ai/cli/changelogs/`.
+//! Both markdown (`*.external.md`) and JSON (`*.external.json`) changelogs are published per-version to the CDN at `a3s/cli/changelogs/`.
 //!
 //! `ChangelogManager::fetch()` retrieves both formats in parallel and returns a `Changelog` with optional markdown and structured entries.
 //! Consumers pick the format they need:

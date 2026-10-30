@@ -1,6 +1,9 @@
 #![cfg(test)]
 #![cfg(unix)]
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::process::Stdio;
 use std::time::Duration;
 
@@ -74,7 +77,7 @@ providers "mock" {
     let selected = store
         .publish_selection_sync("studio-installed-plugins", None, &[package.cursor()])
         .unwrap();
-    let mut child = tokio::process::Command::new(env!("CARGO_BIN_EXE_a3s-code-acp"))
+    let mut child = tokio::process::Command::new(binaries::acp_binary())
         .args(["--cwd", ".", "--config"])
         .arg(config)
         .arg("--plugin-store")

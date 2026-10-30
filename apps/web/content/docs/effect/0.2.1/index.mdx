@@ -1,0 +1,54 @@
+export const meta = {
+  title: 'Aster Effect 产品概览',
+  description: 'a3s-effect 的程序值、不可变事实日志、Actor 恢复和等待边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-effect` 是 A3S Code Harness 的 Actor Runtime。当前版本为 `0.2.1`，要求 Rust 1.85 或更新版本。
+
+Effect 把程序描述与执行分开。Actor 把不可变事实日志折叠成视图，再执行视图允许的状态转换。
+
+该 crate 不是其他 Agent 框架的移植，也不嵌入 TypeScript Effect Runtime。
+
+<EffectArchitectureDiagram />
+
+## 两个核心机制
+
+<DocTable caption="Effect 与 Actor 的职责" headers={['机制', '职责', '关键边界']} rows={[
+  ['Effect 程序值', '描述成功值、预期错误和所需服务', '只有 Effect::run 才执行服务'],
+  ['不可变事实日志', '保存已经发生的事实', '恢复读取同一日志，不依赖进程内等待器'],
+  ['Component Fold', '把日志折叠为视图和可用 Transition', '相同 Transition Key 不重复执行'],
+  ['Actor Resume', '执行 Transition 并追加新事实', '重复 Key 在执行前返回 DuplicateTransition'],
+]} />
+
+构建、映射或包装 `retry` 都不会进入服务。`Effect::run` 是描述变成结果的边界。
+
+## 三种退出状态
+
+<DocTable caption="Exit 的停止语义" headers={['状态', '含义', 'Retry 行为']} rows={[
+  ['Exit::Fail', '携带 ActorError 的预期失败', '可以按 Schedule 重试'],
+  ['Exit::Die', '缺陷或不可恢复错误', '不重试'],
+  ['Exit::Interrupt', '父 Scope 发出的取消', '不按预期失败处理'],
+]} />
+
+`catch_fail` 只处理 `Exit::Fail`，不会吞掉 `Exit::Die`。`bracket` 在成功、失败和取消路径上释放资源。
+
+## 等待由事实结束
+
+Coding Scheduler 在 `CodingPhase::Confirm` 等待 `confirmation.answered`，在 `CodingPhase::Question` 等待 `question.answered`。
+
+等待期间没有可执行 Transition，`resume` 执行零步。该路径没有进程内计时器，也没有隐式超时。
+
+## 文档入口
+
+- [Effect 与 Harness 接入](./integration/)：程序值、服务、Coding Actor 和组合部件。
+- [恢复与运行验证](./operations/)：日志折叠、幂等性、并发取消和测试。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Effect 与 Actor 合同](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/README.md)
+- [Effect 程序值实现](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/effect.rs)
+- [Effect crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/Cargo.toml)

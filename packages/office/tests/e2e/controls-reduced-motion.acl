@@ -1,0 +1,16 @@
+suite "office-controls-reduced-motion" {
+    version = 1
+
+    scenario "dialog-reduced-motion-lifetime" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        expect "platform-preference" { target = css("output[aria-label='Motion preference']") rendered_text = "reduce" }
+        click "open-dialog" { target = role("button", "Format") }
+        expect "shown" { visible = role("dialog", "Format") }
+        click "close-dialog" { target = role("button", "关闭") }
+        expect "removed" { hidden = role("dialog", "Format") }
+        expect "invoker-focus" { focused = role("button", "Format") }
+        expect "no-dialog-animation" { target = css("output[aria-label='Dialog motion']") rendered_text = "" }
+    }
+}

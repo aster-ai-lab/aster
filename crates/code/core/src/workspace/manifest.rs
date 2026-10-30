@@ -44,7 +44,9 @@ mod file_kind;
 mod scanner;
 mod watcher;
 use scanner::is_relevant_event;
-pub use scanner::scan_workspace_files;
+pub use scanner::{
+    scan_workspace_files, scan_workspace_source_files, scan_workspace_source_files_excluding,
+};
 use watcher::run_manifest_task;
 
 const SNAPSHOT_CHANNEL_CAPACITY: usize = 16;
@@ -689,32 +691,25 @@ impl ManifestWorkspaceBackend {
     /// durable cache degrades to the portable in-memory catalog without failing
     /// the workspace.
     pub fn chunk_catalog(&self) -> Arc<WorkspaceChunkCatalog> {
-        self.catalog_runtime
-            .get_or_init(|| {
-                let file_system: Arc<dyn WorkspaceFileSystem> = self.catalog_local.clone();
-                let persistent = self.persistent_index.get().cloned();
-                if let Some(persistent) = persistent {
-                    // The durable corpus index owns a3s-vec FTS. The
-                    // catalog keeps reporting that selected engine to the
-                    // retrieval contract, but uses portable partitions for
-                    // cold admission instead of opening one native collection
-                    // per source file. The catalog remains a verified
-                    // fallback while the durable generation is rebuilding.
-                    let catalog = WorkspaceChunkCatalog::default_catalog_with_engines(
-                        WorkspaceLexicalEngine::A3sVec,
-                        WorkspaceLexicalEngine::Portable,
-                    );
-                    LocalWorkspaceCatalogRuntime::start_with_catalog_and_persistent(
-                        Arc::clone(&self.manifest),
-                        file_system,
-                        catalog,
-                        Some(persistent),
-                    )
-                } else {
-                    LocalWorkspaceCatalogRuntime::start(Arc::clone(&self.manifest), file_system)
-                }
-            })
-            .catalog()
+        let runtime = self.catalog_runtime.get_or_init(|| {
+            let file_system: Arc<dyn WorkspaceFileSystem> = self.catalog_local.clone();
+            let persistent = self.persistent_index.get().cloned();
+            // Cold admission must stay portable even before durable FTS is attached.
+            let catalog = WorkspaceChunkCatalog::default_catalog_with_engines(
+                WorkspaceLexicalEngine::default(),
+                WorkspaceLexicalEngine::Portable,
+            );
+            LocalWorkspaceCatalogRuntime::start_with_catalog_and_persistent(
+                Arc::clone(&self.manifest),
+                file_system,
+                catalog,
+                persistent,
+            )
+        });
+        if let Some(index) = self.persistent_index.get() {
+            runtime.attach_persistent(Arc::clone(index));
+        }
+        runtime.catalog()
     }
 
     /// Enable a workspace-owned persistent a3s-vec FTS index before the catalog
@@ -750,13 +745,17 @@ impl ManifestWorkspaceBackend {
     /// Grep must not call this — it stays on the filesystem / manifest /
     /// optional trigram plane. Safe after the chunk catalog has already
     /// started. When the catalog was started without a wired coordinator, BM25
-    /// may still read a warm on-disk generation while the portable catalog
-    /// remains the live admission authority and update path.
+    /// attaches it to the existing coordinator so future changes publish too.
     pub fn ensure_persistent_index(&self) -> Option<Arc<WorkspacePersistentIndex>> {
-        if let Some(index) = self.persistent_index.get() {
-            return Some(Arc::clone(index));
+        let index = self
+            .persistent_index
+            .get()
+            .cloned()
+            .or_else(|| self.open_default_persistent_index())?;
+        if let Some(runtime) = self.catalog_runtime.get() {
+            runtime.attach_persistent(Arc::clone(&index));
         }
-        self.open_default_persistent_index()
+        Some(index)
     }
 
     /// True after [`Self::configure_chunk_catalog`] or the first

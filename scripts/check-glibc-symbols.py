@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail when a Linux binary needs a glibc newer than the target baseline.
 
-Kylin V10 SP1 ships glibc 2.31. A binary built against a newer glibc links
+The Linux CLI archive targets glibc 2.31. A binary built against a newer glibc links
 against versioned symbols that the older loader cannot resolve, and the failure
 only shows up on the target machine as a missing `GLIBC_2.3x`. This check makes
 the baseline an assertion in the packaging step instead of a claim in the

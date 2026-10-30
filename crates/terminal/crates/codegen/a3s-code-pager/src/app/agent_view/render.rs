@@ -1299,7 +1299,8 @@ impl AgentView {
             .context_state
             .as_ref()
             .and_then(|c| (c.total > 0).then_some(c.total))
-            .or(model_window);
+            .or(model_window)
+            .filter(|_| self.session.models.context_window_is_known());
         if let Some(ctx_line) = context_bar::context_bar_line_for_session(
             ctx_used,
             ctx_total,
@@ -2050,6 +2051,7 @@ impl AgentView {
                     buf,
                     turn_area,
                     turn_status::TurnStatusArgs {
+                        output_language: self.session.tracker.output_language.as_deref(),
                         state: &status_state,
                         activity: &activity,
                         turn_elapsed: self.turn_elapsed(),

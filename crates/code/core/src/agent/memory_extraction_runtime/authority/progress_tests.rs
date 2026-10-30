@@ -738,7 +738,7 @@ async fn fifo_and_provider_future_drop_release_original_ticket_without_fabricati
             let fixture = Fixture::new(kind, vec![], vec![]).await;
             let memory = Arc::new(AgentMemory::new(fixture.store.clone()));
             let workspace = tempfile::tempdir().unwrap();
-            let predecessor = queued.then(|| memory.enqueue_llm_extraction());
+            let predecessor = queued.then(|| memory.enqueue_llm_extraction("fixture-session"));
             let provider = client(Reply::Pending);
             let agent = agent(memory.clone(), provider.clone(), workspace.path(), None);
             let cancel = CancellationToken::new();

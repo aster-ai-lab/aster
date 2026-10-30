@@ -238,12 +238,12 @@ fn json_array_or_empty<T: serde::Serialize>(value: &T) -> Value {
     }
 }
 
-/// Canonical model-facing tool name from the `x.ai/tool` `_meta` envelope, else the display title, else kind, else `"tool"`.
-/// The shell stamps the wire name (`bash`, `x_search`, `read_file`) under `x.ai/tool.name`; the human title (`Execute ...`, `X search:`) is the fallback.
+/// Canonical model-facing tool name from the `a3s/tool` `_meta` envelope, else the display title, else kind, else `"tool"`.
+/// The shell stamps the wire name (`bash`, `x_search`, `read_file`) under `a3s/tool.name`; the human title (`Execute ...`, `X search:`) is the fallback.
 fn tool_name_from(meta: Option<&proto::Meta>, title: &str, kind: Option<&str>) -> String {
     if let Some(meta) = meta
         && let Some(name) = meta
-            .get("x.ai/tool")
+            .get("a3s/tool")
             .and_then(|v| v.get("name"))
             .and_then(|v| v.as_str())
         && !name.is_empty()
@@ -271,12 +271,12 @@ fn is_backend_web_search(meta: Option<&proto::Meta>, raw_input: &Value) -> bool 
     backend && is_web_search
 }
 
-/// Canonical tool kind from the `x.ai/tool` `_meta` envelope, else the ACP `ToolCall.kind`.
-/// Client tools register as `ToolKind::Other` on the early notification, so the real kind (`read`, `edit`, `execute`) arrives in `x.ai/tool.kind`.
+/// Canonical tool kind from the `a3s/tool` `_meta` envelope, else the ACP `ToolCall.kind`.
+/// Client tools register as `ToolKind::Other` on the early notification, so the real kind (`read`, `edit`, `execute`) arrives in `a3s/tool.kind`.
 fn tool_kind_from(meta: Option<&proto::Meta>, kind: proto::ToolKind) -> Option<String> {
     if let Some(meta) = meta
         && let Some(k) = meta
-            .get("x.ai/tool")
+            .get("a3s/tool")
             .and_then(|v| v.get("kind"))
             .and_then(|v| v.as_str())
         && !k.is_empty()

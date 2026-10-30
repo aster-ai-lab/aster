@@ -215,14 +215,12 @@ bound, closed kind catalog, and the selected Rust payload with
 actual evidence snapshot at admission time. Unknown top-level or payload
 fields and unsupported versions fail closed.
 
-The Node.js declaration (`sdk/node/evaluation-protocol-v1.d.ts`), Python
-typing module (`sdk/python/python/a3s_code/evaluation_protocol_v1.py`), Go
-projection (`sdk/go/evaluation_protocol_v1.go`), catalog, and negative
-fixtures are generated from `core/src/evaluation/protocol.rs`:
+The Rust schema is owned by `core/src/evaluation/protocol.rs`; retained
+catalog and negative fixtures live in `fixtures/protocol/evaluation`.
+Validate the actual Core boundary with:
 
-```text
-node scripts/generate_evaluation_protocol_artifacts.mjs --check
-node scripts/check_evaluation_protocol_artifacts.mjs
+```sh
+cargo test --locked -p a3s-code-core --features advanced-harness --lib evaluation::protocol
 ```
 
 SDK payloads remain opaque JSON/bytes by design. This preserves one Core schema

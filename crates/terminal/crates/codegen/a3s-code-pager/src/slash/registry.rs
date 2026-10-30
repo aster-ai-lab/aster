@@ -5,7 +5,8 @@
 //! - `String` keys throughout (not `&'static str`) for ACP command support.
 //! - `CommandSource` tracks provenance (Builtin vs Acp) for replacement logic.
 //! - `set_acp_commands()` replaces ACP-sourced entries without touching builtins.
-//! - ACP names that collide with a builtin trigger or blocked name are skipped.
+//! - Available builtins win; an advertised backend command can replace an unavailable local handler.
+//! - Skills/workflows cannot claim builtin triggers, and blocked names stay reserved.
 //! - `rebuild_triggers()` regenerates the trigger list after mutations.
 
 use std::collections::{HashMap, HashSet};
@@ -104,9 +105,8 @@ impl CommandTrigger {
     }
 }
 
-/// Pager builtins that shadow a shell builtin of the same name and stay hidden until the shell's
-/// catalog advertises it. Any backend advertising one must implement the matching `x.ai/memory/*`
-/// extension method.
+/// Legacy memory handlers stay hidden until advertised. A current backend
+/// command may replace a local handler marked unavailable for that backend.
 const SHELL_GATED_COMMANDS: &[&str] = &["memory", "flush", "dream"];
 
 /// Owns the command objects and provides lookup by name/alias.
@@ -126,7 +126,7 @@ pub struct CommandRegistry {
     /// `hidden` so the per-command `set_*_visible` setters can never un-hide a restricted command. The deny list always
     /// wins over every other visibility gate.
     restricted: HashSet<String>,
-    /// Commands with no backing on the connected agent backend (e.g. a3s-code-acp). Fully hidden and non-dispatchable.
+    /// Local handlers with no backing on the connected backend (e.g. a3s-code-acp). An advertised backend handler may replace them.
     /// Distinct from [`Self::restricted`] (tier upsell still lists the command) and from fail-closed feature gates in
     /// [`Self::hidden`] (which `set_*_visible` can restore). Backend-unavailable always wins over visibility setters.
     backend_unavailable: HashSet<String>,
@@ -178,10 +178,6 @@ impl CommandRegistry {
     }
 
     fn set_command_visible(&mut self, name: &str, visible: bool) {
-        // Backend-unavailable always wins: feature gates must not resurrect unsupported commands.
-        if visible && self.backend_unavailable.contains(name) {
-            return;
-        }
         if visible {
             self.hidden.remove(name);
         } else {
@@ -204,18 +200,23 @@ impl CommandRegistry {
     pub fn get_for_dispatch(&self, key: &str) -> Option<&Arc<dyn SlashCommand>> {
         self.key_to_index
             .get(key)
+            .filter(|idx| !self.backend_unavailable_match(**idx))
             .and_then(|idx| self.commands.get(*idx))
             .filter(|cmd| !self.hidden.contains(cmd.name()))
-            .filter(|cmd| !self.backend_unavailable_match(cmd))
-            .filter(|cmd| !self.restricted_match(cmd))
+            .filter(|_| !self.is_restricted(key))
             .filter(|cmd| self.tools_satisfied(cmd))
     }
 
     /// Declared modes for `key` (canonical name or alias), unfiltered by any runtime gate.
     pub(crate) fn mode_support(&self, key: &str) -> ModeSupport {
-        self.commands
-            .iter()
-            .find(|cmd| cmd.name() == key || cmd.aliases().contains(&key))
+        self.key_to_index
+            .get(key)
+            .and_then(|idx| self.commands.get(*idx))
+            .or_else(|| {
+                self.commands
+                    .iter()
+                    .find(|cmd| cmd.name() == key || cmd.aliases().contains(&key))
+            })
             .map_or(ModeSupport::Both, |cmd| cmd.mode_support())
     }
 
@@ -247,8 +248,7 @@ impl CommandRegistry {
         self.rebuild_triggers();
     }
 
-    /// Replace the backend-unavailable list (a3s-code-acp / non-shell agents). Commands are fully hidden and
-    /// non-dispatchable — no tier upsell, no palette row.
+    /// Replace the incompatible local-handler list. Unsupported handlers stay hidden and non-dispatchable.
     pub fn set_backend_unavailable_commands(&mut self, names: &[String]) {
         self.backend_unavailable = names
             .iter()
@@ -264,19 +264,30 @@ impl CommandRegistry {
             return false;
         }
         let key = Self::normalize_deny_name(key);
+        if self
+            .key_to_index
+            .get(&key)
+            .is_some_and(|idx| self.sources.get(*idx) == Some(&CommandSource::Acp))
+        {
+            return false;
+        }
         self.commands
             .iter()
-            .filter(|cmd| self.backend_unavailable_match(cmd))
-            .any(|cmd| {
+            .enumerate()
+            .filter(|(idx, _)| self.backend_unavailable_match(*idx))
+            .any(|(_, cmd)| {
                 cmd.name().to_lowercase() == key
                     || cmd.aliases().iter().any(|a| a.to_lowercase() == key)
             })
     }
 
-    fn backend_unavailable_match(&self, cmd: &Arc<dyn SlashCommand>) -> bool {
-        if self.backend_unavailable.is_empty() {
+    fn backend_unavailable_match(&self, index: usize) -> bool {
+        if self.backend_unavailable.is_empty()
+            || self.sources.get(index) != Some(&CommandSource::Builtin)
+        {
             return false;
         }
+        let cmd = &self.commands[index];
         self.backend_unavailable
             .contains(&cmd.name().to_lowercase())
             || cmd
@@ -349,7 +360,7 @@ impl CommandRegistry {
         self.commands.get(index)
     }
 
-    /// Number of unique commands (not triggers).
+    /// Number of stored handlers, including inactive backend alternatives (not triggers).
     pub fn command_count(&self) -> usize {
         self.commands.len()
     }
@@ -463,8 +474,8 @@ impl CommandRegistry {
         self.rebuild_triggers();
     }
 
-    /// Replace all ACP-sourced commands with a new set. Builtin commands are preserved. ACP names that collide with a
-    /// builtin trigger or blocked name are skipped. The shell advertises colliding skills already qualified
+    /// Replace all ACP-sourced commands with a new set. Builtins are preserved and take precedence while supported.
+    /// Skills/workflows cannot replace a builtin trigger; blocked names are always skipped. The shell advertises colliding skills already qualified
     /// (`acme:login`). Triggers a full `rebuild_triggers()`.
     pub fn set_acp_commands(&mut self, commands: &[agent_client_protocol::AvailableCommand]) {
         self.apply_acp_commands(commands);
@@ -513,13 +524,6 @@ impl CommandRegistry {
             })
             .collect();
 
-        let is_reserved = |name: &str| {
-            builtin_keys.contains(name)
-                || BLOCKED_ACP_NAMES
-                    .iter()
-                    .any(|b| b.eq_ignore_ascii_case(name))
-        };
-
         // Shadowed builtins are by design; a shadowed skill or workflow breaks `PAGER_COMMAND_KEYS`
         let is_skill_or_workflow = |cmd: &agent_client_protocol::AvailableCommand| {
             matches!(SkillMeta::parse(cmd.meta.as_ref()), SkillMeta::Skill(_))
@@ -530,7 +534,13 @@ impl CommandRegistry {
         let mut duplicate: Vec<String> = Vec::new();
         for acp_cmd in commands {
             let name = acp_cmd.name.to_lowercase();
-            if is_reserved(&name) {
+            let blocked = BLOCKED_ACP_NAMES
+                .iter()
+                .any(|b| b.eq_ignore_ascii_case(&name));
+            let backend_command =
+                matches!(SkillMeta::parse(acp_cmd.meta.as_ref()), SkillMeta::Absent)
+                    && WorkflowChoice::from_acp(acp_cmd).is_none();
+            if blocked || (builtin_keys.contains(&name) && !backend_command) {
                 if is_skill_or_workflow(acp_cmd) {
                     reserved.push(name);
                 }
@@ -575,6 +585,20 @@ impl CommandRegistry {
         self.key_to_index.clear();
         self.triggers.clear();
 
+        let builtin_keys: HashSet<String> = self
+            .commands
+            .iter()
+            .enumerate()
+            .filter(|(idx, cmd)| {
+                self.sources.get(*idx) == Some(&CommandSource::Builtin)
+                    && (!self.backend_unavailable_match(*idx) || self.hidden.contains(cmd.name()))
+            })
+            .flat_map(|(_, cmd)| {
+                std::iter::once(cmd.name().to_lowercase())
+                    .chain(cmd.aliases().iter().map(|alias| alias.to_lowercase()))
+            })
+            .collect();
+
         for (idx, command) in self.commands.iter().enumerate() {
             let Some(&source) = self.sources.get(idx) else {
                 continue;
@@ -587,7 +611,11 @@ impl CommandRegistry {
             }
 
             // Skip hidden / backend-unavailable commands; they don't get triggers or key_to_index entries
-            if self.hidden.contains(canonical) || self.backend_unavailable.contains(canonical) {
+            if self.hidden.contains(canonical)
+                || self.backend_unavailable_match(idx)
+                || (source == CommandSource::Acp
+                    && builtin_keys.contains(&canonical.to_lowercase()))
+            {
                 continue;
             }
 
@@ -923,6 +951,114 @@ mod tests {
     }
 
     #[test]
+    fn backend_catalog_routes_declared_commands_independently_of_sync_order() {
+        for catalog_first in [false, true] {
+            let builtin: Arc<dyn SlashCommand> = Arc::new(DummyCommand {
+                name: "archive",
+                aliases: &["records"],
+            });
+            let mut registry = CommandRegistry::new(vec![builtin]);
+            let catalog = [agent_client_protocol::AvailableCommand::new(
+                "archive",
+                "Backend archive statistics",
+            )];
+            if catalog_first {
+                registry.set_acp_commands(&catalog);
+            }
+            registry.set_backend_unavailable_commands(&["archive".into()]);
+            if !catalog_first {
+                registry.set_acp_commands(&catalog);
+            }
+            let command = registry
+                .get_for_dispatch("archive")
+                .expect("backend command");
+            assert_eq!(command.description(), "Backend archive statistics");
+            assert_eq!(command.provenance(), CommandProvenance::Shell);
+            assert!(!registry.is_builtin("archive"));
+            assert!(!registry.is_backend_unavailable("archive"));
+            assert!(registry.is_backend_unavailable("records"));
+            assert!(registry.get_for_dispatch("records").is_none());
+            let triggers: Vec<_> = registry
+                .triggers()
+                .iter()
+                .map(|t| t.display.as_str())
+                .collect();
+            assert_eq!(triggers, ["/archive"]);
+        }
+    }
+
+    #[test]
+    fn backend_catalog_withdrawal_and_reset_restore_only_supported_handlers() {
+        let builtin: Arc<dyn SlashCommand> = Arc::new(DummyCommand {
+            name: "archive",
+            aliases: &["records"],
+        });
+        let mut registry = CommandRegistry::new(vec![builtin]);
+        let catalog = [agent_client_protocol::AvailableCommand::new(
+            "records",
+            "Backend records",
+        )];
+        registry.set_backend_unavailable_commands(&["archive".into()]);
+        registry.set_acp_commands(&catalog);
+        assert!(!registry.is_builtin("records"));
+        assert_eq!(registry.get("records").unwrap().name(), "records");
+        registry.set_acp_commands(&[]);
+        assert!(registry.get_for_dispatch("records").is_none());
+        assert!(registry.is_backend_unavailable("records"));
+        registry.set_acp_commands(&catalog);
+        registry.set_backend_unavailable_commands(&[]);
+        assert!(registry.is_builtin("records"));
+        assert_eq!(registry.get("records").unwrap().name(), "archive");
+        assert_eq!(registry.triggers().len(), 2);
+        registry.set_backend_unavailable_commands(&["records".into()]);
+        assert_eq!(registry.get("records").unwrap().name(), "records");
+        assert!(registry.get_for_dispatch("archive").is_none());
+        registry.set_restricted_commands(&["archive".into()]);
+        assert!(registry.is_restricted("records"));
+        assert!(registry.get_for_dispatch("records").is_none());
+        registry.set_restricted_commands(&[]);
+        registry.set_command_visible("archive", false);
+        assert!(registry.get_for_dispatch("records").is_none());
+        registry.set_command_visible("archive", true);
+        assert_eq!(registry.get("records").unwrap().name(), "records");
+    }
+
+    #[test]
+    fn backend_catalog_cannot_escape_restrictions_or_reserved_names() {
+        let builtin: Arc<dyn SlashCommand> = Arc::new(DummyCommand {
+            name: "archive",
+            aliases: &[],
+        });
+        let mut registry = CommandRegistry::new(vec![builtin]);
+        registry.set_backend_unavailable_commands(&["archive".into()]);
+        for cmd in [
+            acp_skill(
+                "archive",
+                serde_json::json!({"scope": "local", "path": "/x/SKILL.md"}),
+            ),
+            acp_skill("archive", serde_json::json!({"scope": "local"})),
+            acp_skill(
+                "archive",
+                serde_json::json!({"scope": "workflow", "path": "/x/workflow"}),
+            ),
+            acp_workflow("archive", "Workflow: archive", "user"),
+        ] {
+            registry.set_acp_commands(&[cmd]);
+            assert!(registry.get_for_dispatch("archive").is_none());
+        }
+        registry.set_acp_commands(&[
+            agent_client_protocol::AvailableCommand::new("archive", "Backend archive"),
+            agent_client_protocol::AvailableCommand::new("help", "Backend help"),
+        ]);
+        registry.set_restricted_commands(&["/ARCHIVE".into()]);
+        assert!(registry.is_restricted("archive"));
+        assert!(registry.get_for_dispatch("archive").is_none());
+        assert!(registry.get_for_dispatch("help").is_none());
+        registry.set_restricted_commands(&[]);
+        assert!(registry.get_for_dispatch("archive").is_some());
+    }
+
+    #[test]
     fn restricted_entries_are_normalized() {
         let usage: Arc<dyn SlashCommand> = Arc::new(DummyCommand {
             name: "usage",
@@ -1195,7 +1331,7 @@ mod tests {
     }
 
     #[test]
-    fn colliding_non_skill_or_malformed_command_is_dropped() {
+    fn colliding_plain_or_malformed_command_cannot_replace_an_available_builtin() {
         let non_skill = agent_client_protocol::AvailableCommand::new(
             "login".to_string(),
             "shell login".to_string(),
@@ -1204,8 +1340,12 @@ mod tests {
         for cmd in [non_skill, malformed] {
             let mut registry = CommandRegistry::new(vec![login_builtin()]);
             registry.set_acp_commands(&[cmd]);
-            assert_eq!(registry.command_count(), 1, "only the builtin remains");
             assert!(registry.is_builtin("login"));
+            assert_eq!(
+                registry.get_for_dispatch("login").unwrap().provenance(),
+                CommandProvenance::Builtin
+            );
+            assert_eq!(registry.triggers().len(), 1);
             assert!(registry.skipped_acp_names.is_empty());
         }
     }
@@ -1219,9 +1359,11 @@ mod tests {
         let mut registry = CommandRegistry::new(vec![builtin]);
         registry.set_acp_commands(&[agent_client_protocol::AvailableCommand::new(
             "quit".to_string(),
-            "Should be dropped".to_string(),
+            "Backend quit".to_string(),
         )]);
-        assert_eq!(registry.command_count(), 1);
+        assert!(registry.is_builtin("quit"));
+        assert_eq!(registry.get_for_dispatch("quit").unwrap().name(), "exit");
+        assert_eq!(registry.triggers().len(), 2);
     }
 
     #[test]

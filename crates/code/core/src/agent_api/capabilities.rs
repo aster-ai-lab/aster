@@ -111,14 +111,19 @@ fn assemble_session_capabilities(
     let artifact_limits = input.opts.artifact_store_limits.unwrap_or_default();
     let retention_limits = input.opts.retention_limits.unwrap_or_default();
     let workspace_services = workspace.services;
-    let tool_executor = Arc::new(
-        ToolExecutor::new_with_workspace_services_artifact_limits_and_immutable_content_adapter(
-            write_root.display().to_string(),
-            workspace_services,
-            artifact_limits,
-            input.opts.immutable_content_adapter.clone(),
-        ),
-    );
+    let subagent_tasks = Arc::new(match retention_limits.max_terminal_subagent_tasks {
+        Some(cap) => {
+            crate::subagent_task_tracker::InMemorySubagentTaskTracker::with_max_terminal_tasks(cap)
+        }
+        None => crate::subagent_task_tracker::InMemorySubagentTaskTracker::new(),
+    });
+    let tool_executor = Arc::new(ToolExecutor::new_with_background_tracker(
+        write_root.display().to_string(),
+        workspace_services,
+        artifact_limits,
+        input.opts.immutable_content_adapter.clone(),
+        Arc::clone(&subagent_tasks),
+    ));
     if let Some(command_env) = input.opts.command_env.clone() {
         tool_executor
             .registry()
@@ -153,12 +158,6 @@ fn assemble_session_capabilities(
             .set_search_config(search_config.clone());
     }
 
-    let subagent_tasks = Arc::new(match retention_limits.max_terminal_subagent_tasks {
-        Some(cap) => {
-            crate::subagent_task_tracker::InMemorySubagentTaskTracker::with_max_terminal_tasks(cap)
-        }
-        None => crate::subagent_task_tracker::InMemorySubagentTaskTracker::new(),
-    });
     let mcp_managers = input
         .mcp_sources
         .iter()
@@ -425,6 +424,9 @@ pub(super) fn build_effective_skill_registry(
     agent_registry: Option<&SkillRegistry>,
     opts: &SessionOptions,
 ) -> Arc<SkillRegistry> {
+    if opts.isolated_context {
+        return Arc::new(SkillRegistry::new());
+    }
     let base_registry = agent_registry
         .map(|r| r.fork())
         .unwrap_or_else(SkillRegistry::with_builtins);
@@ -595,16 +597,18 @@ fn build_context_providers(
     skill_registry: Arc<SkillRegistry>,
 ) -> Vec<Arc<dyn ContextProvider>> {
     let mut providers = opts.context_providers.clone();
-    if let Some(cognitive_context) = &opts.cognitive_context {
-        providers.push(Arc::new(cognitive_context.clone()));
+    if let Some(package_context) = &opts.package_context {
+        providers.push(Arc::new(package_context.clone()));
     }
     if let Some(sandbox) = &opts.sandbox_handle {
         providers.push(Arc::new(crate::context::SandboxContextProvider::new(
             Arc::clone(sandbox),
         )));
     }
-    push_agents_md_context(&mut providers, code_config, workspace);
-    push_skill_catalog_context(&mut providers, skill_registry);
+    if !opts.isolated_context {
+        push_agents_md_context(&mut providers, code_config, workspace);
+        push_skill_catalog_context(&mut providers, skill_registry);
+    }
     providers
 }
 

@@ -1,6 +1,6 @@
 //! P0 process oracles for the shipped `aster` binary.
 //!
-//! Every check launches `CARGO_BIN_EXE_aster` against an isolated home and a
+//! Every check launches the selected shipped binary against an isolated home and a
 //! local OpenAI-compatible fixture. Nothing here talks to a public provider
 //! or to `127.0.0.1:9`.
 
@@ -32,8 +32,10 @@ struct Isolated {
     marker: PathBuf,
 }
 
-fn main_aster() -> &'static str {
-    env!("CARGO_BIN_EXE_aster")
+fn main_aster() -> PathBuf {
+    std::env::var_os("A3S_CODE_TUI_BIN")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
 
 fn isolate() -> (PathBuf, PathBuf, PathBuf) {
@@ -159,17 +161,16 @@ fn decide(raw: &str, marker: &str, state: &mut MockState) -> String {
         return reply_tool("session_title", &args, state, streaming);
     }
     if raw.contains("SHELL-ORACLE") && has_tools(&parsed) {
-        if state.shell_sent || raw.contains("native_process_lifetime_unqualified") {
+        if state.shell_sent {
             return reply_text("SHELL-DONE", streaming);
         }
         state.shell_sent = true;
         let command = format!("printf side-effect > '{marker}'");
         let args = serde_json::json!({
-            "command": command,
-            "description": "write the shell side-effect marker"
+            "command": command
         })
         .to_string();
-        return reply_tool("run_terminal_command", &args, state, streaming);
+        return reply_tool("bash", &args, state, streaming);
     }
     if let Some(token) = ping_token(raw) {
         return reply_text(&format!("PONG-{token}"), streaming);
@@ -360,6 +361,7 @@ fn run(isolated: &Isolated, args: &[&str], timeout: Duration) -> Captured {
         .env("HOME", &isolated.home)
         .env("GROK_HOME", &isolated.grok_home)
         .env("A3S_CONFIG", &isolated.config)
+        .env("ASTER_RELEASE_BASE", isolated.home.join("release-fixture"))
         .env("A3S_DISABLE_CC_SWITCH", "1")
         .env("A3S_DISABLE_GROK_ACCOUNT", "1")
         .env("A3S_DISABLE_CURSOR_ACCOUNT", "1")
@@ -371,6 +373,12 @@ fn run(isolated: &Isolated, args: &[&str], timeout: Duration) -> Captured {
         .stderr(Stdio::piped());
     if let Some(tmpdir) = std::env::var_os("TMPDIR") {
         command.env("TMPDIR", tmpdir);
+    }
+    #[cfg(target_os = "macos")]
+    {
+        let unqualified = isolated.home.join("unqualified-sandbox");
+        fs::create_dir_all(&unqualified).expect("unqualified sandbox fixture");
+        command.env("ASTER_SANDBOX_DIR", unqualified);
     }
     let mut child = command.spawn().expect("spawn aster");
     let mut stdout = child.stdout.take().expect("stdout");
@@ -791,6 +799,27 @@ default_model = "{MODEL_ID}"
     let quick = Duration::from_secs(60);
     let turn = Duration::from_secs(180);
 
+    let release = isolated.home.join("release-fixture");
+    fs::create_dir_all(&release).expect("local release fixture");
+    let version = env!("CARGO_PKG_VERSION");
+    let mut assets = serde_json::Map::new();
+    for (platform, suffix) in [("macos", "tar.gz"), ("linux", "tar.gz"), ("windows", "zip")] {
+        let name = format!("aster-cli-v{version}-{platform}.{suffix}");
+        let archive = b"not downloaded by update --check";
+        fs::write(release.join(&name), archive).expect("release archive placeholder");
+        use sha2::Digest;
+        assets.insert(
+            platform.into(),
+            serde_json::json!({"name": name, "sha256": format!("{:x}", sha2::Sha256::digest(archive))}),
+        );
+    }
+    fs::write(
+        release.join("latest.json"),
+        serde_json::json!({"version": version, "tag": format!("aster-cli-v{version}"), "assets": assets})
+            .to_string(),
+    )
+    .expect("release manifest");
+
     let version = run(&isolated, &["version", "--json"], quick);
     assert!(version.success(), "{}", version.combined());
     let version_json = parse_json_stdout(&version.stdout);
@@ -840,6 +869,18 @@ default_model = "{MODEL_ID}"
     assert!(update.success(), "{}", update.combined());
     let update_json = parse_json_stdout(&update.stdout);
     assert_eq!(update_json["updateAvailable"], false, "{}", update.stdout);
+    assert_eq!(
+        update_json["error"],
+        serde_json::Value::Null,
+        "{}",
+        update.stdout
+    );
+    assert_eq!(
+        update_json["latestVersion"],
+        env!("CARGO_PKG_VERSION"),
+        "{}",
+        update.stdout
+    );
     let binary_after = fs::metadata(&binary).expect("aster binary").len();
     assert_eq!(binary_before, binary_after, "update --check replaced aster");
     assert_no_fixture_key(&update, "update");

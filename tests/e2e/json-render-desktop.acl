@@ -1,0 +1,35 @@
+suite "aster-json-render-pending-form" {
+  version = 1
+
+  scenario "typed-form-round-trip" {
+    surface = "gui"
+    timeout_ms = 60000
+
+    wait "real-tool-form" { text = "Details" }
+    click "submit-empty" { target = role("button", "Continue") }
+    wait "required" { text = "填写必填项。" }
+    click "focus-name" { target = role("AXTextField", "Name") }
+    type "name" {
+      target = role("AXTextField", "Name")
+      value = "Ada"
+    }
+    click "focus-amount" { target = role("AXTextField", "Amount") }
+    press "increment-default" { key = "up" }
+    click "ready" { target = role("checkbox", "Ready") }
+    click "open-choice" { target = role("AXPopUpButton", "Choice") }
+    click "choose-alpha" { target = text("alpha", true) }
+    click "focus-notes" { target = role("AXTextArea", "Notes") }
+    type "notes" {
+      target = role("AXTextArea", "Notes")
+      value = "Need a detailed plan"
+    }
+    click "submit" { target = role("button", "Continue") }
+    wait "typed-values-reached-tool" {
+      text = "JSON-RENDER-CUA-PASS: Ada, 4, true, alpha, Need a detailed plan"
+    }
+    expect "pending-submit-removed" {
+      hidden = role("button", "Continue")
+    }
+    snapshot "answered" {}
+  }
+}

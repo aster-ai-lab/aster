@@ -1,0 +1,77 @@
+export const meta = {
+  title: 'ACP 与 Core 的职责边界',
+  description: '按一次客户端请求拆开协议适配、可信宿主、Core 会话和界面事件。',
+  label: '协议内部机制', updated: '2026-10-28',
+};
+
+## 客户端与执行者的职责
+
+客户端接收用户输入并显示运行过程。
+`a3s-code-acp` 接收 ACP 消息，再调用 Core。
+Core 接纳执行、调用模型、治理工具并检查完成。
+协议适配器把运行事件送回客户端。
+
+<PeleAtlasDiagram name="acp-boundary" />
+
+例如，用户在终端提交日期导出修复。
+终端发送文本，ACP 找到对应会话。
+Core 执行任务，ACP 翻译事件。
+终端用事件中的原始 ID 更新工具行。
+
+## 三层结束含义怎样区分
+
+| 层次 | 结束表示什么 | 还要核对什么 |
+| --- | --- | --- |
+| ACP prompt | 本轮协议请求返回 | Core 的运行与完成依据 |
+| Core Run | 原始执行进入终态 | 资源结清与该轮证据 |
+| Durable Goal | 原目标满足完成条件 | 全部步骤、等待与切片 |
+
+`end_turn` 是协议停止原因。
+它不能独自证明长期目标已经完成。
+客户端需要结合对应的 Core 状态显示结果。
+
+## 从连接到一轮执行
+
+<PeleAtlasDiagram name="protocol-lifecycle" />
+
+客户端先调用 `initialize`。
+随后创建或恢复会话，再提交 `session/prompt`。
+运行期间，客户端消费 `session/update`。
+需要确认时，客户端回答原始权限请求。
+本轮结束后，客户端读取 prompt 响应。
+
+## 入口会拒绝哪些内容
+
+当前 ACP prompt 接受文本内容块。
+图片、音频、资源和资源链接会返回参数错误。
+拒绝发生在模型调用之前。
+Core 内部具备某项能力，不代表 ACP 已暴露该能力。
+
+标准 ACP 方法与宿主扩展也要分开。
+`a3s/goal/*` 和 `a3s/review/*` 属于宿主扩展。
+未知扩展方法返回 `method_not_found`。
+入口：<SourceRef path="crates/code/acp/src/agent/host_methods.rs" match="pub(super) fn parse(method: &amp;str)">宿主方法闭集</SourceRef>。
+
+## 哪些信息必须来自可信宿主
+
+| 信息 | 作用 | 工作区文本的边界 |
+| --- | --- | --- |
+| 模型与服务配置 | 选择实际模型调用路径 | 保留配置层的信任规则 |
+| 权限与沙箱 | 判定工具调用 | 提示词不能放宽 |
+| `goal_control` | 限制自动续跑 | 工作区声明不能提高上限 |
+| 工作策略选择 | 选择已编入的策略 | 客户端不能提交任意策略代码 |
+| 完成证明选择 | 安装宿主检查 | 模型不能自行安装证明器 |
+
+每项信息由其原入口准入。
+ACP 不应把普通文本解释为额外执行权限。
+
+## 源码漫游从哪里开始
+
+<SourceWalk name="runtime" />
+
+## 按故障选择下一篇
+
+- 工具行重复或顺序错误：阅读[事件与确认](./events/)。
+- 目标没有继续执行：阅读[目标与无人值守](./goals/)。
+- 重启后无法恢复会话：阅读[Core 恢复机制](../../../code/9.1.6/internals/recovery/)。
+- 需要完整方法目录：阅读[协议参考](../reference/)。

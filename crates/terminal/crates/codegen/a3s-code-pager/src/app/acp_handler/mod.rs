@@ -610,31 +610,31 @@ fn handle_ext_notification(notif: &acp::ExtNotification, app: &mut AppView) -> b
         return handle_session_notification(notif, app);
     }
     match method {
-        "x.ai/follow_ups" => handle_follow_ups(notif, app),
-        "x.ai/task_backgrounded" => handle_task_backgrounded(notif, app),
-        "x.ai/task_completed" => handle_task_completed(notif, app),
-        "x.ai/models/update" => handle_models_update(notif, app),
-        "x.ai/turn/outcome" => handle_turn_outcome(notif, app),
-        "x.ai/settings/update" => handle_settings_update(notif, app),
-        "x.ai/sessions/changed" => handle_sessions_changed(notif, app),
-        "x.ai/queue/changed" => handle_queue_changed(notif, app),
-        "x.ai/session/prompt_complete" => handle_prompt_complete(notif, app),
-        "x.ai/session/interjection" => handle_interjection(notif, app),
-        "x.ai/monitor_event" => handle_monitor_event(notif, app),
-        "x.ai/scheduled_task_created" => handle_scheduled_task_created(notif, app),
-        "x.ai/scheduled_task_fired" => handle_scheduled_task_fired(notif, app),
-        "x.ai/scheduled_task_deleted" => handle_scheduled_task_deleted(notif, app),
-        "x.ai/announcements/update" => handle_announcements_update(notif, app),
-        "x.ai/git_head_changed" => handle_git_head_changed(notif, app),
-        "x.ai/leader/version_mismatch" => handle_version_mismatch(notif, app),
-        "x.ai/mcp/init_progress" => handle_mcp_init_progress(notif, app),
-        "x.ai/session/setup" => handle_session_setup_phase(notif, app),
-        "x.ai/mcp/tools_changed" | "x.ai/mcp_initialized" => handle_mcp_tools_changed(notif, app),
-        "x.ai/mcp/server_status" if push_server_status_enabled() => {
+        "a3s/follow_ups" => handle_follow_ups(notif, app),
+        "a3s/task_backgrounded" => handle_task_backgrounded(notif, app),
+        "a3s/task_completed" => handle_task_completed(notif, app),
+        "a3s/models/update" => handle_models_update(notif, app),
+        "a3s/turn/outcome" => handle_turn_outcome(notif, app),
+        "a3s/settings/update" => handle_settings_update(notif, app),
+        "a3s/sessions/changed" => handle_sessions_changed(notif, app),
+        "a3s/queue/changed" => handle_queue_changed(notif, app),
+        "a3s/session/prompt_complete" => handle_prompt_complete(notif, app),
+        "a3s/session/interjection" => handle_interjection(notif, app),
+        "a3s/monitor_event" => handle_monitor_event(notif, app),
+        "a3s/scheduled_task_created" => handle_scheduled_task_created(notif, app),
+        "a3s/scheduled_task_fired" => handle_scheduled_task_fired(notif, app),
+        "a3s/scheduled_task_deleted" => handle_scheduled_task_deleted(notif, app),
+        "a3s/announcements/update" => handle_announcements_update(notif, app),
+        "a3s/git_head_changed" => handle_git_head_changed(notif, app),
+        "a3s/leader/version_mismatch" => handle_version_mismatch(notif, app),
+        "a3s/mcp/init_progress" => handle_mcp_init_progress(notif, app),
+        "a3s/session/setup" => handle_session_setup_phase(notif, app),
+        "a3s/mcp/tools_changed" | "a3s/mcp_initialized" => handle_mcp_tools_changed(notif, app),
+        "a3s/mcp/server_status" if push_server_status_enabled() => {
             handle_mcp_server_status(notif, app)
         }
-        "x.ai/mcp/elicit_complete" => handle_mcp_elicit_complete(notif, app),
-        "x.ai/mcp/servers_updated" => handle_mcp_servers_updated(notif, app),
+        "a3s/mcp/elicit_complete" => handle_mcp_elicit_complete(notif, app),
+        "a3s/mcp/servers_updated" => handle_mcp_servers_updated(notif, app),
         _ => false,
     }
 }
@@ -672,7 +672,7 @@ fn handle_session_setup_phase(notif: &acp::ExtNotification, app: &mut AppView) -
 }
 fn handle_version_mismatch(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
     let Some(banner) = crate::acp::version_mismatch_banner(notif.params.get()) else {
-        tracing::warn!("ignoring x.ai/leader/version_mismatch without usable versions");
+        tracing::warn!("ignoring a3s/leader/version_mismatch without usable versions");
         return false;
     };
     app.show_toast(&banner);
@@ -689,7 +689,7 @@ fn user_message_text(update: &acp::SessionUpdate) -> Option<&str> {
 }
 fn handle_interjection(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
     let Ok(parsed) = serde_json::from_str::<serde_json::Value>(notif.params.get()) else {
-        tracing::warn!("Failed to parse x.ai/session/interjection");
+        tracing::warn!("Failed to parse a3s/session/interjection");
         return false;
     };
     let Some(session_id) = parsed.get("sessionId").and_then(|v| v.as_str()) else {
@@ -737,9 +737,9 @@ fn handle_interjection(notif: &acp::ExtNotification, app: &mut AppView) -> bool 
 fn handle_ext_method(ext: a3s_acp_lib::AcpArgs<acp::ExtRequest>, app: &mut AppView) -> bool {
     match ext.request.method.as_ref() {
         "a3s/form/request" => form::handle_form_request(ext, app),
-        "x.ai/ask_user_question" => handle_ask_user_question(ext, app),
-        "x.ai/exit_plan_mode" => handle_exit_plan_mode(ext, app),
-        "x.ai/mcp/elicit" => handle_mcp_elicit(ext, app),
+        "a3s/ask_user_question" => handle_ask_user_question(ext, app),
+        "a3s/exit_plan_mode" => handle_exit_plan_mode(ext, app),
+        "a3s/mcp/elicit" => handle_mcp_elicit(ext, app),
         unknown => {
             tracing::warn!("Unknown ext_method: {unknown}");
             ext.response_tx

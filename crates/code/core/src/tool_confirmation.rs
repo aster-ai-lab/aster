@@ -10,6 +10,36 @@ use serde_json::Value;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
+// A host callback cannot retain a cancelled Run forever; expiry proves no host cleanup.
+const CONFIRMATION_CANCEL_GRACE: std::time::Duration = std::time::Duration::from_secs(1);
+
+pub(crate) async fn cancel_confirmation(
+    manager: &dyn ConfirmationProvider,
+    tool_id: &str,
+) -> Option<bool> {
+    let result = tokio::time::timeout(CONFIRMATION_CANCEL_GRACE, manager.cancel(tool_id)).await;
+    if result.is_err() {
+        tracing::error!(
+            tool_id,
+            code = "confirmation.cancel_unresolved",
+            "confirmation cleanup callback did not settle"
+        );
+    }
+    result.ok()
+}
+
+pub(crate) fn cancellation_unresolved(tool_id: &str) -> String {
+    format!("confirmation.cancel_unresolved: host cleanup is unconfirmed for tool '{tool_id}'")
+}
+
+pub(crate) fn cancellation_unresolved_event(tool_id: &str) -> AgentEvent {
+    // Cleanup uncertainty must not publish a terminal Run transition.
+    AgentEvent::ConfirmationTimeout {
+        tool_id: tool_id.to_owned(),
+        action_taken: "cancel_unresolved".into(),
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ToolConfirmationResolution {
     Approved,
@@ -51,46 +81,80 @@ impl<'a> ToolConfirmationRuntime<'a> {
         request: ToolConfirmationRequest<'_>,
         cancellation: &CancellationToken,
     ) -> ToolConfirmationResolution {
+        let mut requested = false;
+        let mut announced = false;
+        let resolution = {
+            let protocol = async {
+                requested = true;
+                self.resolve_request(&request, &mut announced).await
+            };
+            tokio::select! {
+                biased;
+                _ = cancellation.cancelled() => None,
+                resolution = protocol => Some(resolution),
+            }
+        };
+        if let Some(resolution) = resolution {
+            return resolution;
+        }
+        let cleanup = if requested {
+            cancel_confirmation(self.manager, request.tool_id).await
+        } else {
+            Some(false)
+        };
+        let detail = if cleanup.is_none() {
+            let message = cancellation_unresolved(request.tool_id);
+            self.forward_cancelled_event(
+                cancellation_unresolved_event(request.tool_id),
+                cancellation,
+            )
+            .await;
+            format!("; {message}")
+        } else {
+            if announced {
+                self.forward_cancelled_event(
+                    AgentEvent::ConfirmationReceived {
+                        tool_id: request.tool_id.to_owned(),
+                        approved: false,
+                        reason: Some("Confirmation cancelled".into()),
+                    },
+                    cancellation,
+                )
+                .await;
+            }
+            String::new()
+        };
+        ToolConfirmationResolution::Rejected {
+            output: format!("Tool '{}' cancelled by caller{detail}", request.tool_name),
+        }
+    }
+
+    async fn resolve_request(
+        &self,
+        request: &ToolConfirmationRequest<'_>,
+        announced: &mut bool,
+    ) -> ToolConfirmationResolution {
         let rx = self
             .manager
             .request_confirmation(request.tool_id, request.tool_name, request.args)
             .await;
-
         self.forward_event(AgentEvent::ConfirmationRequired {
-            tool_id: request.tool_id.to_string(),
-            tool_name: request.tool_name.to_string(),
+            tool_id: request.tool_id.to_owned(),
+            tool_name: request.tool_name.to_owned(),
             args: request.args.clone(),
             timeout_ms: request.timeout_ms,
         })
         .await;
-
+        *announced = true;
         let _ = request.timeout_action;
-        let response = tokio::select! {
-            biased;
-            _ = cancellation.cancelled() => {
-                self.manager.cancel(request.tool_id).await;
-                self.forward_event(AgentEvent::ConfirmationReceived {
-                    tool_id: request.tool_id.to_string(),
-                    approved: false,
-                    reason: Some("Confirmation cancelled".to_string()),
-                })
-                .await;
-                return ToolConfirmationResolution::Rejected {
-                    output: format!("Tool '{}' cancelled by caller", request.tool_name),
-                };
-            }
-            response = rx => response,
-        };
-
-        match response {
+        match rx.await {
             Ok(response) => {
                 self.forward_event(AgentEvent::ConfirmationReceived {
-                    tool_id: request.tool_id.to_string(),
+                    tool_id: request.tool_id.to_owned(),
                     approved: response.approved,
                     reason: response.reason.clone(),
                 })
                 .await;
-
                 if response.approved {
                     ToolConfirmationResolution::Approved
                 } else {
@@ -98,15 +162,19 @@ impl<'a> ToolConfirmationRuntime<'a> {
                         output: format!(
                             "Tool '{}' execution was REJECTED by the user. Reason: {}. DO NOT retry this tool call unless the user explicitly asks you to.",
                             request.tool_name,
-                            response
-                                .reason
-                                .unwrap_or_else(|| "No reason provided".to_string())
+                            response.reason.unwrap_or_else(|| "No reason provided".to_string())
                         ),
                     }
                 }
             }
             Err(_) => {
-                self.manager.cancel(request.tool_id).await;
+                if cancel_confirmation(self.manager, request.tool_id)
+                    .await
+                    .is_none()
+                {
+                    self.forward_event(cancellation_unresolved_event(request.tool_id))
+                        .await;
+                }
                 self.forward_timeout(request.tool_id, "rejected").await;
                 ToolConfirmationResolution::Rejected {
                     output: format!(
@@ -115,6 +183,14 @@ impl<'a> ToolConfirmationRuntime<'a> {
                     ),
                 }
             }
+        }
+    }
+
+    async fn forward_cancelled_event(&self, event: AgentEvent, cancellation: &CancellationToken) {
+        tokio::select! {
+            biased;
+            _ = self.forward_event(event) => {},
+            _ = cancellation.cancelled() => {},
         }
     }
 
@@ -342,7 +418,8 @@ mod tests {
         assert_eq!(manager.pending_count().await, 1);
         assert!(!manager.expire("tool-1", TimeoutAction::Reject).await);
         assert_eq!(manager.pending_count().await, 1);
-        assert!(manager.confirm("tool-1", false, None).await.unwrap());
+        assert!(!manager.confirm("tool-1", false, None).await.unwrap());
+        assert_eq!(manager.pending_count().await, 0);
     }
 
     #[tokio::test]

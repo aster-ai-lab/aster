@@ -351,11 +351,11 @@ export const ToastProvider = ({ children, labels }: { children: React.ReactNode;
 )
 
 const typeIconMap: Record<ToastType, React.ReactNode> = {
-  error: <AlertCircle className="size-4 text-destructive" />,
-  success: <CheckCircle2 className="size-4 text-success" />,
-  warning: <AlertTriangle className="size-4 text-warning" />,
-  info: <Info className="size-4 text-info" />,
-  loading: <LoaderCircle className="size-4 animate-spin text-muted-foreground" />
+  error: <AlertCircle className="size-4 text-destructive" strokeWidth={1.7} />,
+  success: <CheckCircle2 className="size-4 text-success-subtle-foreground" strokeWidth={1.7} />,
+  warning: <AlertTriangle className="size-4 text-warning-subtle-foreground" strokeWidth={1.7} />,
+  info: <Info className="size-4 text-info-subtle-foreground" strokeWidth={1.7} />,
+  loading: <LoaderCircle className="size-4 animate-spin text-[#8a8a8a] motion-reduce:animate-none" strokeWidth={1.7} />
 }
 
 const getToastA11yProps = (type: ToastType): Pick<React.HTMLAttributes<HTMLDivElement>, 'aria-live' | 'role'> => {
@@ -392,25 +392,27 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
       className={cn(
         // no-drag punches the popup's area out of any titlebar drag region it overlaps,
         // so hover/click reach the items instead of the window-drag hit test (Electron).
-        'pointer-events-auto flex w-[min(420px,calc(100vw-2rem))] items-start gap-3 [-webkit-app-region:no-drag]',
-        'rounded-md border border-border bg-popover px-4 py-3 text-popover-foreground shadow-lg',
+        'pointer-events-auto flex w-max max-w-[min(420px,calc(100vw-3rem))] items-start gap-2.5 [-webkit-app-region:no-drag]',
+        'rounded-[12px] border border-[#ececec] bg-white px-3 py-2.5 text-[#171717] shadow-[0_8px_22px_rgba(20,40,80,0.04)]',
         toast.className
       )}
       style={toast.style}
       onClick={toast.onClick}>
-      <div className="flex min-h-7 shrink-0 items-center justify-center">{icon}</div>
+      <div className="flex size-7 shrink-0 items-center justify-center rounded-[8px] bg-[#f5f5f5]" aria-hidden="true">
+        {icon}
+      </div>
       <div className="min-w-0 flex-1">
         {toast.title && (
           <div
             title={typeof toast.title === 'string' ? toast.title : undefined}
-            className="min-h-7 truncate py-1 text-sm leading-5 font-medium">
+            className="min-h-7 py-1 text-[13px] leading-5 break-words font-medium">
             {toast.title}
           </div>
         )}
         {toast.description && (
           <div
             className={cn(
-              'text-xs leading-5 break-words text-muted-foreground',
+              'text-xs leading-5 break-words text-[#8a8a8a]',
               (toast.title || !action) && 'mt-0.5',
               action && !toast.title && 'min-h-7 py-1'
             )}>
@@ -421,7 +423,7 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
       {action && (
         <Button
           type="button"
-          className="shrink-0"
+          className="shrink-0 rounded-[8px]"
           size="sm"
           variant="outline"
           onClick={(event) => {
@@ -436,12 +438,12 @@ const ToastItem = ({ labels, store, toast }: { labels: ToastLabels; store: Toast
         <button
           type="button"
           aria-label={labels.close}
-          className="-mr-1 flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          className="-mr-1 flex size-6 shrink-0 items-center justify-center rounded-[6px] text-[#8a8a8a] transition-colors outline-none hover:bg-[#f2f3f5] hover:text-[#171717] focus-visible:bg-[#f2f3f5] focus-visible:text-[#171717] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171717]"
           onClick={(event) => {
             event.stopPropagation()
             store.remove(toast.key)
           }}>
-          <X className="size-3.5" />
+          <X className="size-3.5" strokeWidth={1.7} />
         </button>
       </div>
     </div>
@@ -486,7 +488,9 @@ export const ToastViewport = ({
       aria-label="notifications"
       className={cn(
         'pointer-events-auto fixed top-5 left-1/2 z-[10000] -translate-x-1/2 [-webkit-app-region:no-drag]',
-        expanded ? 'flex max-h-[calc(100vh-2.5rem)] flex-col items-center gap-2 overflow-y-auto p-2' : 'grid pb-4'
+        expanded
+          ? 'flex max-h-[calc(100vh-2.5rem)] flex-col items-center gap-2 overflow-y-auto p-2'
+          : 'grid justify-items-center pb-4'
       )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

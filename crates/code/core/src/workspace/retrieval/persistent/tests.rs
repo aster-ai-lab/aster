@@ -106,10 +106,29 @@ fn persistent_generation_survives_reopen_and_replaces_removed_content() {
     let result = reopened.search(&request).expect("reopened query");
     assert_eq!(result.hits.len(), 1);
     assert_eq!(reopened.status().indexed_chunks, 1);
+    let snapshot = catalog.snapshot().unwrap();
+    assert!(reopened
+        .search_current_snapshot(&request, &snapshot)
+        .unwrap()
+        .is_none());
+    reopened.sync_snapshot(&snapshot).unwrap();
+    assert_eq!(
+        reopened
+            .search_current_snapshot(&request, &snapshot)
+            .unwrap()
+            .unwrap()
+            .hits
+            .len(),
+        1
+    );
 
     catalog
         .remove_file(&WorkspacePath::from_normalized("src/lib.rs"), 2)
         .expect("catalog removal");
+    assert!(reopened
+        .search_current_snapshot(&request, &catalog.snapshot().unwrap())
+        .unwrap()
+        .is_none());
     reopened
         .sync_snapshot(&catalog.snapshot().expect("empty snapshot"))
         .expect("replacement generation");

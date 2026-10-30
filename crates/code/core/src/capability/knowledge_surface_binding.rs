@@ -14,11 +14,11 @@ const KNOWLEDGE_SURFACE_DIGEST_PREFIX: &[u8] = b"a3s-code-knowledge-surface\0";
 
 /// Host-reviewed, path-free readiness evidence for one Knowledge surface.
 ///
-/// This value is deliberately not a cognitive context provider. Multiple
+/// This value is deliberately not a package context provider. Multiple
 /// package Knowledge surfaces may coexist in one catalog and satisfy exact
 /// readiness edges for host capabilities such as Flow. A separately selected
-/// [`crate::CognitiveContextSession`] remains the singular Run-visible
-/// cognitive authority.
+/// [`crate::PackageContextSession`] remains the singular Run-visible
+/// package authority.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct KnowledgeSurfaceBindingSpec {
     pub public_name: String,
@@ -32,7 +32,7 @@ pub struct KnowledgeSurfaceBindingSpec {
 ///
 /// Projection digests are opaque host evidence. Code canonicalizes and binds
 /// them but does not interpret scopes, open package files, query an index, or
-/// select a cognitive package.
+/// select a package.
 #[derive(Clone, Eq, PartialEq)]
 pub struct KnowledgeSurfaceBinding {
     public_name: Box<str>,

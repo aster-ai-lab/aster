@@ -54,7 +54,7 @@ candidate commit:
 | --- | --- |
 | L0–L1 hermetic | `just harness-convergence-check` + local-code lib |
 | L3 for enabled features | Feature suites for the artifact under test |
-| L4 SDK parity | Node/Python/Go discovery + fixtures |
+| L4 SDK parity | Rust/ACP discovery + fixtures |
 | L5 Layer C | `LAYER_C_PASS` under bailian Flash pin |
 | Integrated-use ledger | Dated E+E+I snapshot current |
 | L6 | Fresh `performance.yml` + `hermetic-integrations.yml` digests in PERFORMANCE_QUALIFICATION |

@@ -567,17 +567,12 @@ async fn run_quickjs_script(
         result = &mut vm => Some(result),
         _ = tokio::time::sleep(Duration::from_millis(timeout_ms)) => None,
     };
-    let stop = if result.is_none() {
-        if parent_cancellation.is_cancelled() {
-            Some(Stop::Cancelled)
+    let Some(result) = result else {
+        let stop = if parent_cancellation.is_cancelled() {
+            Stop::Cancelled
         } else {
-            Some(Stop::TimedOut)
-        }
-    } else {
-        None
-    };
-
-    if let Some(stop) = stop {
+            Stop::TimedOut
+        };
         // The child token is already cancelled when the parent stopped. On an
         // internal deadline, cancel it explicitly so every nested invocation
         // receives the same terminal signal as the VM.
@@ -595,9 +590,7 @@ async fn run_quickjs_script(
             Stop::TimedOut => format!("program script timed out after {timeout_ms} ms"),
         });
         return Ok(with_script_receipts(output, &state, vm_settled).await);
-    }
-
-    let result = result.expect("completed VM result is present");
+    };
 
     let vm_settled = result.is_ok();
     let mut script_result = None;

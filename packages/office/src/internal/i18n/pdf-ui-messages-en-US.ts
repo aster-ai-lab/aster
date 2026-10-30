@@ -124,5 +124,6 @@ export const pdfUiMessagesEnUS = {
   'pdf.organizer.closeError': 'Dismiss error',
   'pdf.organizer.workerHint': 'Page operations build a new PDF in a worker and restore with one undo entry. Operations stop clearly when signatures, encryption, forms, outlines, or tagged structure cannot be rewritten safely.',
   'pdf.organizer.selectPageAria': 'Select page {page}',
-  'pdf.organizer.currentBadge': 'Current'
+  'pdf.organizer.currentBadge': 'Current',
+  'pdf.organizer.previewFailed': 'Unable to generate preview'
 } as const;

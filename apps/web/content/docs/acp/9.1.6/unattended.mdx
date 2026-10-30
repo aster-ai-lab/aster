@@ -1,11 +1,11 @@
 export const meta = {
-  "title": "运行没有用户在端的任务",
+  "title": "无人值守任务",
   "description": "执行预算、自动交互策略、目标续跑和结果原因。",
   "label": "无人值守与结果记录",
   "updated": "2026-10-26"
 };
 
-## 什么时候使用
+## 适用场景
 
 `--unattended` 适用于明确没有用户在端的测试或批量任务。它仍然提供 ACP stdio 服务，需要客户端提交任务；启动参数不是直接运行自然语言任务的命令。
 
@@ -15,9 +15,9 @@ export const meta = {
 
 使用独立练习工作区，证据文件放在受测工作区之外。不要把交互模式的权限面板当作无人值守时仍会有人处理。
 
-## 它与交互模式的差别
+## 与交互模式的区别
 
-无人值守宿主策略会自行处理确认，并对业务问题回答“无人可用，按任务要求判断”。这是一项明确的执行授权选择；真正限制仍来自工作区范围、显式 deny、沙箱与宿主准入。只有已授权的任务才应进入这个模式。
+无人值守宿主策略会自行处理确认，并对业务问题回答“无人可用，按任务要求判断”。这是一项明确的执行授权选择。实际限制仍来自工作区范围、显式 deny、沙箱与宿主准入。只有已授权的任务才应进入这个模式。
 
 默认执行预算 840,000 ms、reasoning effort 为 max、工程策略为 engineering-v1，默认使用目标续跑。预算必须大于零。`--no-goal-continuation` 显式关闭该续跑路线；不要通过配置拼写错误意外改变模式。
 
@@ -25,7 +25,7 @@ export const meta = {
 
 ## 读取结果记录
 
-结果 schema 为 `a3s.code.terminal-bench-result.v1`，记录 outcome、reason、terminalEvent、exitCode、durationMs、turns、toolCalls、successfulToolCalls、artifactEvidenceCount、errorCount 等。
+结果 schema 为 `a3s.code.terminal-bench-result.v1`，记录以下字段：outcome、reason、terminalEvent、exitCode、durationMs、turns、toolCalls、successfulToolCalls、artifactEvidenceCount、errorCount。
 
 reason 区分 agent_end、stream_closed_without_terminal_event、worker_exited_without_terminal_event、worker_join_failed、startup_failed、execution_failed、evidence_missing、provider_rejected、provider_exhausted、deadline_exceeded。
 
@@ -46,3 +46,9 @@ reason 区分 agent_end、stream_closed_without_terminal_event、worker_exited_w
 - [无人值守策略](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/unattended.rs)
 - [运行与结果输出](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/unattended_turn.rs)
 - [结果 schema 与停止原因](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/unattended/result.rs)
+
+## 看清无人值守的执行链
+
+<PeleAtlasDiagram name="unattended" />
+
+[目标与无人值守内部](../internals/goals/)逐项解释动作证据与结果字段。

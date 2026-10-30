@@ -1,14 +1,14 @@
 use super::*;
 use serde::Deserialize;
 
-/// Handle `x.ai/models/update`: the model list changed (etag-triggered refresh).
+/// Handle `a3s/models/update`: the model list changed (etag-triggered refresh).
 pub(super) fn handle_models_update(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
     if let Ok(model_state) = serde_json::from_str::<acp::SessionModelState>(notif.params.get()) {
         use crate::acp::model_state::ModelState;
         let new_models = ModelState::from(Some(model_state));
         tracing::info!(
             count = new_models.available.len(),
-            "models updated via x.ai/models/update"
+            "models updated via a3s/models/update"
         );
 
         app.models.update_catalog(new_models.available.clone());
@@ -38,15 +38,15 @@ pub(super) fn handle_models_update(notif: &acp::ExtNotification, app: &mut AppVi
         }
         true
     } else {
-        tracing::warn!("Failed to parse x.ai/models/update");
+        tracing::warn!("Failed to parse a3s/models/update");
         false
     }
 }
 
-/// Handle `x.ai/settings/update`: remote settings refreshed on `/new`.
+/// Handle `a3s/settings/update`: remote settings refreshed on `/new`.
 pub(super) fn handle_settings_update(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
     let Ok(update) = serde_json::from_str::<PagerSettingsUpdate>(notif.params.get()) else {
-        tracing::warn!("Failed to parse x.ai/settings/update");
+        tracing::warn!("Failed to parse a3s/settings/update");
         return false;
     };
 
@@ -356,7 +356,7 @@ pub(super) fn handle_settings_update(notif: &acp::ExtNotification, app: &mut App
             resolve_slash_command_tags(tags_config, remote_tags.as_ref());
     }
 
-    tracing::info!("settings updated via x.ai/settings/update");
+    tracing::info!("settings updated via a3s/settings/update");
     true
 }
 
@@ -427,7 +427,7 @@ pub(super) fn notify_sessions_leave_auto(app: &AppView, session_ids: &[acp::Sess
             "permission_mode": "ask",
         });
         let notification = acp::ExtNotification::new(
-            "x.ai/yolo_mode_changed",
+            "a3s/yolo_mode_changed",
             serde_json::value::to_raw_value(&params)
                 .expect("serialize yolo_mode_changed params")
                 .into(),
@@ -442,11 +442,11 @@ pub(super) fn notify_sessions_leave_auto(app: &AppView, session_ids: &[acp::Sess
     }
 }
 
-/// Handle `x.ai/sessions/changed`: the leader broadcasts roster upserts/removals to all clients (FleetView dashboard).
+/// Handle `a3s/sessions/changed`: the leader broadcasts roster upserts/removals to all clients (FleetView dashboard).
 pub(super) fn handle_sessions_changed(notif: &acp::ExtNotification, app: &mut AppView) -> bool {
     let Ok(changed) = serde_json::from_str::<crate::app::roster::RosterChanged>(notif.params.get())
     else {
-        tracing::warn!("Failed to parse x.ai/sessions/changed");
+        tracing::warn!("Failed to parse a3s/sessions/changed");
         return false;
     };
     let mut affected = false;
@@ -541,7 +541,7 @@ pub(super) fn pick_random_announcement(
     announcements.get(idx).cloned()
 }
 
-/// Deserialization type for the `x.ai/settings/update` notification payload.
+/// Deserialization type for the `a3s/settings/update` notification payload.
 /// This side derives `Deserialize` and consumes only the fields the TUI uses.
 /// Separate structs keep the pager decoupled from shell internals (a shell-only field needs no pager change).
 #[derive(serde::Deserialize)]
@@ -574,7 +574,7 @@ pub(super) struct PagerSettingsUpdate {
     #[serde(default, deserialize_with = "deserialize_settings_update_tags")]
     slash_command_tags: Option<Option<std::collections::BTreeMap<String, String>>>,
     // `announcements` is deliberately NOT consumed here
-    // Every shell writer of remote_settings also emits gen-ordered `x.ai/announcements/update` (emit_announcements_if_changed)
+    // Every shell writer of remote_settings also emits gen-ordered `a3s/announcements/update` (emit_announcements_if_changed)
     // `None`/omitted (settings-less push, older shell) must leave this process's campaign cache untouched.
     #[serde(default)]
     campaigns: Option<Vec<a3s_code_shell::util::config::CampaignOverride>>,

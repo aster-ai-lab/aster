@@ -1,0 +1,21 @@
+suite "office-pdf-text-edit-regressions" {
+    version = 1
+
+    scenario "text-edit-after-toolbar-focus" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        click "select-tool" { target = role("button", "Select") }
+        double_click "resume-text-edit" { target = css("[role='application'][aria-label='PDF page canvas']") }
+        insert_text "write-text" { value = "Reviewed" }
+        expect "real-input-observed" { target = role("textbox", "Annotation input") value = "Reviewed" }
+        screenshot "visible-new-text" { path = "screenshots/pdf-text-visible-before-save.png" }
+        click "save" { target = role("button", "Save") }
+        wait "file-saved" { text = "accepted" }
+        expect "actual-annotation-contents" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+    }
+}

@@ -1,0 +1,39 @@
+# Aster local-model-control capability contract
+
+User objective: 按规范继续完成 Aster 本地模型控制平台的完整功能开发和验收.
+
+This extends the original local-model-control epic; it does not replace it with a smaller target. The pinned baseline revision is `033b17bafe0ec2b4af9153b8c825b1cedcaf8555`, observed on 2026-10-29. [reference-baseline.json](reference-baseline.json) retains source-document hashes, revision metadata and the exact client table order. The original source and origin record remain in the ignored local reference archive. These are research inputs, not proof of implementation.
+
+The whole functional baseline is required, including rows previously deferred. Equivalent existing Aster features count only when they meet the reference behavior and have direct evidence. Public labels, literal command names and branding may remain Aster's; capability or acceptance scope may not shrink. A later reference release is a tracked baseline change, not a moving completion target.
+
+The 63 rows in the reference's client table are a minimum retained inventory, not a claim that every documented alias or client appears in that table. Additional client behavior in the pinned README, notes and integration contract is required too; catalog reconciliation must retain those differences rather than silently dropping them.
+
+| ID | Required family | Acceptance proof | Tasks |
+| --- | --- | --- | --- |
+| MP-01 | Provider presets/custom endpoints, multiple keys, model discovery/capabilities, prices/context tiers/aliases and disabled state | Native persistence and actual request fixtures preserve identities, headers, rates, unknown metadata and next-call activation | T002,T004,T006,T012 |
+| MP-02 | Explicit reusable subscription/account connections and native refresh/discovery controls for all reference-supported authentication types | Authentication-owner fixtures prove connection, expiration, refresh, disconnect and discovery-off without copying secrets/session files | T012,T014 |
+| MP-03 | Every client in the pinned reference table, its model lists/aliases/effort and precise reversible configuration | Every inventory row has foreign-format/platform fixtures and actual generated connection requests; unrelated bytes and user edits survive | T006,T014 |
+| MP-04 | OpenAI Chat/Responses, Anthropic Messages and Gemini; cross-protocol streaming, tools, reasoning and usage | Verified conversion matrix with actual loopback requests, stream fragmentation and cancellation | T009,T013 |
+| MP-05 | Fixed/ordered groups, smart/order/rotate/usage/pace/speed account selection, model-driven intent and turn affinity | Injected-clock/store/loopback tests prove decisions, fallback/cooldown, reset, eligible retries and no replay after output | T004,T012 |
+| MP-06 | Per-key/account provider quotas/balances, freshness, windows/reset and unused-quota reminders | Provider fixture readings and clock advances distinguish exhausted, unknown, stale, unsupported and unavailable | T007,T012 |
+| MP-07 | Global/provider/client budgets; daily/weekly/monthly token/cost limits and supported hard stops | Durable concurrent reservations, restart/unknown settlement and independently proven call bounds; unsupported guarantees refuse activation | T003,T007,T015 |
+| MP-08 | Token/cache/reasoning/cost/request/attempt/speed reporting, common filters, charts, calendar, details and CSV | Shared immutable facts drive UI, export and diagnostics, including failed/cancelled calls and unknown values | T001,T005,T008,T015 |
+| MP-09 | Privacy Mask/Warn/Block; deterministic and optional local-model findings, custom rules, stable placeholders, memory-only secrets and stream/tool restoration | Real transformation fixtures cover repeated values, chunks, tools, signatures, collisions, preview/audit and required-filter failure without upstream transmission | T016 |
+| MP-10 | Baseline request/response plugin recipes: parameter transformation, model mapping, system prompt, word policy and reasoning tags | Existing extension host executes declared recipes with order/interruption/error tests; plugins cannot override authorization | T016 |
+| MP-11 | Gateway lifecycle, named scoped client keys, model/route grants, connection instructions and test-call results | Real authenticated listener/stream tests plus Tauri permissions and wide/narrow native UI | T009,T010,T013 |
+| MP-12 | Explicit LAN sharing and remote Aster clients using the shared provider/routing/quota owner | Local network fixtures prove identity/grants, refusal, disconnect and no supplier-key leakage | T017 |
+| MP-13 | Per-client selections/shortlists and named multi-client profiles, reversible activation and owned-field updates | File/host tests prove atomic changes, restore, missing clients and edits made after connection | T014,T017 |
+| MP-14 | Backup/import/export and encrypted synchronization through file, WebDAV, S3 and GitHub destinations | Owner-selected local/HTTP fixtures prove encryption, conflicts, partial failures, restore and isolation | T017 |
+| MP-15 | Headless service, web management, container and Termux delivery alongside native desktop | Actual commands, lifecycle tests, target builds and platform runtime acceptance; no second workspace or foreign SDK | T017 |
+| MP-16 | Desktop/menu/window, CLI and TUI management of the same providers, accounts, groups, quotas, profiles and clients | Real command/host campaigns prove one writer and matching state across surfaces | T018 |
+| MP-17 | Provider import links and explicit connection consent | URI/parser and host tests prove exact provider payload, rejection and no unrequested credential reads or calls | T018 |
+| MP-18 | Own-product updates and supported installation/version management | Signed Aster release identity, rollback/refusal fixtures and platform install/update checks; never upstream product replacement | T014,T018 |
+| MP-19 | Session/history attribution, context composition, per-account/key bills and OTLP export | Native fact fixtures, session navigation and loopback telemetry prove attribution, filtered totals and secret-free exports | T005,T008,T015 |
+| MP-20 | Shared instructions/MCP/skills/subagents library and removal of only owned client content | Existing library contracts plus every applicable client format prove reuse and non-destructive update/disconnect | T018 |
+| MP-21 | Model-backed and API-backed search, ordered/rotating keys, quota states, MCP search/fetch | Existing search/MCP integration against synthetic suppliers proves all advertised sources, controls, failures and real tool results | T018 |
+| MP-22 | Image/vision/video generation and chosen-model MCP tools | Existing media/provider adapters pass actual wire fixtures, cancellation, result publication and per-provider capability tests | T018 |
+| MP-23 | Installed-client discovery/version updates, Windows/WSL, appearance and keep-awake controls | Platform fixtures and native inspection prove discovery, commands, configuration scope and user-visible states | T014,T018 |
+
+All Aster product behavior remains ACL. Foreign client configuration formats are read/written only by their explicit interoperability adapters, with no new Aster configuration discovery. Subscription credentials stay with their authentication owner; neither copied state nor silently imported accounts are needed for parity. Cloud-managed ToYou remains isolated. New inference SDK language bindings, a new repository and an unrelated cloud-billing service cannot be used to satisfy these rows.
+
+Every family remains unproven until its owning evidence passes. In particular, screenshots, a compiled editor, a protocol name in an enum or an unexecuted task are insufficient. The completion audit must include the original FR/SC, all inventory rows, actual model/client request paths, negative cases and the installed/native delivery state.

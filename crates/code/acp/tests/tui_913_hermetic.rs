@@ -6,6 +6,9 @@
 //! live provider. The model is a local OpenAI-compatible server, except
 //! the missing-provider row, which points at a closed port.
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -41,6 +44,8 @@ const FEE_PY: &str = "def parcel_fee(count):\n    return count + 11\n";
 const RATE_FIXED: &str = "def sticker_price(count):\n    return count * 8\n";
 const FEE_FIXED: &str = "def parcel_fee(count):\n    return count * 5\n";
 const GATE_PY: &str = "\
+import sys\n\
+sys.dont_write_bytecode = True\n\
 import importlib\n\
 import fee\n\
 import rate\n\
@@ -54,7 +59,8 @@ fee_ok = parcel_fee(4) == 20 and parcel_fee(3) == 15\n\
 status = \"HOLD\" if not (price_ok and fee_ok) else \"GATE-7K\"\n\
 line = \"DUAL-\" + status\n\
 print(line, flush=True)\n\
-open(\"runs.txt\", \"a\", encoding=\"utf-8\").write(line + \"\\n\")\n";
+open(\"runs.txt\", \"a\", encoding=\"utf-8\").write(line + \"\\n\")\n\
+raise SystemExit(0 if price_ok and fee_ok else 1)\n";
 
 /// How many of the two independent defects are still present.
 ///
@@ -174,7 +180,8 @@ fn run_gate(workspace: &Path) -> String {
         .expect("python3 gate.py");
     let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
     assert!(
-        output.status.success() && !stdout.is_empty(),
+        (stdout == PASS_LINE && output.status.code() == Some(0))
+            || (stdout == FAIL_LINE && output.status.code() == Some(1)),
         "python3 gate.py status={} stdout={stdout:?} stderr={}",
         output.status,
         String::from_utf8_lossy(&output.stderr)
@@ -630,7 +637,10 @@ fn open_pty(binary: &Path, cwd: &Path, env: &[(&str, &str)]) -> PtySession {
 
 impl Drop for PtySession {
     fn drop(&mut self) {
-        let _ = self.child.kill();
+        if matches!(self.child.try_wait(), Ok(None)) {
+            let _ = self.child.kill();
+        }
+        let _ = self.child.wait();
     }
 }
 
@@ -727,7 +737,7 @@ fn write_acl(path: &Path, body: &str) {
 }
 
 fn child_env(config: &Path, home: &Path) -> Vec<(String, String)> {
-    let acp = env!("CARGO_BIN_EXE_a3s-code-acp");
+    let acp = binaries::acp_binary();
     vec![
         ("A3S_ACP_AGENT_BIN".into(), acp.to_string()),
         ("A3S_CONFIG".into(), config.display().to_string()),
@@ -840,11 +850,8 @@ fn wait_for_refusal(pty: &mut PtySession, timeout: Duration) -> String {
     );
 }
 
-fn version_line(binary: &Path) -> String {
-    let output = Command::new(binary)
-        .arg("--version")
-        .output()
-        .expect("version");
+fn binary_line(binary: &Path, flag: &str) -> String {
+    let output = Command::new(binary).arg(flag).output().expect("version");
     assert!(
         output.status.success(),
         "version status {:?}",
@@ -855,11 +862,16 @@ fn version_line(binary: &Path) -> String {
 
 #[test]
 fn shipped_binaries_report_current_version() {
-    let tui = version_line(&require_tui());
-    let acp = version_line(&PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp")));
+    let tui_bin = require_tui();
+    let acp_bin = PathBuf::from(binaries::acp_binary());
+    let tui = binary_line(&tui_bin, "--version");
+    let acp = binary_line(&acp_bin, "--version");
     let version = env!("CARGO_PKG_VERSION");
-    assert!(tui.starts_with("aster 0.1.1 "), "pager version {tui}");
+    assert!(tui.starts_with("aster "), "pager version {tui}");
     assert_eq!(acp, version, "acp version {acp}");
+    let identity = binary_line(&tui_bin, "--build-id");
+    assert!(identity.starts_with("aster-cli-pair-v1:"), "{identity}");
+    assert_eq!(identity, binary_line(&acp_bin, "--build-id"));
     eprintln!("VERSION tui={tui}");
     eprintln!("VERSION acp={acp}");
 }
@@ -900,6 +912,39 @@ fn one_turn_shows_assistant_text() {
         "the turn never reached the mock"
     );
     eprintln!("ORACLE case=turn text={ASSISTANT_TEXT}");
+}
+
+#[test]
+fn core_catalog_history_reaches_the_backend_instead_of_prompt_search() {
+    let (addr, mock) = spawn_mock();
+    let fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
+    let mut pty = open_on_model(&fixture, ACL_MODEL);
+    submit_line(&mut pty, TURN_MARKER);
+    pty.wait_for(ASSISTANT_TEXT, Duration::from_secs(60));
+    submit_line(&mut pty, "/history");
+    let stats = pty.wait_for("Messages:", Duration::from_secs(15));
+    assert!(
+        stats.contains("Tokens:") && stats.contains("Session:"),
+        "{}",
+        redact(&stats)
+    );
+    assert_no_secret(&stats);
+    assert!(
+        mock.bodies.lock().unwrap().iter().all(|body| {
+            let request: serde_json::Value = serde_json::from_str(body).unwrap();
+            request["messages"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|message| message["role"] == "user")
+                .all(|message| !message["content"].to_string().contains("/history"))
+        }),
+        "a registered Core command must not be forwarded to the model"
+    );
+    assert_eq!(
+        std::fs::read(fixture.workspace.join("sentinel.txt")).unwrap(),
+        b"unchanged"
+    );
 }
 
 #[test]
@@ -976,9 +1021,47 @@ default_model = "missing/none"
     eprintln!("ORACLE case=missing-provider refusal=Connection failed");
 }
 
-fn arm_shop(mock: &Mock, workspace: &Path) {
+fn arm_shop(mock: &Mock, fixture: &mut Fixture) {
+    let workspace = &fixture.workspace;
     write_shop_fixture(workspace);
     *mock.workspace.lock().expect("workspace") = Some(workspace.to_path_buf());
+    let config = workspace.join(".a3s/config.acl");
+    let mut document = a3s_acl::parse_acl(&std::fs::read_to_string(&config).unwrap()).unwrap();
+    document.blocks.push(a3s_acl::Block {
+        name: "verification_contract".into(),
+        labels: vec!["dual-defect".into()],
+        blocks: Vec::new(),
+        attributes: std::collections::HashMap::from([
+            (
+                "workspace".into(),
+                a3s_acl::Value::String(workspace.to_str().unwrap().into()),
+            ),
+            (
+                "command".into(),
+                a3s_acl::Value::String("python3 gate.py".into()),
+            ),
+            (
+                "covers".into(),
+                a3s_acl::Value::List(
+                    ["rate.py", "fee.py", "runs.txt"]
+                        .map(|path| a3s_acl::Value::String(path.into()))
+                        .into(),
+                ),
+            ),
+        ]),
+    });
+    std::fs::write(config, a3s_acl::generate_acl(&document)).unwrap();
+    if let Some(directory) = std::env::var_os("ASTER_SANDBOX_DIR") {
+        fixture.env.push((
+            "ASTER_SANDBOX_DIR".into(),
+            directory.into_string().expect("runtime path UTF-8"),
+        ));
+    } else {
+        assert!(
+            !cfg!(target_os = "macos"),
+            "coding E2E requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
+        );
+    }
 }
 
 fn gate_bytes(workspace: &Path) -> String {
@@ -1049,6 +1132,7 @@ fn checker_fails_until_both_defects_are_fixed() {
             .env("PYTHONDONTWRITEBYTECODE", "1")
             .output()
             .expect("logged gate");
+        assert_eq!(logged.status.code(), Some(1));
         assert_eq!(
             String::from_utf8_lossy(&logged.stdout).trim(),
             FAIL_LINE,
@@ -1063,13 +1147,13 @@ fn checker_fails_until_both_defects_are_fixed() {
 #[test]
 #[cfg_attr(
     target_os = "macos",
-    ignore = "upstream macOS native process lifetime is unqualified; shell tools fail closed"
+    ignore = "requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
 )]
 fn three_turns_fix_the_bug_they_diagnosed() {
     prompts_omit_secrets_and_defects();
     let (addr, mock) = spawn_mock();
-    let fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
-    arm_shop(&mock, &fixture.workspace);
+    let mut fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
+    arm_shop(&mock, &mut fixture);
     let mut pty = open_on_model(&fixture, ACL_MODEL);
     submit_line(&mut pty, DIAG_PROMPT);
     let first = wait_pumped(&mut pty, "returns count * 3", Duration::from_secs(90));
@@ -1156,13 +1240,13 @@ fn three_turns_fix_the_bug_they_diagnosed() {
 #[test]
 #[cfg_attr(
     target_os = "macos",
-    ignore = "upstream macOS native process lifetime is unqualified; shell tools fail closed"
+    ignore = "requires an explicit qualified ASTER_SANDBOX_DIR on macOS"
 )]
 fn long_task_repairs_the_check_after_a_failure() {
     prompts_omit_secrets_and_defects();
     let (addr, mock) = spawn_mock();
-    let fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
-    arm_shop(&mock, &fixture.workspace);
+    let mut fixture = prepare(&catalog_acl(&format!("http://{addr}/v1")));
+    arm_shop(&mock, &mut fixture);
     let mut pty = open_on_model(&fixture, ACL_MODEL);
     submit_line(&mut pty, LONG_PROMPT);
     let screen = wait_pumped(

@@ -11,6 +11,7 @@ import {
 import { createPortal } from 'react-dom';
 import { cn } from '../../lib/cn';
 import { Button } from '../primitives/button';
+import { usePortalContainer } from '../primitives/portal-container';
 
 export type PopConfirmProps = {
   title: string;
@@ -108,6 +109,7 @@ export function PopConfirm({
   className = '',
   boundary,
 }: PopConfirmProps) {
+  const portalContainer = usePortalContainer();
   const [open, setOpen] = useState(defaultOpen);
   const [busy, setBusy] = useState(false);
   const [pos, setPos] = useState<PanelPos | null>(null);
@@ -121,7 +123,9 @@ export function PopConfirm({
     const panel = panelRef.current;
     if (!trigger || !panel) return;
     const rect = trigger.getBoundingClientRect();
-    const bounds = boundary ? trigger.closest(boundary)?.getBoundingClientRect() ?? null : null;
+    const bounds = boundary
+      ? trigger.closest(boundary)?.getBoundingClientRect() ?? null
+      : portalContainer ? trigger.closest('[role="dialog"]')?.getBoundingClientRect() ?? null : null;
     const fitted = fitConfirmPanel(
       rect,
       { width: panel.offsetWidth, height: panel.offsetHeight },
@@ -155,7 +159,7 @@ export function PopConfirm({
         ?.focus();
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [open, tone, boundary]);
+  }, [open, tone, boundary, portalContainer]);
 
   useEffect(() => {
     if (!open) return;
@@ -170,15 +174,28 @@ export function PopConfirm({
       changeOpen(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') changeOpen(false);
+      if (event.key !== 'Escape') return;
+      const target = event.target;
+      const trigger = triggerRef.current;
+      const owner = trigger?.closest('[role="dialog"]');
+      const targetOwner = target instanceof Element ? target.closest('[role="dialog"]') : null;
+      const ownsEscape = !trigger?.closest('[hidden], [inert]') && (
+        (target instanceof Node && (panelRef.current?.contains(target) || trigger?.contains(target))) ||
+        (owner && owner === targetOwner)
+      );
+      if (ownsEscape) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      changeOpen(false);
     };
-    document.addEventListener('pointerdown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown, true);
+    window.addEventListener('keydown', onKeyDown, true);
     window.addEventListener('resize', place);
     window.addEventListener('scroll', place, true);
     return () => {
-      document.removeEventListener('pointerdown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      window.removeEventListener('keydown', onKeyDown, true);
       window.removeEventListener('resize', place);
       window.removeEventListener('scroll', place, true);
     };
@@ -190,6 +207,7 @@ export function PopConfirm({
   };
 
   const confirm = async () => {
+    if (disabled || busy) return;
     setBusy(true);
     try {
       await onConfirm();
@@ -201,6 +219,7 @@ export function PopConfirm({
     }
   };
 
+  const origin = portalContainer?.getBoundingClientRect();
   const panel =
     open && typeof document !== 'undefined'
       ? createPortal(
@@ -214,14 +233,18 @@ export function PopConfirm({
             data-tone={tone}
             className="ui-popconfirm fixed z-[90] box-border rounded-lg border border-[#e5e5e5] bg-white px-[0.95rem] pt-[0.9rem] pb-[0.8rem] text-[#171717] shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:border-[#2f2f33] dark:bg-[#171717] dark:text-[#f5f5f5] dark:shadow-[0_16px_48px_rgba(0,0,0,0.55)]"
             style={{
-              position: 'fixed',
+              position: portalContainer ? 'absolute' : 'fixed',
               zIndex: 90,
               width: pos?.width ? `${pos.width}px` : PANEL_WIDTH,
               // Off-screen until placed. visibility:hidden makes WKWebView lay
               // out native buttons and then never paint them once the panel
               // is shown, so the actions keep their box and lose their face.
               ...(pos
-                ? { top: pos.top, left: pos.left }
+                ? {
+                    top: pos.top - (origin?.top ?? 0) - (portalContainer?.clientTop ?? 0),
+                    left: pos.left - (origin?.left ?? 0) - (portalContainer?.clientLeft ?? 0),
+                    pointerEvents: 'auto' as const,
+                  }
                 : { top: -9999, left: 0, pointerEvents: 'none' as const }),
             }}
           >
@@ -276,14 +299,14 @@ export function PopConfirm({
                     ? { ...actionFace, backgroundColor: '#c23b3b', color: '#ffffff', borderColor: 'transparent' }
                     : actionFace
                 }
-                disabled={busy}
+                disabled={busy || disabled}
                 onClick={() => void confirm()}
               >
                 {confirmLabel}
               </Button>
             </div>
           </div>,
-          document.body,
+          portalContainer ?? document.body,
         )
       : null;
 

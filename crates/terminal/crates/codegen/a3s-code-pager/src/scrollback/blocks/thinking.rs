@@ -22,7 +22,7 @@ const EXPAND_HINT_GAP: &str = "  ";
 /// Append the dim `(ctrl+e to expand)` hint to a collapsed header line. The `Collapsed` guard matters because
 /// `render_empty_placeholder` reuses the collapsed renderer for an empty body in other modes. There the hint would
 /// be a lie.
-fn append_expand_hint(line: Line<'static>, ctx: &BlockContext) -> Line<'static> {
+fn append_expand_hint(line: Line<'static>, ctx: &BlockContext, chinese: bool) -> Line<'static> {
     if !ctx
         .appearance
         .scrollback
@@ -33,7 +33,12 @@ fn append_expand_hint(line: Line<'static>, ctx: &BlockContext) -> Line<'static> 
     {
         return line;
     }
-    let hint = format!("{EXPAND_HINT_GAP}({EXPAND_HINT})");
+    let label = if chinese {
+        "ctrl+e 展开"
+    } else {
+        EXPAND_HINT
+    };
+    let hint = format!("{EXPAND_HINT_GAP}({label})");
     let used: usize = line.spans.iter().map(|s| s.content.width()).sum();
     if used + hint.width() > ctx.content_width() {
         return line;
@@ -123,6 +128,7 @@ fn body_wrap_width(ctx: &BlockContext) -> usize {
 #[derive(Debug, Clone)]
 pub struct ThinkingBlock {
     content: MarkdownContent,
+    chinese: bool,
 
     /// Optional elapsed time in milliseconds (from server).
     /// When set, collapsed view shows "Thought for Xs".
@@ -135,6 +141,7 @@ impl ThinkingBlock {
     pub fn new(text: impl Into<String>) -> Self {
         Self {
             content: MarkdownContent::new(text),
+            chinese: false,
             elapsed_time_ms: None,
             started_at: None,
         }
@@ -144,6 +151,7 @@ impl ThinkingBlock {
     pub fn streaming() -> Self {
         Self {
             content: MarkdownContent::streaming(),
+            chinese: false,
             elapsed_time_ms: None,
             started_at: Some(std::time::Instant::now()),
         }
@@ -154,9 +162,14 @@ impl ThinkingBlock {
     pub fn streaming_replay() -> Self {
         Self {
             content: MarkdownContent::streaming(),
+            chinese: false,
             elapsed_time_ms: None,
             started_at: None,
         }
+    }
+
+    pub fn set_output_language(&mut self, language: Option<&str>) {
+        self.chinese = matches!(language, Some("zh-CN" | "zh-TW" | "zh"));
     }
 
     /// Push a streaming chunk of markdown text.
@@ -269,21 +282,49 @@ impl ThinkingBlock {
         let detail_style = theme.muted();
 
         if ctx.is_running {
-            Line::from(Span::styled("Thinking…", label_style))
+            Line::from(Span::styled(
+                if self.chinese {
+                    "正在思考…"
+                } else {
+                    "Thinking…"
+                },
+                label_style,
+            ))
         } else if let Some(time_str) = self.format_time() {
             Line::from(vec![
-                Span::styled("Thought", label_style),
-                Span::styled(format!(" for {time_str}"), detail_style),
+                Span::styled(
+                    if self.chinese {
+                        "推理详情"
+                    } else {
+                        "Thought"
+                    },
+                    label_style,
+                ),
+                Span::styled(
+                    if self.chinese {
+                        format!(" · {time_str}")
+                    } else {
+                        format!(" for {time_str}")
+                    },
+                    detail_style,
+                ),
             ])
         } else {
-            Line::from(Span::styled("Thought", label_style))
+            Line::from(Span::styled(
+                if self.chinese {
+                    "推理详情"
+                } else {
+                    "Thought"
+                },
+                label_style,
+            ))
         }
     }
 
     /// Render the collapsed view: header line only, truncated to fit.
     fn render_collapsed(&self, ctx: &BlockContext) -> BlockOutput {
         let line = self.header_line(ctx);
-        let line = append_expand_hint(line, ctx);
+        let line = append_expand_hint(line, ctx, self.chinese);
         let line = crate::render::line_utils::truncate_line(line, ctx.content_width());
         BlockOutput {
             lines: vec![BlockLine::separator(line)],

@@ -922,7 +922,7 @@ fn native_agent_inserts_cjk_graphemes_for_two_peers() {
         "frames": frames,
     });
     let fixture_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../target/native-document-live-frames.json");
+        .join("../../../../target/native-document-live-frames.json");
     fs::write(&fixture_path, serde_json::to_vec_pretty(&fixture).unwrap()).unwrap();
 }
 

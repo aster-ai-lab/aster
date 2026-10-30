@@ -1,41 +1,63 @@
-:root {
-  --a3s-bg: #f7f7f8;
-  --a3s-panel: #ffffff;
-  --a3s-panel-soft: #f2f3f5;
-  --a3s-panel-strong: #e9ebef;
-  --a3s-ink: #17181a;
-  --a3s-muted: #71757d;
-  --a3s-subtle: #8b9098;
-  --a3s-faint: #a1a5ad;
-  --a3s-line: #e2e4e8;
-  --a3s-line-strong: #d3d6dc;
-  --a3s-action: #242424;
-  --a3s-action-hover: #111111;
-  --a3s-action-ink: #ffffff;
+@import "@a3s-lab/ui/styles/spec-roles.css";
+
+:root,
+.a3s-office {
+  --a3s-bg: var(--spec-canvas);
+  --a3s-panel: var(--spec-page);
+  --a3s-panel-soft: var(--spec-field);
+  --a3s-panel-strong: var(--spec-selected-row);
+  --a3s-ink: var(--spec-ink);
+  --a3s-body: var(--spec-body);
+  --a3s-muted: var(--spec-muted);
+  --a3s-subtle: var(--spec-muted);
+  --a3s-faint: var(--spec-muted);
+  --a3s-line: var(--spec-hairline);
+  --a3s-line-strong: var(--spec-card-border);
+  --a3s-action: var(--spec-ink);
+  --a3s-action-hover: var(--spec-body);
+  --a3s-action-ink: var(--spec-page);
   --a3s-blue: #2864e8;
   --a3s-purple: #5420bd;
   --a3s-green: #14a675;
-  --a3s-red: #d84b4f;
+  --a3s-red: var(--spec-danger-text);
   --a3s-warning: #c97816;
-  --a3s-shadow: 0 24px 64px rgb(20 24 40 / 18%);
-  --a3s-shadow-soft: 0 14px 36px rgb(20 24 40 / 12%);
-  --a3s-radius: 16px;
-  --a3s-radius-sm: 9px;
-  --a3s-overlay-radius: 10px;
-  --a3s-overlay-border: var(--a3s-line-strong);
-  --a3s-overlay-surface: color-mix(in srgb, var(--a3s-panel) 98%, transparent);
-  --a3s-scrollbar-size: 10px;
+  --a3s-shadow: 0 12px 32px rgb(0 0 0 / 12%);
+  --a3s-shadow-soft: var(--a3s-shadow);
+  --a3s-radius: var(--spec-radius-feature-card);
+  --a3s-radius-sm: var(--spec-radius-row);
+  --a3s-overlay-radius: var(--spec-radius-dialog);
+  --a3s-overlay-border: var(--a3s-line);
+  --a3s-overlay-surface: var(--a3s-panel);
+  --a3s-scrollbar-size: 8px;
   --a3s-scrollbar-track: transparent;
-  --a3s-scrollbar-thumb: color-mix(in srgb, var(--a3s-muted) 38%, transparent);
-  --a3s-scrollbar-thumb-hover: color-mix(
-    in srgb,
-    var(--a3s-muted) 58%,
-    transparent
-  );
-  --a3s-ui-font:
-    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --a3s-scrollbar-thumb: rgb(23 23 23 / 28%);
+  --a3s-scrollbar-thumb-hover: rgb(23 23 23 / 46%);
+  --a3s-ui-font: var(--font-family, "Ubuntu", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", sans-serif);
+  --font-mono: var(--code-font-family, "Cascadia Code", ui-monospace, monospace);
+  --work-office-control-accent: var(--a3s-ink);
+  --work-office-accent: var(--a3s-ink);
+  --work-spreadsheet-accent: #107c41;
+}
+
+.a3s-office {
+  --color-ink: var(--a3s-ink);
+  --color-ink-muted: var(--a3s-body);
+  --color-ink-faint: var(--a3s-muted);
+  --color-control-fill: var(--a3s-panel-soft);
+  --color-control-fill-hover: var(--spec-field-hover);
+  --color-control-fill-active: var(--a3s-panel-soft);
+  --color-bg-elevated: var(--a3s-panel);
+  --color-border: var(--a3s-line);
+  --color-surface: var(--a3s-panel-strong);
+  --color-surface-2: var(--spec-hover-row);
+  --color-error: var(--a3s-red);
+  --font-sans: var(--a3s-ui-font);
+  --radius-md: var(--a3s-radius-sm);
+  --radius-xl: var(--a3s-overlay-radius);
+  --control-h-input: 36px;
+  --control-h-sm: 30px;
+  --ring-focus: inset 0 0 0 2px rgb(0 0 0 / 10%);
+  --shadow-elevated: var(--a3s-shadow-soft);
 }
 
 .a3s-office {
@@ -52,32 +74,6 @@
   font-size: 13px;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
-  --a3s-bg: #f7f7f8;
-  --a3s-panel: #ffffff;
-  --a3s-panel-soft: #f2f3f5;
-  --a3s-panel-strong: #e9ebef;
-  --a3s-ink: #17181a;
-  --a3s-muted: #71757d;
-  --a3s-subtle: #8b9098;
-  --a3s-faint: #a1a5ad;
-  --a3s-line: #e2e4e8;
-  --a3s-line-strong: #d3d6dc;
-  --a3s-action: #242424;
-  --a3s-action-hover: #111111;
-  --a3s-action-ink: #ffffff;
-  --a3s-blue: #2864e8;
-  --a3s-purple: #5420bd;
-  --a3s-green: #14a675;
-  --a3s-red: #d84b4f;
-  --a3s-warning: #c97816;
-  --a3s-shadow: 0 24px 64px rgb(20 24 40 / 18%);
-  --a3s-shadow-soft: 0 14px 36px rgb(20 24 40 / 12%);
-  --a3s-radius: 16px;
-  --a3s-radius-sm: 9px;
-  --a3s-ui-font:
-    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .a3s-office[data-theme="dark"] {
@@ -88,6 +84,7 @@
   --a3s-panel-strong: #282b35;
   --a3s-ink: #f2f3f5;
   --a3s-muted: #a4a8b2;
+  --a3s-body: var(--a3s-muted);
   --a3s-subtle: #8d929e;
   --a3s-faint: #727783;
   --a3s-line: #2a2d35;
@@ -109,14 +106,11 @@
   box-sizing: border-box;
 }
 
-.a3s-office button,
-.a3s-office input,
-.a3s-office textarea,
-.a3s-office select {
+:where(.a3s-office) :where(button, input, textarea, select) {
   font: inherit;
 }
 
-.a3s-office button {
+:where(.a3s-office) button {
   color: inherit;
 }
 
@@ -156,7 +150,7 @@
 }
 
 .a3s-office :where(button, input, textarea, select, a):focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--a3s-blue) 75%, white);
+  outline: 2px solid var(--a3s-ink);
   outline-offset: 2px;
 }
 
@@ -227,6 +221,7 @@ a3s-pdf-viewer {
     --a3s-panel-strong: #282b35;
     --a3s-ink: #f2f3f5;
     --a3s-muted: #a4a8b2;
+  --a3s-body: var(--a3s-muted);
     --a3s-subtle: #8d929e;
     --a3s-faint: #727783;
     --a3s-line: #2a2d35;

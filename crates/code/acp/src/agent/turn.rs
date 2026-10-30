@@ -3,15 +3,55 @@
 use super::*;
 
 impl A3sCodeAgent {
-    pub(super) fn prompt_text(prompt: &[acp::ContentBlock]) -> String {
-        prompt
-            .iter()
-            .filter_map(|block| match block {
-                acp::ContentBlock::Text(text) => Some(text.text.as_str()),
-                _ => None,
-            })
-            .collect::<Vec<_>>()
-            .join("\n")
+    pub(super) fn prompt_content(
+        prompt: &[acp::ContentBlock],
+    ) -> acp::Result<(String, Vec<a3s_code_core::Attachment>)> {
+        use a3s_code_core::llm::MAX_ATTACHMENT_BYTES;
+        use base64::Engine as _;
+
+        let unsupported = |kind: &str| {
+            acp::Error::invalid_params().data(format!(
+                "unsupported prompt content block `{kind}`; this agent accepts text and images and did not send the request to the model"
+            ))
+        };
+        let mut text = Vec::new();
+        let mut attachments = Vec::new();
+        for block in prompt {
+            match block {
+                acp::ContentBlock::Text(content) => text.push(content.text.as_str()),
+                acp::ContentBlock::Image(content) => {
+                    if !matches!(
+                        content.mime_type.as_str(),
+                        "image/png" | "image/jpeg" | "image/gif" | "image/webp"
+                    ) {
+                        return Err(acp::Error::invalid_params()
+                            .data("image MIME type must be PNG, JPEG, GIF or WebP"));
+                    }
+                    if content.data.len() > MAX_ATTACHMENT_BYTES.div_ceil(3) * 4 {
+                        return Err(acp::Error::invalid_params()
+                            .data("image exceeds the 16 MiB attachment limit"));
+                    }
+                    let data = base64::engine::general_purpose::STANDARD
+                        .decode(&content.data)
+                        .map_err(|_| {
+                            acp::Error::invalid_params().data("image data must be valid base64")
+                        })?;
+                    if data.is_empty() || data.len() > MAX_ATTACHMENT_BYTES {
+                        return Err(acp::Error::invalid_params()
+                            .data("image must contain 1 byte to 16 MiB of data"));
+                    }
+                    attachments.push(a3s_code_core::Attachment::new(
+                        data,
+                        content.mime_type.clone(),
+                    ));
+                }
+                acp::ContentBlock::Audio(_) => return Err(unsupported("audio")),
+                acp::ContentBlock::Resource(_) => return Err(unsupported("resource")),
+                acp::ContentBlock::ResourceLink(_) => return Err(unsupported("resource_link")),
+                _ => return Err(unsupported("unknown")),
+            }
+        }
+        Ok((text.join("\n"), attachments))
     }
 
     pub(super) async fn handle_event(
@@ -157,6 +197,7 @@ impl A3sCodeAgent {
                     &parent_session_id,
                     &agent,
                     &description,
+                    started_ms,
                 )
                 .await;
             }
@@ -177,7 +218,6 @@ impl A3sCodeAgent {
                     session_id,
                     &task_id,
                     &child_session_id,
-                    &status,
                     session.context_window_tokens() as u64,
                     &metadata,
                     started_ms,
@@ -210,13 +250,29 @@ impl A3sCodeAgent {
                 )
                 .await;
             }
+            AgentEvent::TurnEnd { usage, .. } => {
+                state.model_calls = state.model_calls.saturating_add(1);
+                state.last_turn_usage = Some(usage);
+            }
             AgentEvent::End {
                 text,
+                usage,
                 verification_summary,
                 completion_terminal,
                 forced_stop,
+                meta,
                 ..
             } => {
+                let final_turn_usage = state
+                    .last_turn_usage
+                    .take()
+                    .unwrap_or_else(|| usage.clone());
+                self.emit_xai_session_update(
+                    session_id,
+                    model_info_payload(&usage, &final_turn_usage, meta.as_ref()),
+                )
+                .await;
+                state.end_usage = Some(usage);
                 state.end_text = Some(text.clone());
                 state.end_outcome = Some(turn_outcome_payload(
                     &completion_terminal,
@@ -404,11 +460,13 @@ impl A3sCodeAgent {
         session_id: &acp::SessionId,
         session: &AgentSession,
         prompt: &str,
+        attachments: &[a3s_code_core::Attachment],
         generation: u64,
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,
         mut research_gate: Option<ResearchGate>,
         requested_posture: Option<PermissionPosture>,
+        output_schema: Option<&serde_json::Value>,
     ) -> acp::Result<acp::PromptResponse> {
         let governing_goal = self.goals.lock().await.get(session_id.0.as_ref()).cloned();
         // Keep a mode update from overtaking the policy captured for this prompt.
@@ -419,7 +477,13 @@ impl A3sCodeAgent {
                 .ok_or_else(|| acp::Error::invalid_params().data("unknown session id"))?
                 .set_posture(posture, Vec::new())?;
         }
-        let admitted = session.stream_with_run(prompt, None).await;
+        let admitted = if attachments.is_empty() {
+            session.stream_with_run(prompt, None).await
+        } else {
+            session
+                .stream_with_attachments_and_run(prompt, attachments, None)
+                .await
+        };
         drop(sessions);
         // The run owns its frozen policy now. Restore before draining events
         // or releasing the turn permit so the next queued turn sees its mode.
@@ -436,7 +500,7 @@ impl A3sCodeAgent {
                 return Err(acp::Error::internal_error().data(error.to_string()));
             }
         };
-        self.drain_turn(
+        self.drain_turn_with_output(
             session_id,
             session,
             stream,
@@ -444,13 +508,14 @@ impl A3sCodeAgent {
             generation,
             turn_permit,
             observation,
+            prompt,
+            output_schema,
         )
         .await
     }
 
     /// Render one admitted Run's events, answer its confirmations and honour
     /// `cancel`, exactly as for a prompt turn.
-    #[allow(clippy::too_many_arguments)]
     pub(super) async fn drain_turn(
         &self,
         session_id: &acp::SessionId,
@@ -461,66 +526,55 @@ impl A3sCodeAgent {
         turn_permit: OwnedMutexGuard<()>,
         observation: Option<&crate::run_observation::Binding>,
     ) -> acp::Result<acp::PromptResponse> {
-        let mut observer = stream.run.and_then(|run| {
-            observation.map(|binding| {
-                crate::run_observation::Observer::new(run, session_id.0.to_string(), binding)
-            })
-        });
-        self.emit_run_observation(observer.as_mut().and_then(|observer| observer.opened()))
-            .await;
-        let mut rx = stream.events;
-        let mut join = stream.worker;
+        self.drain_turn_with_output(
+            session_id,
+            session,
+            stream,
+            governing_goal,
+            generation,
+            turn_permit,
+            observation,
+            "",
+            None,
+        )
+        .await
+    }
 
-        let mut state = TurnState {
-            observer,
-            turn_failure: None,
-            reconciliation: None,
-            saw_text: false,
-            delta_text: String::new(),
-            end_text: None,
-            end_outcome: None,
-            stop_reason: None,
-            achieved_goal: None,
-            subagent_started_ms: HashMap::new(),
-            child_progress: HashMap::new(),
-            prompted_questions: HashSet::new(),
-            painted_tools: HashSet::new(),
+    #[allow(clippy::too_many_arguments)]
+    async fn drain_turn_with_output(
+        &self,
+        session_id: &acp::SessionId,
+        session: &AgentSession,
+        stream: a3s_code_core::AgentRunStream,
+        governing_goal: Option<crate::goal::DurableGoal>,
+        generation: u64,
+        turn_permit: OwnedMutexGuard<()>,
+        observation: Option<&crate::run_observation::Binding>,
+        prompt: &str,
+        output_schema: Option<&serde_json::Value>,
+    ) -> acp::Result<acp::PromptResponse> {
+        let attempt::AttemptCompletion {
+            mut state,
+            turn_permit,
+            events_drained,
+            drain_started,
+            ..
+        } = match self
+            .drive_attempt(
+                session_id,
+                session,
+                stream,
+                generation,
+                turn_permit,
+                observation,
+                None,
+                |_| {},
+            )
+            .await
+        {
+            attempt::AttemptDrive::Ended(completion) => completion,
+            attempt::AttemptDrive::Cancelled(response) => return response,
         };
-        let session_key = session_id.0.to_string();
-        let drain_started = std::time::Instant::now();
-        loop {
-            // Register before the map read. `notify_waiters` stores no permit.
-            let notified = self.turn_cancel.notified();
-            if self.turn_was_cancelled(&session_key, generation).await {
-                return self
-                    .leave_cancelled_turn(
-                        session_id,
-                        session,
-                        &mut state,
-                        &mut rx,
-                        join,
-                        turn_permit,
-                    )
-                    .await;
-            }
-            tokio::select! {
-                biased;
-                _ = notified => continue,
-                event = rx.recv() => {
-                    match event {
-                        Some(event) => {
-                            tokio::select! {
-                                biased;
-                                _ = self.wait_for_turn_cancel(&session_key, generation) => {},
-                                _ = self.handle_event(session_id, session, &mut state, event) => {},
-                            }
-                        }
-                        None => break,
-                    }
-                }
-            }
-        }
-        let events_drained = drain_started.elapsed();
         tracing::info!(
             target: "perf_probe",
             delta_chars = state.delta_text.chars().count(),
@@ -528,45 +582,6 @@ impl A3sCodeAgent {
             end_preview = %state.end_text.as_deref().unwrap_or("").chars().take(120).collect::<String>(),
             "turn_text_assembly"
         );
-        // A worker that died without emitting a terminal event closed the
-        // channel above; the join result is the only remaining evidence.
-        // Swallowing it reported a panicked or aborted worker as a clean
-        // EndTurn — indistinguishable from real completion.
-        let joined = loop {
-            let notified = self.turn_cancel.notified();
-            if self.turn_was_cancelled(&session_key, generation).await {
-                return self
-                    .leave_cancelled_turn(
-                        session_id,
-                        session,
-                        &mut state,
-                        &mut rx,
-                        join,
-                        turn_permit,
-                    )
-                    .await;
-            }
-            tokio::select! {
-                biased;
-                _ = notified => continue,
-                result = &mut join => break result,
-            }
-        };
-        let join_failure = match joined {
-            Ok(()) => None,
-            Err(join_error) => Some(worker_join_failure(join_error)),
-        };
-        if let (Some(message), None) = (&join_failure, &state.turn_failure) {
-            tracing::error!(
-                session = %session_id.0,
-                detail = %message,
-                "turn worker died without a terminal event"
-            );
-            state.turn_failure = Some(message.clone());
-        }
-        if state.turn_failure.is_none() && state.end_text.is_none() {
-            state.turn_failure = Some("turn worker exited without a terminal event".into());
-        }
         if state.turn_failure.is_none()
             && !self
                 .turn_was_cancelled(session_id.0.as_ref(), generation)
@@ -580,7 +595,9 @@ impl A3sCodeAgent {
                         self.goals.lock().await.remove(session_id.0.as_ref());
                         let reply = match self.goal_language(session_id).await {
                             crate::goal::GoalLanguage::Chinese => "\n目标已完成并清除。\n".into(),
-                            crate::goal::GoalLanguage::English => format!("\ngoal achieved and cleared ({total_steps} steps, {duration_ms} ms): {goal}\n"),
+                            crate::goal::GoalLanguage::English => format!(
+                                "\ngoal achieved and cleared ({total_steps} steps, {duration_ms} ms): {goal}\n"
+                            ),
                         };
                         self.emit_text(session_id, &reply).await;
                     }
@@ -592,11 +609,8 @@ impl A3sCodeAgent {
         // Emit the outcome BEFORE the response resolves: the client reads
         // the same FIFO wire, so the terminal marker it builds on the
         // response can carry this outcome.
-        if let Some(outcome) = state.end_outcome.take() {
-            self.emit_turn_outcome(session_id, outcome).await;
-        }
+        self.publish_attempt_outcome(session_id, &mut state).await;
         self.close_run_observation(&mut state).await;
-        drop(turn_permit);
         tracing::info!(
             target: "perf_probe",
             events_drained_ms = events_drained.as_millis() as u64,
@@ -604,14 +618,47 @@ impl A3sCodeAgent {
             "stream_turn_tail"
         );
         if let Some(message) = state.turn_failure {
+            drop(turn_permit);
             if let Some(error) = state.reconciliation {
                 return Err(reconciliation_error(&error));
             }
             return Err(agent_failure_error(&message));
         }
-        Ok(acp::PromptResponse::new(
-            state.stop_reason.unwrap_or(acp::StopReason::EndTurn),
-        ))
+        let mut response =
+            acp::PromptResponse::new(state.stop_reason.unwrap_or(acp::StopReason::EndTurn));
+        if let Some(usage) = &state.end_usage {
+            let mut meta = acp::Meta::new();
+            meta.insert(
+                "usage".into(),
+                prompt_usage_payload(usage, state.model_calls),
+            );
+            response.meta = Some(meta);
+        }
+        if let Some(schema) = output_schema {
+            let mut meta = response.meta.take().unwrap_or_default();
+            if response.stop_reason == acp::StopReason::EndTurn {
+                let text = state.end_text.as_deref().unwrap_or(&state.delta_text);
+                match session
+                    .structured_output_from_response(prompt, text, schema.clone())
+                    .await
+                {
+                    Ok(value) => {
+                        meta.insert("structuredOutput".into(), value);
+                    }
+                    Err(error) => {
+                        meta.insert("structuredOutputError".into(), error.to_string().into());
+                    }
+                }
+            } else {
+                meta.insert(
+                    "structuredOutputError".into(),
+                    "structured output requires a completed model turn".into(),
+                );
+            }
+            response.meta = Some(meta);
+        }
+        drop(turn_permit);
+        Ok(response)
     }
 
     pub(super) async fn turn_was_cancelled(&self, session_key: &str, generation: u64) -> bool {
@@ -624,7 +671,7 @@ impl A3sCodeAgent {
         crate::turn_cancel::generation_was_cancelled(recorded, generation)
     }
 
-    async fn wait_for_turn_cancel(&self, session_key: &str, generation: u64) {
+    pub(super) async fn wait_for_turn_cancel(&self, session_key: &str, generation: u64) {
         loop {
             let notified = self.turn_cancel.notified();
             if self.turn_was_cancelled(session_key, generation).await {
@@ -769,7 +816,55 @@ pub(super) fn should_emit_end_text(saw_text: bool, text: &str) -> bool {
     !saw_text && !text.is_empty()
 }
 
-/// The `x.ai/turn/outcome` notification payload carrying how the run closed
+/// End-of-turn truth for the transcript. Token counters cover the whole run; measured TPS
+/// belongs only to the final invocation whose response timing produced them.
+pub(super) fn prompt_usage_payload(
+    usage: &a3s_code_core::llm::TokenUsage,
+    model_calls: u64,
+) -> serde_json::Value {
+    // Core reports tokens here; per-model, reasoning and cost ledgers are not on this event.
+    serde_json::json!({
+        "inputTokens": usage.prompt_tokens,
+        "outputTokens": usage.completion_tokens,
+        "totalTokens": usage.total_tokens,
+        "cachedReadTokens": usage.cache_read_tokens.unwrap_or(0),
+        "cacheCreationTokens": usage.cache_write_tokens.unwrap_or(0),
+        "modelCalls": model_calls,
+        "costIsPartial": true,
+        "numTurns": model_calls,
+        "usageIsIncomplete": true,
+    })
+}
+
+fn model_info_payload(
+    usage: &a3s_code_core::llm::TokenUsage,
+    final_turn_usage: &a3s_code_core::llm::TokenUsage,
+    meta: Option<&a3s_code_core::llm::LlmResponseMeta>,
+) -> serde_json::Value {
+    let mut payload = serde_json::json!({
+        "sessionUpdate": "model_info",
+        "inputTokens": usage.prompt_tokens,
+        "outputTokens": usage.completion_tokens,
+        "totalTokens": usage.total_tokens,
+        "measuredOutputTokens": final_turn_usage.completion_tokens,
+    });
+    if let Some(model) = meta
+        .and_then(|meta| meta.response_model.as_deref())
+        .map(str::trim)
+        .filter(|model| !model.is_empty())
+    {
+        payload["responseModel"] = serde_json::json!(model);
+    }
+    if let Some((first_token_ms, duration_ms)) = meta
+        .and_then(|meta| meta.first_token_ms.zip(meta.duration_ms))
+        .filter(|(first, duration)| duration > first)
+    {
+        payload["generationDurationMs"] = serde_json::json!(duration_ms - first_token_ms);
+    }
+    payload
+}
+
+/// The `a3s/turn/outcome` notification payload carrying how the run closed
 /// at the completion gate, so the client's terminal marker can say more than
 /// a duration. Fields are additive; clients ignore unknown keys.
 pub(super) fn turn_outcome_payload(
@@ -840,6 +935,28 @@ pub(super) fn worker_join_failure(join_error: tokio::task::JoinError) -> String 
 mod usage_meta_tests {
     use super::*;
 
+    #[test]
+    fn prompt_usage_keeps_reported_buckets_and_marks_missing_ledger_information() {
+        let usage = a3s_code_core::llm::TokenUsage {
+            prompt_tokens: 53,
+            completion_tokens: 17,
+            total_tokens: 70,
+            cache_read_tokens: Some(11),
+            cache_write_tokens: Some(7),
+        };
+        let projected = prompt_usage_payload(&usage, 3);
+        assert_eq!(projected["inputTokens"], 53);
+        assert_eq!(projected["outputTokens"], 17);
+        assert_eq!(projected["totalTokens"], 70);
+        assert_eq!(projected["cachedReadTokens"], 11);
+        assert_eq!(projected["cacheCreationTokens"], 7);
+        assert_eq!(projected["modelCalls"], 3);
+        assert_eq!(projected["numTurns"], 3);
+        assert_eq!(projected["usageIsIncomplete"], true);
+        assert_eq!(projected["costIsPartial"], true);
+        assert!(projected.get("costUsdTicks").is_none());
+    }
+
     fn snapshot() -> a3s_code_core::harness_evidence::ModelUsageSnapshotV1 {
         a3s_code_core::harness_evidence::ModelUsageSnapshotV1 {
             schema: "test".into(),
@@ -903,5 +1020,54 @@ mod usage_meta_tests {
         assert_eq!(wire["_meta"]["cacheReadTokens"], 10);
         assert_eq!(wire["_meta"]["cacheWriteTokens"], 5);
         assert_eq!(wire["_meta"]["callSequence"], 7);
+    }
+
+    fn usage(prompt: usize, completion: usize) -> a3s_code_core::llm::TokenUsage {
+        a3s_code_core::llm::TokenUsage {
+            prompt_tokens: prompt,
+            completion_tokens: completion,
+            total_tokens: prompt + completion,
+            cache_read_tokens: None,
+            cache_write_tokens: None,
+        }
+    }
+
+    #[test]
+    fn model_info_uses_the_real_response_model_and_measured_generation_window() {
+        let total = usage(1_000, 200);
+        let final_call = usage(300, 80);
+        let meta = a3s_code_core::llm::LlmResponseMeta {
+            request_model: Some("auto".into()),
+            response_model: Some("real-upstream-model".into()),
+            first_token_ms: Some(250),
+            duration_ms: Some(4_250),
+            ..Default::default()
+        };
+
+        let payload = model_info_payload(&total, &final_call, Some(&meta));
+        assert_eq!(payload["responseModel"], "real-upstream-model");
+        assert_eq!(payload["inputTokens"], 1_000);
+        assert_eq!(payload["outputTokens"], 200);
+        assert_eq!(payload["totalTokens"], 1_200);
+        assert_eq!(payload["measuredOutputTokens"], 80);
+        assert_eq!(payload["generationDurationMs"], 4_000);
+        assert!(payload.get("requestModel").is_none());
+    }
+
+    #[test]
+    fn model_info_never_invents_identity_or_speed() {
+        let payload = model_info_payload(
+            &usage(10, 0),
+            &usage(5, 0),
+            Some(&a3s_code_core::llm::LlmResponseMeta {
+                request_model: Some("auto".into()),
+                response_model: None,
+                first_token_ms: Some(500),
+                duration_ms: Some(500),
+                ..Default::default()
+            }),
+        );
+        assert!(payload.get("responseModel").is_none());
+        assert!(payload.get("generationDurationMs").is_none());
     }
 }

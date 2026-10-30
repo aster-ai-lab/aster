@@ -41,6 +41,113 @@ fn query(documents: Vec<WorkspaceCatalogDocument>) -> WorkspaceCollectionQuery {
 }
 
 #[test]
+fn names_query_reaches_every_title_and_path_without_body_only_matches() {
+    let mut documents = (0..255)
+        .map(|i| {
+            document(
+                &format!("资料/{i:03}.md"),
+                &format!("---\ntitle: 名称目标{i}\n---\n正文"),
+            )
+        })
+        .collect::<Vec<_>>();
+    documents.push(document("正文.md", "名称目标只在正文"));
+    let owner = query(documents);
+    let mut request = WorkspaceCollectionRequest {
+        search: "名称目标".into(),
+        limit: 100,
+        ..Default::default()
+    };
+    let mut paths = BTreeSet::new();
+    loop {
+        let page = owner
+            .query_names_with_budget(&request, 128 * 1024, &[])
+            .unwrap();
+        assert_eq!(page.matched_files, 255);
+        assert!(page
+            .hits
+            .iter()
+            .all(|hit| hit.matched_field == WorkspaceCollectionMatch::Title));
+        for hit in page.hits {
+            assert!(paths.insert(hit.path));
+        }
+        request.cursor = page.next_cursor;
+        if request.cursor.is_none() {
+            break;
+        }
+    }
+    assert!(paths.contains("资料/250.md"));
+    assert_eq!(paths.len(), 255);
+    let path = owner
+        .query_names_with_budget(
+            &WorkspaceCollectionRequest {
+                search: "资料/250".into(),
+                ..Default::default()
+            },
+            128 * 1024,
+            &[],
+        )
+        .unwrap();
+    assert_eq!(path.hits[0].matched_field, WorkspaceCollectionMatch::Path);
+    assert_eq!(
+        owner
+            .query(&WorkspaceCollectionRequest {
+                search: "名称目标".into(),
+                ..Default::default()
+            })
+            .unwrap()
+            .matched_files,
+        256
+    );
+}
+
+#[test]
+fn names_query_orders_admitted_recents_and_binds_cursors_to_mode_and_order() {
+    let owner = query(vec![
+        document("a.md", "目标"),
+        document("b.md", "目标"),
+        document("c.md", "目标"),
+    ]);
+    let recent = vec!["c.md".into(), "deleted.md".into(), "b.md".into()];
+    let request = WorkspaceCollectionRequest {
+        limit: 1,
+        ..Default::default()
+    };
+    let first = owner
+        .query_names_with_budget(&request, 128 * 1024, &recent)
+        .unwrap();
+    assert_eq!(first.hits[0].path, "c.md");
+    let next = WorkspaceCollectionRequest {
+        cursor: first.next_cursor,
+        ..request
+    };
+    assert_eq!(
+        owner
+            .query_names_with_budget(&next, 128 * 1024, &recent)
+            .unwrap()
+            .hits[0]
+            .path,
+        "b.md"
+    );
+    assert!(matches!(
+        owner.query(&next),
+        Err(WorkspaceCollectionError::InvalidCursor)
+    ));
+    assert!(matches!(
+        owner.query_names_with_budget(&next, 128 * 1024, &[]),
+        Err(WorkspaceCollectionError::InvalidCursor)
+    ));
+    for bad in [
+        vec!["../outside.md".into()],
+        vec!["a.md".into(), "a.md".into()],
+        vec!["x.md".into(); 21],
+    ] {
+        assert!(owner
+            .query_names_with_budget(&WorkspaceCollectionRequest::default(), 128 * 1024, &bad)
+            .is_err());
+    }
+}
+
+#[test]
 fn collection_search_finds_note_250_and_pages_every_match_once() {
     let query = query(
         (0..255)
@@ -624,4 +731,43 @@ fn collection_results_do_not_depend_on_lexical_partition_backend() {
         }
         previous = Some(value);
     }
+}
+
+#[test]
+fn collection_metadata_admission_can_be_cancelled_without_a_query_handle() {
+    let catalog = catalog();
+    let snapshot = catalog
+        .replace_documents(1, vec![document("a.md", "一"), document("b.md", "二")])
+        .unwrap();
+    let checks = std::cell::Cell::new(0);
+    let result = WorkspaceCollectionQuery::new_cancellable(snapshot, "scope".into(), || {
+        let next = checks.get() + 1;
+        checks.set(next);
+        next >= 2
+    });
+    assert!(matches!(
+        result,
+        Err(WorkspaceCollectionError::Index(
+            WorkspaceIndexError::Cancelled
+        ))
+    ));
+}
+
+#[test]
+fn collection_folder_filter_does_not_hide_catalog_metadata_failures() {
+    let query = query(vec![
+        document("selected/good.md", "正文"),
+        document("other/bad.md", "---\ntitle: [unsupported]\n---\n正文"),
+    ]);
+    let page = query
+        .query(&WorkspaceCollectionRequest {
+            folder: Some("selected".into()),
+            search: "正文".into(),
+            ..Default::default()
+        })
+        .unwrap();
+    assert_eq!(page.matched_files, 1);
+    assert_eq!(page.indexed_files, 2);
+    assert_eq!(page.metadata_skipped_files, 1);
+    assert_eq!(page.metadata_skipped_paths, ["other/bad.md"]);
 }

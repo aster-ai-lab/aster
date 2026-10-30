@@ -337,6 +337,13 @@ impl AgentSession {
         self.policy_digest_from(&self.goal_facts()?)
     }
 
+    /// Exact host policy configured for this session. Fork callers use this to
+    /// explicitly accept the identical policy instead of reconstructing it
+    /// from optional transport metadata.
+    pub fn work_policy(&self) -> Option<crate::WorkPolicyV1> {
+        self.config.work_policy.clone()
+    }
+
     /// Record the configured policy when the session is admitted, through the
     /// same owner and writer a goal definition uses. No policy writes nothing.
     pub(super) fn admit_configured_policy(&self) -> Result<()> {
@@ -469,6 +476,8 @@ impl AgentSession {
     /// Admit at most one original Run for an automatic tick, named by its
     /// operation id. The original Run re-validates the same tick, trusted host
     /// bounds and host clock under its writer before any model call.
+    /// The absolute deadline also cancels an in-flight automatic Run, including
+    /// its goal assessment; the original worker still owns settlement and cleanup.
     pub async fn tick_goal(
         &self,
         command: &GoalControlCommandV1,
@@ -559,7 +568,7 @@ impl AgentSession {
             self.run_admission.is_active() || runs.iter().any(|run| !run.status.is_terminal()),
             source,
         )
-        .map_err(goal_error)
+        .map_err(|error| CodeError::Internal(error.into()))
     }
 
     fn configured_policy_digest(&self, facts: &[a3s_effect::Fact]) -> Result<Option<String>> {
@@ -571,6 +580,22 @@ impl AgentSession {
             .map(crate::WorkPolicyV1::digest)
             .transpose()
             .map_err(goal_error)
+    }
+
+    pub(super) fn goal_tick_feedback(
+        &self,
+        command: &crate::goal_control::GoalControlCommandV1,
+        step_id: &str,
+    ) -> Result<Option<crate::goal_control::GoalStepFeedback>> {
+        let facts = self.goal_facts()?;
+        crate::goal_control::definition_from_facts(
+            &facts,
+            &self.session_id,
+            self.tool_context.workspace_services.workspace_ref(),
+            self.configured_policy_digest(&facts)?.as_deref(),
+        )
+        .map_err(goal_error)?;
+        crate::goal_control::tick_feedback(&facts, command, step_id).map_err(goal_error)
     }
 
     fn goal_facts(&self) -> Result<Vec<a3s_effect::Fact>> {
@@ -642,7 +667,7 @@ fn append_goal(
     Ok(view)
 }
 
-fn host_clock_unix_ms() -> Result<u64> {
+pub(super) fn host_clock_unix_ms() -> Result<u64> {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .ok()

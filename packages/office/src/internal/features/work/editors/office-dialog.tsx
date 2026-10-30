@@ -11,9 +11,10 @@ import {
   Button,
   type ButtonTone,
   Dialog,
+  DialogPresence,
 } from '../../../design-system/primitives';
 import { OfficeTextArea, OfficeTextField } from './office-text-field';
-import { officeMessage, resolveOfficeMessages } from '../../../i18n/office-locale';
+import { officeMessage } from '../../../i18n/office-locale';
 import { useOfficeMessages } from './office-messages-context';
 
 interface OfficePromptRequest {
@@ -169,10 +170,10 @@ export function useOfficeDialog(): {
           placeholder: options.placeholder,
           multiline: options.multiline,
           inputMode: options.inputMode,
-          confirmLabel: options.confirmLabel ?? officeMessage(resolveOfficeMessages(), 'office.dialog.ok'),
+          confirmLabel: options.confirmLabel ?? officeMessage(messages, 'office.dialog.ok'),
           requiredMessage:
             options.required === true
-              ? officeMessage(resolveOfficeMessages(), 'office.dialog.required')
+              ? officeMessage(messages, 'office.dialog.required')
               : typeof options.required === 'string'
                 ? options.required
                 : undefined,
@@ -181,7 +182,7 @@ export function useOfficeDialog(): {
           touched: false,
         });
       }),
-    [retainInvoker],
+    [messages, retainInvoker],
   );
 
   const notice = useCallback(
@@ -199,11 +200,11 @@ export function useOfficeDialog(): {
           kind: 'notice',
           title: options.title,
           description: options.description,
-          confirmLabel: options.confirmLabel ?? officeMessage(resolveOfficeMessages(), 'office.dialog.gotIt'),
+          confirmLabel: options.confirmLabel ?? officeMessage(messages, 'office.dialog.gotIt'),
           restoreFocusTarget: options.restoreFocusTarget,
         });
       }),
-    [retainInvoker],
+    [messages, retainInvoker],
   );
   const confirm = useCallback(
     (options: OfficeConfirmOptions) =>
@@ -220,13 +221,13 @@ export function useOfficeDialog(): {
           kind: 'confirm',
           title: options.title,
           description: options.description,
-          confirmLabel: options.confirmLabel ?? officeMessage(resolveOfficeMessages(), 'office.dialog.continue'),
-          cancelLabel: options.cancelLabel ?? officeMessage(resolveOfficeMessages(), 'office.dialog.cancel'),
+          confirmLabel: options.confirmLabel ?? officeMessage(messages, 'office.dialog.continue'),
+          cancelLabel: options.cancelLabel ?? officeMessage(messages, 'office.dialog.cancel'),
           confirmTone: options.confirmTone ?? 'primary',
           restoreFocusTarget: options.restoreFocusTarget,
         });
       }),
-    [retainInvoker],
+    [messages, retainInvoker],
   );
 
   useEffect(
@@ -244,6 +245,11 @@ export function useOfficeDialog(): {
     request?.kind === 'prompt' ? promptValidationMessage(request) : null;
   const visiblePromptError =
     request?.kind === 'prompt' && request.touched ? promptError : null;
+  const touchPrompt = () => setRequest((current) =>
+    current?.kind === 'prompt' && current.id === request?.id
+      ? { ...current, touched: true }
+      : current,
+  );
   const submitPrompt = () => {
     if (!request || request.kind !== 'prompt') return;
     if (promptValidationMessage(request)) {
@@ -253,116 +259,121 @@ export function useOfficeDialog(): {
     closePrompt(request.value);
   };
 
-  const dialog = request ? (
-    <Dialog
-      key={request.id}
-      title={request.title}
-      description={request.description}
-      className="work-office-dialog"
-      focusKey={request.id}
-      restoreFocusTarget={() =>
-        request.restoreFocusTarget?.() ?? invokerRef.current
-      }
-      onClose={() =>
-        request.kind === 'prompt'
-          ? closePrompt(null)
-          : request.kind === 'confirm'
-            ? closeConfirm(false)
-            : closeNotice()
-      }
-      footer={
-        request.kind === 'prompt' ? (
-          <>
-            <Button tone="quiet" onClick={() => closePrompt(null)}>
-              {officeMessage(messages, 'office.dialog.cancel')}
-            </Button>
-            <Button
-              tone="primary"
-              disabled={Boolean(promptError)}
-              onClick={submitPrompt}
-            >
-              {request.confirmLabel}
-            </Button>
-          </>
-        ) : request.kind === 'confirm' ? (
-          <>
-            <Button tone="quiet" onClick={() => closeConfirm(false)}>
-              {request.cancelLabel}
-            </Button>
-            <Button
-              tone={request.confirmTone}
-              onClick={() => closeConfirm(true)}
-            >
-              {request.confirmLabel}
-            </Button>
-          </>
-        ) : (
-          <Button tone="primary" onClick={closeNotice}>
-            {request.confirmLabel}
-          </Button>
-        )
-      }
-    >
-      {request.kind === 'prompt' && (
-        <label className="work-office-dialog-field" htmlFor={promptFieldId}>
-          <span className="work-office-dialog-field-label">
-            {request.fieldLabel}
-          </span>
-          {request.multiline ? (
-            <OfficeTextArea
-              id={promptFieldId}
-              aria-label={request.fieldLabel}
-              aria-invalid={Boolean(visiblePromptError) || undefined}
-              value={request.value}
-              placeholder={request.placeholder}
-              onChange={(event) =>
-                setRequest({
-                  ...request,
-                  value: event.target.value,
-                  touched: true,
-                })
-              }
-              onBlur={() => setRequest({ ...request, touched: true })}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-                  event.preventDefault();
-                  submitPrompt();
-                }
-              }}
-            />
-          ) : (
-            <OfficeTextField
-              id={promptFieldId}
-              aria-label={request.fieldLabel}
-              aria-invalid={Boolean(visiblePromptError) || undefined}
-              value={request.value}
-              inputMode={request.inputMode}
-              placeholder={request.placeholder}
-              onChange={(event) =>
-                setRequest({
-                  ...request,
-                  value: event.target.value,
-                  touched: true,
-                })
-              }
-              onBlur={() => setRequest({ ...request, touched: true })}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  submitPrompt();
-                }
-              }}
-            />
+  const dialog = (
+    <DialogPresence>
+      {request ? (
+        <Dialog
+          closeLabel={officeMessage(messages, 'office.dialog.close')}
+          key={request.id}
+          title={request.title}
+          description={request.description}
+          className="work-office-dialog"
+          focusKey={request.id}
+          restoreFocusTarget={() =>
+            request.restoreFocusTarget?.() ?? invokerRef.current
+          }
+          onClose={() =>
+            request.kind === 'prompt'
+              ? closePrompt(null)
+              : request.kind === 'confirm'
+                ? closeConfirm(false)
+                : closeNotice()
+          }
+          footer={
+            request.kind === 'prompt' ? (
+              <>
+                <Button tone="quiet" onClick={() => closePrompt(null)}>
+                  {officeMessage(messages, 'office.dialog.cancel')}
+                </Button>
+                <Button
+                  tone="primary"
+                  disabled={Boolean(promptError)}
+                  onClick={submitPrompt}
+                >
+                  {request.confirmLabel}
+                </Button>
+              </>
+            ) : request.kind === 'confirm' ? (
+              <>
+                <Button tone="quiet" onClick={() => closeConfirm(false)}>
+                  {request.cancelLabel}
+                </Button>
+                <Button
+                  tone={request.confirmTone}
+                  onClick={() => closeConfirm(true)}
+                >
+                  {request.confirmLabel}
+                </Button>
+              </>
+            ) : (
+              <Button tone="primary" onClick={closeNotice}>
+                {request.confirmLabel}
+              </Button>
+            )
+          }
+        >
+          {request.kind === 'prompt' && (
+            <label className="work-office-dialog-field" htmlFor={promptFieldId}>
+              <span className="work-office-dialog-field-label">
+                {request.fieldLabel}
+              </span>
+              {request.multiline ? (
+                <OfficeTextArea
+                  id={promptFieldId}
+                  aria-label={request.fieldLabel}
+                  aria-invalid={Boolean(visiblePromptError) || undefined}
+                  value={request.value}
+                  placeholder={request.placeholder}
+                  onChange={(event) =>
+                    setRequest({
+                      ...request,
+                      value: event.target.value,
+                      touched: true,
+                    })
+                  }
+                  onBlur={touchPrompt}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                      event.preventDefault();
+                      submitPrompt();
+                    }
+                  }}
+                />
+              ) : (
+                <OfficeTextField
+                  id={promptFieldId}
+                  aria-label={request.fieldLabel}
+                  aria-invalid={Boolean(visiblePromptError) || undefined}
+                  value={request.value}
+                  inputMode={request.inputMode}
+                  placeholder={request.placeholder}
+                  onChange={(event) =>
+                    setRequest({
+                      ...request,
+                      value: event.target.value,
+                      touched: true,
+                    })
+                  }
+                  onBlur={touchPrompt}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      submitPrompt();
+                    }
+                  }}
+                />
+              )}
+              {visiblePromptError && (
+                <span className="work-office-dialog-field-error" role="alert">
+                  {visiblePromptError}
+                </span>
+              )}
+            </label>
           )}
-          {visiblePromptError && (
-            <span className="work-office-dialog-field-error" role="alert">
-              {visiblePromptError}
-            </span>
-          )}
-        </label>
-      )}
-    </Dialog>
-  ) : null;
+        </Dialog>
+      ) : null}
+    </DialogPresence>
+  );
 
   return { prompt, notice, confirm, dialog };
 }

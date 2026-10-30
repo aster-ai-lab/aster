@@ -12,6 +12,26 @@ use sha2::{Digest, Sha256};
 
 mod extract;
 mod personal;
+mod workspace;
+
+pub use personal::{
+    abandon_workspace_knowledge_job, abandon_workspace_knowledge_maintenance,
+    begin_workspace_knowledge_maintenance, cancel_workspace_knowledge_job,
+    cancel_workspace_knowledge_maintenance, fail_workspace_knowledge_job,
+    fail_workspace_knowledge_maintenance, finish_workspace_knowledge_maintenance,
+    retained_workspace_document_projection, retire_workspace_knowledge,
+    reuse_workspace_knowledge_maintenance, review_workspace_knowledge_change,
+    workspace_knowledge_change, workspace_knowledge_citation,
+    workspace_knowledge_compile_workspace, workspace_knowledge_maintenance_enabled,
+    workspace_knowledge_maintenance_job, workspace_knowledge_maintenance_plan,
+    workspace_knowledge_output_root, workspace_knowledge_page, workspace_knowledge_summary,
+    WorkspaceKnowledgeCitation, WorkspaceKnowledgeInput, WorkspaceKnowledgePage,
+    WorkspaceKnowledgeSource, WorkspaceKnowledgeStatus, WorkspaceKnowledgeSummary,
+};
+pub use workspace::{
+    extract_workspace_document, project_workspace_document, WorkspaceDocumentAnchor,
+    WorkspaceDocumentPassage, WorkspaceDocumentProjection, WorkspaceDocumentRead,
+};
 
 pub use extract::{
     extract_document, passage_bodies, project_text, BlockKind, ExtractPolicy, Extracted,
@@ -19,11 +39,13 @@ pub use extract::{
 };
 pub use personal::{
     abandon_knowledge_maintenance, accept_personal_bundle, begin_knowledge_maintenance,
-    fail_knowledge_maintenance, finish_knowledge_maintenance, is_personal_vault, knowledge_change,
-    knowledge_maintenance_job, knowledge_maintenance_plan, pin_personal_compile,
-    plan_personal_compile, publish_note_bundle, publish_note_bundle_with, release_personal_compile,
-    remember_personal_generations, review_knowledge_change, KnowledgeChangeDetail, KnowledgeJob,
-    KnowledgePlan, MaintenanceOperation,
+    cancel_knowledge_maintenance, fail_knowledge_maintenance, finish_knowledge_maintenance,
+    is_personal_vault, knowledge_change, knowledge_compile_workspace, knowledge_maintenance_job,
+    knowledge_maintenance_plan, knowledge_page_path, pin_personal_compile, plan_personal_compile,
+    publish_note_bundle, publish_note_bundle_with, release_personal_compile,
+    remember_personal_generations, review_knowledge_change, try_workspace_knowledge_read,
+    with_knowledge_source_mutation, workspace_knowledge_read, KnowledgeChangeDetail, KnowledgeJob,
+    KnowledgePlan, KnowledgeSourceMutationBlocked, MaintenanceOperation, WorkspaceKnowledgeRead,
 };
 
 pub const PASSAGE_CAP: usize = 32;
@@ -322,8 +344,7 @@ fn build_prose(request: &ConceptRequest<'_>) -> Option<BuiltProse> {
             .join("\n");
         let already_table = raw.lines().any(|line| line.trim_start().starts_with('|'));
         if !already_table {
-            if let Some(table) = markdown_table(&raw, delimiter) {
-                let cut = table.lines().filter(|line| line.starts_with('|')).count() > 201;
+            if let Some((table, cut)) = markdown_table(&raw, delimiter) {
                 return Some(BuiltProse {
                     text: table,
                     kept: 1,
@@ -423,7 +444,17 @@ pub(crate) fn render_index(
 ) -> String {
     let mut body = String::from("---\nokf_version: \"0.2\"\n---\n\n");
     for (title, file) in concepts {
-        body.push_str(&format!("- [{}](/{file})\n", link_label(title)));
+        let href = file
+            .chars()
+            .map(|ch| {
+                if ch.is_ascii() && !ch.is_ascii_alphanumeric() && !"/-_.~".contains(ch) {
+                    format!("%{:02X}", ch as u8)
+                } else {
+                    ch.to_string()
+                }
+            })
+            .collect::<String>();
+        body.push_str(&format!("- [{}](/{href})\n", link_label(title)));
     }
     if !skipped.is_empty() {
         body.push_str("\n## Skipped\n\n");
@@ -546,7 +577,7 @@ fn table_delimiter(name: &str, content_type: &str) -> Option<char> {
     None
 }
 
-pub(crate) fn markdown_table(text: &str, delimiter: char) -> Option<String> {
+pub(crate) fn markdown_table(text: &str, delimiter: char) -> Option<(String, bool)> {
     let mut rows = Vec::new();
     let mut cut = false;
     for line in text.lines() {
@@ -584,7 +615,7 @@ pub(crate) fn markdown_table(text: &str, delimiter: char) -> Option<String> {
     if cut {
         out.push_str("\n正文已截断，保留 200 行。\n");
     }
-    Some(out)
+    Some((out, cut))
 }
 
 fn write_row(out: &mut String, row: &[String], width: usize) {
@@ -720,7 +751,7 @@ mod tests {
             .contains("正文已截断，保留 32 段，略去 1 段。"));
         assert!(page.markdown.contains("](workspace:规范.md#passage-0)"));
         assert!(page.markdown.contains("source_generation: \"gen-1\""));
-        assert!(page.markdown.contains("parser_generation: \"builtin:1\""));
+        assert_eq!(published_parser(&page.markdown), Some(PARSER_GENERATION));
         assert!(page.markdown.starts_with("---\n"));
         assert!(!page.markdown.contains("[["));
         let index = render_index(&[], &[("scan.png".into(), SkipReason::Unsupported)], &[]);
@@ -883,7 +914,7 @@ mod tests {
         let concept = root.join("wiki").join("规范.md");
         let stale = fs::read_to_string(&concept)
             .unwrap()
-            .replace("builtin:1", "builtin:0");
+            .replace(PARSER_GENERATION, "builtin:0");
         fs::write(&concept, stale).unwrap();
         let report = compile_workspace(&root).unwrap();
         assert_eq!(report.unchanged, 0);

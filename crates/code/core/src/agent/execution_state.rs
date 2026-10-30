@@ -122,7 +122,13 @@ impl ExecutionLoopState {
         &self,
         workspace: &std::path::Path,
     ) -> crate::porcelain::PathDelta {
-        let observed = if self.workspace_watch_bound {
+        let observed = if let Some(watch) = self
+            .run_watch
+            .as_ref()
+            .filter(|_| self.run_watch_is_baseline)
+        {
+            watch.baseline_changes(workspace).await
+        } else if self.workspace_watch_bound {
             crate::porcelain::baseline_delta(
                 workspace,
                 self.workspace_porcelain.clone(),

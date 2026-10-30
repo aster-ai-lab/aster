@@ -1,7 +1,7 @@
 export const meta = {
-  title: '一个任务如何运行',
+  title: '任务执行流程',
   description: '以一次编码任务为例，看模型如何调用工具、处理结果并完成验证。',
-  updated: '2026-10-26',
+  updated: '2026-10-28',
   label: '执行流程',
 };
 
@@ -11,13 +11,19 @@ export const meta = {
 
 开始任务前，`Agent` 加载 ACL 配置，`AgentSession` 确定本次会话使用的工作区、模型、工具和权限。终端和桌面通过 ACP 调用 Core；Rust 应用可以直接使用 `send` 或 `stream`。
 
+从 <SourceRef path="crates/code/core/src/agent_api/agent_facade.rs" match="pub async fn session_async(">Agent::session_async</SourceRef> 进入会话创建，再沿 <SourceRef path="crates/code/core/src/fact_control.rs" match="pub struct FactRun {">FactRun</SourceRef> 查看执行状态与事实日志。
+
 宿主提供的可信配置与项目目录中自动发现的配置，拥有不同的权限。例如，仓库里的配置文件不能自行授权执行命令，也不能指定什么检查足以证明任务完成。
 
 ## 02 准备模型上下文
 
-每次调用模型前，运行时收集系统指令、项目规则、对话历史、工具目录等内容，排序、去重，再按上下文预算选择要发送的部分。这个预算限制发送给模型的内容量。历史过长时，可以用摘要替换较早的消息。
+每次调用模型前，运行时收集系统指令、项目规则、对话历史和工具目录。这些内容经排序、去重后，再按上下文预算选择发送部分。预算限制发送给模型的内容量。历史过长时，可以用摘要替换较早的消息。
 
 工作区检索用于查找相关代码，Skills 提供任务所需的操作说明，持久记忆保存可跨会话使用的信息。是否使用这些来源，取决于宿主接入了哪些能力。
+
+<PeleAtlasDiagram name="context-assembly" label="上下文装配" description="必需项保留，其他来源按去重、排序与预算规则进入模型上下文。图中来源需要宿主实际接入。" />
+
+具体去重与预算选择见 <SourceRef path="crates/code/core/src/context/assembler.rs" match="pub fn assemble(&amp;self, results: &amp;[ContextResult])">ContextAssembler::assemble</SourceRef>；各来源的每轮最新贡献不会无限叠加。
 
 ## 03 检查工具调用权限
 
@@ -31,11 +37,13 @@ export const meta = {
 
 工具结果写入事实日志，文件修改和检查结果也会被记录。模型看到这些结果后，再决定继续查找、修改还是运行测试。
 
-任务也可以交给子代理。子代理使用独立会话，仍要经过权限和完成检查。如果它修改了共享工作区，父任务必须取得并处理它的执行结果；尚未确认结果的后台任务会阻止父任务成功结束。
+任务也可以交给子代理。子代理使用独立会话，仍要经过权限和完成检查。子代理修改共享工作区时，父任务必须取得并处理执行结果。尚未确认结果的后台任务会阻止父任务成功结束。
 
 ## 05 检查完成条件
 
-模型准备给出最终答复时，`CompletionGate` 会检查：哪些文件改过、对应检查是否通过、子任务是否已处理完，以及是否有结果不明的操作。常见的结束状态如下：
+模型准备给出最终答复时，`CompletionGate` 检查修改文件、对应检查、子任务和未决操作。常见的结束状态如下：
+
+入口是 <SourceRef path="crates/code/core/src/harness_loop.rs" match="pub fn decide_completion(">decide_completion</SourceRef>；它把修改账本、验证报告与宿主豁免交给完成规则判断。完整分支见[权限与验证](../reference/governance/)。
 
 <CompletionStates />
 
@@ -49,7 +57,9 @@ export const meta = {
 
 完成检查通过后，运行还要等待资源清理结束，例如关闭监听器、释放租约。清理失败、超时，或用户在此期间取消任务，都不能返回成功。
 
-会话中断后，可以从事实日志重建执行状态。已经发出、但结果不明的操作需要先核实，再决定是否重试。长期目标若要开启下一轮执行，还要检查宿主设定的期限、权限和进展要求。
+资源实现遵循 <SourceRef path="crates/code/core/src/capability/effect.rs" match="pub trait CapabilityEffect: Send + 'static {">CapabilityEffect</SourceRef>，释放原资源的异步结果也属于收尾依据。
+
+会话中断后，可以从事实日志重建执行状态。已经发出但结果不明的操作需要先核实，再决定是否重试。长期目标启动下一轮执行前，还要检查宿主设定的期限、权限和进展要求。
 
 ## 实现依据
 

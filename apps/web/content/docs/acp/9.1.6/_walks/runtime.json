@@ -1,0 +1,61 @@
+{
+  "title": "ACP 请求与事件源码漫游",
+  "intro": "沿协议入口查看文本校验、事件映射、确认与无人值守结果。",
+  "steps": [
+    {
+      "title": "在入口拒绝不支持的内容",
+      "body": "当前 prompt 接受文本。图片、音频和资源块在入口返回错误。",
+      "takeaway": "Core 的能力与 ACP 已声明能力要分开判断。",
+      "source": {
+        "path": "crates/code/acp/src/agent/turn.rs",
+        "match": "pub(super) fn prompt_text(prompt: &[acp::ContentBlock]) -> acp::Result<String> {",
+        "before": 0,
+        "after": 24
+      }
+    },
+    {
+      "title": "把文本事件映射给客户端",
+      "body": "适配器分别处理文本与推理增量。",
+      "takeaway": "这是协议投影，不是第二套执行日志。",
+      "source": {
+        "path": "crates/code/acp/src/agent/turn.rs",
+        "match": "pub(super) async fn handle_event(",
+        "before": 0,
+        "after": 28
+      }
+    },
+    {
+      "title": "等参数完整后建立工具行",
+      "body": "ToolStart 不建立第二行。ToolExecutionStart 使用准确 ID 与参数。",
+      "takeaway": "一条执行事实应对应一个工具调用身份。",
+      "source": {
+        "path": "crates/code/acp/src/agent/turn.rs",
+        "match": "AgentEvent::ToolStart { .. } => {",
+        "before": 0,
+        "after": 26
+      }
+    },
+    {
+      "title": "生成一次确认请求",
+      "body": "tool_permission_ask 构造会话、工具、参数与选项。",
+      "takeaway": "界面返回代理给出的选项 ID。",
+      "source": {
+        "path": "crates/code/acp/src/agent/permission_ask.rs",
+        "match": "pub(super) fn tool_permission_ask(",
+        "before": 0,
+        "after": 31
+      }
+    },
+    {
+      "title": "无人值守也检查动作证据",
+      "body": "缺少成功工具动作时，适配器记录失败。",
+      "takeaway": "终态记录与完成证明仍需分别检查。",
+      "source": {
+        "path": "crates/code/acp/src/agent/unattended_turn.rs",
+        "match": "if failure.is_none() && !progress.has_action_evidence() {",
+        "before": 0,
+        "after": 25
+      }
+    }
+  ]
+}

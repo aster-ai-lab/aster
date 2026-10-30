@@ -440,7 +440,7 @@ fn upsell_non_max_upgrade_url_is_supergrok() {
         .id
         .as_deref()
         .unwrap();
-    assert!(url.contains("supergrok"), "got: {url}");
+    assert!(url.contains("kense-labs/aster"), "got: {url}");
     assert!(url.contains("referrer=grok-build"), "got: {url}");
 }
 
@@ -819,7 +819,10 @@ fn manage_billing_gates_on_consumer_billing_surface() {
     let mut app = test_app_with_agent();
     dispatch(Action::ManageBilling, &mut app);
     let opened = std::fs::read_to_string(&out).unwrap_or_default();
-    assert!(opened.contains("a3s/?_s=usage"), "got: {opened}");
+    assert!(
+        opened.contains("kense-labs/aster?_s=usage"),
+        "got: {opened}"
+    );
     let _ = std::fs::remove_file(&out);
 
     // Non-consumer: silent no-op (slash command never offers manage).

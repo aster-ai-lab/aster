@@ -2,6 +2,7 @@ use a3s_use_core::UseResult;
 use yrs::{GetString, Map, Out, Text, TextPrelim, Transact};
 
 use super::super::super::{collaboration_error, NativeOfficeCollaborationManifest};
+use super::super::{is_utf16_boundary, utf16_slice};
 use super::state::read_element_state;
 use super::{presentation_match_conflict, NativeOfficeCollaborationPresentationContainerKind};
 
@@ -152,46 +153,6 @@ fn utf16_len(value: &str) -> UseResult<u32> {
             "The presentation splice text exceeds the supported UTF-16 offset range.",
         )
     })
-}
-
-fn is_utf16_boundary(value: &str, offset: u32) -> bool {
-    let mut seen = 0u32;
-    for character in value.chars() {
-        if seen == offset {
-            return true;
-        }
-        let width = u32::try_from(character.encode_utf16(&mut [0; 2]).len()).unwrap_or(0);
-        if seen.saturating_add(width) > offset && seen < offset {
-            return false;
-        }
-        seen = seen.saturating_add(width);
-    }
-    seen == offset
-}
-
-fn utf16_slice(value: &str, start: u32, end: u32) -> Option<&str> {
-    if start > end || !is_utf16_boundary(value, start) || !is_utf16_boundary(value, end) {
-        return None;
-    }
-    let mut start_byte = None;
-    let mut end_byte = None;
-    let mut utf16 = 0u32;
-    for (byte, character) in value.char_indices() {
-        if start_byte.is_none() && utf16 == start {
-            start_byte = Some(byte);
-        }
-        if end_byte.is_none() && utf16 == end {
-            end_byte = Some(byte);
-        }
-        utf16 = utf16.saturating_add(u32::try_from(character.len_utf16()).unwrap_or(0));
-    }
-    if start_byte.is_none() && utf16 == start {
-        start_byte = Some(value.len());
-    }
-    if end_byte.is_none() && utf16 == end {
-        end_byte = Some(value.len());
-    }
-    Some(&value[start_byte?..end_byte?])
 }
 
 fn invalid_splice(message: &str) -> a3s_use_core::UseError {

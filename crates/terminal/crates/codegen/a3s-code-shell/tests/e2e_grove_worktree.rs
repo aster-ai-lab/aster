@@ -21,7 +21,7 @@ use acp_harness::{AutoApproveClient, connect_and_auth_with_remote, ext_method, r
 use serde_json::{Value, json};
 use tempfile::TempDir;
 
-const CREATE_SYNC: &str = "x.ai/git/worktree/create_from_worktree_sync";
+const CREATE_SYNC: &str = "a3s/git/worktree/create_from_worktree_sync";
 const DAEMON_READY: Duration = Duration::from_secs(15);
 
 fn env_truthy(name: &str) -> bool {

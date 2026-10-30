@@ -67,6 +67,7 @@ export function SpreadsheetPasteSpecialDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.pasteSpecial.title')}
       description={officeMessage(
         messages,

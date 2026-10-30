@@ -489,7 +489,7 @@ async fn harness_replay_binds_tool_requests_without_argument_plaintext() {
     snapshot
         .validate_against(tool_id, tool_name, &arguments, ToolRequestOriginV1::Agent)
         .unwrap();
-    assert_eq!(tool_id, "tool-write-1");
+    assert!(!tool_id.is_empty());
     assert_eq!(tool_name, "write");
     assert!(!serde_json::to_string(&snapshot)
         .unwrap()
@@ -504,6 +504,7 @@ async fn harness_replay_binds_tool_requests_without_argument_plaintext() {
         .iter()
         .position(|record| record.event.event_type == "tool_execution_start")
         .unwrap();
+    assert_eq!(page.events[execution_position].event.payload["id"], tool_id);
     assert!(request_position < execution_position);
 
     let replay = harness.execute(&command).await.unwrap();

@@ -591,8 +591,7 @@ pub(crate) fn emit_subagent_notification(
         .and_then(|v| serde_json::value::to_raw_value(&v))
         .ok();
     if let Some(params) = params {
-        let ext_notification =
-            acp::ExtNotification::new("x.ai/session_notification", params.into());
+        let ext_notification = acp::ExtNotification::new("a3s/session_notification", params.into());
         gateway.forward_fire_and_forget(ext_notification);
         return persist_ok;
     }

@@ -10,7 +10,7 @@ use notify::{
     event::{ModifyKind, RenameMode},
     Config, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher,
 };
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
@@ -35,7 +35,7 @@ pub(super) async fn run_manifest_task(
     // Readiness must not depend on the platform watcher service. Watcher
     // construction is blocking on some platforms and can be slow or fail
     // under resource pressure, while the initial manifest is still useful.
-    publish_scan(&root, &state, &snapshots, &scan_cancelled).await;
+    publish_scan(&root, &state, &snapshots, &changes, &scan_cancelled).await;
     if scan_cancelled.load(Ordering::Acquire) {
         return;
     }
@@ -94,7 +94,7 @@ pub(super) async fn run_manifest_task(
             _ = tokio::time::sleep(WATCH_STARTUP_SCAN_INTERVAL) => {
                 // Continue providing a fresh manifest while the platform
                 // watcher service is slow to initialize.
-                publish_scan(&root, &state, &snapshots, &scan_cancelled).await;
+                publish_scan(&root, &state, &snapshots, &changes, &scan_cancelled).await;
             }
         }
     };
@@ -103,7 +103,7 @@ pub(super) async fn run_manifest_task(
     };
     // Close the scan-to-watch registration window: files changed while the
     // watcher was being constructed are captured by this second scan.
-    publish_scan(&root, &state, &snapshots, &scan_cancelled).await;
+    publish_scan(&root, &state, &snapshots, &changes, &scan_cancelled).await;
 
     while let Some(event) = event_rx.recv().await {
         let Ok(event) = event else {
@@ -304,11 +304,55 @@ async fn publish_scan(
     root: &Path,
     state: &Arc<RwLock<ManifestState>>,
     snapshots: &broadcast::Sender<LocalWorkspaceManifestSnapshot>,
+    changes: &broadcast::Sender<WorkspaceFileChange>,
     scan_cancelled: &Arc<AtomicBool>,
 ) {
+    let previous = state.read().ok().map(|state| Arc::clone(&state.snapshot));
     if let Some(snapshot) = scan_workspace(root, state, scan_cancelled).await {
+        // Startup reconciliation must invalidate content before announcing its new revision.
+        if let Some(previous) = previous.filter(|previous| previous.version > 0) {
+            for change in snapshot_file_changes(&previous, &snapshot) {
+                let _ = changes.send(change);
+            }
+        }
         let _ = snapshots.send(snapshot);
     }
+}
+
+pub(super) fn snapshot_file_changes(
+    previous: &LocalWorkspaceManifestSnapshot,
+    next: &LocalWorkspaceManifestSnapshot,
+) -> Vec<WorkspaceFileChange> {
+    let old: HashMap<_, _> = previous
+        .files
+        .iter()
+        .map(|file| (file.path.as_str(), file))
+        .collect();
+    let current: HashSet<_> = next.files.iter().map(|file| file.path.as_str()).collect();
+    let mut changes = Vec::new();
+    for file in &next.files {
+        let kind = match old.get(file.path.as_str()) {
+            None => WorkspaceFileChangeKind::Created,
+            Some(before) if **before != *file => WorkspaceFileChangeKind::Changed,
+            Some(_) => continue,
+        };
+        if let Some(path) = normalize_event_path(&next.root, &next.root.join(&file.path)) {
+            changes.push(WorkspaceFileChange { path, kind });
+        }
+    }
+    for file in &previous.files {
+        if !current.contains(file.path.as_str()) {
+            if let Some(path) =
+                normalize_event_path(&previous.root, &previous.root.join(&file.path))
+            {
+                changes.push(WorkspaceFileChange {
+                    path,
+                    kind: WorkspaceFileChangeKind::Deleted,
+                });
+            }
+        }
+    }
+    changes
 }
 
 async fn scan_workspace(

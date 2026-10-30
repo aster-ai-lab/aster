@@ -32,10 +32,11 @@ pub(super) fn is_max_tier(subscription_tier: Option<&str>) -> bool {
 }
 
 /// URL for upgrading the subscription tier.
-pub(crate) const UPSELL_URL_UPGRADE: &str = "https://github.com/A3S-Lab/a3s";
+pub(crate) const UPSELL_URL_UPGRADE: &str =
+    "https://github.com/kense-labs/aster?referrer=grok-build";
 
 /// URL for managing pay-as-you-go or on-demand spending and purchasing credits.
-pub(crate) const UPSELL_URL_PAYG: &str = "https://a3s?_s=usage";
+pub(crate) const UPSELL_URL_PAYG: &str = "https://github.com/kense-labs/aster?_s=usage";
 
 /// Billing mode for credit-limit upsell copy.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -389,7 +390,7 @@ fn apply_recheck_meta(app: &mut AppView, mut meta: a3s_code_login::AuthMeta) {
     app.apply_auth_meta(&meta);
 }
 
-/// `x.ai/auth/check_subscription` completed.
+/// `a3s/auth/check_subscription` completed.
 /// A failed check only promotes the deferred gate it was verifying (the `verify` generation).
 /// Generic watch, focus, and paywall-chain failures never touch it.
 pub(super) fn handle_check_subscription_complete(
@@ -557,8 +558,8 @@ pub(super) fn dispatch_open_supergrok_url(app: &mut AppView) -> Vec<Effect> {
         .gate
         .as_ref()
         .and_then(|g| g.url.as_deref())
-        .unwrap_or("https://github.com/A3S-Lab/a3s");
-    // Funnel attribution: tag A3S Code upsell clicks from the CLI with `referrer=a3s-build`, matching the OAuth consent flow and x.ai/cli links
+        .unwrap_or("https://github.com/kense-labs/aster");
+    // Funnel attribution: tag A3S Code upsell clicks from the CLI with `referrer=a3s-build`, matching the OAuth consent flow and a3s/cli links
     // It applies even when the URL came from remote settings's `gate_url`, so nothing depends on the remote flag being configured correctly
     // If the URL already specifies a referrer it's left alone
     let url = crate::app::link_opener::ensure_query_param(url, "referrer", "grok-build");

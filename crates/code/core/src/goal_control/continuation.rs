@@ -19,17 +19,17 @@ pub struct GoalContinuationPolicyV1 {
 /// Provenance (specs/010 P3): 1,000 slices is an abuse ceiling, never a
 /// working budget — unattended slices are bounded by their own budget and
 /// stall policy. The 30-day horizon is the product's longest supported
-/// unattended span. 3 no-progress slices predates the TurnProgressDeltaV1
-/// basis: under that basis a slice counts as no-progress only when ALL
-/// four dimensions are zero (see specs/010 P2).
+/// unattended span. 3 no-progress slices predates the delta bases: V1 keeps
+/// any nonzero dimension; V2 requires uncertainty to decrease; V3 also requires
+/// net unseen workspace states and original accepted steps (specs/017).
 pub(crate) const MAX_GOAL_SLICES: u64 = 1_000;
 pub(crate) const MAX_GOAL_HORIZON_MS: u64 = 30 * 24 * 60 * 60 * 1_000;
-const DEFAULT_NO_PROGRESS_SLICES: u64 = 3;
+const DEFAULT_NO_PROGRESS_SLICES: NonZeroU64 = NonZeroU64::MIN.saturating_add(2);
 
 impl GoalContinuationPolicyV1 {
     /// Productive slices may continue until `deadline_unix_ms`. Three settled
-    /// slices without an observed workspace mutation require new input or a
-    /// changed plan; a verified turn alone does not prove goal achievement.
+    /// slices without progress under their source basis require new input or
+    /// a changed plan; a verified turn alone does not prove goal achievement.
     pub fn until_deadline(deadline_unix_ms: NonZeroU64) -> Result<Self, GoalControlError> {
         let Some(ceiling) = NonZeroU64::new(MAX_GOAL_SLICES) else {
             return Err(GoalControlError::Invalid {
@@ -40,9 +40,7 @@ impl GoalContinuationPolicyV1 {
         let policy = Self {
             automatic_enabled: true,
             max_slices: ceiling,
-            // The fixed default is 3, so this conversion cannot fail.
-            max_no_progress_slices: NonZeroU64::new(DEFAULT_NO_PROGRESS_SLICES)
-                .expect("the default no-progress bound is positive"),
+            max_no_progress_slices: DEFAULT_NO_PROGRESS_SLICES,
             deadline_unix_ms,
         };
         policy.check_bounds()?;

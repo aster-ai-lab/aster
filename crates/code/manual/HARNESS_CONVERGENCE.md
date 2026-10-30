@@ -44,7 +44,7 @@ cargo test -p a3s-code-core --lib parallel_task -- --nocapture
 cargo test -p a3s-code-core --lib candidate_write_stays_inactive -- --nocapture
 
 # SDK surface alignment (no parallel_task helpers)
-node scripts/sdk_api_alignment_check.mjs
+cargo test --locked -p a3s-code-core --lib sdk_capabilities
 ```
 
 Optional live gates (not TB/DM/CAR substitutes):

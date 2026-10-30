@@ -1,0 +1,96 @@
+{
+  "observedAt": "2026-10-29",
+  "revision": {
+    "sha": "033b17bafe0ec2b4af9153b8c825b1cedcaf8555",
+    "date": "2026-10-29T06:39:57Z"
+  },
+  "sources": [
+    {
+      "path": "README.md",
+      "sha256": "356aa22280adde5f3827f22b0c9397a81e08a98f88de1db3ebc1596f5ae560c8"
+    },
+    {
+      "path": "docs/reference.md",
+      "sha256": "f3c8c50c0efff955dd2bbe3e6ca564df4bba5a9250ca418b9aedd215464a234a"
+    },
+    {
+      "path": "docs/integrating.md",
+      "sha256": "dbecf3e729ba86e7733b128d7221a8bd62e9a0446df9bd57ce542b74b94499c7"
+    }
+  ],
+  "clientTable": {
+    "source": "docs/reference.md#agents",
+    "count": 63,
+    "names": [
+      "Claude Code",
+      "Claude Desktop",
+      "Codex",
+      "Gemini CLI",
+      "OpenCode",
+      "OpenChamber",
+      "MiMo Code",
+      "DevEco Code",
+      "Pi",
+      "StepCode",
+      "MothX",
+      "PenguinHarness",
+      "Aside",
+      "OmO (omo-ai)",
+      "Prime Agent",
+      "Goose",
+      "Cursor CLI",
+      "Zed",
+      "VS Code (Chat)",
+      "VS Code Insiders (Chat)",
+      "VSCodium (Chat)",
+      "Zoo Code (VS Code)",
+      "Copilot (JetBrains)",
+      "JetBrains Air",
+      "Copilot CLI",
+      "Crush",
+      "DeepSeek Harness (dsh)",
+      "Reasonix Studio (2.x, or a native Go `reasonix` 2.x / 1.39.x CLI)",
+      "Command Code",
+      "fx",
+      "omp (oh-my-pi)",
+      "Devin",
+      "Hermes Agent",
+      "Mister Morph",
+      "Kimi Code",
+      "Qwen Code",
+      "Muse Code",
+      "Empryo",
+      "Ante",
+      "AstrBot",
+      "OpenClaw",
+      "jcode",
+      "MiniMax Code (mcode)",
+      "Droid (Factory)",
+      "Cline (CLI)",
+      "Qoder (CLI)",
+      "Qoder CN (CLI)",
+      "Grok Build",
+      "Grok App",
+      "ZCode",
+      "WorkBuddy",
+      "WorkBuddy AI",
+      "CodeBuddy (CodeBuddy Code CLI, CodeBuddy IDE)",
+      "Raycast",
+      "Kiro Crew",
+      "OpenPencil",
+      "NewMax",
+      "T3 Code",
+      "OpenHanako",
+      "AtomCode",
+      "Snow CLI",
+      "Alma",
+      "Lody"
+    ]
+  },
+  "referenceId": "aster-local-model-control-20261029",
+  "provenance": {
+    "sourceArchive": "target/local-model-reference-20261029",
+    "originRecord": "target/aster-naming-20261029/reference-origin.json",
+    "originRecordSha256": "02fbaee2c86e0542519b2b36c8f6eb4a14d086d598210f90f568227dd68e7fbf"
+  }
+}

@@ -1,99 +1,54 @@
 {
   "BarChart": {
     "children": false,
-    "props": [
-      "labels",
-      "values"
-    ]
+    "props": ["labels", "values"]
   },
   "Button": {
     "children": false,
-    "props": [
-      "action",
-      "label"
-    ]
+    "props": ["action", "label"]
   },
   "Card": {
     "children": true,
-    "props": [
-      "title"
-    ]
+    "props": ["title"]
   },
   "Checkbox": {
     "children": false,
-    "props": [
-      "name",
-      "label",
-      "initial",
-      "required"
-    ]
+    "props": ["label", "checked", "required"]
   },
   "Grid": {
     "children": true,
-    "props": [
-      "columns"
-    ]
+    "props": ["columns"]
   },
   "Input": {
     "children": false,
-    "props": [
-      "name",
-      "label",
-      "initial",
-      "type",
-      "min",
-      "max",
-      "step",
-      "required",
-      "placeholder"
-    ]
+    "props": ["label", "value", "type", "min", "max", "step", "required", "placeholder"]
   },
   "Metric": {
     "children": false,
-    "props": [
-      "label",
-      "value",
-      "unit"
-    ]
+    "props": ["label", "value", "unit"]
   },
   "Select": {
     "children": false,
-    "props": [
-      "name",
-      "label",
-      "initial",
-      "options",
-      "required",
-      "placeholder"
-    ]
+    "props": ["label", "value", "options", "required", "placeholder"]
   },
   "Slider": {
     "children": false,
-    "props": [
-      "name",
-      "label",
-      "initial",
-      "min",
-      "max",
-      "step"
-    ]
+    "props": ["label", "value", "min", "max", "step"]
   },
   "Stack": {
     "children": true,
-    "props": []
+    "props": ["direction", "gap"]
   },
   "Text": {
-    "children": true,
-    "props": []
+    "children": false,
+    "props": ["content"]
   },
   "Textarea": {
     "children": false,
-    "props": [
-      "name",
-      "label",
-      "initial",
-      "required",
-      "placeholder"
-    ]
+    "props": ["label", "value", "required", "placeholder"]
+  },
+  "Form": {
+    "children": true,
+    "props": ["submitAction"]
   }
 }

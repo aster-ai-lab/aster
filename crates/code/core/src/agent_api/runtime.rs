@@ -84,7 +84,7 @@ impl BlockingRunContext {
         capability_run: crate::capability::SessionCapabilityRun,
         cancel_token: tokio_util::sync::CancellationToken,
     ) -> Result<Self> {
-        let cognitive_binding = super::agent_loop_runtime::cognitive_binding_for_projection(
+        let package_binding = super::agent_loop_runtime::package_binding_for_projection(
             session,
             capability_run.projection(),
         );
@@ -95,7 +95,7 @@ impl BlockingRunContext {
             ));
         };
         let run = match RunControlState::from_session(session)
-            .start_run_with_bindings(prompt, cognitive_binding, capability_binding)
+            .start_run_with_bindings(prompt, package_binding, capability_binding)
             .await
         {
             Ok(run) => run,
@@ -198,7 +198,7 @@ impl StreamRunContext {
         let cancel_token = session.session_cancel.child_token();
         let (agent_loop, capability_run) =
             build_pinned_agent_loop(session, cancel_token.clone()).await?;
-        let cognitive_binding = super::agent_loop_runtime::cognitive_binding_for_projection(
+        let package_binding = super::agent_loop_runtime::package_binding_for_projection(
             session,
             capability_run.projection(),
         );
@@ -209,7 +209,7 @@ impl StreamRunContext {
             ));
         };
         let run = match RunControlState::from_session(session)
-            .start_run_with_bindings(prompt, cognitive_binding, capability_binding)
+            .start_run_with_bindings(prompt, package_binding, capability_binding)
             .await
         {
             Ok(run) => run,
@@ -270,11 +270,11 @@ impl StreamRunContext {
             close_rejected_capability_run(&capability_run).await;
             return Err(error);
         }
-        if let Some(binding) = super::agent_loop_runtime::cognitive_binding_for_projection(
+        if let Some(binding) = super::agent_loop_runtime::package_binding_for_projection(
             session,
             capability_run.projection(),
         ) {
-            if let Err(error) = run_control.bind_cognitive_package(&run_id, binding).await {
+            if let Err(error) = run_control.bind_package(&run_id, binding).await {
                 close_rejected_capability_run(&capability_run).await;
                 return Err(error);
             }

@@ -239,7 +239,7 @@ fn portable_export_with_binding(
         agent_template_id: None,
         correlation_id: None,
         durable_memory_binding: None,
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     };
     let source = RunRecord {
@@ -248,7 +248,7 @@ fn portable_export_with_binding(
             session_id: session_id.into(),
             status: RunStatus::Executing,
             prompt: "portable source".into(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: logical.capability_binding.clone(),
             created_at_ms: 1_724_000_000_000,
             updated_at_ms: logical.checkpoint_ms,
@@ -876,7 +876,7 @@ async fn portable_recovery_surfaces_exact_recovery_run_identity_conflict() {
             session_id: "conflict-session".into(),
             status: RunStatus::Completed,
             prompt: "a conflicting historical prompt".into(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: None,
             created_at_ms: 1_724_000_000_000,
             updated_at_ms: 1_724_000_000_100,
@@ -1348,7 +1348,7 @@ fn portable_export_rejects_invalid_capability_binding_payload() {
         agent_template_id: None,
         correlation_id: None,
         durable_memory_binding: None,
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     };
     let source = RunRecord {
@@ -1357,7 +1357,7 @@ fn portable_export_rejects_invalid_capability_binding_payload() {
             session_id: "invalid-binding-session".into(),
             status: RunStatus::Executing,
             prompt: "portable source".into(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: logical.capability_binding.clone(),
             created_at_ms: 1_724_000_000_000,
             updated_at_ms: logical.checkpoint_ms,

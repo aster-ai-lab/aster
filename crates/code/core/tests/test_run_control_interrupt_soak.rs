@@ -180,6 +180,10 @@ async fn soak_interrupt_storm_settles_once_without_late_effects() {
             .stream("invoke the gate", None)
             .await
             .unwrap_or_else(|error| panic!("cycle {cycle} stream: {error}"));
+        // Consume the bounded stream while the tool starts and controls settle.
+        let drain = tokio::spawn(async move {
+            while events.recv().await.is_some() {}
+        });
         let deadline = std::time::Instant::now() + Duration::from_secs(5);
         while entered.load(Ordering::SeqCst) == cycle {
             if std::time::Instant::now() > deadline {
@@ -227,8 +231,8 @@ async fn soak_interrupt_storm_settles_once_without_late_effects() {
         assert_eq!(first_interrupt.sequence, second_interrupt.sequence);
 
         tokio::time::timeout(Duration::from_secs(5), async {
-            while events.recv().await.is_some() {}
             let _ = handle.await;
+            drain.await.expect("event consumer");
         })
         .await
         .unwrap_or_else(|_| panic!("cycle {cycle} did not settle"));

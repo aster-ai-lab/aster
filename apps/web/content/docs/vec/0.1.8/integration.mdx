@@ -1,0 +1,107 @@
+export const meta = {
+  title: 'Vec 接入',
+  description: 'Collection、Schema、CRUD、向量、全文查询和异步接口。',
+  label: '接入指南',
+  updated: '2026-10-29',
+};
+
+Vec 以 `Collection` 为工作单元。Schema 决定字段类型、向量维度、距离度量和索引参数。写入与查询都按 Schema 校验。
+
+## 创建 Collection 并查询向量
+
+```rust
+use a3s_vec::{
+    Collection, CollectionSchema, DataType, Doc, FieldSchema, IndexParams,
+    MetricType, Result, SearchQuery,
+};
+
+fn main() -> Result<()> {
+    let schema = CollectionSchema::builder("workspace")
+        .add_field(FieldSchema::new("title", DataType::String, true, 0)?)
+        .add_vector_field(
+            "embedding",
+            DataType::VectorFp32,
+            4,
+            IndexParams::hnsw(MetricType::Cosine, 16, 100)?,
+        )
+        .build()?;
+
+    let collection = Collection::create_and_open("./workspace-index", &schema, None)?;
+    let mut doc = Doc::with_pk("src/lib.rs")?;
+    doc.add_string("title", "Vector retrieval")?;
+    doc.add_vector_f32("embedding", &[0.1, 0.2, 0.3, 0.4])?;
+    collection.insert(&[&doc])?;
+
+    let hits = collection.query(&SearchQuery::new(
+        "embedding",
+        &[0.1, 0.2, 0.3, 0.4],
+        1,
+    )?)?;
+    assert_eq!(hits[0].get_pk(), Some("src/lib.rs"));
+
+    collection.close()?;
+    let _ = std::fs::remove_dir_all("./workspace-index");
+    Ok(())
+}
+```
+
+`create_and_open` 创建或打开持久集合。测试结束后删除练习目录，生产代码不要复用该目录。
+
+## 全文查询
+
+```rust
+use a3s_vec::{Fts, SearchQuery};
+
+let mut expression = Fts::new()?;
+expression.set_query_string("rust AND \"vector database\"")?;
+let hits = collection.query(&SearchQuery::fts("body", &expression, 10)?)?;
+```
+
+字段需要配置 FTS 索引。分词器支持 `standard`、`whitespace`、`ngram` 和可选 `jieba`。请求未启用的分词器会返回 `NotSupported`，不会替换为其他分词器。
+
+## CRUD 与标量过滤
+
+<DocTable caption="Collection 的常用接口" headers={['接口', '用途']} rows={[
+  ['insert', '插入文档并检查每条写入结果'],
+  ['fetch', '按主键读取文档'],
+  ['update / upsert', '更新现有文档，或按主键决定插入或更新'],
+  ['delete / delete-by-filter', '按主键或过滤条件删除'],
+  ['query / query_async', '执行向量、全文和混合查询'],
+  ['stats / health', '读取文档、索引和维护状态'],
+]} />
+
+标量过滤支持等值、范围、`IN`、null、通配符、前缀、后缀和布尔组合。过滤器与向量或全文候选使用同一修订。
+
+## 索引与数据类型
+
+<DocTable caption="Vec 的向量与度量类型" headers={['类型', '说明']} rows={[
+  ['FP16 / FP32 / FP64', '浮点向量，使用原维度保存权威值'],
+  ['INT4 / INT8 / INT16', '整数坐标，不是标量量化替代品'],
+  ['Binary32 / Binary64', '按 32 或 64 位打包的二进制向量'],
+  ['Sparse FP16 / FP32', '稀疏向量，按对应数值类型处理'],
+  ['L2 / IP / Cosine / MIPS-L2', '按 Schema 选择的距离或相似度'],
+]} />
+
+索引量化只用于派生索引。最终候选仍使用权威向量精确重排。维度、类型和不支持的组合在写入或查询前返回错误。
+
+## 异步接口
+
+启用 `async` feature 后，`query_async`、multi-query 和 group-by 在 Tokio blocking pool 中执行。异步接口复用同步查询的规划、评分、回退和遥测语义。
+
+不要为普通小集合默认创建独立异步运行时。先确定查询成本和现有宿主模型。
+
+## 验收
+
+1. 创建 Schema，验证字段类型和向量维度。
+2. 插入、读取、更新和删除文档，核对每条写入结果。
+3. 执行向量与全文查询，核对主键和分数顺序。
+4. 使用错误维度查询，确认返回类型化错误。
+5. 删除派生索引缓存后重新打开，确认精确回退仍返回正确结果。
+
+公开入口见 <SourceRef path="crates/vec/src/lib.rs" match="pub use collection::{">Collection exports</SourceRef>。
+
+## 实现依据
+
+- [CRUD 示例](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/examples/upstream/crud_operations.rs)
+- [向量查询示例](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/examples/upstream/vector_search.rs)
+- [全文查询快速开始](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/README.md)

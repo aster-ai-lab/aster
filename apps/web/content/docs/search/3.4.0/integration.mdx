@@ -1,0 +1,120 @@
+export const meta = {
+  title: 'Search 检索接入',
+  description: 'CLI、Rust 级联、显式来源、ACL 和扩展接口。',
+  label: '检索接入',
+  updated: '2026-10-29',
+};
+
+CLI 和嵌入式 Rust API 使用同一个默认级联计划。调用方可以选择默认策略，也可以明确指定全部来源。
+
+## 运行一次检索
+
+从 Aster 仓库根目录构建：
+
+```bash
+cargo build --locked -p a3s-search
+./target/debug/a3s-search "Rust async runtime guidance" --format json --limit 10
+```
+
+默认 Headless 层使用 Moli。只有该层需要运行时，才安装 Moli。可执行文件不在 `PATH` 时，设置 `A3S_MOLI_EXECUTABLE`。
+
+显式来源列表不会被默认计划扩展：
+
+```bash
+./target/debug/a3s-search "Rust async runtime guidance" \
+  --engines anysearch,tavily \
+  --format json \
+  --limit 10
+```
+
+每个选中来源接收同一个 `SearchQuery`。输出同时保留结果和降级路径。
+
+## 使用 Rust 默认级联
+
+```rust
+use std::time::Duration;
+use a3s_search::product::{self, HeadlessBrowser};
+use a3s_search::{EngineTierPlan, SearchQuery};
+
+#[tokio::main]
+async fn main() -> a3s_search::Result<()> {
+    let plan = EngineTierPlan::builtin_default();
+    let outcome = product::execute_cascade(
+        &plan,
+        product::CascadeRequest {
+            query: SearchQuery::new("rust programming"),
+            limit: 10,
+            timeout: Duration::from_secs(product::DEFAULT_TIMEOUT_SECONDS),
+            proxy: None,
+            config: None,
+            browser: HeadlessBrowser::default(),
+            browser_max_retries: 0,
+        },
+        product::CascadeControls::default(),
+    )
+    .await?;
+
+    println!("{}", outcome.receipt.retrieval_requirements_met);
+    for result in outcome.results.items() {
+        println!("{:.3} {} {:?}", result.score, result.url, result.engines);
+    }
+    Ok(())
+}
+```
+
+`product::execute_cascade` 是 CLI 同策略入口。需要自有 Engine、权重和可靠性控制时，使用调用方拥有的 `Search`。
+
+只需要 HTTP 和原生 API 时，使用 `default-features = false`，不构建浏览器栈。
+
+## 来源与计费
+
+<DocTable caption="来源选择边界" headers={['来源类型', '示例', '选择规则']} rows={[
+  ['默认可选 API', 'AnySearch、Tavily', '可以无密钥运行，认证为可选项'],
+  ['默认 HTTP / RSS', 'Wikipedia、DuckDuckGo、Bing RSS', '不需要私有网页索引'],
+  ['显式浏览器', 'Google、Baidu', '必须明确选择并准备浏览器后端'],
+  ['计费 API', 'TinyFish、Bocha、Aliyun、Tencent、Firecrawl、Doubao、DeepSeek', '必须显式选择并提供对应密钥'],
+]} />
+
+原生 API 请求不继承抓取代理。`--proxy` 只作用于支持的抓取传输。
+
+## ACL 配置
+
+`--config` 是父参数：
+
+```bash
+./target/debug/a3s-search --config search.acl engines
+./target/debug/a3s-search "query" --config search.acl --format json
+```
+
+以下示例显式请求 Tavily 的答案、图片和用量：
+
+```acl
+timeout {
+  value = 20
+}
+
+provider "tavily" {
+  api_key             = env("TAVILY_API_KEY")
+  max_results         = 10
+  include_raw_content = "markdown"
+  include_answer      = "advanced"
+  include_images      = true
+  include_usage       = true
+}
+```
+
+凭据使用 `env("VARIABLE")`，不要写入 Endpoint URL。提供方 wire 字段名不能直接作为 ACL 属性。公共结果上限使用 `max_results`。
+
+`enabled = false` 会记录 `engine_disabled`，不会访问网络。
+
+## 扩展新来源
+
+普通网页来源实现 `Engine`。具有能力报告和富输出的原生提供方实现 `SearchProvider`，再通过 `ProviderEngine` 接入。
+
+答案、图片、全文、用量和报告保持独立字段，不应改写成合成网页结果。
+
+## 实现依据
+
+- [CLI 与 Rust 级联入口](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [来源选择与提供方选项](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [Engine 扩展接口](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)

@@ -1,0 +1,95 @@
+export const meta = {
+  title: 'Office 原生自动化',
+  description: 'a3s-office CLI、MCP、Rust API、协作副本和文件验证边界。',
+  label: '原生自动化',
+  updated: '2026-10-29',
+};
+
+原生自动化不需要启动桌面 Office。`a3s-office` 在进程内处理 OPC、OOXML、语义读取、类型化修改和有界渲染。
+
+原生文件命令覆盖 DOCX、XLSX 和 PPTX。Markdown 与 PDF 使用协作副本和对应的类型化接口。
+
+## 构建 CLI
+
+原生 crate 要求 Rust 1.85 或更新版本。从 Aster 仓库根目录构建：
+
+```bash
+cargo build --locked -p a3s-office-cli
+```
+
+生成的二进制位于 `target/debug/a3s-office`。CLI 与 MCP 共享相同的原生文件合同。
+
+## 检查、修改与读回
+
+先检查文件，再读取结构。以下示例在文件副本上替换文本：
+
+```bash
+cp report.docx final.docx
+./target/debug/a3s-office validate final.docx --json
+./target/debug/a3s-office view final.docx outline --json
+./target/debug/a3s-office set final.docx /body \
+  --find Draft --replace Final --json
+./target/debug/a3s-office view final.docx issues --json
+```
+
+`set` 默认替换范围内的所有匹配。只需修改一个匹配时，先用 `find` 获取从 1 开始的 `occurrence`，再传入该序号。
+
+依赖同一个输入状态的修改应放入一个原子 `batch`。目标文件已存在时，不要使用强制覆盖绕过确认。
+
+公式写入不会隐式计算缓存值。需要新结果时，使用显式 `recalculate`。原生引擎不会调用 shell 或通用脚本运行时执行公式。
+
+## MCP 会话
+
+启动标准 MCP stdio 服务：
+
+```bash
+./target/debug/a3s-office mcp
+```
+
+<DocTable caption="主要 MCP 会话工具" headers={['工具', '职责']} rows={[
+  ['office_validate', '在不打开会话的情况下检查文件'],
+  ['office_open / office_create', '创建有界的内存会话'],
+  ['office_get / office_query / office_view', '读取当前会话状态'],
+  ['office_apply_batch', '原子应用类型化修改'],
+  ['office_save', '把可写会话保存到文件'],
+  ['office_close', '关闭会话并检查未保存修改'],
+]} />
+
+修改在 `office_save` 前只存在于内存。关闭脏会话需要保存，或显式设置 `discard=true`。任务结束后及时关闭会话。
+
+## Rust API 与协作副本
+
+Rust 调用方可以使用 `NativeOfficeEditor`、`NativeOfficeMutation` 和 `NativeOfficePackage`。这些类型保留文件、路径、预期值和修改结果的边界。
+
+`NativeOfficeCollaborationStore` 管理独立协作副本。副本会话与 OOXML 文件会话分离，不要求先打开 Office 文件。
+
+CLI 使用 `a3s-office collab`，MCP 使用 `office_collaboration_*` 工具。五种格式的副本可以交换标准 Yjs/Yrs update 和 state vector。
+
+修改前读取稳定地址与当前状态。写操作携带操作 ID、预期内容或状态向量。基础状态漂移时，引擎拒绝写入，调用方必须重新读取。
+
+宿主仍负责房间、身份、授权、传输和持久化。不要把 Presence 当作权限证明。
+
+## 兼容路径
+
+原生操作缺失时，可以显式使用固定版本的 OfficeCLI 兼容路径。兼容路径不是默认运行时，也不实现 OfficeCLI 的私有驻留协议。
+
+不要把 Microsoft Office、LibreOffice、Python、Node.js 或 .NET 作为隐式回退。缺少原生能力时，报告边界或选择明确的兼容路径。
+
+## 验收清单
+
+1. 运行 `validate` 并保存原始诊断。
+2. 在文件副本上执行类型化修改。
+3. 使用 `get`、`query` 或 `view` 读回结果。
+4. 检查 `issues` 和公式缓存状态。
+5. 保存后重新打开输出文件。
+6. 使用浏览器检查目标交互和焦点。
+7. 报告输出路径与剩余兼容边界。
+
+HTML、SVG 和截图只作为语义预览。文件校验通过也不能代替浏览器交互验收。
+
+## 实现依据
+
+- [原生 CLI 与自动化入口](https://github.com/aster-ai-lab/aster/blob/main/crates/office/README.md)
+- [Office Skill 工作流](https://github.com/aster-ai-lab/aster/blob/main/crates/office/crates/cli/skills/a3s-office/SKILL.md)
+- [MCP 会话与协作合同](https://github.com/aster-ai-lab/aster/blob/main/crates/office/crates/cli/skills/a3s-office/references/mcp.md)
+- [原生 Rust 公开类型](https://github.com/aster-ai-lab/aster/blob/main/crates/office/crates/core/src/lib.rs)

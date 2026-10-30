@@ -18,7 +18,7 @@ from urllib.request import urlopen
 WEB_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WEB_ROOT / "scripts"))
 from check_site import check_site
-from site_contract import BRAND_FILES, DOCS_FILES, DOCS_PAGES, DOWNLOAD_MANIFEST, HOME_FILES, SITE_FILES, documentation_pages
+from site_contract import BRAND_FILES, DOCS_FILES, DOCS_PAGES, DOWNLOAD_MANIFEST, HOME_FILES, LEGAL_FILES, SHARED_FILES, SITE_FILES, documentation_pages
 from stage_site import stage_site
 
 SCREENSHOTS = tuple(f"download/screenshots/{name}.png" for name in ("workspace", "office", "review", "lineage"))
@@ -42,10 +42,10 @@ class SiteTest(unittest.TestCase):
         self.public = self.root / "public"
         self.page = self.public / "download/index.html"
         self.page.parent.mkdir(parents=True)
-        for name in BRAND_FILES + HOME_FILES + DOCS_FILES:
+        for name in BRAND_FILES + HOME_FILES + DOCS_FILES + LEGAL_FILES + SHARED_FILES:
             destination = self.public / name
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(WEB_ROOT / "public" / name, destination)
+            shutil.copy2(WEB_ROOT / "dist" / name, destination)
         downloads = "".join(f'<a href="{item[4]}">{item[0]} {item[1]} {item[2]} {item[3]}</a>' for item in DOWNLOAD_MANIFEST)
         self.html = ('<!doctype html><html lang="zh-CN"><head><title>Aster</title>'
                      '<link rel="stylesheet" href="styles.css">'
@@ -83,12 +83,38 @@ class SiteTest(unittest.TestCase):
             for weight in (400, 500, 700)), encoding="utf-8")
 
     def test_four_png_screenshots_and_three_local_fonts_with_license_are_public(self):
-        self.assertEqual(check_site(self.public)["files"], 19 + len(DOCS_FILES))
+        self.assertEqual(check_site(self.public)["files"], len(SITE_FILES + HOME_FILES + DOCS_FILES))
         destination = self.root / 'with-real-ui'
         receipt = stage_site(self.public, destination)
-        self.assertEqual(len(receipt['files']), 19 + len(DOCS_FILES))
+        self.assertEqual(len(receipt['files']), len(SITE_FILES + HOME_FILES + DOCS_FILES))
         for name in (*SCREENSHOTS, *FONTS, FONT_LICENSE):
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
+
+    def test_legal_pages_are_staged_and_refuse_remote_or_injected_resources(self):
+        self.assertEqual(check_site(self.public)['legal_pages'], 2)
+        for name, heading, other in (
+            ('terms/index.html', 'Aster 用户协议', '../privacy/'),
+            ('privacy/index.html', 'Aster 隐私政策', '../terms/'),
+        ):
+            source = (self.public / name).read_text()
+            self.assertIn(heading, source)
+            self.assertIn(other, source)
+            self.assertIn('id="content"', source)
+        destination = self.root / 'legal-pages'
+        stage_site(self.public, destination)
+        for name in LEGAL_FILES:
+            self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
+
+        page = self.public / 'terms/index.html'
+        original = page.read_text()
+        page.write_text(original.replace('</body>', '<script src="https://example.com/tracker.js"></script></body>'))
+        with self.assertRaisesRegex(ValueError, 'unsupported legal-page'):
+            check_site(self.public)
+        page.write_text(original)
+        extra = self.public / 'privacy/private.txt'
+        extra.write_text('not public')
+        with self.assertRaisesRegex(ValueError, 'unexpected or missing legal-page'):
+            check_site(self.public)
 
     def test_documentation_catalog_supports_products_versions_and_closed_routes(self):
         catalog = json.loads((WEB_ROOT / 'content/docs/catalog.json').read_text())
@@ -239,7 +265,7 @@ class SiteTest(unittest.TestCase):
         original = DOWNLOAD_MANIFEST[0][4]
         for changed in (original.replace('github.com', 'github.com.evil.example'),
                         original.replace('/aster-ai-lab/aster/', '/someone/aster/'),
-                        original.replace('/v0.1.1/', '/v9.9.9/'), original + '?redirect=1'):
+                        original.replace('/' + original.split('/releases/download/')[1].split('/')[0] + '/', '/v9.9.9/'), original + '?redirect=1'):
             with self.subTest(changed=changed):
                 self.rewrite(original, changed)
                 with self.assertRaisesRegex(ValueError, "host|repository|download"):
@@ -297,7 +323,10 @@ class SiteTest(unittest.TestCase):
         destination = self.root / 'staged'
         receipt = stage_site(self.public, destination)
         self.assertEqual(set(receipt['files']), set(SITE_FILES + HOME_FILES + DOCS_FILES))
-        self.assertIn('id="scenarios"', (destination / 'index.html').read_text())
+        homepage = (destination / 'index.html').read_text()
+        self.assertIn('id="scenarios"', homepage)
+        self.assertIn('href="./terms/"', homepage)
+        self.assertIn('href="./privacy/"', homepage)
         for name in SITE_FILES:
             self.assertEqual((destination / name).read_bytes(), (self.public / name).read_bytes())
         self.assertFalse((destination / 'tenant/toyou').exists())

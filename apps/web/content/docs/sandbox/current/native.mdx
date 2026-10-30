@@ -1,0 +1,112 @@
+export const meta = {
+  title: 'a3s-sandbox 命令边界',
+  description: '原生后端、默认策略、能力探测、CLI 和 Rust 接入。',
+  label: 'a3s-sandbox',
+  updated: '2026-10-29',
+};
+
+`a3s-sandbox` 将不可信命令放入原生操作系统边界。策略限制进程树及其子进程，不只限制第一个 shell。
+
+库不依赖 Aster Code。CLI、Agent 和其他 Rust 宿主可以使用同一接口。
+
+## 原生后端
+
+<DocTable caption="a3s-sandbox 的平台边界" headers={['平台', '隔离实现', '主机要求']} rows={[
+  ['macOS', 'Seatbelt 配置与进程组生命周期', '系统 /usr/bin/sandbox-exec'],
+  ['Linux', 'Bubblewrap 命名空间与 seccomp', '/usr/bin/bwrap 和可用的非特权用户命名空间'],
+  ['Windows', 'AppContainer、工作区 ACL 与 Job Object', '系统 Program Files 中的 PowerShell 7'],
+  ['其他平台', '返回不支持错误', '不执行宿主回退命令'],
+]} />
+
+后端在编译时选择。策略与输出结构保持跨平台一致。宿主缺少启动器或必要能力时，命令在执行前返回错误。
+
+## 默认策略
+
+默认 A3S Bash 配置包含以下限制：
+
+- 拒绝网络访问和宿主 Unix-domain socket。
+- 只允许写入规范化工作区与私有临时目录。
+- 保护凭据、`.git`、`.a3s` 和工具启动文件。
+- 拒绝符号链接逃逸和指向受保护文件的硬链接别名。
+- 清理子进程环境，并重定向临时状态。
+- 用脱敏占位符替代宿主持有的敏感环境值。
+- 到期终止完整后代进程树。
+- 将捕获输出限制为 100 KiB。
+
+策略在执行开始时生成快照。并发替换策略不会改变正在执行的命令。扩大策略需要显式授权，不能静默发生。
+
+## 能力探测与 CLI
+
+先构建并检查当前主机：
+
+```bash
+cargo build --locked -p a3s-sandbox
+./target/debug/a3s-sandbox probe --workspace /absolute/project
+./target/debug/a3s-sandbox capabilities --workspace /absolute/project
+```
+
+`probe` 执行最小能力检查。`capabilities` 返回后端、策略摘要和不可用能力。宿主不支持所需能力时，调用方必须删除对应策略或拒绝启动。
+
+执行命令：
+
+```bash
+./target/debug/a3s-sandbox exec --workspace /absolute/project -- "printf 'inside sandbox'"
+```
+
+其他 CLI 子命令：
+
+<DocTable caption="a3s-sandbox CLI" headers={['命令', '用途']} rows={[
+  ['probe', '检查原生边界能否执行最小命令'],
+  ['digest', '输出当前策略摘要'],
+  ['capabilities', '输出能力报告与不可用能力'],
+  ['exec', '在边界内执行命令并返回输出与退出状态'],
+  ['relay', '为显式网络中介提供 TCP 到 Unix socket 转发'],
+]} />
+
+## Rust 接入
+
+```rust
+use a3s_sandbox::NativeSandbox;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let workspace = std::env::current_dir()?;
+    let sandbox = NativeSandbox::new(workspace)?;
+
+    sandbox.probe().await?;
+    let output = sandbox.exec_command("echo inside sandbox").await?;
+
+    assert!(!output.timed_out);
+    println!("{}", output.stdout);
+    Ok(())
+}
+```
+
+`CommandOutput` 分开保存 `stdout`、`stderr`、`exit_code` 和 `timed_out`。`OutputObserver` 可以接收实时增量与最终统计。
+
+需要自定义策略时，使用 `NativeSandbox::with_policy`。需要更新现有策略时，使用 `replace_policy`。网络授权使用 `apply_network_grant`，并绑定预期策略摘要。
+
+## 网络中介边界
+
+默认配置不启用网络中介。启用前必须确认当前平台支持对应机制，并保留原始允许规则。
+
+macOS 支持 HTTP 与 SOCKS 中介。Linux 使用 `a3s-sandbox-relay` 建立显式桥接。Windows 的 HTTP 中介使用命名管道。各平台不支持的 Unix socket 或 SOCKS 能力保持失败闭合。
+
+不要把 `HTTP_PROXY`、主机名或 `localhost` 的不同写法当作扩大授权的依据。非 CONNECT HTTP、SOCKS BIND 和 UDP 不属于默认允许范围。
+
+## 验收
+
+1. 运行 `probe`，确认后端可用。
+2. 运行 `capabilities`，保存当前策略摘要。
+3. 尝试访问网络，确认默认策略拒绝。
+4. 尝试写入工作区外的临时文件，确认拒绝。
+5. 启动一个产生子进程的命令，确认到期后整个进程树停止。
+6. 生成超过 100 KiB 的输出，确认捕获结果标明截断。
+
+入口为 <SourceRef path="crates/sandbox/src/lib.rs" match="pub struct NativeSandbox {">NativeSandbox</SourceRef>。策略类型与网络授权也从该模块导出。
+
+## 实现依据
+
+- [威胁模型与平台剩余风险](https://github.com/aster-ai-lab/aster/blob/main/crates/sandbox/THREAT_MODEL.md)
+- [安全说明](https://github.com/aster-ai-lab/aster/blob/main/crates/sandbox/SECURITY.md)
+- [CLI 子命令实现](https://github.com/aster-ai-lab/aster/blob/main/crates/sandbox/src/bin/a3s_sandbox.rs)

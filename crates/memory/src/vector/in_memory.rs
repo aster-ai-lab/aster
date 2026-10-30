@@ -33,7 +33,7 @@ struct IndexInner {
     snapshot: RwLock<Arc<IndexSnapshot>>,
 }
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(super) struct IndexSnapshot {
     pub(super) revision: VectorRevision,
     pub(super) partitions: BTreeMap<String, Arc<PartitionBlock>>,
@@ -92,6 +92,10 @@ pub(super) fn new_history_digest() -> String {
     hasher.update(uuid::Uuid::new_v4().as_bytes());
     format!("sha256:{:x}", hasher.finalize())
 }
+
+#[cfg(test)]
+#[path = "in_memory_tests.rs"]
+mod snapshot_tests;
 
 #[async_trait::async_trait]
 impl VectorIndex for InMemoryVectorIndex {
@@ -398,8 +402,8 @@ fn publish_partition(
     expected_revision: Option<VectorRevision>,
 ) -> VectorResult<VectorIndexStatus> {
     let mut published = write_unpoisoned(&inner.snapshot);
-    let current = Arc::clone(&published);
-    verify_expected_revision(&current, expected_revision)?;
+    let current = published.as_ref();
+    verify_expected_revision(current, expected_revision)?;
     let existing = current.partitions.get(&block.name);
 
     if block.record_count() == 0 && existing.is_none() {
@@ -426,21 +430,18 @@ fn publish_partition(
     };
     enforce_budgets(&inner.descriptor, record_count, byte_count)?;
 
-    let mut partitions = current.partitions.clone();
+    let revision = current.revision.next()?;
+    // Retained readers keep their immutable generation; unshared writes avoid cloning every partition.
+    let next = Arc::make_mut(&mut published);
     if block.record_count() == 0 {
-        partitions.remove(&block.name);
+        next.partitions.remove(&block.name);
     } else {
-        partitions.insert(block.name.clone(), block);
+        next.partitions.insert(block.name.clone(), block);
     }
-    let next = Arc::new(IndexSnapshot {
-        revision: current.revision.next()?,
-        partitions,
-        record_count,
-        byte_count,
-    });
-    let status = next.status();
-    *published = next;
-    Ok(status)
+    next.revision = revision;
+    next.record_count = record_count;
+    next.byte_count = byte_count;
+    Ok(next.status())
 }
 
 fn remove_partition(
@@ -449,28 +450,26 @@ fn remove_partition(
     expected_revision: Option<VectorRevision>,
 ) -> VectorResult<VectorIndexStatus> {
     let mut published = write_unpoisoned(&inner.snapshot);
-    let current = Arc::clone(&published);
-    verify_expected_revision(&current, expected_revision)?;
+    let current = published.as_ref();
+    verify_expected_revision(current, expected_revision)?;
     let Some(existing) = current.partitions.get(partition) else {
         return Ok(current.status());
     };
-    let mut partitions = current.partitions.clone();
-    partitions.remove(partition);
-    let next = Arc::new(IndexSnapshot {
-        revision: current.revision.next()?,
-        partitions,
-        record_count: current
-            .record_count
-            .checked_sub(existing.record_count())
-            .ok_or(VectorIndexError::SizeOverflow)?,
-        byte_count: current
-            .byte_count
-            .checked_sub(existing.byte_count)
-            .ok_or(VectorIndexError::SizeOverflow)?,
-    });
-    let status = next.status();
-    *published = next;
-    Ok(status)
+    let revision = current.revision.next()?;
+    let record_count = current
+        .record_count
+        .checked_sub(existing.record_count())
+        .ok_or(VectorIndexError::SizeOverflow)?;
+    let byte_count = current
+        .byte_count
+        .checked_sub(existing.byte_count)
+        .ok_or(VectorIndexError::SizeOverflow)?;
+    let next = Arc::make_mut(&mut published);
+    next.partitions.remove(partition);
+    next.revision = revision;
+    next.record_count = record_count;
+    next.byte_count = byte_count;
+    Ok(next.status())
 }
 
 fn verify_expected_revision(

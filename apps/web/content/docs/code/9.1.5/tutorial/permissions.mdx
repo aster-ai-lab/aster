@@ -1,13 +1,13 @@
 export const meta = {
-  title: '04 · 让修改操作先经过确认',
+  title: '04 · 修改操作确认',
   description: '区分权限决策与确认交互，给终端增加准确绑定到工具调用的批准和拒绝操作。',
   label: '04 权限与确认',
   updated: '2026-10-26',
 };
 
-## 本章才开始允许修改
+## 启用需要确认的修改
 
-前三章只允许 `read` 和 `ls`。现在允许读取自动执行，修改和命令执行则需要确认。把权限决策交给 `PermissionPolicy`，把“用户怎样回答”交给 `ConfirmationManager`。
+前三章只允许 `read` 和 `ls`。本练习允许读取自动执行，修改和命令执行则需要确认。`PermissionPolicy` 负责权限决策，`ConfirmationManager` 负责处理用户回答。
 
 <TutorialPermissionDiagram />
 
@@ -52,7 +52,7 @@ pub async fn open(config: &std::path::Path, workspace: &std::path::Path)
 }
 ```
 
-这里的确认事件发到我们自己建立的 broadcast 通道。不要假设安装一个外部管理器后，这些事件会自动出现在 `stream_with_run` 的通道里；界面要同时消费两个来源。`agent` 字段用于保留宿主对象的寿命。
+确认事件发送到练习程序创建的 broadcast 通道。安装外部管理器不会把事件自动转发到 `stream_with_run` 的通道，界面必须同时消费两个来源。`agent` 字段用于保留宿主对象的寿命。
 
 `main.rs` 相应改为保留 `Runtime`。同时给 `ui::run` 增加 `confirmations: &ConfirmationManager` 和 `confirmation_events: &mut broadcast::Receiver<AgentEvent>` 两个参数，放在 `session` 与 `terminal` 之间：
 
@@ -153,7 +153,7 @@ async fn confirmation_key(manager: &ConfirmationManager,
 
 需要宿主直接调用工具时，使用 `governed_tool` 保留这些检查。`tool()` 表示宿主已经完成授权，不能拿它绕过刚做好的确认面板。
 
-## 继续查阅
+## 相关文档
 
 - [上下文、工具与 Hooks](../../meta-harness/context-tools/)
 - [确认管理器与回执接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/hitl.rs)

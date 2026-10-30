@@ -1,0 +1,67 @@
+export const meta = {
+  title: 'Effect 与 Harness 接入',
+  description: 'Effect 程序值、服务环境、Coding Actor 和 Harness 组合部件。',
+  label: 'Effect 与接入',
+  updated: '2026-10-29',
+};
+
+Effect 描述程序需要的成功值、预期错误和服务环境。调用方在边界提供服务并执行描述。
+
+## 程序描述与执行
+
+`Effect<A, E, S>` 中的 `A` 是成功值，`E` 是预期错误，`S` 是服务环境。`from_async` 只有在 `Effect::run` 被调用后才执行函数。
+
+<DocTable caption="常用 Effect 构造与操作" headers={['类别', '接口', '用途']} rows={[
+  ['构造', 'succeed、fail、die、from_async', '创建成功、失败、缺陷或异步描述'],
+  ['转换', 'map、and_then', '组合新的程序描述'],
+  ['错误与时间', 'catch_fail、retry、timeout', '处理预期失败、重试和期限'],
+  ['并发', 'zip_par、race', '结构化并发与兄弟取消'],
+  ['资源', 'bracket', '在所有退出路径释放资源'],
+  ['服务与观测', 'provide、with_span', '注入服务并记录 Span'],
+]} />
+
+服务通过 `S` 参数进入类型。测试可以替换服务，不需要修改程序描述。
+
+取消时需要执行清理或追加事实的代码使用 `from_async_observed`。该函数必须自行观察取消 token。
+
+## 创建 Coding Actor
+
+`HarnessConfig` 在构造时检查预算。步数上限或模型尝试次数为零会返回错误。
+
+```rust
+use a3s_effect::{coding_actor, HarnessConfig};
+
+let config = HarnessConfig::new(
+    4,
+    8_000,
+    32,
+    2,
+    vec!["You are a coding harness.".into()],
+    vec![],
+)?;
+let actor = coding_actor(config);
+```
+
+`coding_actor` 是标准 Meta Harness 组合。它在同一日志上组装 `system`、`tools`、`budget`、`compact` 和 `infer(scheduler)`。
+
+宿主也可以使用 `HarnessGraph` 与公开部件组合自己的结构。嵌套 `infer([...])` 为子 Transition Key 增加命名空间，避免不同 Infer 部件产生相同 Key。
+
+## Transition 与服务
+
+Component 的 `step` 消费一个事实。`output` 返回当前视图和该视图允许的 Transition。
+
+Transition 的执行由 Actor Runtime 负责。模型、工具和 Compactor 通过 Coding Services 接口注入，不在日志折叠阶段调用。
+
+`resume` 已经完成的文本 Turn 不会再次调用模型。对应 `model.turn` 的 Transition Key 已经出现在事实 Cause 中。
+
+## 日志与解析
+
+`MemoryLog` 用于进程内测试，`FileLog` 用于持久日志。`parse_fact_json` 只接受事实 Schema，不会把普通日志行提升为事实。
+
+宿主应把模型决策、工具结果、确认回答和问题回答写成事实。不要把进程内可变状态当作恢复依据。
+
+## 实现依据
+
+- [Effect 与 Coding Actor 示例](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/README.md)
+- [Effect 公开操作](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/effect.rs)
+- [公开导出](https://github.com/aster-ai-lab/aster/blob/main/crates/effect/src/lib.rs)

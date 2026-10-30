@@ -15,9 +15,9 @@ Model collection: <https://huggingface.co/collections/PaddlePaddle/pp-ocrv6>
 
 ## Microsoft ONNX Runtime
 
-`a3s-use-ocr` executes the models with Microsoft ONNX Runtime 1.22.0, obtained
-through the pinned `ort`/`ort-sys` Rust dependencies. ONNX Runtime is licensed
-under the MIT License.
+`a3s-use-ocr` uses the ONNX Runtime 1.22 C API through the pinned
+`ort`/`ort-sys` Rust bindings. The host supplies a compatible dynamic library;
+Studio packages ONNX Runtime 1.25.1. ONNX Runtime is licensed under the MIT License.
 
 Copyright (c) Microsoft Corporation.
 

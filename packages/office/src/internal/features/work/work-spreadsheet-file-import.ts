@@ -18,6 +18,7 @@ import {
 import { readSpreadsheetWorkbookInWorker } from './work-spreadsheet-import-worker-client';
 import {
   freezeImportedSpreadsheetCell,
+  materializeSpreadsheetMergeCells,
   registerImportedSpreadsheetMatrix,
 } from './work-spreadsheet-matrix-profile';
 import {
@@ -399,10 +400,14 @@ export async function importWorkSpreadsheetFile(
       );
       if (!existing) entryIndex += 1;
     }
-    populatedCellCount += entryIndex;
     worksheetCompatibility.set(name, compatibilitySummary);
     data.length = Math.max(data.length, rowCount);
     const config = fortuneSheetConfig(worksheet);
+    const merged = materializeSpreadsheetMergeCells(data, config.merge);
+    rowCount = Math.max(rowCount, merged.rowCount);
+    columnCount = Math.max(columnCount, merged.columnCount);
+    entryIndex += merged.addedCells;
+    populatedCellCount += entryIndex;
     const importedBorderInfo = fortuneBorderInfoFromXlsxCells(
       features?.directCellStyles ?? [],
     );
@@ -415,7 +420,7 @@ export async function importWorkSpreadsheetFile(
     registerImportedSpreadsheetMatrix(data, {
       columnCount,
       formulaCells,
-      fortuneReady: Object.keys(config.merge ?? {}).length === 0,
+      fortuneReady: true,
       populatedCellCount: entryIndex,
       protectionCellKey: '',
       rowCount,
@@ -837,6 +842,9 @@ function fortuneCellDisplayText(
         : String(source.v);
     }
   }
+  // Imported matrices bypass Fortune's normalization, so General values need their display text too.
+  if (typeof source.v === 'number') return String(source.v);
+  if (typeof source.v === 'boolean') return source.v ? 'TRUE' : 'FALSE';
   return undefined;
 }
 function fortuneSheetFilter(

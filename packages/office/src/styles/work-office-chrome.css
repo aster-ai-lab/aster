@@ -1,7 +1,4 @@
 .work-office-ribbon {
-  --work-office-accent: var(--a3s-blue);
-  --work-office-control-accent: var(--work-office-accent);
-
   position: relative;
   z-index: 8;
   display: flex;
@@ -10,20 +7,9 @@
   flex-direction: column;
   border-bottom: 1px solid var(--a3s-line);
   background: var(--a3s-panel);
-  box-shadow: 0 2px 7px rgb(24 31 46 / 4%);
-}
-
-.work-office-ribbon.work-spreadsheet-ribbon {
-  --work-office-accent: #159469;
-}
-
-.work-office-ribbon.work-presentation-ribbon {
-  --work-office-accent: #db663b;
 }
 
 .work-office-preview-bar {
-  --work-office-accent: var(--a3s-blue);
-
   position: relative;
   z-index: 8;
   display: flex;
@@ -34,15 +20,6 @@
   gap: 12px;
   border-bottom: 1px solid var(--a3s-line);
   background: var(--a3s-panel);
-  box-shadow: 0 2px 7px rgb(24 31 46 / 4%);
-}
-
-.work-office-preview-bar.work-spreadsheet-ribbon {
-  --work-office-accent: #159469;
-}
-
-.work-office-preview-bar.work-presentation-ribbon {
-  --work-office-accent: #db663b;
 }
 
 .work-office-preview-summary {
@@ -53,7 +30,7 @@
   gap: 6px;
   overflow: hidden;
   color: var(--a3s-muted);
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -64,12 +41,12 @@
 
 .work-office-preview-summary > svg {
   flex: 0 0 auto;
-  color: var(--work-office-accent, var(--a3s-blue));
+  color: var(--work-office-accent, var(--a3s-ink));
 }
 
 .work-office-preview-summary strong {
   color: var(--a3s-ink);
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .work-office-preview-summary span {
@@ -114,19 +91,20 @@
 .work-office-ribbon-tabs > button {
   flex: 0 0 auto;
   padding: 0 12px;
-  border-radius: 0;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--a3s-body);
 }
 
 .work-office-ribbon-tabs > button[data-contextual="true"] {
-  background: color-mix(in srgb, var(--work-office-accent) 7%, transparent);
-  box-shadow: inset 0 2px
-    color-mix(in srgb, var(--work-office-accent) 48%, transparent);
-  color: color-mix(in srgb, var(--work-office-accent) 82%, var(--a3s-ink));
+  background: var(--a3s-panel-soft);
+  box-shadow: inset 0 2px var(--a3s-line);
+  color: var(--a3s-body);
 }
 
 .work-office-ribbon-tabs > button[data-contextual="true"]:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--work-office-accent) 11%, transparent);
+  background: var(--spec-hover-row);
 }
 
 .work-office-ribbon-tabs > button::after {
@@ -135,20 +113,21 @@
 }
 
 .work-office-ribbon-tabs > button:focus-visible {
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px var(--work-office-accent);
+  outline: 2px solid var(--a3s-ink);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .work-office-ribbon-tabs.ds-tabs > button[aria-selected="true"] {
-  background: transparent;
+  background: var(--a3s-panel-strong);
   box-shadow: none;
   color: var(--work-office-accent);
-  font-weight: 680;
+  font-weight: 500;
 }
 
 .work-office-ribbon-tabs.ds-tabs
   > button[aria-selected="true"]:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--work-office-accent) 6%, transparent);
+  background: var(--a3s-panel-strong);
   color: var(--work-office-accent);
 }
 
@@ -668,18 +647,13 @@
   min-width: 0;
 }
 
-.work-office-ribbon
-  .work-office-toolbar
-  .work-office-select
-  > button[role="combobox"] {
-  height: 24px;
-  min-width: 0;
-  padding-inline: 7px 5px;
-}
-
 .work-office-ribbon .work-office-toolbar .work-office-number-field {
   align-self: center;
-  height: 24px;
+  height: 30px;
+}
+
+.work-office-ribbon .work-office-toolbar .work-office-text-field {
+  height: 30px;
 }
 
 .work-office-ribbon .work-office-toolbar .work-color-tool {
@@ -731,7 +705,7 @@
   border-top: 1px solid var(--a3s-line);
   background: var(--a3s-panel);
   color: var(--a3s-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-office-status-info,
@@ -782,7 +756,7 @@
   outline: 2px solid
     color-mix(
       in srgb,
-      var(--work-office-accent, var(--a3s-blue)) 42%,
+      var(--work-office-accent, var(--a3s-ink)) 42%,
       transparent
     );
   outline-offset: 1px;
@@ -896,10 +870,10 @@
   border-radius: 8px;
   background: color-mix(
     in srgb,
-    var(--work-office-accent, var(--a3s-blue)) 10%,
+    var(--work-office-accent, var(--a3s-ink)) 10%,
     var(--a3s-panel)
   );
-  color: var(--work-office-accent, var(--a3s-blue));
+  color: var(--work-office-accent, var(--a3s-ink));
 }
 
 .work-office-collaboration-heading > span:last-child {
@@ -962,7 +936,7 @@ button.work-office-collaboration-participant {
 button.work-office-collaboration-participant:hover {
   background: color-mix(
     in srgb,
-    var(--work-office-accent, var(--a3s-blue)) 7%,
+    var(--work-office-accent, var(--a3s-ink)) 7%,
     var(--a3s-panel)
   );
 }
@@ -971,13 +945,13 @@ button.work-office-collaboration-participant:focus-visible {
   box-shadow: inset 0 0 0 2px
     color-mix(
       in srgb,
-      var(--work-office-accent, var(--a3s-blue)) 44%,
+      var(--work-office-accent, var(--a3s-ink)) 44%,
       transparent
     );
 }
 
 .work-office-collaboration-locate {
-  color: var(--work-office-accent, var(--a3s-blue));
+  color: var(--work-office-accent, var(--a3s-ink));
   opacity: 0.72;
 }
 

@@ -234,20 +234,20 @@ cat >"${OUT_ROOT}/packages/mock-compose/mcp/context" <<'EOF'
 exit 0
 EOF
 chmod 755 "${OUT_ROOT}/packages/mock-compose/mcp/context"
-# OKF bundle bytes must match the pinned content_digest above (cognitive fixture).
+# OKF bundle bytes must match the pinned content_digest above (package fixture).
 cat >"${OUT_ROOT}/packages/mock-compose/okf/domain/index.md" <<'EOF'
 ---
 okf_version: "0.2"
 ---
 
-# Cognitive package knowledge
+# Package knowledge
 
 - [Lifecycle](concepts/lifecycle.md) - One generation owns every plugin surface.
 EOF
 cat >"${OUT_ROOT}/packages/mock-compose/okf/domain/concepts/lifecycle.md" <<'EOF'
 ---
 type: Project-Specific Decision
-title: Atomic cognitive package lifecycle
+title: Atomic package lifecycle
 description: Tool, MCP, OKF, Flow, Skill, and UI contributions activate as one package generation.
 status: stable
 ---

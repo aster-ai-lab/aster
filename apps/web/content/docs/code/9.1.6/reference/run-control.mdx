@@ -1,8 +1,8 @@
 export const meta = {
-  "title": "处理追加指令、提问和取消",
+  "title": "运行控制、提问与取消",
   "description": "Run 回执、并发控制、确认队列和用户回答的区别。",
   "label": "会话、运行与交互",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## 会话和 Run 分别保存什么
@@ -10,6 +10,8 @@ export const meta = {
 Agent 持有模型与共享服务；Session 绑定工作区和会话状态；一次 `send` 或 `stream` 准入一个 Run，Run 内可以有多个模型与工具轮次。聊天消息、工具事件和长期目标不是同一种记录。
 
 同一个 Session 的会话写入采用单次执行边界，重叠请求会返回忙状态。界面应串行提交普通对话；如果是用户对当前任务的补充，使用 `steer`，不要另开一个相互竞争的 `send`。
+
+<PeleAtlasDiagram name="run-control" label="运行控制的请求与回执" description="Accepted 只是排队，Applied 才表示执行消费了输入；Run 先结束时还要结算未应用请求。" />
 
 ## 给当前任务追加约束
 
@@ -43,17 +45,23 @@ async fn append_instruction(session: &AgentSession) -> anyhow::Result<()> {
 
 Accepted 不代表模型已看到输入。Applied 也不代表工具效果已结算。空闲时追加输入会拒绝，不会替用户隐式启动任务。
 
+公开入口是 <SourceRef path="crates/code/core/src/agent_api/run_facade.rs" match="pub async fn steer(">AgentSession::steer</SourceRef>，身份与预期版本字段见 <SourceRef path="crates/code/core/src/run_control.rs" match="pub struct RunControlRequest {">RunControlRequest</SourceRef>。这两处分别回答“怎样调用”和“回执绑定了什么”。
+
 ## 中断与取消
 
 `interrupt(InterruptRequest::new())` 提交可追踪的中断请求；`cancel_run(run_id)` 定位一个 Run，`cancel()` 面向当前会话执行。它们先请求停止，后续还要等待终态与清理。`true` 只说明请求被接收，不能据此立即更换工作区或启动同一外部写操作。
 
 关闭应用时先停止接收新输入，取消当前执行，消费终态，再关闭 Session 和 Agent。需要替换会话时按 `cancel_and_settle` 的结果判断是否可替换。返回 false 说明仍未确认原执行结算，不应发布新会话来覆盖它。
 
+指定 Run 的取消入口见 <SourceRef path="crates/code/core/src/agent_api/run_facade.rs" match="pub async fn cancel_run(&amp;self, run_id: &amp;str)">AgentSession::cancel_run</SourceRef>，不要把接收请求的布尔值当作资源已经释放。
+
 ## 确认队列不是一个布尔开关
 
 `pending_confirmations()` 返回每项请求的 tool_id、工具名、参数和剩余时间。界面以 tool_id 保存选择状态；批准使用 `confirm_tool_use`，过期或已处理的请求不能套用到下一项。
 
 同时有多项确认时，每项独立显示参数和原因。事件广播丢包后重新读取 pending 列表；控件只从当前列表选择。取消会话或界面关闭时调用 `cancel_confirmations()`，不能让无人可见的确认继续等待。完整接线见[权限章节](../../tutorial/permissions/)。
+
+确认目录与提交入口分别是 <SourceRef path="crates/code/core/src/agent_api/governance_facade.rs" match="pub async fn pending_confirmations(">pending_confirmations</SourceRef> 和 <SourceRef path="crates/code/core/src/agent_api/governance_facade.rs" match="pub async fn confirm_tool_use(">confirm_tool_use</SourceRef>。
 
 ## 用户回答不能变成权限批准
 

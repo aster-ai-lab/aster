@@ -1,6 +1,6 @@
 [package]
 name = "a3s-code-core"
-version = "9.1.4"
+version = "9.1.6"
 edition = "2021"
 authors = ["A3S Lab Team"]
 license = "MIT"
@@ -173,6 +173,7 @@ aws-credential-types = {version = "1", optional = true}
 aws-smithy-types = {version = "1", optional = true}
 aws-smithy-runtime-api = {version = "1", optional = true}
 a3s-acl = {path = "../../acl"}
+a3s-okf = {path = "../../okf"}
 a3s-vec = {optional = true, path = "../../vec"}
 a3s-apofasi = {default-features = false, features = ["router"], optional = true, path = "../../apofasi"}
 a3s-sandbox = {path = "../../sandbox"}

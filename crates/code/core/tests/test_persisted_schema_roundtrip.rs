@@ -470,7 +470,7 @@ fn gen_run_record(rng: &mut Rng) -> RunRecord {
             session_id: rng.string(),
             status: gen_run_status(rng),
             prompt: rng.string(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: None,
             created_at_ms: rng.u64_small(),
             updated_at_ms: rng.u64_small(),
@@ -612,7 +612,7 @@ fn gen_session_data(rng: &mut Rng) -> SessionData {
         agent_template_id: rng.opt_string(),
         correlation_id: rng.opt_string(),
         durable_memory_binding: gen_durable_memory_binding(rng),
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     }
 }

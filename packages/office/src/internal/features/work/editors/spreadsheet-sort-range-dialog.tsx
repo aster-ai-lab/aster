@@ -54,6 +54,7 @@ export function SpreadsheetSortRangeDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.sort.range.title')}
       description={description}
       className="work-spreadsheet-sort-range-dialog"

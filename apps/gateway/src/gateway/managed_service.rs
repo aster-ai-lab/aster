@@ -40,7 +40,7 @@ impl Gateway {
             state_file, &config,
         )?);
         validate_separate_state_paths(&config, store.path())?;
-        Self::with_components(config, middleware_registry, Some(store), None)
+        Self::with_components(config, middleware_registry, Some(store), None, None)
     }
 
     /// Idempotently bind and health-verify one exact private Runtime route.

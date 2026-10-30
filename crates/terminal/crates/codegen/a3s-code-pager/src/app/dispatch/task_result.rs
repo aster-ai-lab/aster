@@ -1004,6 +1004,25 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
                     attempt_id.as_deref(),
                     status,
                 );
+            } else if matches!(outcome, SubagentKillOutcome::RpcFailed) {
+                for agent in app.agents.values_mut() {
+                    if agent.session.session_id.as_ref() != Some(&session_id) {
+                        continue;
+                    }
+                    let Some(info) = agent
+                        .subagent_sessions
+                        .values_mut()
+                        .find(|info| info.subagent_id.as_ref() == subagent_id)
+                    else {
+                        continue;
+                    };
+                    if info.attempt.lifecycle.current_attempt_id() != attempt_id.as_deref() {
+                        continue;
+                    }
+                    info.attempt.pending_kill = false;
+                    info.attempt.kill_requested_at = None;
+                    agent.show_toast("Couldn't stop subagent. It may still be running; try again.");
+                }
             }
             vec![]
         }

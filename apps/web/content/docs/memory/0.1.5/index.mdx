@@ -1,0 +1,51 @@
+export const meta = {
+  title: 'Aster Memory 产品概览',
+  description: 'a3s-memory 的存储、证据化 Repository、向量索引和宿主边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-memory` 是可插拔的 Agent 记忆存储库。当前版本为 `0.1.5`。它提供 `MemoryStore`、证据化 `repository` 和独立的 `VectorIndex` 三类接口。
+
+Memory 只拥有存储与完整性边界。提取、总结、Embedding、上下文准入、结果融合和调度仍由宿主运行时负责。
+
+<MemoryArchitectureDiagram />
+
+## 三类接口不能混用
+
+<DocTable caption="Memory 的公开能力" headers={['接口', '职责', '明确边界']} rows={[
+  ['MemoryStore', '保存和检索 MemoryItem', 'InMemoryStore 易失，FileMemoryStore 本地持久'],
+  ['MemoryRepository V2', '命名空间、证据、生命周期、修订和原子 ChangeSet', '不决定何时提取或激活记忆'],
+  ['VectorIndex', '保存调用方向量并执行精确 Top-K', '不生成 Embedding，不作为 MemoryStore'],
+]} />
+
+三层会话记忆和 `MemoryContextProvider` 位于 `a3s-code`。工作记忆与短期记忆不是 V2 的持久节点类型。
+
+## 证据与激活
+
+V2 把 `Candidate` 与 `Active` 分开。LLM 置信度和 Importance 只是注释，不能作为激活证据。
+
+激活候选必须携带新的 Manual 或 Verification 决策证据。修订会保留原提案证据和激活决策证据。
+
+每个节点只属于一个 `MemoryNamespace`。命名空间包含 `tenant_id`、`principal_id` 和 `scope_id`。跨命名空间关系无效，跨范围融合由宿主执行。
+
+## 一致性与持久性
+
+V2 使用预期修订、`idempotency key`和原子 ChangeSet。相同 ChangeSet 重放返回原结果，相同`idempotency key`携带不同内容会失败。
+
+`FileMemoryRepository` 使用带校验和的 WAL、单写者目录锁和确定性重放。尾部撕裂记录会被丢弃，已提交记录损坏会失败闭合。
+
+向量索引使用独立修订与历史标识。向量索引的 CAS 不证明记忆内容真实，也不替代 Repository 的证据合同。
+
+## 文档入口
+
+- [存储与 Repository](./repository/)：MemoryItem、V2 生命周期、持久化和一致性。
+- [向量检索与验证](./retrieval/)：精确 Top-K、SQLite、修订 CAS 和测试。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Memory 存储与边界](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/README.md)
+- [Memory Kernel V2 合同](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/docs/MEMORY_KERNEL_V2.md)
+- [Memory crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/Cargo.toml)

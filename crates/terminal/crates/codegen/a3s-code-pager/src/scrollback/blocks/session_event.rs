@@ -54,7 +54,7 @@ pub enum SessionEvent {
         elapsed: Option<Duration>,
     },
     /// How the completed run closed at the agent's completion gate
-    /// (`x.ai/turn/outcome`): verified, waived, or needing attention. A clean
+    /// (`a3s/turn/outcome`): verified, waived, or needing attention. A clean
     /// narrative close emits nothing — the marker line stays signal-only.
     /// The line is pre-formatted by its single copy owner
     /// (`turn_completion::turn_outcome_event`).

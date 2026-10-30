@@ -133,9 +133,8 @@ impl ToolInvocationLifecycle {
     }
 
     pub(crate) fn terminal(&mut self, outcome: ToolInvocationTerminal) {
-        debug_assert!(self
-            .transition(ToolInvocationState::Terminal(outcome))
-            .is_ok());
+        let result = self.transition(ToolInvocationState::Terminal(outcome));
+        debug_assert!(result.is_ok());
     }
 }
 

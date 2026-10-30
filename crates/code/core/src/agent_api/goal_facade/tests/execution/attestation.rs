@@ -3,6 +3,8 @@
 use super::*;
 use crate::verification::{VerificationCheck, VerificationReport, VerificationStatus};
 
+mod net_zero;
+
 struct ByteAttestor {
     root: std::path::PathBuf,
     calls: AtomicUsize,
@@ -169,6 +171,35 @@ async fn legacy_accepted_noop_history_reopens_but_new_opportunities_use_actual_p
             .await
             .unwrap()
             .unwrap();
+        // Historical closeouts predate the last-turn measurement correction.
+        // Freeze that recorded value instead of using the current runtime's meter.
+        {
+            let view = session.goal_definition().unwrap().unwrap();
+            let lease = session.run_admission.try_acquire("goal-run").unwrap();
+            let log = lease
+                .nonexecuting_fact_log(&session.run_admission, "goal-run")
+                .unwrap();
+            let _writer = log.try_writer_fence().unwrap();
+            let mut old = log.read("goal-run").unwrap();
+            let closeout = old.pop().unwrap();
+            assert_eq!(closeout.kind, "a3s.goal.slice.settled");
+            let usage: Option<TokenUsage> =
+                serde_json::from_value(closeout.payload["body"]["usage"].clone()).unwrap();
+            log.truncate_after("goal-run", closeout.seq - 1).unwrap();
+            let historical = crate::goal_control::prepare_settlement(
+                &old,
+                "goal-run",
+                &view.binding.workspace,
+                view.binding.work_policy_digest.as_deref(),
+                "legacy-noop",
+                usage,
+                Some(Default::default()),
+                None,
+            )
+            .unwrap()
+            .unwrap();
+            log.append("goal-run", &[historical], None).unwrap();
+        }
         let facts = crate::fact_control::read_workspace_facts(root.path(), "goal-run").unwrap();
         assert!(facts
             .iter()

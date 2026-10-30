@@ -32,6 +32,7 @@ mod vector_contract;
 mod verification;
 #[cfg(feature = "a3s-vec-fts")]
 mod wiki;
+mod wiki_sources;
 
 pub use catalog::{ChunkCatalogSnapshot, WorkspaceCatalogDocument, WorkspaceChunkCatalog};
 pub(crate) use chunk::digest_content;
@@ -74,6 +75,11 @@ pub(crate) use verification::retain_verified;
 pub use wiki::{
     WikiIndex, WikiReconcileReport, WikiSearchHit, WikiSearchPhase, WikiSearchResult,
     WIKI_PASSAGE_CHARS,
+};
+pub use wiki_sources::{
+    capture_workspace_wiki_sources, WorkspaceWikiSourceCoverage, WorkspaceWikiSourceFile,
+    WorkspaceWikiSourceFormat, WorkspaceWikiSourceLimits, WorkspaceWikiSourceSkip,
+    WorkspaceWikiSourceSkipReason, WorkspaceWikiSources,
 };
 
 #[cfg(test)]

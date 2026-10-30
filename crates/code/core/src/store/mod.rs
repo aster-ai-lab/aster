@@ -46,9 +46,11 @@ mod encryption;
 mod file_store;
 mod lease;
 mod memory_store;
+mod plan_projection;
 mod session_data;
 mod session_snapshot;
 mod session_source;
+mod session_transcript;
 mod wal;
 mod watch;
 
@@ -62,12 +64,21 @@ pub use encryption::SessionStoreAtRestCipher;
 pub use file_store::FileSessionStore;
 pub use lease::{SessionStoreWriterLeaseV1, SESSION_STORE_WRITER_LEASE_SCHEMA_V1};
 pub use memory_store::MemorySessionStore;
+pub use plan_projection::SessionPlanProjection;
 pub use session_data::{
     ContextUsage, LlmConfigData, SessionConfig, SessionData, SessionState,
     DEFAULT_AUTO_COMPACT_THRESHOLD,
 };
 pub use session_snapshot::{SessionSnapshotV1, SESSION_SNAPSHOT_SCHEMA_VERSION};
 pub use session_source::SessionFactSourceV1;
+pub use session_transcript::{
+    LegacyStudioAttachmentMetadata, LegacyStudioEntry, LegacyStudioEntryKind,
+    LegacyStudioMigrationCompletion, LegacyStudioMigrationReceipt, LegacyStudioMigrationRequest,
+    LegacyStudioRole, PrefixForkRequest, TranscriptCursor, TranscriptEntry, TranscriptEntryKind,
+    TranscriptEntryPayload, TranscriptLegacyHistoryDisplay, TranscriptPage, TranscriptPageRequest,
+    TranscriptSourceCut, TranscriptSourceSpan, TranscriptToolCall, TranscriptToolResult,
+    LEGACY_STUDIO_MIGRATION_SCHEMA_V1,
+};
 pub use wal::{
     snapshot_content_digest, FileSessionStoreWal, SessionStoreWalEntryV1, SessionStoreWalPhaseV1,
     SESSION_STORE_WAL_ENTRY_SCHEMA_V1,

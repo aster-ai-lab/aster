@@ -32,6 +32,7 @@ const REVISION: &str = "Revision: the active task is a JSON exporter in crates/e
 struct MockState {
     bodies: Vec<String>,
     writes: u64,
+    edits: u64,
     reads: u64,
     plans: u64,
     denies: u64,
@@ -43,6 +44,7 @@ struct MockState {
 struct AgentProc {
     child: tokio::process::Child,
     conn: Rc<acp::ClientSideConnection>,
+    capture: Arc<Mutex<TestCapture>>,
 }
 
 impl Drop for AgentProc {
@@ -92,6 +94,7 @@ fn spawn_mock(write_path: &Path, deny_command: &str) -> (SocketAddr, Arc<Mutex<M
     let state = Arc::new(Mutex::new(MockState {
         bodies: Vec::new(),
         writes: 0,
+        edits: 0,
         reads: 0,
         plans: 0,
         denies: 0,
@@ -258,6 +261,19 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         .to_string();
         return reply_tool("write", &args, state.writes, streaming);
     }
+    if raw.contains("EDIT-HTML") && tools {
+        if state.edits >= 1 {
+            return reply_text("done", streaming);
+        }
+        state.edits += 1;
+        let args = serde_json::json!({
+            "file_path": "landing-page/index.html",
+            "old_string": "<title>Before</title>",
+            "new_string": "<title>After</title>"
+        })
+        .to_string();
+        return reply_tool("edit", &args, state.edits, streaming);
+    }
     if raw.contains("DENY-ORACLE") && tools {
         if state.denies >= 1 {
             return reply_text("blocked", streaming);
@@ -320,7 +336,16 @@ exit 1
     reply_text("noted", streaming)
 }
 
-struct TestClient;
+#[derive(Default)]
+struct TestCapture {
+    events: Vec<serde_json::Value>,
+    permissions: usize,
+}
+
+#[derive(Default)]
+struct TestClient {
+    capture: Arc<Mutex<TestCapture>>,
+}
 
 #[async_trait(?Send)]
 impl acp::Client for TestClient {
@@ -328,6 +353,7 @@ impl acp::Client for TestClient {
         &self,
         _args: acp::RequestPermissionRequest,
     ) -> Result<acp::RequestPermissionResponse, acp::Error> {
+        self.capture.lock().expect("capture").permissions += 1;
         Ok(acp::RequestPermissionResponse::new(
             acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
                 acp::PermissionOptionId::new("allow-once"),
@@ -335,10 +361,15 @@ impl acp::Client for TestClient {
         ))
     }
 
-    async fn session_notification(
-        &self,
-        _args: acp::SessionNotification,
-    ) -> Result<(), acp::Error> {
+    async fn session_notification(&self, args: acp::SessionNotification) -> Result<(), acp::Error> {
+        let event = serde_json::to_value(args).map_err(|_| acp::Error::internal_error())?;
+        self.capture.lock().expect("capture").events.push(event);
+        Ok(())
+    }
+
+    async fn ext_notification(&self, args: acp::ExtNotification) -> Result<(), acp::Error> {
+        let event = serde_json::json!({"method": args.method, "params": args});
+        self.capture.lock().expect("capture").events.push(event);
         Ok(())
     }
 }
@@ -362,7 +393,9 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
         .expect("spawn a3s-code-acp");
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
-    let (conn, io) = acp::ClientSideConnection::new(TestClient, stdin, stdout, |fut| {
+    let client = TestClient::default();
+    let capture = Arc::clone(&client.capture);
+    let (conn, io) = acp::ClientSideConnection::new(client, stdin, stdout, |fut| {
         tokio::task::spawn_local(fut);
     });
     tokio::task::spawn_local(async move {
@@ -371,12 +404,21 @@ async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc 
     AgentProc {
         child,
         conn: Rc::new(conn),
+        capture,
     }
 }
 
 async fn open_session(
     workspace: &Path,
     deny_command: &str,
+) -> (AgentProc, acp::SessionId, Arc<Mutex<MockState>>) {
+    open_session_with_meta(workspace, deny_command, None).await
+}
+
+async fn open_session_with_meta(
+    workspace: &Path,
+    deny_command: &str,
+    meta: Option<serde_json::Map<String, serde_json::Value>>,
 ) -> (AgentProc, acp::SessionId, Arc<Mutex<MockState>>) {
     let home = isolate("home");
     let write_path = workspace.join("gate-target.ts");
@@ -391,7 +433,7 @@ async fn open_session(
     .expect("initialize");
     let created = acp::Agent::new_session(
         agent.conn.as_ref(),
-        acp::NewSessionRequest::new(workspace.to_path_buf()),
+        acp::NewSessionRequest::new(workspace.to_path_buf()).meta(meta),
     )
     .await
     .expect("new session");
@@ -506,7 +548,7 @@ async fn v912_session_posture_and_deny() {
 
             let fresh = ext(
                 &agent,
-                "x.ai/session/info",
+                "a3s/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -526,7 +568,7 @@ async fn v912_session_posture_and_deny() {
             }
             let still_default = ext(
                 &agent,
-                "x.ai/session/info",
+                "a3s/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -538,7 +580,7 @@ async fn v912_session_posture_and_deny() {
             for retired in ["always-approve", "force"] {
                 let detail = ext_err(
                     &agent,
-                    "x.ai/permission_posture",
+                    "a3s/permission_posture",
                     serde_json::json!({
                         "sessionId": session.0.as_ref(),
                         "posture": retired
@@ -557,7 +599,7 @@ async fn v912_session_posture_and_deny() {
             }
             let after_reject = ext(
                 &agent,
-                "x.ai/session/info",
+                "a3s/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -575,7 +617,7 @@ async fn v912_session_posture_and_deny() {
                 set_mode(&agent, &session, mode).await;
                 let info = ext(
                     &agent,
-                    "x.ai/session/info",
+                    "a3s/session/info",
                     serde_json::json!({ "sessionId": session.0.as_ref() }),
                 )
                 .await;
@@ -591,7 +633,7 @@ async fn v912_session_posture_and_deny() {
 
             let admitted = ext(
                 &agent,
-                "x.ai/permission_posture",
+                "a3s/permission_posture",
                 serde_json::json!({
                     "sessionId": session.0.as_ref(),
                     "posture": "yolo",
@@ -713,7 +755,7 @@ async fn v912_compact_keeps_obligations() {
             }
             let compacted = ext(
                 &agent,
-                "x.ai/compact_conversation",
+                "a3s/compact_conversation",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -887,7 +929,7 @@ async fn v912_completion_gate_keeps_path() {
             set_mode(&agent, &session, "yolo").await;
             let info = ext(
                 &agent,
-                "x.ai/session/info",
+                "a3s/session/info",
                 serde_json::json!({ "sessionId": session.0.as_ref() }),
             )
             .await;
@@ -931,6 +973,64 @@ async fn v912_completion_gate_keeps_path() {
                 "assistant text was allowed to close the gate: {detail}"
             );
             eprintln!("ORACLE yolo-gate-error={detail}");
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn v912_disk_attested_html_edit_needs_no_bash_or_permission() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("disk-attested-html");
+            let landing = workspace.join("landing-page");
+            std::fs::create_dir(&landing).expect("landing page directory");
+            std::fs::write(
+                landing.join("index.html"),
+                "<!doctype html><html><head><title>Before</title></head><body><h1>Landing</h1></body></html>",
+            )
+            .expect("initial html");
+            let meta = serde_json::json!({"a3sHost":{"completionAttestation":"disk_content"}})
+                .as_object()
+                .unwrap()
+                .clone();
+            let (agent, session, state) =
+                open_session_with_meta(&workspace, "true", Some(meta)).await;
+            set_mode(&agent, &session, "yolo").await;
+
+            say(&agent, &session, "EDIT-HTML landing-page/index.html")
+                .await
+                .expect("disk-attested edit must complete");
+
+            assert_eq!(
+                std::fs::read_to_string(landing.join("index.html")).unwrap(),
+                "<!doctype html><html><head><title>After</title></head><body><h1>Landing</h1></body></html>"
+            );
+            let bodies = state.lock().expect("mock").bodies.clone();
+            let mut called_tools = Vec::new();
+            for body in bodies {
+                let body: serde_json::Value = serde_json::from_str(&body).expect("model request");
+                for message in body["messages"].as_array().into_iter().flatten() {
+                    for call in message["tool_calls"].as_array().into_iter().flatten() {
+                        if let Some(name) = call["function"]["name"].as_str() {
+                            called_tools.push(name.to_owned());
+                        }
+                    }
+                }
+            }
+            assert_eq!(called_tools, ["edit"], "only the ordinary HTML edit ran");
+
+            let capture = agent.capture.lock().expect("capture");
+            assert_eq!(capture.permissions, 0, "yolo requested ordinary approval");
+            let outcomes: Vec<_> = capture
+                .events
+                .iter()
+                .filter(|event| event["method"] == "a3s/turn/outcome")
+                .map(|event| event["params"]["outcome"].clone())
+                .collect();
+            assert_eq!(outcomes.len(), 1, "missing or duplicate turn outcome");
+            assert_eq!(outcomes[0]["terminal"], "verified");
+            assert_eq!(outcomes[0]["status"], "passed");
+            eprintln!("ORACLE html-edit tools=edit permissions=0 terminal=verified status=passed");
         })
         .await;
 }

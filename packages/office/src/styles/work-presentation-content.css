@@ -217,23 +217,23 @@
 }
 
 .work-slide-thumbnail-list > button.active {
-  border-color: color-mix(in srgb, #db663b 72%, var(--a3s-line));
-  background: color-mix(in srgb, #db663b 6%, var(--a3s-panel));
+  border-color: var(--a3s-ink);
+  background: var(--spec-selected-row);
 }
 
 [data-slide-thumbnail][data-slide-drop-position="before"] {
-  box-shadow: inset 0 3px 0 #db663b;
+  box-shadow: inset 0 3px 0 var(--a3s-ink);
 }
 
 [data-slide-thumbnail][data-slide-drop-position="after"] {
-  box-shadow: inset 0 -3px 0 #db663b;
+  box-shadow: inset 0 -3px 0 var(--a3s-ink);
 }
 
 .work-slide-thumbnail-list > button > span:first-child {
   width: 18px;
   flex: 0 0 18px;
   color: var(--a3s-faint);
-  font-size: 9px;
+  font-size: 12px;
   text-align: center;
 }
 
@@ -276,9 +276,9 @@
 }
 
 .work-slide-add:hover {
-  border-color: #db663b;
-  background: color-mix(in srgb, #db663b 5%, var(--a3s-panel));
-  color: #b44e31;
+  border-color: var(--a3s-ink);
+  background: color-mix(in srgb, var(--a3s-ink) 5%, var(--a3s-panel));
+  color: var(--a3s-ink);
 }
 
 .work-slide-stage {
@@ -349,12 +349,17 @@
 
 .work-presentation-object-list-item:hover,
 .work-presentation-object-list-item:focus-visible {
-  background: color-mix(in srgb, #db663b 10%, var(--a3s-panel));
-  outline: none;
+  background: var(--spec-hover-row);
+}
+
+.work-presentation-object-list-item:focus-visible {
+  outline: 2px solid var(--a3s-ink);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .work-presentation-object-list-item[aria-selected="true"] {
-  background: color-mix(in srgb, #db663b 16%, var(--a3s-panel));
+  background: var(--spec-selected-row);
 }
 
 .work-presentation-object-list-type {
@@ -376,6 +381,7 @@
 .work-slide-stage-main > .work-slide-canvas {
   width: min(100%, 1050px);
   flex: 1 1 auto;
+  align-self: center;
   margin-top: 0;
   box-shadow: 0 18px 46px rgb(23 28 42 / 18%);
 }
@@ -861,7 +867,7 @@
   line-height: 1.45;
 }
 
-@media (max-width: 1120px) {
+@container office-presentation (max-width: 1120px) {
   .work-slide-strip {
     width: 160px;
     flex-basis: 160px;
@@ -1005,8 +1011,8 @@
   .work-presentation-slide-navigation-toggle:hover,
   .work-presentation-slide-navigation-toggle:focus-visible {
     outline: 0;
-    border-color: color-mix(in srgb, #db663b 55%, var(--a3s-line));
-    color: #b44e31;
+    border-color: color-mix(in srgb, var(--a3s-ink) 55%, var(--a3s-line));
+    color: var(--a3s-ink);
   }
 
   .work-presentation-slide-navigation-backdrop {

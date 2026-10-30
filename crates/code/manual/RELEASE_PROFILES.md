@@ -59,3 +59,16 @@ Package counts are unique normal-dependency names.
 
 `default` remains `local-code`. `server` is not the removed AgentDir HTTP
 serve surface.
+
+## ACP and desktop selection
+
+The standalone `a3s-code-acp` default enables HTTP/RSS search without browser
+engines. Opt in with `--features a3s-code-acp/headless-search`. Studio development,
+build and package recipes explicitly select that feature to retain browser search.
+Cargo features are additive: another selected package can also enable Core's
+headless feature, so inspect the selected delivery graph when qualifying a build.
+
+With headless search enabled, constructing a cascade does not provision Moli.
+Preparation starts only when the browser tier awaits its runtime, within the
+existing timeout and cancellation limits. The historical size figures above
+do not measure this ACP delivery change.

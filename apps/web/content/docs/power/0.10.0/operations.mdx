@@ -1,0 +1,83 @@
+export const meta = {
+  title: 'Power 运行与发布验证',
+  description: '缓存容量、性能证据、构建 feature、发布证据门和验收清单。',
+  label: '运行与验证',
+  updated: '2026-10-29',
+};
+
+Power 把资源上限、执行身份和验证结果写入明确合同。部署方仍需在具体模型和硬件上收集证据。
+
+## 缓存容量与寿命
+
+llama.cpp 前缀缓存使用有容量限制的 LRU 和空闲 TTL。默认保留一个上下文，空闲寿命为 300 秒。
+
+```acl
+prompt_cache_max_entries = 1
+prompt_cache_ttl_seconds = 300
+```
+
+容量范围为 1 至 1024 项。TTL 范围为 1 至 86,400 秒。
+
+<DocTable caption="缓存配置与等效环境变量" headers={['ACL', '环境变量', '作用']} rows={[
+  ['prompt_cache_max_entries', 'A3S_POWER_PROMPT_CACHE_MAX_ENTRIES', '限制每个已加载模型的常驻上下文数'],
+  ['prompt_cache_ttl_seconds', 'A3S_POWER_PROMPT_CACHE_TTL_SECONDS', '限制上下文空闲保留时间'],
+]} />
+
+KV 上下文会占用 CPU 或 GPU 内存。提高容量前，先测量上下文大小，并为权重、批次、图捕获和并发请求保留余量。
+
+卸载模型会删除对应的常驻上下文。执行期间，Power 会从复用 map 取出上下文，避免并发请求共享同一个可变状态。
+
+## 性能证据的解释
+
+公开基准只适用于指定模型制品、后端、主机、请求形状和采样策略。单次 TTFT 或 token/s 不能成为其他部署的服务等级承诺。
+
+比较缓存效果时，分别记录后端 prefill 时间、请求级 TTFT、稳定 decode 吞吐、缓存命中和驱逐。缓存命中不等于端到端加速。
+
+比较推测解码时，记录目标制品、草稿制品、接受率和完整输出。速度提升不能替代输出质量验收。
+
+## 构建 Feature
+
+<DocTable caption="常用构建方式" headers={['目标', '命令或 feature']} rows={[
+  ['默认托管服务', 'cargo build --locked --release'],
+  ['无监听器嵌入式运行时', '--no-default-features --features embedded-inference'],
+  ['纯 Rust TEE 服务', '--no-default-features --features tee-minimal'],
+  ['llama.cpp CUDA', '--no-default-features --features llamacpp-cuda'],
+]} />
+
+在 Windows 首次检出固定 llama.cpp 源码前，启用 Git long paths。需要 CUDA、Metal 或外部 Prism 时，还要准备对应工具链和运行时。
+
+## 发布证据门
+
+strict v1 要求同一不可变修订具有四类平台证据。
+
+<DocTable caption="strict v1 平台证据" headers={['平台类别', '必要证据', '当前缺口']} rows={[
+  ['CPU', '形状配置、TEE 策略和本地执行捕获', '已有指定父提交的捕获'],
+  ['CUDA', '形状配置、TEE 策略和本地执行捕获', '已有指定父提交的捕获'],
+  ['Metal', '原生 Apple Silicon 主机与 Apple GPU', '缺少同一冻结父提交的捕获'],
+  ['Confidential GPU', 'AMD SEV-SNP 与 NVIDIA 证据的提升证明', '缺少符合发布门的捕获'],
+]} />
+
+四类捕获还必须证明标量与批量等价、有界峰值内存、取消清理、队列过期、副本恢复和显式回退。普通 CUDA 结果不能重标为 confidential GPU 证据。
+
+生产标签必须指向冻结源提交的证据子提交，并通过签名验证。当前 `0.10.0` 属于 pre-v1，未满足该发布门。
+
+## 验收清单
+
+1. 运行 `cargo fmt --all -- --check`。
+2. 运行默认后端的库测试。
+3. 运行嵌入式和 picolm feature 测试。
+4. 运行 Clippy 并拒绝警告。
+5. 核对模型与辅助制品摘要。
+6. 验证准入、取消和队列超时。
+7. 验证缓存命中和内存上限。
+8. 在目标硬件上重放性能基准。
+9. 发布 v1 前核对四类平台证据。
+
+从 `crates/power` 目录运行 Rust 检查，不使用仓库根目录的 Aster 工作区作为 Power 的独立发布依据。
+
+## 实现依据
+
+- [带键前缀缓存](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/prompt-prefix-cache.md)
+- [生产发布证据门](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/release-evidence-gate.md)
+- [外部硬件捕获](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/external-release-capture.md)
+- [开发与验证命令](https://github.com/aster-ai-lab/aster/blob/main/crates/power/README.md)

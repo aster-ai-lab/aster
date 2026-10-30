@@ -339,43 +339,46 @@ export function SlideElementTextPreview({
   const hasRichText = element.textRuns?.some((run) => run.text.length > 0);
   const content = hasRichText ? (
     <span className="work-slide-rich-text" style={slideTextStyle(element)}>
-      {element.textRuns?.map((run, index) => {
-        const style: React.CSSProperties = {
-          color: run.color,
-          fontFamily: run.fontFamily,
-          fontSize: run.fontSize
-            ? `clamp(6px, ${run.fontSize / 10}cqw, ${run.fontSize}px)`
-            : undefined,
-          fontStyle:
-            run.italic === undefined
-              ? undefined
-              : run.italic
-                ? 'italic'
-                : 'normal',
-          fontWeight: run.bold === undefined ? undefined : run.bold ? 700 : 400,
-          textDecoration:
-            run.underline === undefined
-              ? undefined
-              : run.underline
-                ? 'underline'
-                : 'none',
-        };
-        return run.href ? (
-          <a
-            href={run.href}
-            target="_blank"
-            rel="noreferrer"
-            key={`${index}-${run.text}`}
-            style={style}
-          >
-            {run.text}
-          </a>
-        ) : (
-          <span key={`${index}-${run.text}`} style={style}>
-            {run.text}
-          </span>
-        );
-      })}
+      {/* Keep runs in one text flow inside the flex container, including paragraph breaks. */}
+      <span>
+        {element.textRuns?.map((run, index) => {
+          const style: React.CSSProperties = {
+            color: run.color,
+            fontFamily: run.fontFamily,
+            fontSize: run.fontSize
+              ? `clamp(6px, ${run.fontSize / 10}cqw, ${run.fontSize}px)`
+              : undefined,
+            fontStyle:
+              run.italic === undefined
+                ? undefined
+                : run.italic
+                  ? 'italic'
+                  : 'normal',
+            fontWeight: run.bold === undefined ? undefined : run.bold ? 700 : 400,
+            textDecoration:
+              run.underline === undefined
+                ? undefined
+                : run.underline
+                  ? 'underline'
+                  : 'none',
+          };
+          return run.href ? (
+            <a
+              href={run.href}
+              target="_blank"
+              rel="noreferrer"
+              key={`${index}-${run.text}`}
+              style={style}
+            >
+              {run.text}
+            </a>
+          ) : (
+            <span key={`${index}-${run.text}`} style={style}>
+              {run.text}
+            </span>
+          );
+        })}
+      </span>
     </span>
   ) : (
     <span

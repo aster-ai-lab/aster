@@ -1,6 +1,9 @@
 //! Six shipped-binary cases. Each one owns its mock, home, and workspace.
 //! They stay out of the long pager tour in `shipped_tui_e2e.rs`.
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -553,9 +556,16 @@ impl acp::Client for TestClient {
 }
 
 async fn spawn_agent(workspace: &Path, config: &Path, home: &Path) -> AgentProc {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(binaries::acp_binary());
     let stderr = std::fs::File::create(home.join("acp.stderr")).expect("acp stderr");
-    let mut child = tokio::process::Command::new(bin)
+    let mut command = tokio::process::Command::new(bin);
+    #[cfg(target_os = "macos")]
+    {
+        let unqualified = home.join("unqualified-sandbox");
+        std::fs::create_dir_all(&unqualified).expect("unqualified sandbox fixture");
+        command.env("ASTER_SANDBOX_DIR", unqualified);
+    }
+    let mut child = command
         .arg("--cwd")
         .arg(workspace)
         .env("A3S_CONFIG", config)
@@ -598,7 +608,12 @@ async fn open_case(workspace: &Path, arm: Arm) -> Case {
     .expect("initialize");
     let session = acp::Agent::new_session(
         agent.conn.as_ref(),
-        acp::NewSessionRequest::new(workspace.to_path_buf()),
+        acp::NewSessionRequest::new(workspace.to_path_buf()).meta(
+            serde_json::json!({"a3sHost": {"officeTools": true}})
+                .as_object()
+                .unwrap()
+                .clone(),
+        ),
     )
     .await
     .expect("new session")
@@ -1020,14 +1035,14 @@ fn t_ask() {
     let home = isolate("ask-home");
     let (addr, state) = spawn_mock(Arm::Ask { sent: false });
     let config = write_acl(&workspace, &format!("http://{addr}/v1"));
-    let acp_bin = env!("CARGO_BIN_EXE_a3s-code-acp");
+    let acp_bin = binaries::acp_binary();
     let cwd = workspace.to_str().expect("cwd");
     let config_path = config.to_str().expect("config").to_string();
     let home_path = home.to_str().expect("home").to_string();
     let grok_home = home.join("grok");
     let grok_home_path = grok_home.to_str().expect("grok home").to_string();
     let env = [
-        ("A3S_ACP_AGENT_BIN", acp_bin),
+        ("A3S_ACP_AGENT_BIN", acp_bin.as_str()),
         ("A3S_CONFIG", config_path.as_str()),
         ("A3S_DISABLE_CC_SWITCH", "1"),
         ("A3S_DISABLE_GROK_ACCOUNT", "1"),

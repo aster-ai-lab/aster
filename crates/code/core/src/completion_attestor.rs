@@ -42,6 +42,24 @@ pub trait CompletionAttestor: Send + Sync {
         effect_digest: &str,
         paths: &[MutatedPathRecord],
     ) -> Option<VerificationReport>;
+
+    /// Attest typed path states when available; existing hosts keep their byte-only callback.
+    fn attest_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
+        self.attest(ledger.digest(), &attestation_paths(ledger))
+    }
+}
+
+fn attestation_paths(ledger: &MutationLedger) -> Vec<MutatedPathRecord> {
+    ledger
+        .paths()
+        .map(|path| MutatedPathRecord {
+            path: path.to_owned(),
+            content_digest: ledger
+                .content_digest_for_path(path)
+                .unwrap_or("")
+                .to_owned(),
+        })
+        .collect()
 }
 
 /// Invoke the host attestor (if any) and append an accepted Host report.
@@ -63,17 +81,7 @@ pub fn merge_attested_report(
     if digest.trim().is_empty() {
         return;
     }
-    let paths: Vec<MutatedPathRecord> = ledger
-        .paths()
-        .map(|path| MutatedPathRecord {
-            path: path.to_string(),
-            content_digest: ledger
-                .content_digest_for_path(path)
-                .unwrap_or("")
-                .to_string(),
-        })
-        .collect();
-    let Some(report) = attestor.attest(digest, &paths) else {
+    let Some(report) = attestor.attest_ledger(ledger) else {
         return;
     };
     let Some(report) = accept_report(ReportAuthor::Host, report) else {
@@ -130,6 +138,42 @@ impl DiskContentAttestor {
 }
 
 impl CompletionAttestor for DiskContentAttestor {
+    fn attest_ledger(&self, ledger: &MutationLedger) -> Option<VerificationReport> {
+        use a3s_effect::ToolFileKind;
+        let records = ledger.observed_records();
+        if !records.iter().any(|record| {
+            record
+                .after_identity
+                .as_ref()
+                .is_some_and(|identity| identity.kind == ToolFileKind::Directory)
+        }) {
+            return self.attest(ledger.digest(), &attestation_paths(ledger));
+        }
+        if ledger.digest().is_empty()
+            || ledger.has_failed_effects()
+            || records.iter().any(|record| {
+                let Some(identity) = &record.after_identity else {
+                    return true;
+                };
+                match identity.kind {
+                    ToolFileKind::File => {
+                        record.content_digest.is_empty()
+                            || identity.content_digest.as_deref()
+                                != Some(format!("sha256:{}", record.content_digest).as_str())
+                    }
+                    ToolFileKind::Directory => {
+                        !record.content_digest.is_empty() || identity.content_digest.is_some()
+                    }
+                    _ => true,
+                }
+            })
+            || !ledger.observes_current_workspace(&self.workspace)
+        {
+            return None;
+        }
+        Some(disk_content_report(ledger.digest()))
+    }
+
     fn attest(
         &self,
         effect_digest: &str,
@@ -144,19 +188,21 @@ impl CompletionAttestor for DiskContentAttestor {
         }) {
             return None;
         }
-        Some(
-            VerificationReport::new(
-                "host:disk-content",
-                vec![VerificationCheck::required(
-                    "host:disk-content",
-                    "content_digest",
-                    "on-disk bytes match the recorded content digest",
-                )
-                .with_status(VerificationStatus::Passed)],
-            )
-            .with_effect_digest(effect_digest.to_string()),
-        )
+        Some(disk_content_report(effect_digest))
     }
+}
+
+fn disk_content_report(effect_digest: &str) -> VerificationReport {
+    VerificationReport::new(
+        "host:disk-content",
+        vec![VerificationCheck::required(
+            "host:disk-content",
+            "content_digest",
+            "on-disk file bytes and any typed directory identities match the recorded mutations",
+        )
+        .with_status(VerificationStatus::Passed)],
+    )
+    .with_effect_digest(effect_digest.to_owned())
 }
 
 #[cfg(test)]

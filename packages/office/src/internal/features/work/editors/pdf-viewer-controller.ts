@@ -197,6 +197,21 @@ export function usePdfViewerController(
         if (stopPageChangeState) unsubscribe.push(stopPageChangeState);
         subscribe(unsubscribe, capabilities.zoom?.onStateChange, sync);
         subscribe(unsubscribe, capabilities.search?.onStateChange, sync);
+        // The search plugin selects matches; its host owns viewport navigation.
+        const stopSearchNavigation = safely(() =>
+          capabilities.search?.onActiveResultChange(({ documentId, index }) => {
+            const result = capabilities.search
+              ?.forDocument(documentId)
+              .getState().results[index];
+            if (!result) return;
+            capabilities.scroll?.forDocument(documentId).scrollToPage({
+              pageNumber: result.pageIndex + 1,
+              pageCoordinates: result.rects[0]?.origin,
+              behavior: 'instant',
+            });
+          }),
+        );
+        if (stopSearchNavigation) unsubscribe.push(stopSearchNavigation);
         subscribe(unsubscribe, capabilities.history?.onHistoryChange, sync);
         sync();
       })

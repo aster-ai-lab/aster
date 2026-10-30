@@ -7,9 +7,12 @@ pub(super) fn admit_settled_memory(
 ) -> Option<crate::memory::MemoryExtractionTicket> {
     let result = mapped.as_ref().ok()?;
     let surface = parts.surface.as_ref()?;
-    surface
-        .agent
-        .admit_fact_memory_extraction(prompt, &result.text, &surface.cancel)
+    surface.agent.admit_fact_memory_extraction(
+        prompt,
+        &result.text,
+        &surface.session_id,
+        &surface.cancel,
+    )
 }
 
 pub(super) async fn extract_admitted_memory(
@@ -137,6 +140,11 @@ pub(super) async fn emit_interactive_host_event(
     surface: &crate::fact_control::SessionSurface,
     event: AgentEvent,
 ) {
+    if let AgentEvent::TaskUpdated { tasks, .. } = &event {
+        if let Some(persistence) = &surface.persistence {
+            persistence.replace_tasks(tasks.clone());
+        }
+    }
     if let (Some(store), Some(run_id)) = (&surface.run_store, &surface.run_id) {
         store.record_event(run_id, event.clone()).await;
     }
@@ -153,6 +161,7 @@ pub(super) async fn emit_gated(
     publication: run_admission::OriginalPublicationKind,
     run_id: &str,
     cancellation: Option<&tokio_util::sync::CancellationToken>,
+    response_meta: Option<crate::llm::LlmResponseMeta>,
 ) {
     if let Err(error) = mapped {
         send_host_event(tx, AgentEvent::execution_error(error), cancellation).await;
@@ -170,6 +179,7 @@ pub(super) async fn emit_gated(
                 mapped.as_ref().ok(),
                 streamed_text,
                 cancellation,
+                response_meta,
             )
             .await;
             return;
@@ -198,7 +208,7 @@ pub(super) async fn emit_settled(
     mapped: Option<&AgentResult>,
     streamed_text: bool,
 ) {
-    emit_settled_to_host(tx, settled, mapped, streamed_text, None).await;
+    emit_settled_to_host(tx, settled, mapped, streamed_text, None, None).await;
 }
 
 pub(super) async fn emit_settled_to_host(
@@ -207,6 +217,7 @@ pub(super) async fn emit_settled_to_host(
     mapped: Option<&AgentResult>,
     streamed_text: bool,
     cancellation: Option<&tokio_util::sync::CancellationToken>,
+    response_meta: Option<crate::llm::LlmResponseMeta>,
 ) {
     match settled {
         Ok(settled) => {
@@ -243,7 +254,7 @@ pub(super) async fn emit_settled_to_host(
                         .map(|result| result.completion.clone())
                         .unwrap_or_default(),
                     forced_stop: mapped.and_then(|result| result.forced_stop),
-                    meta: None,
+                    meta: response_meta,
                 },
                 cancellation,
             )

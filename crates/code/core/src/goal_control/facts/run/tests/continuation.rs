@@ -464,14 +464,24 @@ fn continuation_source_preserves_ordinary_wire_and_is_refused_by_the_original_bo
 }
 
 #[test]
-fn the_progress_basis_closed_set_parses_both_members() {
+fn the_progress_basis_closed_set_parses_all_members() {
     use super::super::continuation::ProgressBasis;
     assert!(ProgressBasis::parse("observed_workspace_mutation_v1").is_ok());
     assert!(ProgressBasis::parse("turn_progress_delta_v1").is_ok());
+    assert!(ProgressBasis::parse("turn_progress_delta_v2").is_ok());
+    assert!(ProgressBasis::parse("turn_progress_delta_v3").is_ok());
     assert!(ProgressBasis::parse("mutation").is_err());
     assert_eq!(
         ProgressBasis::TurnProgressDeltaV1.as_str(),
         "turn_progress_delta_v1"
+    );
+    assert_eq!(
+        ProgressBasis::TurnProgressDeltaV2.as_str(),
+        "turn_progress_delta_v2"
+    );
+    assert_eq!(
+        ProgressBasis::TurnProgressDeltaV3.as_str(),
+        "turn_progress_delta_v3"
     );
 }
 
@@ -535,9 +545,207 @@ fn information_progress_keeps_admitting_indefinitely() {
     for i in 0..20 {
         let ok = usage.admit(&ContinuationSource::turn_progress(policy.clone(), 100 + i));
         assert!(ok.is_ok(), "slice {i} with progress information admits");
-        // The fact fold resets the count on any nonzero dimension; the
-        // admission path sees slices_since_progress back to zero each time.
+        // The fact fold counts positive information progress; the admission
+        // path sees slices_since_progress back to zero each time.
         usage.slices_since_progress = 0;
+    }
+}
+
+fn append_settled_progress(
+    log: &dyn LogStore,
+    workspace: &WorkspaceRef,
+    id: &str,
+    source: &ContinuationSource,
+    progress: crate::harness_loop::TurnProgressDelta,
+) {
+    append_run(log, workspace, id, Some(source));
+    let pending = crate::goal_control::facts::settle::prepare_settlement(
+        &log.read("session").unwrap(),
+        "session",
+        workspace,
+        None,
+        id,
+        None,
+        Some(progress),
+        None,
+    )
+    .unwrap()
+    .unwrap();
+    log.append("session", &[pending], None).unwrap();
+}
+
+#[test]
+fn growing_uncertainty_does_not_reset_stall_across_replay_and_reopen() {
+    for (basis, uncertainty_delta) in [
+        (ProgressBasis::TurnProgressDeltaV2, -1),
+        (ProgressBasis::TurnProgressDeltaV2, i64::MIN),
+        (ProgressBasis::TurnProgressDeltaV3, -1),
+        (ProgressBasis::TurnProgressDeltaV3, i64::MIN),
+    ] {
+        for file in [false, true] {
+            let directory = tempfile::tempdir().unwrap();
+            let log: Box<dyn LogStore> = if file {
+                Box::new(FileLog::open(directory.path()).unwrap())
+            } else {
+                Box::new(MemoryLog::new())
+            };
+            let (workspace, _) = seed(log.as_ref());
+            let mut admission = ContinuationSource::turn_progress(source(8, 1, 100).policy, 100);
+            admission.progress_basis = Some(basis);
+            append_settled_progress(
+                log.as_ref(),
+                &workspace,
+                "auto-1",
+                &admission,
+                crate::harness_loop::TurnProgressDelta {
+                    uncertainty_delta,
+                    ..Default::default()
+                },
+            );
+            let before = log.read("session").unwrap();
+            assert_eq!(
+                before.last().unwrap().payload["body"]["progress"]["uncertainty_delta"],
+                uncertainty_delta
+            );
+            let check = |log: &dyn LogStore| {
+                assert_eq!(usage(log, &workspace).slices_since_progress, 1);
+                assert!(matches!(
+                    check_continuation(
+                        &log.read("session").unwrap(),
+                        "session",
+                        &workspace,
+                        None,
+                        &ContinuationSource {
+                            observed_unix_ms: 200,
+                            ..admission.clone()
+                        }
+                    ),
+                    Err(GoalControlError::Refused {
+                        refusal: GoalRefusal::Waiting,
+                        ..
+                    })
+                ));
+                assert_eq!(log.read("session").unwrap(), before);
+            };
+            check(log.as_ref());
+            drop(log);
+            if file {
+                check(&FileLog::open(directory.path()).unwrap());
+            }
+        }
+    }
+}
+
+#[test]
+fn current_raw_mutation_and_plan_counters_need_original_workspace_or_step_proof() {
+    for progress in [
+        crate::harness_loop::TurnProgressDelta {
+            mutation_delta: 1,
+            ..Default::default()
+        },
+        crate::harness_loop::TurnProgressDelta {
+            plan_delta: 1,
+            ..Default::default()
+        },
+    ] {
+        let log = MemoryLog::new();
+        let (workspace, _) = seed(&log);
+        let admission = ContinuationSource::turn_progress(source(8, 1, 100).policy, 100);
+        append_settled_progress(&log, &workspace, "unproved-count", &admission, progress);
+        assert_eq!(usage(&log, &workspace).slices_since_progress, 1);
+        assert!(matches!(
+            check_continuation(
+                &log.read("session").unwrap(),
+                "session",
+                &workspace,
+                None,
+                &ContinuationSource {
+                    observed_unix_ms: 200,
+                    ..admission
+                }
+            ),
+            Err(GoalControlError::Refused {
+                refusal: GoalRefusal::Waiting,
+                ..
+            })
+        ));
+    }
+}
+
+#[test]
+fn reduced_uncertainty_and_read_only_information_keep_their_continuation_opportunity() {
+    use crate::harness_loop::TurnProgressDelta;
+    for progress in [
+        TurnProgressDelta {
+            uncertainty_delta: 1,
+            ..Default::default()
+        },
+        TurnProgressDelta {
+            information_delta: 1,
+            uncertainty_delta: -1,
+            ..Default::default()
+        },
+        TurnProgressDelta {
+            mutation_delta: 1,
+            ..Default::default()
+        },
+        TurnProgressDelta {
+            plan_delta: 1,
+            ..Default::default()
+        },
+    ] {
+        let log = MemoryLog::new();
+        let (workspace, _) = seed(&log);
+        let mut admission = ContinuationSource::turn_progress(source(8, 1, 100).policy, 100);
+        // V2's recorded counters remain valid even without V3's original-state proof.
+        admission.progress_basis = Some(ProgressBasis::TurnProgressDeltaV2);
+        append_settled_progress(&log, &workspace, "auto-1", &admission, progress);
+        assert_eq!(usage(&log, &workspace).slices_since_progress, 0);
+        assert!(check_continuation(
+            &log.read("session").unwrap(),
+            "session",
+            &workspace,
+            None,
+            &ContinuationSource::turn_progress(admission.policy, 200)
+        )
+        .is_ok());
+    }
+}
+
+#[test]
+fn historical_negative_progress_preserves_already_admitted_slices() {
+    for file in [false, true] {
+        let directory = tempfile::tempdir().unwrap();
+        let log: Box<dyn LogStore> = if file {
+            Box::new(FileLog::open(directory.path()).unwrap())
+        } else {
+            Box::new(MemoryLog::new())
+        };
+        let (workspace, _) = seed(log.as_ref());
+        let mut old = serde_json::to_value(source(8, 1, 100)).unwrap();
+        old["progress_basis"] = serde_json::json!("turn_progress_delta_v1");
+        let old: ContinuationSource = serde_json::from_value(old).unwrap();
+        append_settled_progress(
+            log.as_ref(),
+            &workspace,
+            "old-1",
+            &old,
+            crate::harness_loop::TurnProgressDelta {
+                uncertainty_delta: -1,
+                ..Default::default()
+            },
+        );
+        let mut second = old.clone();
+        second.observed_unix_ms = 200;
+        append_run(log.as_ref(), &workspace, "old-2", Some(&second));
+        let before = log.read("session").unwrap();
+        assert_eq!(usage(log.as_ref(), &workspace).admitted_slices, 2);
+        drop(log);
+        if file {
+            let reopened = FileLog::open(directory.path()).unwrap();
+            assert_eq!(reopened.read("session").unwrap(), before);
+            assert_eq!(usage(&reopened, &workspace).admitted_slices, 2);
+        }
     }
 }
 

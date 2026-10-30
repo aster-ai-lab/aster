@@ -18,6 +18,10 @@ use super::namespace::{collect_mappings, IdmapPlan, NamespacePlan};
 use super::PinnedBundleDirectory;
 use crate::vm_attachment::UtilityVmStorageSources;
 
+pub(super) use attributes::{
+    FSCONFIG_CMD_CREATE, FSCONFIG_SET_FLAG, FSCONFIG_SET_STRING, FSMOUNT_CLOEXEC, FSOPEN_CLOEXEC,
+    MOVE_MOUNT_F_EMPTY_PATH, MOVE_MOUNT_T_EMPTY_PATH,
+};
 pub(super) use default_filesystem::DefaultFilesystemPlan;
 pub(super) use idmap::{apply_ordered_idmap_from_parent, DetachedMountSources};
 pub(super) use scope::{validate_bundle_scoped_sources, validate_bundle_source_syntax};

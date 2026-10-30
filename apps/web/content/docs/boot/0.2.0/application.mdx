@@ -1,0 +1,111 @@
+export const meta = {
+  title: 'Boot 应用与管线',
+  description: '模块、Provider、Controller、工厂、请求管线和协议适配器。',
+  label: '应用与管线',
+  updated: '2026-10-29',
+};
+
+Boot 应用由模块和类型化 Provider 组成。Controller 只声明协议中立的输入、输出和执行逻辑。
+
+## 声明应用
+
+默认 feature 包含宏和 Axum 适配器：
+
+```toml
+[dependencies]
+a3s-boot = "0.2.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+```
+
+以下示例注册一个 Provider 和一个 HTTP Controller：
+
+```rust
+use std::sync::Arc;
+use a3s_boot::{
+    controller, get, injectable, module, param, AxumAdapter, BootFactory, Result,
+};
+
+#[injectable]
+#[derive(Debug)]
+struct GreetingService;
+
+impl GreetingService {
+    fn hello(&self, name: &str) -> String {
+        format!("Hello, {name}")
+    }
+}
+
+#[injectable]
+#[derive(Debug)]
+struct GreetingController {
+    greeting: Arc<GreetingService>,
+}
+
+#[controller("/greetings")]
+impl GreetingController {
+    #[get("/{name}")]
+    async fn greet(&self, #[param("name")] name: String) -> Result<String> {
+        Ok(self.greeting.hello(&name))
+    }
+}
+
+#[module(
+    name = "app",
+    providers = [GreetingService, GreetingController],
+    controllers = [GreetingController],
+)]
+#[derive(Debug)]
+struct AppModule;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let mut app = BootFactory::create(AppModule)?;
+    app.listen_with(&AxumAdapter::new(), ([127, 0, 0, 1], 3000).into()).await
+}
+```
+
+需要动态注册或不使用宏时，选择 `BootApplication::builder` 和显式 Definition 类型。
+
+## Provider 与模块可见性
+
+Provider 支持 value、factory、async factory 和 alias。`ModuleRef` 按模块可见性解析依赖，`ProviderRef<T>` 延迟解析可选或循环依赖。
+
+`DynamicModule` 接收运行时配置。`LazyModuleLoader` 在启动后加载隔离模块。全局管线 Provider 必须提前导入，因为现有 Handler 已完成编译。
+
+## 工厂与生命周期
+
+<DocTable caption="BootFactory 的应用入口" headers={['入口', '用途']} rows={[
+  ['create', '构建具有 HTTP 能力的应用'],
+  ['create_application_context', '构建只包含 Provider 的 Worker'],
+  ['create_microservice', '构建独立消息服务'],
+  ['异步变体', '等待异步 Provider Factory'],
+]} />
+
+模块和 Provider 可以观察初始化、启动、销毁和关闭。`shutdown-hooks` 处理 SIGINT 与 SIGTERM。
+
+## 请求管线
+
+HTTP Handler 按固定顺序执行：
+
+```text
+request → middleware → guards → interceptors → pipes → validation → handler
+                              └──── exception filters on unrecovered errors ────┘
+```
+
+Around Interceptor 可以转换结果、短路或恢复错误。它也可以重放剩余管线。此类重试是 at-least-once，不会回滚 Provider 状态或外部副作用。
+
+## HTTP、OpenAPI 与消息协议
+
+Controller 支持路由、DTO、Cookie、重定向、文件和 SSE。校验通过 `Validate` 或可选 `ValidationSchema` 显式声明。
+
+OpenAPI 文档来自路由元数据。`openapi-schemas` 收集 `schemars::JsonSchema` 类型，并支持 JSON 与 Swagger UI。
+
+WebSocket Gateway 处理连接生命周期、房间和广播。Message Controller 处理请求响应与事件模式。`InProcessTransport` 用于进程内通信，其他传输通过独立 feature 启用。
+
+协议交付与持久性取决于所选后端。Boot 的公共扩展点是 `HttpAdapter`、`MessageTransport` 和后端 trait。
+
+## 实现依据
+
+- [应用模型与快速开始](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)
+- [HTTP 与 OpenAPI](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)
+- [协议与架构](https://github.com/aster-ai-lab/aster/blob/main/crates/boot/README.md)

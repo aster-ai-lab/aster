@@ -512,6 +512,50 @@ fn dispatch_fork_no_worktree_flag_skips_modal() {
 }
 
 #[test]
+fn a3s_fork_uses_the_current_workspace_without_a_legacy_worktree_modal() {
+    let mut app = fork_test_app();
+    app.is_a3s_code = true;
+    app.fork_worktree_mode = crate::app::app_view::WorktreeMode::Always;
+    let effects = dispatch(
+        Action::Fork(fork_args(None, Some("inspect the branch"))),
+        &mut app,
+    );
+    assert!(matches!(
+        effects.as_slice(),
+        [Effect::ForkSession {
+            load_parent: false,
+            ..
+        }]
+    ));
+    assert!(
+        app.agents
+            .values()
+            .all(|agent| agent.question_view.is_none())
+    );
+    assert_eq!(
+        app.agents[&AgentId(1)].pending_first_prompt.as_deref(),
+        Some("inspect the branch")
+    );
+}
+
+#[test]
+fn a3s_fork_refuses_cross_workspace_before_creating_a_placeholder() {
+    let mut app = fork_test_app();
+    app.is_a3s_code = true;
+    let effects = dispatch(Action::Fork(fork_args(Some(true), None)), &mut app);
+    assert!(effects.is_empty());
+    assert_eq!(app.agents.len(), 1);
+    assert!(
+        app.agents[&AgentId(0)]
+            .toast
+            .as_ref()
+            .unwrap()
+            .0
+            .contains("same workspace")
+    );
+}
+
+#[test]
 fn dispatch_fork_worktree_flag_non_git_toasts_and_returns_no_effect() {
     // --worktree in a non-git directory must be rejected synchronously rather than waiting for an async WorktreeSessionFailed
     let mut app = test_app_with_agent();
@@ -648,6 +692,7 @@ fn dispatch_fork_resolved_no_worktree_emits_fork_effect() {
                 parent_session_id,
                 parent_cwd,
                 parent_is_worktree,
+                load_parent: false,
                 new_session_id: None,
             },
         ] => {

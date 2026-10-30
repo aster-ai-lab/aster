@@ -1,32 +1,22 @@
-# 9.1.4 release candidate
+# 9.1.4 workspace integration
 
-`a3s-code-core` 9.1.3 is on crates.io. It was published on 2026-10-15
-from `2ba6f4fc`, the sha in the published crate's `.cargo_vcs_info.json`.
-`a3s-code-acp` was never published. At that version ACP cannot be
-published: it uses Core APIs that landed after the 9.1.3 upload. 9.1.4
-releases the delta since `2ba6f4fc` and aligns every release member.
+`a3s-code-core` and `a3s-code-acp` retain upstream version 9.1.4 and their
+public Rust identities. In this repository all members have `publish = false`;
+they resolve locally and are not registry-publishing targets.
 
-## Scope
+## Delivery
 
-| Member | 9.1.4 delivery |
-| --- | --- |
-| `a3s-code-core` | crates.io |
-| `a3s-code-acp` | crates.io, published after Core |
-| `a3s-code-tui` pager (`vendor/a3s-code-ui`) | release binary. Not a crates.io package: 18 path-only dependencies |
-| Node, Python and Go SDKs | version-aligned at 9.1.4, published in the next release |
+- Rust hosts link `crates/code/core` through a local path.
+- `aster` and `a3s-code-acp` are built and distributed together.
+- Studio development and package recipes also build Office, with tenant
+  identity and data isolation owned by the host.
+- No foreign-language SDK, bridge package or publishing workflow is delivered.
 
-The delta is listed under `## [9.1.4]` in `CHANGELOG.md`.
+## Qualification
 
-## Gate
-
-1. `scripts/check_release_versions.sh 9.1.4` passes.
-2. `cargo publish -p a3s-code-core -p a3s-code-acp --dry-run` passes from
-   the committed source. Cargo verifies ACP against the packaged Core.
-3. `cargo install --path acp` from a clean checkout of the committed
-   source, then one ACP turn against a real model.
-4. Upload Core, then ACP. The upload is a manual step, outside this
-   candidate's automation.
-
-Status: candidate. Gates 1–3 are recorded in
-[the 9.1.4 candidate evidence](../../../docs/evidence/code-harness/20261017-release-914-candidate/OUTCOME.md).
-Gate 4 has not run.
+Build from the root with the pinned Rust toolchain. Run focused tests for changed
+behavior, the workspace dependency guard, formatting and applicable CI checks.
+Record source/submodule state, features, actual binary hashes and residual failures.
+A prior upstream release or a local debug pass does not qualify a later product
+build or another platform. See [the integration guide](USER_GUIDE.md),
+[release profiles](RELEASE_PROFILES.md) and [capability verification](CAPABILITY_VERIFICATION.md).

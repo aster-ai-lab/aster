@@ -42,6 +42,71 @@ fn observed_bytes(root: &Path) -> MutationLedger {
     ledger
 }
 
+#[test]
+fn incomplete_gate_prefers_the_admitted_exact_host_command() {
+    let root = tempfile::tempdir().unwrap();
+    let engine = agent(root.path(), vec![contract()]);
+    let ledger = observed_bytes(root.path());
+    let CompletionGate::Incomplete { message } = engine.decide_fact_completion_gate(&ledger, &[])
+    else {
+        panic!("unverified mutation must stay incomplete");
+    };
+    assert!(
+        message.contains(&format!(
+            "\"command\":{}",
+            serde_json::to_string(SUITE).unwrap()
+        )),
+        "{message}"
+    );
+    assert!(message.contains("entire bash command"), "{message}");
+    assert!(
+        !message.contains("test -f"),
+        "a generic composed check conflicts with the admitted command: {message}"
+    );
+    assert_eq!(
+        crate::harness_loop::unbound_mutation_digest(&message),
+        Some(ledger.digest())
+    );
+    assert!(crate::verification::host_report_for_verification_contract(
+        &contract(),
+        &format!("{SUITE}; echo $?"),
+        0,
+        &[SOURCE.into()],
+        ledger.digest()
+    )
+    .is_none());
+}
+
+#[test]
+fn incomplete_gate_does_not_suggest_a_suite_that_cannot_cover_the_changes() {
+    let root = tempfile::tempdir().unwrap();
+    let foreign =
+        VerificationContractV1::new("unrelated", "unrelated-check", ["other.rs"]).unwrap();
+    let engine = agent(root.path(), vec![foreign]);
+    let ledger = observed_bytes(root.path());
+    let CompletionGate::Incomplete { message } = engine.decide_fact_completion_gate(&ledger, &[])
+    else {
+        panic!("uncovered mutation");
+    };
+    assert!(
+        message.contains("No admitted host contract covers every current mutation"),
+        "{message}"
+    );
+    assert!(!message.contains("unrelated-check"), "{message}");
+    assert!(!message.contains("test -f"), "{message}");
+    let mut unknown = ledger;
+    unknown.set_observation_incomplete(true);
+    let CompletionGate::Incomplete { message } = engine.decide_fact_completion_gate(&unknown, &[])
+    else {
+        panic!("unknown effects must refuse");
+    };
+    assert!(
+        message.contains("workspace observation is incomplete"),
+        "{message}"
+    );
+    assert!(!message.contains("unrelated-check"));
+}
+
 fn report(subject: &str, status: VerificationStatus) -> VerificationReport {
     VerificationReport::new(
         subject,

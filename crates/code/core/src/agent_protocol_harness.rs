@@ -114,7 +114,10 @@ enum HarnessSessionWorkspace {
 }
 
 impl HarnessSessionWorkspace {
-    async fn prepare(source: PathBuf) -> Result<Self, AgentProtocolHarnessError> {
+    async fn prepare(
+        source: PathBuf,
+        resume_workspace: Option<PathBuf>,
+    ) -> Result<Self, AgentProtocolHarnessError> {
         tokio::task::spawn_blocking(move || {
             if !crate::git::is_git_repo(&source) {
                 return Ok(Self::Shared(source));
@@ -123,7 +126,7 @@ impl HarnessSessionWorkspace {
                 .prefix("a3s-code-harness-session-")
                 .tempdir()
                 .map_err(|error| AgentProtocolHarnessError::Workspace(error.to_string()))?;
-            let path = temporary_root.path().join("workspace");
+            let path = resume_workspace.unwrap_or_else(|| temporary_root.path().join("workspace"));
             crate::git::create_isolated_worktree(&source, &path)
                 .map_err(|error| AgentProtocolHarnessError::Workspace(error.to_string()))?;
             Ok(Self::Isolated {
@@ -278,9 +281,8 @@ impl AgentProtocolHarness {
                 .map(|pin| format!("{A3S_INFERENCE_PROVIDER}/{}", pin.alias)),
             _ => None,
         };
-        let host = self
-            .host_for(command.identity(), create_if_missing, model_override)
-            .await?;
+        let host =
+            Box::pin(self.host_for(command.identity(), create_if_missing, model_override)).await?;
         // Harness close drains an already admitted session. Callers see harness Closed.
         match host.execute(command).await {
             Ok(receipt) => Ok(receipt),
@@ -399,7 +401,11 @@ impl AgentProtocolHarness {
             }
         }
 
-        let workspace = HarnessSessionWorkspace::prepare(PathBuf::from(&self.workspace)).await?;
+        let workspace = HarnessSessionWorkspace::prepare(
+            PathBuf::from(&self.workspace),
+            Some(PathBuf::from(&snapshot.session.config.workspace)),
+        )
+        .await?;
         let session = self
             .agent
             .restore_protocol_checkpoint_session_async(
@@ -571,7 +577,6 @@ impl AgentProtocolHarness {
             return Err(AgentProtocolHarnessError::SessionCapacity);
         }
 
-        let workspace = HarnessSessionWorkspace::prepare(PathBuf::from(&self.workspace)).await?;
         let mut options = self
             .session_options
             .clone()
@@ -580,6 +585,15 @@ impl AgentProtocolHarness {
         if let Some(model) = model_override {
             options.model = Some(model);
         }
+        let persisted = self
+            .agent
+            .load_protocol_session_snapshot_async(&identity.session_id, &options)
+            .await?;
+        let workspace = HarnessSessionWorkspace::prepare(
+            PathBuf::from(&self.workspace),
+            persisted.map(|snapshot| PathBuf::from(snapshot.session.config.workspace)),
+        )
+        .await?;
         let session = self
             .agent
             .open_protocol_session_async(

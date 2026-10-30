@@ -7,7 +7,7 @@ export const meta = {
 
 ## 标准 ACP 与宿主扩展
 
-标准入口见[协议生命周期](../protocol/)。下表对应当前 HostMethod 解析集合：17 个处理分支，共 23 个明确 method 或前缀族。compact_conversation 与 interject 保留源码定义的 x.ai 前缀兼容族；不能据此前缀为其他任意名称宣称支持。
+标准入口见[协议生命周期](../protocol/)。下表对应当前 HostMethod 解析集合：21 个处理分支，共 27 个明确 method 或前缀族。compact_conversation 与 interject 使用源码定义的 `a3s/` 前缀族；不能据此前缀为其他任意名称宣称支持。
 
 未知 method 返回 method_not_found。扩展参数以公开的 typed schema 为准，不能以模型能理解某段 JSON 为兼容标准。operationId 用于标识这次宿主操作；遇到冲突先读取当前状态，不隐式放宽条件。
 

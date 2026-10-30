@@ -9,11 +9,15 @@ use serde_json::json;
 mod argument_validation;
 mod cache_proof;
 mod cache_provenance;
+mod event_cancellation;
 mod execution_availability;
 mod heredoc_approval;
 mod native_artifact_scope;
+mod novel_information;
 mod pre_spawn;
+mod progress;
 mod readonly_effect;
+mod refusal_cycle;
 mod tool_budget;
 mod tool_budget_cancel;
 mod workspace_boundary;
@@ -280,6 +284,7 @@ fn background_debt_fixture(cancelled: bool) -> Vec<Fact> {
         Some(&json!({
             "workspace_child":"one", "source_run":"source-one", "run":"effect-one"
         })),
+        None,
     );
     let effects = ToolEffectObservationV1::complete(vec![ToolPathChangeV1 {
         path: "background.txt".into(),
@@ -624,6 +629,7 @@ fn executor_tools_with(
             capability_operation: None,
             checkpoint: None,
             events: None,
+            persistence: None,
             context,
             permission: PermissionPolicy::new().allow("*"),
             checker: None,

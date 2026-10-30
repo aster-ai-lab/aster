@@ -651,39 +651,6 @@ body.has-pointer .cursor-core {
   background: rgba(255, 255, 255, 0.3);
   margin: 0 3px;
 }
-.hero-secondary {
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.32);
-  color: #fff;
-}
-.hero-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.hero-tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  list-style: none;
-  padding: 0;
-  margin: 28px auto 0;
-  max-width: 680px;
-}
-.hero-tags li {
-  font-size: 12px;
-  line-height: 1;
-  padding: 8px 13px;
-  border-radius: 9999px;
-  color: rgba(255, 255, 255, 0.94);
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-}
 .hero-marquee {
   position: relative;
   margin: 30px auto 0;

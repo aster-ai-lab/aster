@@ -8,7 +8,7 @@ import { cn } from '../../lib/utils'
 const switchRootVariants = cva(
   [
     'cs-switch cs-switch-root',
-    'group peer relative inline-flex shrink-0 cursor-pointer items-center rounded-full shadow-xs transition-all outline-none',
+    'group peer relative inline-flex shrink-0 cursor-pointer items-center rounded-full shadow-xs motion-safe:transition-[background-color,box-shadow,opacity] motion-safe:duration-150 outline-none',
     'data-[state=checked]:bg-neutral-900 data-[state=unchecked]:bg-gray-500/20 dark:data-[state=checked]:bg-neutral-100',
     'disabled:cursor-not-allowed disabled:opacity-40',
     'focus-visible:[box-shadow:inset_0_0_0_1px_var(--ring)]'
@@ -36,7 +36,7 @@ const switchRootVariants = cva(
 const switchThumbVariants = cva(
   [
     'cs-switch cs-switch-thumb',
-    'pointer-events-none block rounded-full ring-0 transition-all data-[state=unchecked]:translate-x-0'
+    'pointer-events-none block rounded-full ring-0 motion-safe:transition-[translate,background-color] motion-safe:duration-[240ms] motion-safe:ease-out data-[state=unchecked]:translate-x-0'
   ],
   {
     variants: {
@@ -76,11 +76,11 @@ const switchThumbVariants = cva(
   }
 )
 
-const switchThumbSvgVariants = cva(['size-full', 'transition-all'], {
+const switchThumbSvgVariants = cva(['size-full'], {
   variants: {
     loading: {
       false: null,
-      true: ['animate-spin']
+      true: ['motion-safe:animate-spin']
     }
   },
   defaultVariants: {

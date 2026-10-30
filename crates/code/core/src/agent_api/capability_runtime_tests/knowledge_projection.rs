@@ -2,11 +2,10 @@
 
 use super::*;
 
-use crate::cognitive_context::{
-    CognitiveContextDocumentV1, CognitiveContextLimits, CognitiveContextProvider,
-    CognitiveContextRequestV1, CognitiveContextResponseV1, CognitiveContextResult,
-    CognitiveContextSession, CognitiveKnowledgeBindingV1, CognitiveKnowledgeCitationV1,
-    CognitivePackageBindingV1,
+use crate::package_context::{
+    PackageBindingV1, PackageContextDocumentV1, PackageContextLimits, PackageContextProvider,
+    PackageContextRequestV1, PackageContextResponseV1, PackageContextResult, PackageContextSession,
+    PackageKnowledgeBindingV1, PackageKnowledgeCitationV1,
 };
 use crate::store::SessionStore;
 use sha2::{Digest, Sha256};
@@ -50,7 +49,7 @@ async fn denied_projected_knowledge_does_not_reveal_the_static_resume_seed() {
         requests: Mutex::new(Vec::new()),
     });
     let static_context =
-        CognitiveContextSession::new(binding.clone(), static_provider.clone()).unwrap();
+        PackageContextSession::new(binding.clone(), static_provider.clone()).unwrap();
     let workspace = "/tmp/capability-access-knowledge";
     crate::fact_control::reset_session_fact_log(workspace);
     let agent = Agent::from_config(super::super::tests::test_config())
@@ -63,7 +62,7 @@ async fn denied_projected_knowledge_does_not_reveal_the_static_resume_seed() {
             &SessionOptions::new()
                 .with_session_id("capability-access-knowledge")
                 .with_planning_mode(crate::prompts::PlanningMode::Disabled)
-                .with_cognitive_context(static_context),
+                .with_package_context(static_context),
         )
         .unwrap();
     let counter = Arc::new(AtomicUsize::new(0));
@@ -92,28 +91,28 @@ async fn denied_projected_knowledge_does_not_reveal_the_static_resume_seed() {
 struct VersionedKnowledgeProvider {
     name: String,
     marker: &'static str,
-    requests: Mutex<Vec<CognitiveContextRequestV1>>,
+    requests: Mutex<Vec<PackageContextRequestV1>>,
 }
 
 #[async_trait]
-impl CognitiveContextProvider for VersionedKnowledgeProvider {
+impl PackageContextProvider for VersionedKnowledgeProvider {
     fn name(&self) -> &str {
         &self.name
     }
 
     async fn query(
         &self,
-        request: &CognitiveContextRequestV1,
-    ) -> CognitiveContextResult<CognitiveContextResponseV1> {
+        request: &PackageContextRequestV1,
+    ) -> PackageContextResult<PackageContextResponseV1> {
         self.requests.lock().unwrap().push(request.clone());
-        let citation = CognitiveKnowledgeCitationV1::new(
+        let citation = PackageKnowledgeCitationV1::new(
             &request.binding,
             "concepts/projected-knowledge.md",
             "Projected knowledge",
             vec![format!("sha256:{}", "e".repeat(64))],
         )?;
-        let document = CognitiveContextDocumentV1::new(citation, self.marker)?;
-        CognitiveContextResponseV1::new(request, vec![document], false)
+        let document = PackageContextDocumentV1::new(citation, self.marker)?;
+        PackageContextResponseV1::new(request, vec![document], false)
     }
 }
 
@@ -286,7 +285,7 @@ fn capability_snapshot_digest(
     package_version: &str,
     lifecycle_generation: u64,
     generation_digest: &str,
-    knowledge: &CognitiveKnowledgeBindingV1,
+    knowledge: &PackageKnowledgeBindingV1,
 ) -> String {
     let encoded = serde_json::to_vec(&(
         package_id,
@@ -307,11 +306,11 @@ fn capability_snapshot_digest(
     format!("sha256:{:x}", hasher.finalize())
 }
 
-fn knowledge_binding(generation: u64, digest_byte: char) -> CognitivePackageBindingV1 {
+fn knowledge_binding(generation: u64, digest_byte: char) -> PackageBindingV1 {
     let package_id = "acme/projected-knowledge";
     let package_version = format!("1.0.{generation}");
     let generation_digest = format!("sha256:{}", digest_byte.to_string().repeat(64));
-    let knowledge = CognitiveKnowledgeBindingV1::new(
+    let knowledge = PackageKnowledgeBindingV1::new(
         "projected-knowledge",
         "0.2",
         format!(
@@ -329,36 +328,36 @@ fn knowledge_binding(generation: u64, digest_byte: char) -> CognitivePackageBind
         &generation_digest,
         &knowledge,
     );
-    CognitivePackageBindingV1::new(
+    PackageBindingV1::new(
         package_id,
         package_version,
         generation,
         generation_digest,
         snapshot_digest,
         knowledge,
-        CognitiveContextLimits::default(),
+        PackageContextLimits::default(),
     )
     .unwrap()
 }
 
 fn projected_knowledge(
     name: &str,
-    binding: CognitivePackageBindingV1,
+    binding: PackageBindingV1,
     marker: &'static str,
-) -> Arc<CognitiveContextSession> {
-    let provider: Arc<dyn CognitiveContextProvider> = Arc::new(VersionedKnowledgeProvider {
+) -> Arc<PackageContextSession> {
+    let provider: Arc<dyn PackageContextProvider> = Arc::new(VersionedKnowledgeProvider {
         name: name.to_owned(),
         marker,
         requests: Mutex::new(Vec::new()),
     });
-    Arc::new(CognitiveContextSession::new(binding, provider).unwrap())
+    Arc::new(PackageContextSession::new(binding, provider).unwrap())
 }
 
 fn knowledge_batch(
     code_generation: u64,
     use_revision: char,
     descriptor_digest: char,
-    knowledge: Arc<CognitiveContextSession>,
+    knowledge: Arc<PackageContextSession>,
     acquired: &Arc<AtomicUsize>,
     dropped: &Arc<AtomicUsize>,
 ) -> SessionCapabilityBatch {
@@ -466,18 +465,9 @@ async fn projected_knowledge_is_run_frozen_and_records_each_exact_binding() {
     let mut runs = session.runs().await;
     runs.sort_by_key(|run| run.created_at_ms);
     assert_eq!(runs.len(), 2);
-    assert_eq!(
-        runs[0].cognitive_package_binding.as_ref(),
-        Some(&first_binding)
-    );
-    assert_eq!(
-        runs[1].cognitive_package_binding.as_ref(),
-        Some(&second_binding)
-    );
-    assert_eq!(
-        session.current_cognitive_package_binding(),
-        Some(second_binding)
-    );
+    assert_eq!(runs[0].package_binding.as_ref(), Some(&first_binding));
+    assert_eq!(runs[1].package_binding.as_ref(), Some(&second_binding));
+    assert_eq!(session.current_package_binding(), Some(second_binding));
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -556,10 +546,7 @@ async fn live_checkpoint_keeps_source_run_knowledge_across_concurrent_cutover() 
         .unwrap();
     client.release_old_call.add_permits(1);
     assert_eq!(old_run.await.unwrap().unwrap().text, "checkpoint complete");
-    assert_eq!(
-        session.current_cognitive_package_binding(),
-        Some(second_binding)
-    );
+    assert_eq!(session.current_package_binding(), Some(second_binding));
 
     let export = sink
         .exports
@@ -576,11 +563,11 @@ async fn live_checkpoint_keeps_source_run_knowledge_across_concurrent_cutover() 
         .find(|record| record.snapshot.id == logical.run_id)
         .unwrap();
     assert_eq!(
-        source.snapshot.cognitive_package_binding.as_ref(),
+        source.snapshot.package_binding.as_ref(),
         Some(&first_binding)
     );
     assert_eq!(
-        payload.snapshot.session.cognitive_package_binding.as_ref(),
+        payload.snapshot.session.package_binding.as_ref(),
         Some(&first_binding),
         "a portable live checkpoint must resume under the source Run authority"
     );
@@ -627,7 +614,7 @@ async fn projected_knowledge_rejects_multiple_authorities() {
     let error = session
         .apply_capability_batch(batch, CancellationToken::new())
         .await
-        .expect_err("one Run cannot carry multiple cognitive authorities");
+        .expect_err("one Run cannot carry multiple package authorities");
 
     assert!(matches!(
         error,
@@ -696,13 +683,13 @@ async fn projected_knowledge_rejects_session_static_general_context() {
 
 #[tokio::test]
 async fn projected_general_context_rejects_session_static_knowledge() {
-    let static_provider: Arc<dyn CognitiveContextProvider> = Arc::new(VersionedKnowledgeProvider {
+    let static_provider: Arc<dyn PackageContextProvider> = Arc::new(VersionedKnowledgeProvider {
         name: "static-knowledge".to_owned(),
         marker: "STATIC_KNOWLEDGE",
         requests: Mutex::new(Vec::new()),
     });
     let static_context =
-        CognitiveContextSession::new(knowledge_binding(1, 'a'), static_provider).unwrap();
+        PackageContextSession::new(knowledge_binding(1, 'a'), static_provider).unwrap();
     let agent = Agent::from_config(super::super::tests::test_config())
         .await
         .unwrap();
@@ -712,7 +699,7 @@ async fn projected_general_context_rejects_session_static_knowledge() {
             Arc::new(NoopClient),
             &SessionOptions::new()
                 .with_session_id("projected-context-static-knowledge")
-                .with_cognitive_context(static_context),
+                .with_package_context(static_context),
         )
         .unwrap();
     let acquired = Arc::new(AtomicUsize::new(0));
@@ -749,7 +736,7 @@ async fn projected_general_context_rejects_session_static_knowledge() {
             kind: CapabilityKind::Context,
             ref message,
             ..
-        } if message.contains("exact Session cognitive binding")
+        } if message.contains("exact Session package binding")
     ));
     assert_eq!(session.capability_catalog_stamp(), before);
     assert_eq!(acquired.load(Ordering::SeqCst), 0);
@@ -759,13 +746,13 @@ async fn projected_general_context_rejects_session_static_knowledge() {
 #[tokio::test]
 async fn session_static_knowledge_requires_an_exact_projection_bootstrap() {
     let static_binding = knowledge_binding(1, 'a');
-    let static_provider: Arc<dyn CognitiveContextProvider> = Arc::new(VersionedKnowledgeProvider {
+    let static_provider: Arc<dyn PackageContextProvider> = Arc::new(VersionedKnowledgeProvider {
         name: "projected-knowledge".to_owned(),
         marker: "STATIC_KNOWLEDGE",
         requests: Mutex::new(Vec::new()),
     });
     let static_context =
-        CognitiveContextSession::new(static_binding.clone(), static_provider).unwrap();
+        PackageContextSession::new(static_binding.clone(), static_provider).unwrap();
     let agent = Agent::from_config(super::super::tests::test_config())
         .await
         .unwrap();
@@ -775,7 +762,7 @@ async fn session_static_knowledge_requires_an_exact_projection_bootstrap() {
             Arc::new(NoopClient),
             &SessionOptions::new()
                 .with_session_id("projected-knowledge-bootstrap")
-                .with_cognitive_context(static_context),
+                .with_package_context(static_context),
         )
         .unwrap();
     let acquired = Arc::new(AtomicUsize::new(0));
@@ -965,21 +952,21 @@ async fn projected_knowledge_persists_latest_while_old_runs_keep_their_binding()
         .iter_mut()
         .flat_map(|record| record.events.iter_mut())
         .find_map(|event| match &mut event.event {
-            crate::agent::AgentEvent::CognitiveContextBound { binding } => Some(binding),
+            crate::agent::AgentEvent::PackageContextBound { binding } => Some(binding),
             _ => None,
         })
-        .expect("cognitive Run must retain binding evidence");
+        .expect("package Run must retain binding evidence");
     event_binding.limits.max_results -= 1;
     event_binding.validate().unwrap();
     assert!(tampered.validate_invariants().is_err());
     assert_eq!(
-        snapshot.session.cognitive_package_binding.as_ref(),
+        snapshot.session.package_binding.as_ref(),
         Some(&second_binding)
     );
     let mut run_bindings = snapshot
         .run_records
         .iter()
-        .map(|record| record.snapshot.cognitive_package_binding.clone())
+        .map(|record| record.snapshot.package_binding.clone())
         .collect::<Vec<_>>();
     run_bindings.sort_by_key(|binding| {
         binding
@@ -993,25 +980,25 @@ async fn projected_knowledge_persists_latest_while_old_runs_keep_their_binding()
 
     session.close().await;
     drop(session);
-    let resume_provider: Arc<dyn CognitiveContextProvider> = Arc::new(VersionedKnowledgeProvider {
+    let resume_provider: Arc<dyn PackageContextProvider> = Arc::new(VersionedKnowledgeProvider {
         name: "projected-knowledge".to_owned(),
         marker: "RESUMED_PROJECTED_KNOWLEDGE",
         requests: Mutex::new(Vec::new()),
     });
     let resume_context =
-        CognitiveContextSession::new(knowledge_binding(2, 'c'), resume_provider).unwrap();
+        PackageContextSession::new(knowledge_binding(2, 'c'), resume_provider).unwrap();
     let resumed = agent
         .resume_session_async(
             "projected-knowledge-persistence",
             SessionOptions::new()
                 .with_session_store(store)
                 .with_llm_client(Arc::new(NoopClient))
-                .with_cognitive_context(resume_context),
+                .with_package_context(resume_context),
         )
         .await
         .unwrap();
     assert_eq!(
-        resumed.current_cognitive_package_binding(),
+        resumed.current_package_binding(),
         Some(knowledge_binding(2, 'c'))
     );
     resumed

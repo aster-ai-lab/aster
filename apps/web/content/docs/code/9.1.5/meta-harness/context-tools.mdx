@@ -5,9 +5,9 @@ export const meta = {
   updated: '2026-10-26',
 };
 
-## 先选对扩展入口
+## 扩展入口
 
-不是所有扩展都需要写一个 `host:` 组件。给模型补充资料，用上下文接口；增加实际操作，用工具接口；在执行前后记录或拦截，用 Hook。它们通过会话进入原有运行过程。
+扩展不都需要 `host:` 组件。补充模型资料时使用上下文接口，增加实际操作时使用工具接口，在执行前后记录或拦截时使用 Hook。这些能力通过会话进入原有运行过程。
 
 <DocTable caption="扩展需求与会话入口" headers={['需求', '入口', '影响']} rows={[
   ['修改角色、工作要求或回复格式', 'with_prompt_slots / with_output_language', '调整系统提示的相应部分'],
@@ -77,9 +77,9 @@ Skills 提供操作说明，MCP 和动态工具提供实际调用能力。把说
 
 ## Hook 可以做什么
 
-常用事件包括 `PrePrompt`、`PreToolUse`、`PostToolUse`、`GenerateStart`、`GenerateEnd`、`PreCompact` 和 `PostCompact`。此外还有会话、记忆、规划与运行控制等事件，完整枚举见源码。
+常用事件包括 `PrePrompt`、`PreToolUse`、`PostToolUse`、`GenerateStart`、`GenerateEnd`、`PreCompact` 和 `PostCompact`。会话、记忆、规划和运行控制也有对应事件，完整枚举见源码。
 
-前置 Hook 可以返回继续、改写、阻止等结果；执行后的观察事件主要用于记录。不能把一个后置事件的返回值当作对已发生操作的撤销，也不能认为每种事件都能改变运行行为。
+前置 Hook 可以返回继续、改写或阻止结果，执行后的观察事件主要用于记录。后置事件的返回值不能撤销已发生的操作，也不是每种事件都能改变运行行为。
 
 `with_hook_executor` 会替换内置执行器，而非自动与它叠加。需要组合原有规则和自定义处理时，应由宿主明确实现。Hook 放行之后，Core 的权限检查仍会执行。
 

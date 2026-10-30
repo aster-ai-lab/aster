@@ -1,5 +1,7 @@
 # Shipped TUI case inventory
 
+This is the earlier offered-surface inventory, not the complete current Core/ACP acceptance. The full-scope audit is tracked in `specs/023-tui-core-acp-full-e2e` and `docs/evidence/code/2026-10-27-tui-core-acp/FEATURE-MATRIX.md`.
+
 ## Offered Aster TUI behaviors
 
 Each row is driven by the shipped `aster` binary and its ACP companion against a loopback model and an isolated home. Palette presence is not the pass record; the named oracle is the primary observable.
@@ -7,7 +9,7 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 | Behavior | Test | Pass record |
 | --- | --- | --- |
 | Welcome on a wide terminal shows Aster | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 120×40 contains Aster |
-| Welcome on a narrow terminal shows Aster and the version | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 60×20 contains Aster and `0.1.0` |
+| Welcome on a narrow terminal shows Aster and the version | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 60×20 contains Aster and a semantic version; the workspace test separately checks the exact Cargo package version |
 | Welcome frame at the standard size | `tests/e2e/startup.py` (`tests/e2e/startup.acl`) | viewport 80×24 contains Aster |
 | Cold launch stays on the ACL model | `shipped_tui_launch_resume_and_visible_commands` | `continue-same-session` model `mock/gpt` |
 | `--continue` reopens that session and its transcript | `shipped_tui_launch_resume_and_visible_commands` | `continue-durable-transcript` |
@@ -54,7 +56,7 @@ Each row is driven by the shipped `aster` binary and its ACP companion against a
 
 ## Absent from the fullscreen session
 
-These names stay out of the agent palette. The pass record is `hidden-<name>` absent, from `shipped_tui_launch_resume_and_visible_commands`. They are not features to implement.
+These names stay out of this historical agent palette. The pass record is `hidden-<name>` absent, from `shipped_tui_launch_resume_and_visible_commands`. Absence proves only that the UI does not advertise a missing handler; it does not prove complete integration of the corresponding Core capability.
 
 | Name | Status |
 | --- | --- |

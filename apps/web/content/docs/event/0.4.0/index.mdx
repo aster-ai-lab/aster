@@ -1,0 +1,57 @@
+export const meta = {
+  title: 'Aster Event 产品概览',
+  description: 'a3s-event 的 Provider、发布订阅、持久化、路由和交付边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-event` 是 Provider 中立的发布、订阅和持久化库。当前版本为 `0.4.0`。应用通过 `EventBus` 和 `EventProvider` 使用统一接口。
+
+Memory、NATS JetStream 和 Apache Iggy 后端共享事件 Envelope 与订阅合同，但不共享全部投递控制或历史顺序。
+
+<EventArchitectureDiagram />
+
+## Provider 与运行范围
+
+<DocTable caption="Event Provider 的适用范围" headers={['Provider', '适用场景', '持久化与分发']} rows={[
+  ['MemoryProvider', '测试、开发和单进程', '进程内 Broadcast，不提供跨进程持久化'],
+  ['NatsProvider', '显式启用的多服务部署', 'JetStream、Durable Consumer 和 at-least-once'],
+  ['IggyProvider', '默认 feature 包含的 Rust Broker 路径', 'Topic Log、Consumer Group 和显式 Offset'],
+]} />
+
+默认 feature 是 `iggy`、`encryption`、`cloudevents` 和 `routing`。最小核心关闭默认 feature 后，只保留类型、MemoryProvider、EventBus、Schema、DLQ 和 Metrics。
+
+## 统一事件模型
+
+Event Envelope 包含 ID、Subject、Category、Event Type、Version 和 Payload。投递上下文包含 Sequence、Num Delivered 和 Stream。
+
+Subject 使用点分层次：
+
+```text
+events.<category>.<topic>[.<subtopic>...]
+```
+
+通配符 `events.market.>` 匹配任意深度的 Market 事件，`events.*.forex` 匹配任意 Category 下的 Forex 主题。
+
+Schema Registry、DLQ、StateStore 和 Metrics 属于 Event。重试、Backpressure、连接恢复和分区仍由 Provider 或宿主负责。
+
+## 当前限制
+
+Iggy 目前拒绝 `expected_sequence` 和 `DeliverPolicy::LastPerSubject`。部分重投递参数会被接受但忽略，Topic 也只有单分区。
+
+Iggy Server 的上游重启缺陷仍可能阻止相同数据目录再次启动。当前 `iggy` feature 不能标记为 GA-hardened，生产采用前必须核对上游修复。
+
+不同 Provider 的历史顺序不属于统一合同。Memory 为 newest-first，Broker 通常为 oldest-first。
+
+## 文档入口
+
+- [发布订阅接入](./integration/)：EventBus、Subject、订阅和自定义 Provider。
+- [交付与运行验证](./operations/)：Ack、DLQ、加密、Broker 限制和测试。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Event 架构与 Provider](https://github.com/aster-ai-lab/aster/blob/main/crates/event/README.md)
+- [GA 证据与未决边界](https://github.com/aster-ai-lab/aster/blob/main/crates/event/docs/ga-readiness.md)
+- [0.4.0 迁移说明](https://github.com/aster-ai-lab/aster/blob/main/crates/event/CHANGELOG.md)

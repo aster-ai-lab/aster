@@ -36,6 +36,7 @@ export function DocumentIndexDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(
         messages,
         editing ? 'document.index.title.edit' : 'document.index.title.insert',

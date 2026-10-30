@@ -180,12 +180,13 @@ impl crate::agent::TurnEngine {
             }
         }
 
-        let gate = crate::harness_loop::decide_with_observations(
+        let gate = crate::harness_loop::decide_with_contracts(
             &state.mutations,
             &state.verification_reports,
             &self.config.completion_waivers,
             false,
             &state.open_observations,
+            &self.config.verification_contracts,
         );
         if let Some(context) = crate::harness_loop::model_verification_context(gate) {
             model_output.push_str("\n\n");

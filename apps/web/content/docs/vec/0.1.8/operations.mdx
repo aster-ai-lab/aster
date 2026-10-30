@@ -1,0 +1,84 @@
+export const meta = {
+  title: 'Vec 运行与验证',
+  description: 'WAL、派生索引、资源上限、维护、平台与性能证据。',
+  label: '运行与验证',
+  updated: '2026-10-29',
+};
+
+Vec 的持久化以文档快照和 WAL 为准。派生索引不是提交点，也不能决定文档是否已保存。
+
+## 持久化与恢复
+
+每次变更先写入带修订身份的 WAL，再按耐久性策略确认。manifest 是提交点，记录活动 WAL 的已提交边界。
+
+恢复时，Vec 读取 manifest 指定的快照，并重放该快照之后的 WAL。边界后的部分帧不属于已提交数据，边界内的损坏会返回错误。
+
+<DocTable caption="持久化对象的作用" headers={['对象', '作用', '失败处理']} rows={[
+  ['manifest', '记录快照与已提交 WAL 边界', '损坏时拒绝恢复'],
+  ['snapshot', '保存文档与 Schema 的不可变代际', '校验摘要与完整解码'],
+  ['WAL', '保存连续修订与操作身份', '只重放已提交边界'],
+  ['index-cache', '保存派生索引', '缺失或失效时重建'],
+  ['DiskANN sidecar', '保存随机访问图与向量', '校验失败时回退到内存路径'],
+]} />
+
+派生缓存失效不等于集合打开失败。Vec 从权威文档重建索引，查询仍保持精确语义。
+
+## 资源上限
+
+<DocTable caption="StorageCeilings 的默认限制" headers={['限制', '默认值', '作用']} rows={[
+  ['快照字节数', '8 GiB', '限制单个文档快照的写入或恢复'],
+  ['派生索引缓存', '8 GiB', '限制索引缓存载荷'],
+  ['WAL 重放字节数', '8 GiB', '限制恢复时读取的已提交 WAL'],
+  ['DiskANN sidecar', '512 MiB', '限制单个图文件'],
+]} />
+
+这些值由调用方通过 `CollectionOptions` 或 `ConfigBuilder` 设置。Vec 不根据主机内存或剩余磁盘自动推断上限。
+
+manifest 读取上限为 1 MiB，单个 WAL 帧上限为 64 MiB。它们属于协议保护，不是 `StorageCeilings` 的产品配额。
+
+## 维护与健康
+
+`start_maintenance` 启动显式拥有的维护器。维护器可以按间隔检查并触发检查点，也可以在测试中手动触发。
+
+健康信息区分权威修订、派生索引退化和 WAL 检查点滞后。`checkpoint_pending` 表示仍有待处理的检查点，不代表文档已经损坏。
+
+只读句柄不会更新派生文件。维护器关闭后，`maintenance_active` 应为 false。
+
+## I/O 与平台
+
+默认派生文件后端使用 positioned reads。可选 mmap 后端在完整校验后创建只读匿名副本，不直接映射可变外部文件。
+
+<DocTable caption="平台与特性边界" headers={['项目', '要求或边界']} rows={[
+  ['Rust', '默认功能要求 1.75；jieba 依赖链要求更新工具链'],
+  ['Linux', 'x86_64 与 aarch64'],
+  ['Windows', 'x86_64'],
+  ['macOS', 'arm64 与 x86_64，部署目标 15.0'],
+  ['macOS 12 Intel', '不支持'],
+  ['SIMD / io_uring', '都不是正确性所必需的依赖'],
+]} />
+
+## 性能证据
+
+公开基准只覆盖指定语料、维度、索引参数、主机和查询形状。Flat 的 recall 为 1.0 是精确扫描的结果，不代表 ANN 的召回目标。
+
+比较 ANN 时必须同时记录召回、构建时间、查询延迟和精确重排设置。不能通过降低 `ef`、删除精确重排或把公开分数改成 `f32` 来制造性能结论。
+
+基准结果不是容量 SLO，也不是所有引擎的统一排名。
+
+## 验收清单
+
+1. 运行 `cargo fmt --all -- --check`。
+2. 运行 `cargo test --locked`。
+3. 运行 `cargo test --locked --all-features`。
+4. 运行 `cargo clippy --locked --all-targets -- -D warnings`。
+5. 运行 `cargo +1.75.0 test --locked`，检查默认功能的 MSRV。
+6. 在 WAL 写入、检查点和恢复边界执行故障测试。
+7. 删除或破坏派生缓存，确认权威文档仍可恢复查询。
+8. 比较 ANN 与 Flat 的召回和延迟，记录完整实验参数。
+
+## 实现依据
+
+- [持久化与恢复合同](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/ARCHITECTURE.md)
+- [资源上限](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/src/storage_ceilings.rs)
+- [维护与健康示例](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/examples/maintenance_health.rs)
+- [基准方法与限制](https://github.com/aster-ai-lab/aster/blob/main/crates/vec/docs/scale-compare-protocol.md)

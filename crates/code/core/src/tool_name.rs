@@ -5,7 +5,11 @@
 /// `functions.read` (including nested `batch` calls).
 pub fn canonical_tool_name(name: &str) -> &str {
     const PREFIX: &str = "functions.";
-    if name.len() > PREFIX.len() && name[..PREFIX.len()].eq_ignore_ascii_case(PREFIX) {
+    if name.len() > PREFIX.len()
+        && name
+            .get(..PREFIX.len())
+            .is_some_and(|prefix| prefix.eq_ignore_ascii_case(PREFIX))
+    {
         &name[PREFIX.len()..]
     } else {
         name
@@ -27,5 +31,6 @@ mod tests {
             "mcp__server__tool"
         );
         assert_eq!(canonical_tool_name("functions."), "functions.");
+        assert_eq!(canonical_tool_name("函数工具名称"), "函数工具名称");
     }
 }

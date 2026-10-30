@@ -1,0 +1,38 @@
+{
+  "title": "长期目标怎样分轮推进",
+  "description": "一次 tick 最多接纳一个 Run。下一轮必须再次核对当前条件。",
+  "steps": [
+    {
+      "title": "先固定目标与计划",
+      "body": "定义和计划命令记录身份及预期版本。保存定义不会启动模型。",
+      "focus": [
+        "define",
+        "plan"
+      ]
+    },
+    {
+      "title": "每轮重新准入",
+      "body": "tick 检查等待、旧运行、预算和期限。Advance 才进入原始 Run。",
+      "focus": [
+        "tick",
+        "run"
+      ],
+      "source": {
+        "path": "crates/code/core/src/goal_control/continuation.rs",
+        "match": "pub(crate) fn preview_tick("
+      }
+    },
+    {
+      "title": "接受步骤后再判断全局完成",
+      "body": "所有步骤被接受、等待解除、切片结清后，目标才完成。",
+      "focus": [
+        "accept",
+        "close"
+      ],
+      "source": {
+        "path": "crates/code/core/src/goal_control/facts/complete.rs",
+        "match": "fn closure("
+      }
+    }
+  ]
+}

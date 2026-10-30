@@ -36,6 +36,7 @@ impl WorkspaceRetrievalRuntime {
         hybrid_search(
             Arc::clone(&self.catalog),
             Some(self),
+            None,
             ValidatedHybridRequest::new(request)?,
             file_system,
             code_intelligence,
@@ -43,18 +44,26 @@ impl WorkspaceRetrievalRuntime {
             cancellation,
         )
         .await
+        .map(|(result, _)| result)
     }
 }
 
 pub(crate) async fn hybrid_search(
     catalog: Arc<WorkspaceChunkCatalog>,
     runtime: Option<&WorkspaceRetrievalRuntime>,
+    persistent: Option<Arc<super::WorkspacePersistentIndex>>,
     request: ValidatedHybridRequest,
     file_system: Arc<dyn WorkspaceFileSystem>,
     code_intelligence: Option<Arc<dyn WorkspaceCodeIntelligence>>,
     operation_timeout: Option<Duration>,
     cancellation: CancellationToken,
-) -> Result<WorkspaceHybridSearchResult, WorkspaceRetrievalError> {
+) -> Result<
+    (
+        WorkspaceHybridSearchResult,
+        Option<super::WorkspaceLexicalEngine>,
+    ),
+    WorkspaceRetrievalError,
+> {
     let lifetime = runtime
         .map(WorkspaceRetrievalRuntime::child_lifetime)
         .unwrap_or_else(|| cancellation.child_token());
@@ -85,7 +94,25 @@ pub(crate) async fn hybrid_search(
     let snapshot = catalog.snapshot()?;
 
     let lexical_request = request.lexical_request();
-    let lexical = match snapshot.lexical_search(&lexical_request) {
+    let native = if let Some(index) = persistent {
+        let request = lexical_request.clone();
+        let snapshot = snapshot.clone();
+        let queried =
+            tokio::task::spawn_blocking(move || index.search_current_snapshot(&request, &snapshot));
+        tokio::select! {
+            _ = cancellation.cancelled() => return Err(WorkspaceRetrievalError::Cancelled),
+            _ = lifetime.cancelled() => return Err(WorkspaceRetrievalError::Cancelled),
+            result = tokio::time::timeout(operation_timeout.unwrap_or(Duration::from_secs(1)).min(Duration::from_secs(1)), queried) =>
+                match result {
+                    Ok(Ok(Ok(result))) => result,
+                    _ => None,
+                },
+        }
+    } else {
+        None
+    };
+    let lexical_engine = native.as_ref().map(|result| result.lexical_engine);
+    let lexical = match native.map_or_else(|| snapshot.lexical_search(&lexical_request), Ok) {
         Ok(result) => Some(result),
         Err(super::WorkspaceIndexError::InvalidQuery(_)) => None,
         Err(error) => return Err(error.into()),
@@ -135,19 +162,22 @@ pub(crate) async fn hybrid_search(
     let structural = structural?;
 
     if !catalog_revision_matches(&catalog.snapshot()?, &snapshot) {
-        return Ok(revision_changed_result(
-            semantic.status,
-            &snapshot,
-            channel_statuses(
-                exact_count,
-                exact_truncated,
-                lexical.as_ref(),
-                &structural,
-                0,
-                false,
-                Some(WorkspaceHybridFallbackReason::RevisionChanged),
+        return Ok((
+            revision_changed_result(
+                semantic.status,
+                &snapshot,
+                channel_statuses(
+                    exact_count,
+                    exact_truncated,
+                    lexical.as_ref(),
+                    &structural,
+                    0,
+                    false,
+                    Some(WorkspaceHybridFallbackReason::RevisionChanged),
+                ),
+                rerank_status_not_run(rerank_options.mode),
             ),
-            rerank_status_not_run(rerank_options.mode),
+            lexical_engine,
         ));
     }
 
@@ -235,21 +265,24 @@ pub(crate) async fn hybrid_search(
     .await?;
 
     if !catalog_revision_matches(&catalog.snapshot()?, &snapshot) {
-        return Ok(revision_changed_result(
-            runtime
-                .map(WorkspaceRetrievalRuntime::status)
-                .unwrap_or_else(WorkspaceRetrievalStatus::disabled),
-            &snapshot,
-            channel_statuses(
-                exact_count,
-                exact_truncated,
-                lexical.as_ref(),
-                &structural,
-                semantic_count,
-                semantic_truncated,
-                semantic_fallback,
+        return Ok((
+            revision_changed_result(
+                runtime
+                    .map(WorkspaceRetrievalRuntime::status)
+                    .unwrap_or_else(WorkspaceRetrievalStatus::disabled),
+                &snapshot,
+                channel_statuses(
+                    exact_count,
+                    exact_truncated,
+                    lexical.as_ref(),
+                    &structural,
+                    semantic_count,
+                    semantic_truncated,
+                    semantic_fallback,
+                ),
+                rerank_status,
             ),
-            rerank_status,
+            lexical_engine,
         ));
     }
 
@@ -280,16 +313,21 @@ pub(crate) async fn hybrid_search(
     } else {
         semantic_fallback.or_else(|| structural.global_fallback())
     };
-    Ok(WorkspaceHybridSearchResult {
-        hits,
-        semantic_status: semantic.status,
-        catalog_revision: snapshot.revision(),
-        source_revision: snapshot.source_revision(),
-        channels,
-        truncated: channel_truncated || verification_truncated || rerank_status.candidate_truncated,
-        rerank: rerank_status,
-        fallback,
-    })
+    Ok((
+        WorkspaceHybridSearchResult {
+            hits,
+            semantic_status: semantic.status,
+            catalog_revision: snapshot.revision(),
+            source_revision: snapshot.source_revision(),
+            channels,
+            truncated: channel_truncated
+                || verification_truncated
+                || rerank_status.candidate_truncated,
+            rerank: rerank_status,
+            fallback,
+        },
+        lexical_engine,
+    ))
 }
 
 fn channel_statuses(

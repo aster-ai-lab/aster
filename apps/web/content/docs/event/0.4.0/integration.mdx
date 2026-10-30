@@ -1,0 +1,87 @@
+export const meta = {
+  title: 'Event 发布订阅接入',
+  description: 'EventBus、Subject、订阅、手动 Ack 和自定义 Provider。',
+  label: '发布订阅接入',
+  updated: '2026-10-29',
+};
+
+EventBus 提供发布、历史、订阅管理和指标接口。Provider 负责实际 Broker 或进程内传输。
+
+## 发布与查询
+
+```rust
+use a3s_event::{EventBus, Event};
+use a3s_event::provider::memory::MemoryProvider;
+
+#[tokio::main]
+async fn main() -> a3s_event::Result<()> {
+    let bus = EventBus::new(MemoryProvider::default());
+    let event = bus.publish(
+        "market",
+        "forex.usd_cny",
+        "USD/CNY broke through 7.35",
+        "reuters",
+        serde_json::json!({"rate": 7.3521}),
+    ).await?;
+
+    let events = bus.list_events(Some("market"), 50).await?;
+    println!("{} market events", events.len());
+    Ok(())
+}
+```
+
+`publish` 创建事件 Envelope，`publish_event` 发布已有事件。查询结果数量不代表所有 Provider 使用相同历史顺序。
+
+## 选择 Feature
+
+默认依赖：
+
+```toml
+a3s-event = "0.4"
+```
+
+最小核心：
+
+```toml
+a3s-event = { version = "0.4", default-features = false }
+```
+
+只选择 NATS 与加密：
+
+```toml
+a3s-event = { version = "0.4", default-features = false, features = ["nats", "encryption"] }
+```
+
+NATS 需要可用的 JetStream。Iggy 使用 Stream、Topic、Partition 模型，Subject Category 映射为 Topic，订阅过滤在客户端继续执行。
+
+## 订阅与 Ack
+
+`subscribe` 返回异步事件流。`subscribe_durable` 使用名称保存持久消费身份，实际恢复语义取决于 Provider。
+
+<DocTable caption="订阅处理模式" headers={['模式', '处理方式', '适用边界']} rows={[
+  ['自动 Ack', '使用 sub.next() 逐个处理 ReceivedEvent', 'Provider 按自身合同确认投递'],
+  ['手动 Ack', '使用 next_manual_ack() 后调用 ack 或 nak', '业务处理失败时可以请求重投递'],
+  ['Durable Subscription', '使用稳定 Consumer 名称和过滤条件', 'Offset、Group 和恢复由 Provider 管理'],
+]} />
+
+`update_subscription` 管理订阅过滤，`create_subscriber` 创建实际事件流。`remove_subscription` 删除过滤配置。
+
+## 可选事件能力
+
+`encryption` 提供 AES-256-GCM Payload 加密和密钥轮换。它属于应用层加密，不替代 Broker TLS。
+
+`cloudevents` 提供 CloudEvents v1.0 的无损转换。`routing` 提供 Broker、Trigger、EventSink 和 Sink DLQ。
+
+`SchemaRegistry` 负责事件类型与兼容性检查。`StateStore` 保存订阅过滤状态，不等同于 Broker Offset。
+
+## 自定义 Provider
+
+新后端实现 `EventProvider` 和 `Subscription`。核心方法包括 `publish`、`subscribe`、`subscribe_durable`、`history`、`unsubscribe` 和 `info`。
+
+不要把 Provider 已有的重试、Backpressure、分区和 TLS 复制到 EventBus。通过 Provider Config Passthrough 暴露原生控制。
+
+## 实现依据
+
+- [EventBus 快速开始](https://github.com/aster-ai-lab/aster/blob/main/crates/event/README.md)
+- [Provider 与 Feature](https://github.com/aster-ai-lab/aster/blob/main/crates/event/README.md)
+- [自定义 Provider 与职责边界](https://github.com/aster-ai-lab/aster/blob/main/crates/event/README.md)

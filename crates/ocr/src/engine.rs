@@ -13,7 +13,8 @@ use crate::config::{load_detection, load_recognition, DetectionConfig, Recogniti
 use crate::postprocess::{decode_ctc, detection_boxes, Detection};
 use crate::preprocess::{detection_input, recognition_input};
 
-const RECOGNITION_BATCH_SIZE: usize = 8;
+// Long text lines otherwise pad an entire CPU batch to the widest crop.
+const RECOGNITION_BATCH_SIZE: usize = 1;
 const MAX_CROP_PIXELS: u64 = 64 * 1024 * 1024;
 
 #[derive(Debug, Clone)]
@@ -45,8 +46,12 @@ impl PpOcrV6Engine {
         })
     }
 
-    pub(crate) fn extract(&mut self, image: &RgbImage) -> UseResult<Vec<EngineBlock>> {
-        let input = detection_input(image, &self.detection_config)?;
+    pub(crate) fn extract(
+        &mut self,
+        image: &RgbImage,
+        max_detection_side: u32,
+    ) -> UseResult<Vec<EngineBlock>> {
+        let input = detection_input(image, &self.detection_config, max_detection_side)?;
         let (shape, output) =
             run_session(&mut self.detection, &input.data, input.shape, "detection")?;
         let detections = detection_boxes(
@@ -60,16 +65,13 @@ impl PpOcrV6Engine {
             return Ok(Vec::new());
         }
 
-        let crops = detections
-            .iter()
-            .map(|detection| perspective_crop(image, detection))
-            .collect::<UseResult<Vec<_>>>()?;
         let mut blocks = Vec::with_capacity(detections.len());
-        for (detection_batch, crop_batch) in detections
-            .chunks(RECOGNITION_BATCH_SIZE)
-            .zip(crops.chunks(RECOGNITION_BATCH_SIZE))
-        {
-            let input = recognition_input(crop_batch, &self.recognition_config)?;
+        for detection_batch in detections.chunks(RECOGNITION_BATCH_SIZE) {
+            let crops = detection_batch
+                .iter()
+                .map(|detection| perspective_crop(image, detection))
+                .collect::<UseResult<Vec<_>>>()?;
+            let input = recognition_input(&crops, &self.recognition_config)?;
             let (shape, output) = run_session(
                 &mut self.recognition,
                 &input.data,
@@ -121,6 +123,8 @@ fn load_session(path: &Path, role: &str) -> UseResult<Session> {
         .map_err(|error| runtime_error(role, "create an ONNX Runtime session", error))?
         .with_optimization_level(GraphOptimizationLevel::Level3)
         .map_err(|error| runtime_error(role, "configure graph optimization", error))?
+        .with_intra_threads(2)
+        .map_err(|error| runtime_error(role, "bound background inference threads", error))?
         .commit_from_file(path)
         .map_err(|error| runtime_error(role, "load the ONNX model", error))?;
     if session.inputs.len() != 1 || session.outputs.len() != 1 {

@@ -1,0 +1,7 @@
+---
+import { renderDownloadDocument } from '../../../scripts/build_releases.mjs';
+
+const html = await renderDownloadDocument('download.html', { root: process.cwd() });
+---
+
+<Fragment set:html={html} />

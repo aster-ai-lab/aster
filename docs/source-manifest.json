@@ -1,5 +1,15 @@
 {
   "snapshot_date": "2026-10-18",
+  "office_embedpdf_patch_20261030": {
+    "upstream": "https://github.com/embedpdf/embed-pdf-viewer",
+    "tag": "v2.14.3",
+    "commit": "c91236dab54ec1998fa2b13cf5cc43f60567ac4b",
+    "license": "MIT",
+    "source_archive_sha256": "12165808c142ad725a091354c14fb42ff6e8e5d9cb69c42077cb151d0236d981",
+    "source_patch": "packages/office/patches/embedpdf-free-text-focus.source.patch",
+    "runtime_patch": "packages/office/patches/@embedpdf__snippet@2.14.3.patch",
+    "note": "FreeText and CalloutFreeText focus, native caret ownership and no-op history repair. Runtime patch is regenerated from original source; published types and license are unchanged. No credentials or user state imported."
+  },
   "note": "Local source snapshots include working-tree changes. All members are maintained in this repository and cannot be published independently.",
   "packages": [
     {
@@ -3161,5 +3171,68 @@
       "current_short_load_file": "xolotl-server-v8-1m-windows-single-loadtest.json",
       "ttft_optimization_required": true
     }
+  },
+  "opensidian_graph_port_20261025": {
+    "repository": "https://github.com/jpzk/opensidian",
+    "commit": "b2abcd7f53d56c0a9c69c8212801be8b4b1edb09",
+    "license": "GPL-3.0-or-later",
+    "source_path": "ui/graph-gl.js",
+    "path": "apps/studio/src/renderer/pages/knowledge/vendor/opensidian/graph-gl.js",
+    "upstream_sha256": "27da1eef704e039221be43c6adda78bb64aa9eac8bea599cd8327b2a8157d95c",
+    "adapted_sha256": "3318017351230ce500377d9e3831bf566881efc5f1a395e65a1bd61ffd87fa70",
+    "notice": "apps/studio/src/renderer/pages/knowledge/vendor/opensidian/README.md",
+    "modifications": [
+      "Replace the window global/IIFE with an ES module export."
+    ]
+  },
+  "magnitude_native_engine_20261029": {
+    "repository": "https://github.com/magnitudedev/magnitude",
+    "commit": "37ec31873b14106ed27d30ebd1a6bc20b5233dbd",
+    "upstream_tag": "@magnitudedev/cli@0.2.13",
+    "license": "Apache-2.0",
+    "license_note": "The repository root is Apache-2.0. The vendored inference workspace metadata is aligned to Apache-2.0 while preserving the upstream license file.",
+    "path": "crates/power/third-party/magnitude/inference",
+    "source_paths": [
+      "inference/engine",
+      "inference/seismic",
+      "inference/seismic-std",
+      "inference/solver"
+    ],
+    "modifications": [
+      "Power adds an optional Backend adapter and Prepare worker entry.",
+      "Align image 0.25.8 to 0.25.10 and tokio 1.53.0 to 1.53.3 with the root workspace.",
+      "Normalize vendored Rust formatting with the root rustfmt; no intentional upstream semantic edits.",
+      "Align the inference workspace license metadata with the upstream root Apache-2.0 license.",
+      "Expand workspace-inherited package metadata and dependencies so the vendored crates also resolve as nested path dependencies.",
+      "Mark every vendored package publish=false to preserve the host workspace contract."
+    ]
+  },
+  "scrawl_evidence_20261030": {
+    "repository": "https://github.com/kitlangton/scrawl",
+    "commit": "7b184c67767a1aee6c1d44640d94d8446cd5fed1",
+    "upstream_version": "0.3.13",
+    "license": "MIT",
+    "path": "crates/capture",
+    "source_paths": [
+      "src",
+      "helper",
+      "Sources/CaptureKit",
+      "Tests/CaptureKitTests",
+      "skills",
+      "docs",
+      "assets",
+      "scripts",
+      "video",
+      "perf",
+      "site"
+    ],
+    "archive_sha256": "99f3f9e962eebeef1711047a590c512e18d3dbfc25f3fe00dfab213c8f73daa2",
+    "notice": "crates/capture/LICENSE",
+    "modifications": [
+      "Join the existing root Cargo workspace with publish = false and one root lockfile.",
+      "Add swift-testing at 48d727cc1cf4eda667c858c501495f1018f69d21 to run CaptureKit tests under Command Line Tools.",
+      "Align a3s-code-voice with cpal 0.18.2 and its device-description, sample-rate and stream-config APIs.",
+      "Rename first-party Scrawl and ScrawlKit identifiers to Capture and CaptureKit, accept only .capture bundles and capture.json manifests, and preserve upstream provenance."
+    ]
   }
 }

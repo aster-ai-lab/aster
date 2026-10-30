@@ -29,6 +29,7 @@ export const officeChromeUiMessagesEnUS = {
   'office.dialog.gotIt': 'Got it',
   'office.dialog.continue': 'Continue',
   'office.dialog.cancel': 'Cancel',
+  'office.dialog.close': 'Close',
   'office.table.panel': 'Choose table size',
   'office.table.rows': 'Rows',
   'office.table.columns': 'Columns',
@@ -65,5 +66,7 @@ export const officeChromeUiMessagesEnUS = {
   'office.collab.location.page': 'Page {page}',
   'office.number.increase': 'Increase {label}',
   'office.number.decrease': 'Decrease {label}',
-  'office.select.placeholder': 'Select'
+  'office.select.placeholder': 'Select',
+  'office.select.search': 'Search options',
+  'office.select.empty': 'No matching options'
 } as const;

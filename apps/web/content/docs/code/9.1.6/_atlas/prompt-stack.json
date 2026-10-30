@@ -1,0 +1,41 @@
+{
+  "title": "一份系统提示词由哪些层组成",
+  "description": "分层表示解释顺序。完整拼接次序见下方源码漫游。",
+  "steps": [
+    {
+      "title": "模型先知道职责",
+      "body": "基础提示要求检查、执行和验证。宿主角色槽替换默认身份行。",
+      "focus": [
+        "base"
+      ],
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "fn build_with_style(&self, style: AgentStyle) -> String {"
+      }
+    },
+    {
+      "title": "运行约束始终保留",
+      "body": "运行契约、工具契约和共同边界进入每种角色。",
+      "focus": [
+        "runtime",
+        "boundaries"
+      ],
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "fn build_with_style(&self, style: AgentStyle) -> String {"
+      }
+    },
+    {
+      "title": "宿主补充工作要求",
+      "body": "工作策略进入 guidelines。验证清单描述已准入的检查。",
+      "focus": [
+        "host",
+        "turn"
+      ],
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "pub struct SystemPromptSlots {"
+      }
+    }
+  ]
+}

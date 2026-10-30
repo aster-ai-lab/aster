@@ -73,7 +73,7 @@ pub(super) fn handle_form_request(
     });
     handle_mcp_elicit(
         a3s_acp_lib::AcpArgs {
-            request: acp::ExtRequest::new("x.ai/mcp/elicit", raw.into()),
+            request: acp::ExtRequest::new("a3s/mcp/elicit", raw.into()),
             response_tx,
         },
         app,

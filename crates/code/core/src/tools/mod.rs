@@ -562,6 +562,7 @@ impl ToolExecutor {
             ArtifactStoreLimits::default(),
             workspace_services,
             None,
+            None,
         )
     }
 
@@ -571,7 +572,14 @@ impl ToolExecutor {
     ) -> Self {
         let workspace_services =
             crate::workspace::WorkspaceServices::local(PathBuf::from(&workspace));
-        Self::build(workspace, None, artifact_limits, workspace_services, None)
+        Self::build(
+            workspace,
+            None,
+            artifact_limits,
+            workspace_services,
+            None,
+            None,
+        )
     }
 
     pub fn new_with_workspace_services(
@@ -584,6 +592,7 @@ impl ToolExecutor {
             ArtifactStoreLimits::default(),
             workspace_services,
             None,
+            None,
         )
     }
 
@@ -592,7 +601,14 @@ impl ToolExecutor {
         workspace_services: Arc<crate::workspace::WorkspaceServices>,
         artifact_limits: ArtifactStoreLimits,
     ) -> Self {
-        Self::build(workspace, None, artifact_limits, workspace_services, None)
+        Self::build(
+            workspace,
+            None,
+            artifact_limits,
+            workspace_services,
+            None,
+            None,
+        )
     }
 
     /// Create a local low-level executor that retains every raw Tool result
@@ -609,6 +625,7 @@ impl ToolExecutor {
             ArtifactStoreLimits::default(),
             workspace_services,
             Some(adapter),
+            None,
         )
     }
 
@@ -624,6 +641,24 @@ impl ToolExecutor {
             artifact_limits,
             workspace_services,
             adapter,
+            None,
+        )
+    }
+
+    pub(crate) fn new_with_background_tracker(
+        workspace: String,
+        workspace_services: Arc<crate::workspace::WorkspaceServices>,
+        artifact_limits: ArtifactStoreLimits,
+        adapter: Option<ImmutableContentAdapterSession>,
+        tracker: Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>,
+    ) -> Self {
+        Self::build(
+            workspace,
+            None,
+            artifact_limits,
+            workspace_services,
+            adapter,
+            Some(tracker),
         )
     }
 
@@ -633,6 +668,7 @@ impl ToolExecutor {
         artifact_limits: ArtifactStoreLimits,
         workspace_services: Arc<crate::workspace::WorkspaceServices>,
         immutable_content_adapter: Option<ImmutableContentAdapterSession>,
+        background_tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
     ) -> Self {
         let workspace_path = PathBuf::from(&workspace);
         let command_env = command_env.map(Arc::new);
@@ -651,7 +687,7 @@ impl ToolExecutor {
         // Register native Rust built-in tools — only those whose required
         // workspace capability is available, so the model never sees a tool
         // the backend cannot service.
-        builtin::register_builtins(&registry, &workspace_services);
+        builtin::register_builtins_with_tracker(&registry, &workspace_services, background_tracker);
         // Batch tool requires Arc<ToolRegistry>, registered separately
         builtin::register_batch(&registry);
         builtin::register_program(&registry);

@@ -15,6 +15,7 @@ use crate::stats::{IndexUsage, QueryKind, QueryObservation};
 use serde_json::Value;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::sync::Arc;
 
 #[derive(Debug, Default)]
 struct MultiQueryTelemetry {
@@ -27,6 +28,53 @@ struct MultiQueryTelemetry {
 }
 
 impl Collection {
+    /// Read a bounded scalar-filtered snapshot without requiring a vector or FTS query.
+    /// Inverted indexes select candidates before projection; results use primary-key order.
+    pub fn query_by_filter(
+        &self,
+        filter: &str,
+        limit: usize,
+        output_fields: Option<&[&str]>,
+    ) -> Result<Vec<Doc>> {
+        self.ensure_open()?;
+        if filter.trim().is_empty() || limit == 0 || limit > 100_000 {
+            return Err(Error::invalid_argument(
+                "filtered query requires a filter and limit 1..=100000",
+            ));
+        }
+        let snapshot = self.snapshot_state()?;
+        let parsed = parse_optional_filter(Some(filter))?
+            .ok_or_else(|| Error::invalid_argument("filtered query requires a filter"))?;
+        let indexed = snapshot
+            .indexes
+            .scalar_candidates(snapshot.revision, &parsed);
+        let candidates: Box<dyn Iterator<Item = &Arc<Doc>> + '_> = match indexed.as_ref() {
+            Some(indexed) => Box::new(indexed.ids().filter_map(|id| snapshot.docs.get(id))),
+            None => Box::new(snapshot.docs.values()),
+        };
+        enforce_query_candidates(
+            &snapshot,
+            indexed
+                .as_ref()
+                .map_or(snapshot.docs.len() as u64, |value| {
+                    value.ids().count() as u64
+                }),
+        )?;
+        let fields = output_fields.map(|fields| {
+            fields
+                .iter()
+                .map(|field| (*field).to_owned())
+                .collect::<Vec<_>>()
+        });
+        let mut matching: Vec<_> = candidates.filter(|doc| parsed.matches(doc)).collect();
+        matching.sort_unstable_by(|left, right| left.get_pk().cmp(&right.get_pk()));
+        Ok(matching
+            .into_iter()
+            .take(limit)
+            .map(|doc| doc.project(fields.as_deref(), false))
+            .collect())
+    }
+
     pub fn query(&self, query: &SearchQuery) -> Result<Vec<Doc>> {
         self.ensure_open()?;
         let snapshot = self.snapshot_state()?;
@@ -220,6 +268,10 @@ impl Collection {
         Ok(DocIterator::new(docs, state.revision))
     }
 }
+
+#[cfg(test)]
+#[path = "query_filter_tests.rs"]
+mod query_filter_tests;
 
 fn execute_multi_query_branches(
     snapshot: &CollectionSnapshot,

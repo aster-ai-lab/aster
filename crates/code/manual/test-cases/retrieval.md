@@ -96,12 +96,12 @@ It does not search the network, and it does not keep vectors after close.
 
 ### I-WR-03
 
-- **Invariant:** Node, Python, and Go retrieval fixtures agree on hit paths for the same corpus and the same adapter.
+- **Invariant:** Rust/ACP retrieval fixtures agree on hit paths for the same corpus and the same adapter.
 - **Pre:** shared fixture corpus.
-- **Stimulus:** each SDK's workspace retrieval test.
+- **Stimulus:** the Rust and ACP workspace retrieval tests.
 - **Oracle:** same path set; no SDK enables headless by default.
-- **Fail:** one language returns an extra path.
-- **Home:** `sdk/node/test_workspace_retrieval.mjs`, `sdk/python/tests/test_workspace_retrieval.py`, `sdk/go/workspace_retrieval_test.go`.
+- **Fail:** one host projection returns an extra path.
+- **Home:** `core/src/workspace/retrieval/tests.rs` and ACP `retrieval_seam_tests.rs`.
 
 ### I-WR-L1
 

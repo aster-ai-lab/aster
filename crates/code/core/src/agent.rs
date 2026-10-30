@@ -136,9 +136,8 @@ pub fn hostable_context_window(window: usize) -> Result<usize, String> {
 
 /// Vendor-documented context window for a model whose ACL block omits one.
 ///
-/// DeepSeek's model page lists 1M tokens for Flash and Pro. The legacy Flash
-/// ids are served by that same Flash model. Any other id stays `None`, and
-/// auto-compact keeps the conservative unknown-model window.
+/// Exact documented model identities only; unknown models keep `None`.
+/// Moonshot: https://platform.kimi.com/docs/guide/kimi-k3-1-pro-quickstart
 pub fn documented_context_tokens(model_name: &str) -> Option<usize> {
     let id = model_name
         .rsplit(['/', ':'])
@@ -152,6 +151,9 @@ pub fn documented_context_tokens(model_name: &str) -> Option<usize> {
         | "deepseek-v4-flash-vision-exp"
         | "deepseek-v4.1-flash"
         | "deepseek-v4-pro" => Some(1_000_000),
+        "kimi-k3.1-pro" | "k3.1-pro" | "kimi-k3.1-pro-highspeed" | "k3.1-pro-highspeed" => {
+            Some(1_048_576)
+        }
         _ => None,
     }
 }
@@ -326,6 +328,9 @@ pub(crate) struct AgentConfig {
     ///
     /// Prevents infinite loops when the LLM repeatedly stops without completing.
     pub max_continuation_turns: u32,
+    /// Offer optional next questions after a successful turn. Generation runs
+    /// outside the settled run and never changes its outcome.
+    pub follow_up_suggestions: bool,
     /// Maximum execution time in milliseconds (`None` = no timeout).
     ///
     /// When set, the execution loop, active LLM attempts, and retry backoff
@@ -465,6 +470,7 @@ impl Default for AgentConfig {
             memory: None,
             continuation_enabled: true,
             max_continuation_turns: 3,
+            follow_up_suggestions: true,
             max_execution_time_ms: None,
             budget_guard: None,
             host_env: Arc::new(crate::host_env::HostEnv::system()),
@@ -730,11 +736,11 @@ pub enum AgentEvent {
         tokens_after: u64,
     },
 
-    /// One run is using the exact cognitive-package generation retained by
+    /// One run is using the exact package generation retained by
     /// the surrounding session snapshot.
-    #[serde(rename = "cognitive_context_bound")]
-    CognitiveContextBound {
-        binding: crate::cognitive_context::CognitivePackageBindingV1,
+    #[serde(rename = "package_context_bound")]
+    PackageContextBound {
+        binding: crate::package_context::PackageBindingV1,
     },
 
     // ========================================================================

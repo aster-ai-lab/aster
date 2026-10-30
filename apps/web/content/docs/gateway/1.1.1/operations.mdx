@@ -1,0 +1,77 @@
+export const meta = {
+  title: '部署与安全',
+  description: '静态对象、用量投递、Node API、可选能力、威胁边界和验收。',
+  label: '部署与安全',
+  updated: '2026-10-29',
+};
+
+Gateway 的安全边界覆盖监听器、上游、快照、Node API、凭据和本地状态。Cloud、Power 和 Box 各有独立边界，不能用 Gateway 的校验结果替代。
+
+## 威胁边界
+
+<DocTable caption="主要威胁与控制" headers={['威胁', '当前控制', '操作员责任']} rows={[
+  ['无效配置激活', '校验失败即拒绝，保留先前运行时', '保留并审查失败原因'],
+  ['上游认证故障', 'forward-auth 不可用时返回 502，不联系上游', '不要把删除认证当中故障恢复'],
+  ['Redis 限流故障', '默认返回 503', '仅在明确接受风险时启用 redis_fail_open'],
+  ['快照或日志篡改', '检查摘要、CAS、过期与日志完整性', '限制主机文件系统权限'],
+  ['Node API 暴露', '支持绑定地址、Bearer 与 mTLS 控制', '不要在不可信网络上无认证暴露'],
+  ['上游 SSRF', '校验服务 URL 与健康探针协议', '不要接受模型生成的上游地址'],
+]} />
+
+威胁模型仍处于 Production Candidate 阶段，独立安全审查与整改证据不能省略。
+
+## 静态对象目标
+
+standalone 的 `static_bundles` 支持密封 manifest、GET/HEAD、SPA、ETag、Range 和有界缓存。对象必须先通过大小和 SHA-256 校验，才能进入缓存或响应。
+
+使用静态目标时必须配置 `local_digest_store`。缺少该目录时，校验失败。Cloud-managed 在共享对象权威接入前拒绝静态 bundle。
+
+ACL 和快照不能携带 S3 端点或对象凭据。Gateway 只负责读取与响应，不负责对象写入、删除或发布。
+
+## 用量投递
+
+`managed.usage_spool` 保存无提示正文的有界用量记录。记录支持完整性检查、重启恢复、有序重放、连续确认和压缩。
+
+推荐使用 Cloud node-control mTLS 上传。需要配置 `cloud_ingest_endpoint`、客户端身份文件和服务器 CA 文件。Bearer token 仅用于 fixtures，不能与 mTLS 字段混用。
+
+Cloud 负责长期账本与汇总。Gateway 的本地 spool 和上传恢复不能替代 Cloud 的生产验收。
+
+## 可选 Cargo features
+
+<DocTable caption="可选能力" headers={['Feature', '作用', '边界']} rows={[
+  ['redis', 'Redis 支持的分布式限流', '故障默认关闭；显式 fail-open 属于风险选择'],
+  ['kube', 'Kubernetes Ingress 与 Scale 执行器', '只读配置不等于工作负载已可路由'],
+  ['wire', 'LLM/MCP 正文检查与敏感信息掩码', '不是 OWASP 或 ModSecurity WAF，不属于默认数据平面'],
+]} />
+
+原生多模态内容会按上游支持原样透传。面向文本模型的 VLM/OCR/ASR 适配仍是设计工作，不能据此宣称模型本身支持多模态。
+
+## Node API 与运维信号
+
+<DocTable caption="恢复时使用的信号" headers={['信号', '用途']} rows={[
+  ['GET /health', '检查进程存活与 Gateway 身份'],
+  ['GET /api/gateway/version', '核对构建版本与版本偏差'],
+  ['Prometheus metrics', '观察错误率、上游健康和 spool 压力'],
+  ['托管快照状态', '核对当前修订、摘要与激活结果'],
+]} />
+
+Node API 的监听和认证由 `management` 配置决定。绑定到不可信网络前必须配置 Bearer 或 mTLS。
+
+## 验收清单
+
+1. 运行 `cargo fmt --all -- --check`。
+2. 运行 `cargo clippy --locked --all-targets -- -D warnings`。
+3. 运行 `cargo test --locked`。
+4. 验证无效 ACL 不会替换当前运行时。
+5. 验证认证、Redis 和上游故障分别返回对应错误。
+6. 验证响应中间件失败时不会返回未检查的上游正文。
+7. 验证 Node API 拒绝未授权访问。
+8. 验证 Gateway 拒绝摘要错误、缺失文件和越界路径。
+9. 验证用量上传失败后可以从原游标恢复。
+
+## 实现依据
+
+- [威胁模型](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/threat-model.md)
+- [静态对象目标](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/static-object-target.md)
+- [用量投递](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/usage-cloud-ingest.md)
+- [运维证据与 Node API](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/ops/README.md)

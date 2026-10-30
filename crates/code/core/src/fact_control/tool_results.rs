@@ -21,6 +21,9 @@ pub(super) struct FactToolResultEnvelope {
     pub(super) observation_incomplete: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) metadata: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    /// Captured by the host before it appends presentation guidance.
+    pub(super) observation_digest: Option<String>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -70,6 +73,7 @@ pub(super) fn fact_tool_runner_value(
         workspace_child: None,
         observation_incomplete: false,
         metadata: None,
+        observation_digest: None,
     };
     match serde_json::to_string(&envelope) {
         Ok(encoded) => serde_json::Value::String(encoded),
@@ -105,10 +109,24 @@ pub(super) fn message_from_folded_tool(id: &str, body: &str, folded_error: bool)
             Some(crate::llm::Attachment::new(bytes, image.media_type.clone()))
         })
         .collect::<Vec<_>>();
+    message_from_tool_observation(id, &envelope.text, is_error, &images, envelope.exit_code)
+}
+
+pub(super) fn message_from_tool_observation(
+    id: &str,
+    body: &str,
+    is_error: bool,
+    images: &[crate::llm::Attachment],
+    exit_code: Option<i32>,
+) -> Message {
+    let text = match exit_code {
+        Some(code) => format!("Tool exit code: {code}\n{body}"),
+        None => body.to_owned(),
+    };
     if images.is_empty() {
-        Message::tool_result(id, &envelope.text, is_error)
+        Message::tool_result(id, &text, is_error)
     } else {
-        Message::tool_result_with_images(id, &envelope.text, &images, is_error)
+        Message::tool_result_with_images(id, &text, images, is_error)
     }
 }
 
@@ -357,7 +375,14 @@ pub(super) async fn confirmation_parked(
         return false;
     }
     match surface.and_then(|surface| surface.confirmation.as_ref()) {
-        Some(manager) => manager.requires_confirmation_for(name, args).await,
+        Some(manager) => match surface {
+            Some(surface) => tokio::select! {
+                biased;
+                _ = surface.cancel.cancelled() => false,
+                required = manager.requires_confirmation_for(name, args) => required,
+            },
+            None => true,
+        },
         // A bare fact run still parks on Ask. A session with no confirmation
         // manager has HITL disabled and runs the tool.
         None => surface.is_none(),
@@ -421,13 +446,28 @@ pub(super) async fn decision_from_response(
         .map(|text| crate::llm::strip_leaked_tool_protocol(text))
         .filter(|text| !text.trim().is_empty());
     let mut tools = Vec::new();
+    let mut approval_ids = std::collections::HashMap::new();
     for (id, name, args) in calls {
         if name == "ask_user" {
             continue;
         }
         let needs_confirmation = confirmation_parked(policy, surface, &name, &args).await;
+        // A provider can reuse IDs; host consent must name one original invocation.
+        let id = if surface.is_some_and(|surface| {
+            surface.confirmation.is_some()
+                && (surface.run_id.is_some() || surface.agent.is_child_run())
+        }) {
+            approval_ids
+                .entry(id)
+                .or_insert_with(|| format!("call_{}", uuid::Uuid::new_v4().simple()))
+                .clone()
+        } else if id.is_empty() {
+            "tool".into()
+        } else {
+            id
+        };
         tools.push(ToolCall {
-            id: if id.is_empty() { "tool".into() } else { id },
+            id,
             needs_confirmation,
             name,
             args,

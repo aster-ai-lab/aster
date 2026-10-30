@@ -4,7 +4,7 @@ use super::reconcile::{CatalogReconcileReport, WorkspaceCatalogReconciler};
 use super::types::WorkspaceIndexError;
 use crate::workspace::{LocalWorkspaceManifest, WorkspaceFileChange, WorkspaceFileSystem};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 use tokio::sync::{broadcast, mpsc};
 use tokio::task::JoinHandle;
@@ -320,22 +320,10 @@ pub(crate) struct LocalWorkspaceCatalogRuntime {
     catalog: Arc<WorkspaceChunkCatalog>,
     lifetime: CancellationToken,
     task: Mutex<Option<tokio::task::JoinHandle<()>>>,
-    persistent: Option<Arc<PersistentIndexCoordinator>>,
+    persistent: Arc<OnceLock<Arc<PersistentIndexCoordinator>>>,
 }
 
 impl LocalWorkspaceCatalogRuntime {
-    pub(crate) fn start(
-        manifest: Arc<LocalWorkspaceManifest>,
-        file_system: Arc<dyn WorkspaceFileSystem>,
-    ) -> Arc<Self> {
-        Self::start_with_catalog_and_persistent(
-            manifest,
-            file_system,
-            WorkspaceChunkCatalog::default_catalog(),
-            None,
-        )
-    }
-
     pub(crate) fn start_with_catalog_and_persistent(
         manifest: Arc<LocalWorkspaceManifest>,
         file_system: Arc<dyn WorkspaceFileSystem>,
@@ -345,8 +333,13 @@ impl LocalWorkspaceCatalogRuntime {
         let snapshots = manifest.subscribe();
         let changes = manifest.subscribe_changes();
         let lifetime = CancellationToken::new();
-        let persistent_coordinator = persistent
-            .map(|persistent| PersistentIndexCoordinator::start(persistent, lifetime.clone()));
+        let persistent_coordinator = Arc::new(OnceLock::new());
+        if let Some(persistent) = persistent {
+            let _ = persistent_coordinator.set(PersistentIndexCoordinator::start(
+                persistent,
+                lifetime.clone(),
+            ));
+        }
         let runtime = Arc::new(Self {
             catalog: Arc::clone(&catalog),
             lifetime: lifetime.clone(),
@@ -376,6 +369,27 @@ impl LocalWorkspaceCatalogRuntime {
         Arc::clone(&self.catalog)
     }
 
+    pub(crate) fn attach_persistent(
+        &self,
+        index: Arc<super::persistent::WorkspacePersistentIndex>,
+    ) {
+        if self.lifetime.is_cancelled() {
+            return;
+        }
+        let mut attached = false;
+        let coordinator = self.persistent.get_or_init(|| {
+            attached = true;
+            PersistentIndexCoordinator::start(index, self.lifetime.clone())
+        });
+        if attached {
+            match self.catalog.snapshot() {
+                Ok(snapshot) if snapshot.source_revision() > 0 => coordinator.submit(snapshot),
+                Ok(_) => {}
+                Err(error) => tracing::warn!(%error, "workspace index attachment snapshot failed"),
+            }
+        }
+    }
+
     pub(crate) fn shutdown(&self) {
         self.lifetime.cancel();
         if let Some(task) = self
@@ -386,7 +400,7 @@ impl LocalWorkspaceCatalogRuntime {
         {
             task.abort();
         }
-        if let Some(persistent) = &self.persistent {
+        if let Some(persistent) = self.persistent.get() {
             persistent.shutdown();
         }
     }
@@ -404,7 +418,7 @@ async fn run_catalog_updates(
     mut snapshots: broadcast::Receiver<crate::workspace::LocalWorkspaceManifestSnapshot>,
     mut changes: broadcast::Receiver<WorkspaceFileChange>,
     lifetime: CancellationToken,
-    persistent: Option<Arc<PersistentIndexCoordinator>>,
+    persistent: Arc<OnceLock<Arc<PersistentIndexCoordinator>>>,
 ) {
     // Catalog runtime can start while the first scan is still in flight, or
     // after it already published (broadcast fans out only to live subscribers).
@@ -417,7 +431,7 @@ async fn run_catalog_updates(
             report_reconciliation(
                 reconciler.reconcile_snapshot(&initial).await,
                 &reconciler,
-                persistent.as_ref(),
+                persistent.get(),
             )
             .await;
             seeded = true;
@@ -431,7 +445,7 @@ async fn run_catalog_updates(
                         report_reconciliation(
                             reconciler.reconcile_snapshot(&snapshot).await,
                             &reconciler,
-                            persistent.as_ref(),
+                            persistent.get(),
                         )
                         .await;
                         seeded = true;
@@ -443,7 +457,7 @@ async fn run_catalog_updates(
                         report_reconciliation(
                             reconciler.reconcile_after_lag(&snapshot).await,
                             &reconciler,
-                            persistent.as_ref(),
+                            persistent.get(),
                         )
                         .await;
                         seeded = true;
@@ -464,16 +478,16 @@ async fn run_catalog_updates(
                     tokio::time::sleep(SNAPSHOT_SETTLE_DELAY).await;
                     let batch = drain_changes(&mut changes);
                     if batch.lagged {
-                        report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.as_ref()).await;
+                        report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.get()).await;
                     } else if batch.changes.is_empty() {
-                        report_reconciliation(reconciler.reconcile_snapshot(&snapshot).await, &reconciler, persistent.as_ref()).await;
+                        report_reconciliation(reconciler.reconcile_snapshot(&snapshot).await, &reconciler, persistent.get()).await;
                     } else {
-                        report_reconciliation(reconciler.reconcile_changes(&snapshot, &batch.changes).await, &reconciler, persistent.as_ref()).await;
+                        report_reconciliation(reconciler.reconcile_changes(&snapshot, &batch.changes).await, &reconciler, persistent.get()).await;
                     }
                 }
                 Err(broadcast::error::RecvError::Lagged(skipped)) => {
                     tracing::warn!(skipped, "workspace retrieval snapshot stream lagged; rebuilding admitted files");
-                    report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.as_ref()).await;
+                    report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.get()).await;
                 }
                 Err(broadcast::error::RecvError::Closed) => break,
             },
@@ -482,20 +496,20 @@ async fn run_catalog_updates(
                     let mut batch = drain_changes(&mut changes);
                     batch.changes.insert(0, change);
                     if batch.lagged {
-                        report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.as_ref()).await;
+                        report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.get()).await;
                     } else {
                         report_reconciliation(
                             reconciler
                                 .reconcile_changes(&manifest.snapshot(), &batch.changes)
                                 .await,
                             &reconciler,
-                            persistent.as_ref(),
+                            persistent.get(),
                         ).await;
                     }
                 }
                 Err(broadcast::error::RecvError::Lagged(skipped)) => {
                     tracing::warn!(skipped, "workspace retrieval change stream lagged; rebuilding admitted files");
-                    report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.as_ref()).await;
+                    report_reconciliation(reconciler.reconcile_after_lag(&manifest.snapshot()).await, &reconciler, persistent.get()).await;
                 }
                 Err(broadcast::error::RecvError::Closed) => break,
             },

@@ -985,7 +985,7 @@ fn confirmation_required_builds_plugins_confirmation_with_confirmed_true() {
     }
 }
 
-/// Regression: a failed `x.ai/subagent/cancel` RPC must NOT finalize the row; the subagent may still be running.
+/// Regression: a failed `a3s/subagent/cancel` RPC must NOT finalize the row; the subagent may still be running.
 /// Only a shell response of "nothing live" finalizes it.
 #[test]
 fn kill_rpc_failure_does_not_finalize_but_nothing_live_does() {
@@ -1015,6 +1015,13 @@ fn kill_rpc_failure_does_not_finalize_but_nothing_live_does() {
             .get("child-1")
             .is_some_and(|s| !s.is_finished()),
         "a failed cancel RPC must not finalize the row"
+    );
+    assert!(
+        expect_agent(&app, id)
+            .subagent_sessions
+            .get("child-1")
+            .is_some_and(|s| !s.attempt.pending_kill && s.attempt.kill_requested_at.is_none()),
+        "a failed cancel must permit retry"
     );
 
     // Nothing live means no finish is coming, so the pager finalizes the row

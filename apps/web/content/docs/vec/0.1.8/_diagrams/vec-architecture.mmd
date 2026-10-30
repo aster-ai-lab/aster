@@ -1,0 +1,8 @@
+flowchart TB
+  accTitle: Vec 的查询与精确重排
+  accDescr: 查询固定一个文档修订并验证请求。ANN 提供候选，权威文档执行精确重排。缺失或过期索引使用精确扫描回退。
+  request["查询请求"] --> snapshot["固定文档修订<br/>Schema 与限制校验"]
+  snapshot --> candidates["ANN / FTS / 标量过滤<br/>提供候选"]
+  candidates --> rerank["权威文档精确重排<br/>f64 中间分数"]
+  rerank --> topk["确定性 top-k<br/>同分按主键升序"]
+  stale["缺失或过期索引"] -. 精确扫描回退 .-> rerank

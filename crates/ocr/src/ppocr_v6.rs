@@ -21,6 +21,8 @@ const ENGINE_NAME: &str = "onnx-runtime";
 pub struct PpOcrV6Provider {
     descriptor: OcrProviderDescriptor,
     loaded: Arc<Mutex<Option<LoadedEngine>>>,
+    assets: Option<crate::assets::ModelAssets>,
+    max_detection_side: u32,
 }
 
 struct LoadedEngine {
@@ -33,7 +35,60 @@ impl PpOcrV6Provider {
         Ok(Self {
             descriptor: OcrProviderDescriptor::new(PP_OCR_V6_PROVIDER_ID, ENGINE_NAME, false)?,
             loaded: Arc::new(Mutex::new(None)),
+            assets: None,
+            max_detection_side: 4_000,
         })
+    }
+
+    /// Uses host-owned packaged assets without changing process environment variables.
+    /// Detection is bounded to 1536 pixels; recognition crops retain source resolution.
+    pub fn from_paths(model_dir: &std::path::Path, runtime: &std::path::Path) -> UseResult<Self> {
+        let assets = crate::assets::validate_assets(model_dir, OcrInstallSource::Packaged)?;
+        if !runtime.is_absolute() || !runtime.is_file() {
+            return Err(UseError::new(
+                "use.ocr.runtime_missing",
+                "The packaged ONNX Runtime library is missing.",
+            ));
+        }
+        ort::init_from(runtime.to_string_lossy())
+            .with_name("aster-local-ocr")
+            .commit()
+            .map_err(|error| UseError::new("use.ocr.runtime_failed", error.to_string()))?;
+        Ok(Self {
+            assets: Some(assets),
+            max_detection_side: 1_536,
+            ..Self::from_env()?
+        })
+    }
+
+    /// Loads both sessions once; callers can await this on a background startup task.
+    pub async fn warmup(&self) -> UseResult<()> {
+        let provider = self.clone();
+        tokio::task::spawn_blocking(move || {
+            let assets = provider.resolve_assets()?;
+            let mut loaded = provider.loaded.lock().map_err(|_| {
+                UseError::new("use.ocr.runtime_failed", "The OCR engine lock is poisoned.")
+            })?;
+            if loaded
+                .as_ref()
+                .is_none_or(|engine| engine.model_dir != assets.root)
+            {
+                *loaded = Some(LoadedEngine {
+                    model_dir: assets.root.clone(),
+                    engine: PpOcrV6Engine::load(&assets)?,
+                });
+            }
+            Ok(())
+        })
+        .await
+        .map_err(|error| UseError::new("use.ocr.runtime_failed", error.to_string()))?
+    }
+
+    fn resolve_assets(&self) -> UseResult<crate::assets::ModelAssets> {
+        self.assets
+            .clone()
+            .map(Ok)
+            .unwrap_or_else(resolve_model_assets)
     }
 }
 
@@ -44,6 +99,15 @@ impl OcrProvider for PpOcrV6Provider {
     }
 
     fn diagnostic(&self) -> OcrProviderStatus {
+        if let Some(assets) = &self.assets {
+            return OcrProviderStatus {
+                readiness: Readiness::Ready,
+                model: Some(MODEL_FAMILY.into()),
+                model_dir: Some(assets.root.clone()),
+                message: "Packaged local PP-OCRv6 assets are available.".into(),
+                suggestions: Vec::new(),
+            };
+        }
         let status = ocr_status();
         let (readiness, suggestions) = if status.available {
             (Readiness::Ready, Vec::new())
@@ -79,15 +143,17 @@ impl OcrProvider for PpOcrV6Provider {
 
     async fn recognize(&self, input: OcrInput) -> UseResult<OcrProviderOutput> {
         let loaded = Arc::clone(&self.loaded);
+        let provider = self.clone();
         tokio::task::spawn_blocking(move || {
-            let image = decode_image(input.bytes())?;
-            let assets = resolve_model_assets()?;
+            let assets = provider.resolve_assets()?;
             let mut loaded = loaded.lock().map_err(|_| {
                 UseError::new(
                     "use.ocr.runtime_failed",
                     "The local PP-OCRv6 engine lock is poisoned.",
                 )
             })?;
+            // Bound decoded images as well as inference when clones share a provider.
+            let image = decode_image(input.bytes())?;
             let should_load = loaded
                 .as_ref()
                 .map(|loaded| loaded.model_dir != assets.root)
@@ -104,7 +170,7 @@ impl OcrProvider for PpOcrV6Provider {
                     "The local PP-OCRv6 engine failed to initialize.",
                 )
             })?;
-            build_output(engine.engine.extract(&image)?)
+            build_output(engine.engine.extract(&image, provider.max_detection_side)?)
         })
         .await
         .map_err(|error| {

@@ -3,7 +3,7 @@
 **Status:** planning contract + executed Core hermetic/L5 evidence (2026-09-21,
 Core line `8.6.0`, post HARNESS-CONV5 slim)  
 **Mission under test:** a **governed coding-agent harness** — loop, tools,
-policy, events, retrieval, evidence, and the four official SDKs — not Desktop
+policy, events, retrieval, evidence, the Rust SDK and ACP — not Desktop
 chrome, not Cloud UI, not Use package markets.
 
 **Live model pin (this plan):**
@@ -72,7 +72,7 @@ mechanisms that make those capabilities safe:
 | Product | `sdk_capabilities()` IDs | Marketing copy, Desktop layouts |
 | Host | Extension traits / host injection contracts | CLI TUI chrome, Cloud consoles |
 | Correctness | Digests, tool names, terminal states, fail-closed | “Model prose said OK” |
-| Languages | Rust Core + Node + Python + Go | Unofficial bindings |
+| Integration | Local Rust SDK and ACP | Retired language bindings |
 | Environments | Hermetic CI, live Flash pin, Harbor / soak | Customer prod accounts |
 | Removed (do not retest as product) | Filesystem-first `serve` / `AgentDir` HTTP serve | Historical CHANGELOG mentions only |
 
@@ -86,8 +86,8 @@ mechanisms that make those capabilities safe:
    surfaces stay absent (`local-code` tree, no model-visible `parallel_task`).
 4. **Fail-closed defaults** — sandbox, mutation verify gate, Active-only
    memory, process-host opt-in, SSRF / Fake-IP.
-5. **SDK parity** — a capability claimed on one language is constructed through
-   every official wrapper (`scripts/sdk_api_alignment_check.mjs`).
+5. **Host boundary agreement** — declared capabilities are exercised through
+   the actual Rust SDK and ACP boundaries.
 6. **Ignored ≠ green** — `#[ignore]` / credentialed / Harbor / soak are
    **Layer E/F / L5–L7**, never counted as Required CI.
 7. **Coverage claim** — “≥95%” means **F-table kernel files**, not crate TOTAL
@@ -147,14 +147,13 @@ Discover at runtime (do not hand-maintain a second list):
 
 ```bash
 cargo test -p a3s-code-core --lib sdk_capabilities -- --nocapture
-node -e 'const c=require("@a3s-lab/code"); console.log(c.sdkCapabilities().map(x=>x.id).join("\n"))'
 ```
 
 ### 3.1 Baseline (`local-code`) — must ship in default product
 
 | Capability ID | Unit (module) | Integration (boundary) | Live E2E (L5 / Layer C) | SDK |
 | --- | --- | --- | --- | --- |
-| `agent_runtime` | session/agent unit; close | session open/close integ | cluster features | Node/Python/Go create/close |
+| `agent_runtime` | session/agent unit; close | session open/close integ | cluster features | Rust/ACP create/close |
 | `conversation` | agent stream unit | stream + cancel hermetic | cluster / run_control | stream + cancel fixtures |
 | `governed_tools` | registry + confirmation + hooks | governed host call | `test_harness_capabilities_live_e2e` | `governedTool` / Go `GovernedTool` |
 | `workspace_tools` | read/edit/bash/git/download/batch/grep | capabilities hermetic | capabilities live | workspace helpers |
@@ -178,7 +177,7 @@ node -e 'const c=require("@a3s-lab/code"); console.log(c.sdkCapabilities().map(x
 | Capability ID | Feature / host | Unit / hermetic | Live / external |
 | --- | --- | --- | --- |
 | `code_intelligence` | host language service | fake LSP integ + tool unit | PERF CI profile |
-| `cognitive_packages` | Use host injection | capability_set / projection | host CAR / Use |
+| `packages` | Use host injection | capability_set / projection | host CAR / Use |
 | `use_runtime_tasks` | Use host injection | capability scope / Use lease | host |
 | `programmable_workflows` | `advanced-harness` (`dynamic-workflow`) | dynamic_workflow_* | extensibility live |
 | `state_graph` | `advanced-harness` | `test_state_graph_integration` | PERF replay |
@@ -252,8 +251,8 @@ cargo test -p a3s-code-core --test agent_protocol_v1
 cargo test -p a3s-code-core --test session_checkpoint_v1
 cargo test -p a3s-code-core --features advanced-harness --test test_state_graph_integration
 cargo test -p a3s-code-core --features s3 --test test_s3_backend
-node scripts/sdk_api_alignment_check.mjs
-# SDK runtime: see sdk-runtime CI / package test scripts
+cargo test --locked -p a3s-code-core --lib sdk_capabilities
+# Rust/ACP runtime: owning-package tests in the root workspace
 ```
 
 ### 4.3 End-to-end live (`I-*-L*` / Layer C)
@@ -304,11 +303,11 @@ still gap G7.
 
 | Layer | Name | Gate | Command / owner |
 | --- | --- | --- | --- |
-| **L0** | Contract discovery | PR | `sdk_api_alignment_check.mjs` + `sdk_capabilities` golden order |
+| **L0** | Contract discovery | PR | Core capability-contract tests + `sdk_capabilities` golden order |
 | **L1** | Thin hermetic Core | PR (Required CI) | `just harness-convergence-check` + `cargo test -p a3s-code-core --lib` (local-code) |
 | **L2** | F-table kernel coverage | Release / scheduled | llvm-cov F01–F30 kernels ≥95% (`just f-table-cov`) |
 | **L3** | Advanced hermetic | Path / feature CI | `advanced-harness`, `s3`, `telemetry`, `headless-search` suites |
-| **L4** | SDK runtime parity | PR / `sdk-runtime.yml` | Node/Python/Go unit + capability/checkpoint/immutable fixtures |
+| **L4** | SDK runtime parity | PR / owning-package CI | Rust/ACP capability, checkpoint and immutable fixtures |
 | **L5** | Live provider E2E | Manual / release | `just layer-c-live-e2e` with **bailian Flash pin** (§2) |
 | **L6** | Performance + hermetic integrations | Release qual | `performance.yml`, `hermetic-integrations.yml` |
 | **L7** | External qualification | External owner | Harbor TB-QUAL1, DM-PROD1, CAR-01…05, retrieval soak |
@@ -477,7 +476,7 @@ re-qualify tip → L7 disposition → multi-channel publish).
 | F01–F30 + Layer C recipes | **Exist**; Layer C execution PASS 2026-09-21 under bailian Flash (`/tmp/a3s-layer-c-bailian-flash-combined/FINAL.txt`) |
 | L0/L1 hermetic | **PASS** `/tmp/a3s-goal-integ-use/layer-a.FINAL.txt` (re-verify EXIT:0; 3632 + SDK alignment). Prior: `/tmp/a3s-layer-a-bailian-exec/FINAL3.txt` |
 | L3 feature hermetics | **PASS** `/tmp/a3s-l3-hermetic/FINAL.txt` (+ ignored s3/otel green; advanced-integ recheck under `/tmp/a3s-goal-integ-use/`) |
-| L4 SDK | **PASS** Node/Python/Go discovery 29 caps; alignment ok in Layer A |
+| Historical upstream L4 SDK | **PASS** Node/Python/Go discovery 29 caps; alignment ok in Layer A; does not qualify Aster Rust/ACP |
 | L5 Layer C bailian Flash | **PASS** `/tmp/a3s-layer-c-bailian-flash-combined/FINAL.txt` (`LAYER_C_PASS`, 22/22 final) |
 | 29-cap integrated use | **PASS** [CAPABILITY_INTEGRATED_USE_LEDGER.md](CAPABILITY_INTEGRATED_USE_LEDGER.md) |
 | L2 F-kernel cov | **Prior PASS** (not re-measured this execution) |

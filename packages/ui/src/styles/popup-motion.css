@@ -288,6 +288,18 @@
     }
   }
 
+  /* Background WebKit windows must not retain popups waiting for animationend. */
+  :root:not(:focus-within) [data-slot='dropdown-menu-content'],
+  :root:not(:focus-within) [data-slot='dropdown-menu-sub-content'],
+  :root:not(:focus-within) [data-slot='context-menu-content'],
+  :root:not(:focus-within) [data-slot='context-menu-sub-content'],
+  :root:not(:focus-within) [data-slot='popover-content'],
+  :root:not(:focus-within) [data-slot='select-content'],
+  :root:not(:focus-within) [data-slot='hover-card-content'],
+  :root:not(:focus-within) [data-slot='tooltip-content'] {
+    animation: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-slot='dropdown-menu-content'],
     [data-slot='dropdown-menu-sub-content'],

@@ -1,5 +1,6 @@
 import type { Editor, Extensions } from '@tiptap/core';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { Selection, type Transaction } from '@tiptap/pm/state';
 import { officeMessage } from '../../../i18n/office-locale';
 import { useEditor } from '@tiptap/react';
 import {
@@ -62,7 +63,10 @@ import { useOfficeEditorInitialFocus } from './office-editor-focus-handoff';
 import { useOfficeCollaborationLocationNavigator } from './office-collaboration-presence-context';
 import { useOfficePublishPresenceLocation } from './office-collaboration-presence-ui';
 import { mergeOfficeTiptapExtensions } from './office-tiptap-extensions';
-import { useMarkdownSourceHistory } from './use-markdown-source-history';
+import {
+  type MarkdownHistoryEdit,
+  useMarkdownSourceHistory,
+} from './use-markdown-source-history';
 import {
   stepOfficeZoom,
   useOfficeEditorWheelZoom,
@@ -79,6 +83,8 @@ export interface MarkdownEditorProps {
   collaboration?: WorkOfficeCollaborationSession;
   autoFocus?: boolean;
   content: WorkMarkdownContent;
+  /** Stable document owner retains undo history across tab remounts; never shared between documents. */
+  historyKey?: object;
   extensions?: Extensions;
   preview: boolean;
   /**
@@ -94,6 +100,8 @@ export interface MarkdownEditorProps {
   onSave?: (markdown: string) => void | Promise<void>;
   /** The writing surface can take input. Hosts use this to retire their opening state. */
   onReady?: () => void;
+  /** Select current LF source; reveal explicitly opens source, including a read-only preview. */
+  sourceSelection?: { text: string; start: number; end: number; reveal?: boolean };
 }
 
 const MARKDOWN_PREVIEW_SYNC_DELAY = 160;
@@ -173,6 +181,7 @@ export function MarkdownEditor({
   autoFocus = true,
   collaboration,
   content,
+  historyKey,
   extensions: additionalExtensions = EMPTY_MARKDOWN_EXTENSIONS,
   preview,
   presentation = 'document',
@@ -180,6 +189,7 @@ export function MarkdownEditor({
   getSelectionMenuItems,
   onChange,
   onReady,
+  sourceSelection,
   onSave,
 }: MarkdownEditorProps) {
   const messages = useOfficeMessages();
@@ -212,11 +222,17 @@ export function MarkdownEditor({
   const updateSourceRef = useRef<
     (markdown: string, options?: { immediatePreview?: boolean }) => void
   >(() => undefined);
+  const historyActionsRef = useRef<{ undo: () => boolean; redo: () => boolean }>({
+    undo: () => false,
+    redo: () => false,
+  });
+  const visualInputTypeRef = useRef<string | undefined>(undefined);
   const onReadOnlyCheckedRef = useRef<
     (node: ProseMirrorNode, checked: boolean) => boolean
   >(() => false);
   const receivedContentRef = useRef(content);
   const appliedMarkdownRef = useRef(initialContent.markdown);
+  const visualMarkdownRef = useRef<string | null>(null);
   const emittedMarkdownRef = useRef<string | null>(null);
   const sourceMarkdownRef = useRef(initialContent.markdown);
   const initialMarkdownRef = useRef(initialContent.markdown);
@@ -232,6 +248,8 @@ export function MarkdownEditor({
       })
     | undefined
   >();
+  const [revealedSelection, setRevealedSelection] =
+    useState<MarkdownEditorProps['sourceSelection']>();
   const [viewMode, setViewMode] = useState<MarkdownViewMode>(
     presentation === 'workspace' ? 'source' : presentation === 'note' ? 'visual' : 'split',
   );
@@ -255,7 +273,11 @@ export function MarkdownEditor({
     reset: resetSourceHistory,
     undo: undoSourceHistory,
     updateSelection: updateSourceHistorySelection,
-  } = useMarkdownSourceHistory(initialContent.markdown);
+    updateVisual: updateVisualHistory,
+  } = useMarkdownSourceHistory(
+    initialContent.markdown,
+    collaborative ? undefined : historyKey,
+  );
   if (!collaborative) contentRef.current = content;
   onChangeRef.current = onChange;
 
@@ -295,6 +317,18 @@ export function MarkdownEditor({
         spellcheck: 'true',
       },
       handleDOMEvents: {
+        beforeinput: (_view: unknown, event: InputEvent) => {
+          if (readOnly || event.isComposing) return false;
+          const inputType = event.inputType;
+          if (inputType === 'historyUndo' || inputType === 'historyRedo') {
+            event.preventDefault();
+            const action = inputType === 'historyUndo' ? 'undo' : 'redo';
+            historyActionsRef.current[action]();
+            return true;
+          }
+          visualInputTypeRef.current = inputType || undefined;
+          return false;
+        },
         compositionstart: () => {
           composition.start();
           return false;
@@ -312,8 +346,8 @@ export function MarkdownEditor({
       },
       handleKeyDown: (_view: unknown, event: KeyboardEvent) => {
         if (
-          !collaborative ||
           readOnly ||
+          event.isComposing ||
           event.altKey ||
           !(event.metaKey || event.ctrlKey)
         ) {
@@ -321,23 +355,23 @@ export function MarkdownEditor({
         }
         const key = event.key.toLocaleLowerCase();
         if (key === 'z') {
-          if (event.shiftKey) collaborationBindingRef.current?.redo();
-          else collaborationBindingRef.current?.undo();
+          historyActionsRef.current[event.shiftKey ? 'redo' : 'undo']();
           return true;
         }
         if (key === 'y' && !event.shiftKey) {
-          collaborationBindingRef.current?.redo();
+          historyActionsRef.current.redo();
           return true;
         }
         return false;
       },
     }),
-    [collaborative, composition, messages, readOnly],
+    [composition, messages, readOnly],
   );
   const publishVisualMarkdown = useCallback(
     (current: Editor) => {
       const markdown = current.getMarkdown();
-      if (markdown === appliedMarkdownRef.current) return;
+      if (markdown === appliedMarkdownRef.current || markdown === visualMarkdownRef.current) return;
+      visualMarkdownRef.current = markdown;
       cancelPreviewSync();
       if (collaborative) {
         appliedMarkdownRef.current = markdown;
@@ -350,13 +384,23 @@ export function MarkdownEditor({
       sourceMarkdownRef.current = markdown;
       contentRef.current = next;
       setSourceMarkdown(markdown);
-      resetSourceHistory(
-        markdown,
-        textareaSelection(sourceTextareaRef.current, markdown.length),
+      const inputType = visualInputTypeRef.current;
+      visualInputTypeRef.current = undefined;
+      recordSourceHistory(
+        {
+          markdown,
+          selection: textareaSelection(sourceTextareaRef.current, markdown.length),
+          visual: {
+            doc: current.state.doc,
+            selection: current.state.selection,
+            storedMarks: current.state.storedMarks,
+          },
+        },
+        { typing: inputType !== undefined, inputType },
       );
       onChangeRef.current(next);
     },
-    [cancelPreviewSync, collaborative, resetSourceHistory],
+    [cancelPreviewSync, collaborative, recordSourceHistory],
   );
   publishVisualMarkdownRef.current = publishVisualMarkdown;
   const editor = useEditor(
@@ -368,19 +412,45 @@ export function MarkdownEditor({
       editorProps,
       onCreate: ({ editor: current }) => {
         editorRef.current = current;
+        visualMarkdownRef.current = current.getMarkdown();
       },
       onDestroy: () => {
         editorRef.current = null;
         composition.destroy();
       },
-      onUpdate: ({ editor: current }) => {
-        if (composition.isBlocking(current)) return;
+      onUpdate: ({ editor: current, transaction }) => {
+        if (!transaction.docChanged || composition.isBlocking(current)) return;
         publishVisualMarkdownRef.current(current);
       },
       onSelectionUpdate: () => setSelectionVersion((value) => value + 1),
     },
     [extensions],
   );
+
+  useEffect(() => {
+    if (!editor || collaborative || viewMode !== 'visual') return;
+    const remember = () =>
+      updateVisualHistory({
+        doc: editor.state.doc,
+        selection: editor.state.selection,
+        storedMarks: editor.state.storedMarks,
+      });
+    const before = ({ transaction }: { transaction: Transaction }) => {
+      if (
+        transaction.docChanged &&
+        !transaction.getMeta('preventUpdate') &&
+        transaction.getMeta('addToHistory') !== false
+      ) {
+        remember();
+      }
+    };
+    editor.on('beforeTransaction', before);
+    editor.on('selectionUpdate', remember);
+    return () => {
+      editor.off('beforeTransaction', before);
+      editor.off('selectionUpdate', remember);
+    };
+  }, [collaborative, editor, updateVisualHistory, viewMode]);
 
   const applyMarkdownToEditor = useCallback(
     (markdown: string) => {
@@ -395,6 +465,7 @@ export function MarkdownEditor({
       }
       appliedMarkdownRef.current = markdown;
       editor.commands.setWorkMarkdown(markdown, { emitUpdate: false });
+      visualMarkdownRef.current = editor.getMarkdown();
     },
     [cancelPreviewSync, composition, editor],
   );
@@ -623,10 +694,18 @@ export function MarkdownEditor({
     if (!current) return false;
     const index = markdownTaskIndex(current.state.doc, node);
     if (index < 0) return false;
-    updateSourceRef.current(
-      setMarkdownTaskChecked(sourceMarkdownRef.current, index, checked),
-      { immediatePreview: true },
+    const markdown = setMarkdownTaskChecked(
+      sourceMarkdownRef.current,
+      index,
+      checked,
     );
+    if (!collaborative) {
+      recordSourceHistory({
+        markdown,
+        selection: textareaSelection(sourceTextareaRef.current, markdown.length),
+      });
+    }
+    updateSourceRef.current(markdown, { immediatePreview: true });
     return true;
   };
 
@@ -681,13 +760,44 @@ export function MarkdownEditor({
   );
 
   const applySourceHistory = useCallback(
-    (edit: MarkdownSourceEdit | null): boolean => {
+    (edit: MarkdownHistoryEdit | null): boolean => {
       if (!edit) return false;
       updateSource(edit.markdown);
+      const current = editorRef.current;
+      if (edit.visual && current && !current.isDestroyed) {
+        cancelPreviewSync();
+        const transaction = current.state.tr.replaceWith(
+          0,
+          current.state.doc.content.size,
+          current.state.schema.nodeFromJSON(edit.visual.doc.toJSON()).content,
+        );
+        transaction
+          .setSelection(
+            Selection.fromJSON(transaction.doc, edit.visual.selection.toJSON()),
+          )
+          .setStoredMarks(
+            edit.visual.storedMarks?.map((mark) =>
+              current.state.schema.markFromJSON(mark.toJSON()),
+            ) ?? null,
+          )
+          .setMeta('addToHistory', false)
+          .setMeta('preventUpdate', true);
+        current.view.dispatch(transaction);
+        appliedMarkdownRef.current = edit.markdown;
+        visualMarkdownRef.current = current.getMarkdown();
+      } else if (viewMode !== 'source') {
+        applyMarkdownToEditor(edit.markdown);
+      }
       requestSourceSelection(edit.selection);
       return true;
     },
-    [requestSourceSelection, updateSource],
+    [
+      applyMarkdownToEditor,
+      cancelPreviewSync,
+      requestSourceSelection,
+      updateSource,
+      viewMode,
+    ],
   );
 
   const undoSource = useCallback(() => {
@@ -698,6 +808,7 @@ export function MarkdownEditor({
     if (collaborative) return collaborationBindingRef.current?.redo() ?? false;
     return applySourceHistory(redoSourceHistory());
   }, [applySourceHistory, collaborative, redoSourceHistory]);
+  historyActionsRef.current = { undo: undoSource, redo: redoSource };
 
   const runSourceCommand = useCallback(
     (command: MarkdownSourceCommand): boolean => {
@@ -970,6 +1081,26 @@ export function MarkdownEditor({
     onReady?.();
   }, [collaborationReady, editor, onReady]);
 
+  useEffect(() => {
+    if (!sourceSelection?.reveal && revealedSelection) setRevealedSelection(undefined);
+    if (!sourceSelection) return;
+    const { text, start, end } = sourceSelection;
+    if (
+      sourceMarkdownRef.current !== text || !Number.isSafeInteger(start) ||
+      !Number.isSafeInteger(end) || start < 0 || end < start ||
+      end > text.length || composition.isBlocking(editor)
+    ) return;
+    if (sourceSelection.reveal && revealedSelection !== sourceSelection) {
+      setSourceSelectionRequest(undefined);
+      setRevealedSelection(sourceSelection);
+      if (viewMode !== 'source') changeViewMode('source');
+    }
+    if (viewMode === 'visual') return;
+    const field = sourceTextareaRef.current;
+    if (!field || field.value !== text) return;
+    requestSourceSelection({ start, end, direction: 'forward' });
+  }, [changeViewMode, composition, editor, requestSourceSelection, revealedSelection, sourceSelection, viewMode]);
+
   if (!editor || !collaborationReady) {
     return (
       <WorkEditorLoadingState
@@ -979,14 +1110,16 @@ export function MarkdownEditor({
   }
 
   if (readOnly) {
+    const previewMode = sourceSelection?.reveal && revealedSelection === sourceSelection
+      ? viewMode : 'visual';
     return (
       <section
         ref={markdownRootRef}
         className={markdownEditorClass(presentation, true)}
-        data-markdown-view="visual"
+        data-markdown-view={previewMode}
         style={editorStyle}
       >
-        <WorkOfficePreviewBar
+        {presentation !== 'workspace' && <WorkOfficePreviewBar
           ariaLabel={officeMessage(
             messages,
             'markdown.editor.previewToolsAria',
@@ -997,13 +1130,14 @@ export function MarkdownEditor({
           })}
           fileActions={fileActions}
           className="work-markdown-ribbon"
-        />
+        />}
         <MarkdownWorkspace
           editor={editor}
           markdown={sourceMarkdown}
-          mode="visual"
+          mode={previewMode}
           readOnly
           sourceRef={sourceTextareaRef}
+          sourceSelectionRequest={sourceSelectionRequest}
           sourcePlaceholder={writingPlaceholder}
           onSourceChange={(markdown) => updateSource(markdown)}
           onVisualIntent={handleVisualIntent}
@@ -1022,11 +1156,11 @@ export function MarkdownEditor({
       <MarkdownToolbar
         editor={editor}
         fileActions={fileActions}
-        collaborative={collaborative}
         sourceEditing={viewMode !== 'visual'}
         canSourceRedo={canRedoMarkdown}
         canSourceUndo={canUndoMarkdown}
         viewMode={viewMode}
+        compactModes={presentation === 'note'}
         modes={
           presentation === 'note'
             ? ['visual', 'split', 'source']

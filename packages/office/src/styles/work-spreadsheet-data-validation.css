@@ -1,5 +1,5 @@
 .work-spreadsheet-data-validation-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
 
   width: min(640px, 100%);
 }
@@ -46,10 +46,10 @@
   border-radius: 7px;
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, #159469) 11%,
+    var(--work-spreadsheet-accent, var(--a3s-ink)) 11%,
     var(--a3s-panel)
   );
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-data-validation-scope > div {
@@ -87,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-data-validation-condition-grid,
@@ -126,7 +126,7 @@
 .work-spreadsheet-data-validation-formula-note svg {
   flex: 0 0 auto;
   margin-top: 1px;
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-data-validation-inline-error {

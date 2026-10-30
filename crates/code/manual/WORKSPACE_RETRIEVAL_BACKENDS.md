@@ -88,7 +88,7 @@ partially trusted index.
 - Default and `--no-default-features` builds compile and run their respective
   lexical suites; explicit a3s-vec selection fails with a typed configuration
   error when the feature is absent.
-- Node.js, Python, and Go expose the same lexical enum, status/result shape,
+- Rust hosts expose the same lexical enum, status/result shape,
   typed chunking/reranking options, cancellation, and close semantics.
 
 Rollback is configuration-only: disable semantic/hybrid modes or select the

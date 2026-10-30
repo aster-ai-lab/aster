@@ -56,6 +56,8 @@ async fn initial_model_request_contains_only_the_admitted_host_contracts() {
         ])
     );
     assert!(manifest.contains("entire bash command"));
+    assert!(manifest.contains("including a requested baseline check"));
+    assert!(manifest.contains("bash tool already reports its exit code"));
     assert!(manifest.contains("do not authorize execution"));
     assert!(!line.contains("forged-proof"));
 }

@@ -1,0 +1,50 @@
+export const meta = {
+  title: 'Aster Apofasi 产品概览',
+  description: '类型化 System-1 决策、词法与神经引擎、路由和宿主边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-apofasi` 是类型化 System-1 决策引擎。宿主提供状态和类型化问题，Apofasi 返回 `choice`、`score` 或 `noul` 答案。
+
+它不生成自由文本，也不要求宿主解析模型输出。当前版本为 `0.1.1`。
+
+<ApofasiArchitectureDiagram />
+
+## 决策边界
+
+<DocTable caption="Apofasi 的决策类型" headers={['类型', '问题配置', '返回内容']} rows={[
+  ['choice', '选项到说明的映射', '选项、概率与 confidence'],
+  ['score', '有序的等级说明', '等级、图例、概率与 confidence'],
+  ['noul', '可选 true / false 说明', 'noul 概率，不含 confidence'],
+]} />
+
+`choice` 和 `score` 使用 confidence 辅助门禁。`noul` 使用概率接近 0 或 1 的程度作为信号。阈值和人工复核策略由宿主决定。
+
+## 两种执行路径
+
+<DocTable caption="Apofasi 的执行路径" headers={['路径', '启用方式', '依赖与用途']} rows={[
+  ['词法引擎', '默认', '无权重和 ML framework，提供轻量类型表面与路由'],
+  ['神经推理', 'infer feature', '加载 checkpoint，执行 encoder 与决策头'],
+]} />
+
+默认构建只启用 `router`。神经推理、Metal、MLX、CUDA、训练和 CLI 都是显式 feature。
+
+## 产品边界
+
+Apofasi 负责类型化决策、校准和 checkpoint 路由。宿主决定何时调用、何时升级人工复核，以及如何安装运行环境。
+
+A3S Flow 负责多步工作流，A3S Use 负责能力包，Aster Code 的模型路径负责生成式回答。Apofasi 不替代这些组件。
+
+## 文档入口
+
+- [Apofasi 接入](./integration/)：请求、答案、置信度、门禁和路由。
+- [推理与验证](./operations/)：checkpoint、设备、feature、分组决策和性能证据。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Apofasi 架构](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/ARCHITECTURE.md)
+- [公开 Rust 接口](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/src/lib.rs)
+- [checkpoint 发布布局](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/docs/publish-layout.md)

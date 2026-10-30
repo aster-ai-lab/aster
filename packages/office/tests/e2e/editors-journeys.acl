@@ -1,0 +1,64 @@
+suite "office-editor-round-trips" {
+    version = 1
+
+    scenario "document-edit-history-docx" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58129/?editor=document" }
+        wait "ready" { visible = role("textbox", "文档正文") }
+        click "focus-document" { target = role("textbox", "文档正文") }
+        press "select-document" { key = "Meta+A" }
+        type "replace-document" { target = css("[aria-label='文档正文']") value = "Aster 文档 中文🌟" }
+        expect "edited" { target = role("textbox", "文档正文") rendered_text = "Aster 文档 中文🌟" }
+        click "undo" { target = role("button", "撤销") }
+        expect "original-restored" { visible = role("heading", "新项目方案") }
+        click "redo" { target = role("button", "重做") }
+        expect "edit-restored" { target = role("textbox", "文档正文") rendered_text = "Aster 文档 中文🌟" }
+        click "export-reopen" { target = role("button", "Export and reopen") }
+        wait "reopened" { text = "reopened" }
+        expect "docx-text-preserved" { target = role("textbox", "文档正文") rendered_text = "Aster 文档 中文🌟" }
+        screenshot "document" { path = "screenshots/document-roundtrip.png" }
+    }
+
+    scenario "spreadsheet-remains-editable-after-xlsx" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58129/?editor=spreadsheet" }
+        wait "ready" { visible = role("textbox", "当前单元格输入") }
+        focus "focus-cell" { target = css(".fortune-fx-input") }
+        press "select-cell-text" { key = "Meta+A" }
+        press "clear-cell" { key = "Backspace" }
+        expect "cell-cleared" { target = role("textbox", "当前单元格输入") rendered_text = "" }
+        type "edit-cell" { target = css(".fortune-fx-input") value = "Aster 表格 中文🌟" }
+        press "commit-cell" { key = "Enter" }
+        click "export-reopen" { target = role("button", "Export and reopen") }
+        wait "reopened" { text = "reopened" }
+        expect "xlsx-text-preserved" { target = role("textbox", "当前单元格输入") rendered_text = "Aster 表格 中文🌟" }
+        focus "focus-reopened-cell" { target = css(".fortune-fx-input") }
+        press "select-reopened-text" { key = "Meta+A" }
+        press "clear-reopened-cell" { key = "Backspace" }
+        expect "reopened-cell-editable" { target = role("textbox", "当前单元格输入") rendered_text = "" }
+        type "edit-again" { target = css(".fortune-fx-input") value = "After reopen 中文🌟" }
+        press "commit-again" { key = "Enter" }
+        click "export-reopen-again" { target = role("button", "Export and reopen") }
+        wait "reopened-again" { text = "reopened" }
+        expect "second-edit-preserved" { target = role("textbox", "当前单元格输入") rendered_text = "After reopen 中文🌟" }
+        expect "sheet-name-preserved" { visible = role("tab", "执行看板") }
+        screenshot "spreadsheet" { path = "screenshots/spreadsheet-roundtrip-edit.png" }
+    }
+
+    scenario "presentation-names-notes-pptx" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58129/?editor=presentation" }
+        wait "ready" { visible = role("button", "幻灯片 1 / 3：封面") }
+        fill "edit-notes" { target = css("[aria-label='演讲者备注']") value = "Speaker 中文🌟" }
+        click "export-reopen" { target = role("button", "Export and reopen") }
+        wait "reopened" { text = "reopened" }
+        expect "cover-name-preserved" { visible = role("button", "幻灯片 1 / 3：封面") }
+        expect "second-name-preserved" { visible = role("button", "幻灯片 2 / 3：核心判断") }
+        expect "third-name-preserved" { visible = role("button", "幻灯片 3 / 3：下一步") }
+        expect "notes-preserved" { target = role("textbox", "演讲者备注") value = "Speaker 中文🌟" }
+        screenshot "presentation" { path = "screenshots/presentation-roundtrip.png" }
+    }
+}

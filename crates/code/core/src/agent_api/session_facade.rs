@@ -7,10 +7,7 @@ impl std::fmt::Debug for AgentSession {
             .field("session_id", &self.session_id)
             .field("workspace", &self.workspace.display().to_string())
             .field("task_priority", &self.task_priority)
-            .field(
-                "cognitive_package_binding",
-                &self.current_cognitive_package_binding(),
-            )
+            .field("package_binding", &self.current_package_binding())
             .field("auto_save", &self.auto_save)
             .finish()
     }
@@ -131,6 +128,21 @@ impl AgentSession {
             .unwrap_or_else(crate::workspace::WorkspaceRetrievalStatus::disabled)
     }
 
+    /// Attach the original durable workspace index off the async executor.
+    /// Returns before source admission finishes; queries retain their verified
+    /// fallback while the same manifest owner builds and updates a3s-vec.
+    pub async fn prepare_workspace_index(&self) -> crate::error::Result<bool> {
+        let boundary = Arc::clone(&self.close_handle);
+        let services = Arc::clone(&self.tool_context.workspace_services);
+        tokio::task::spawn_blocking(move || {
+            boundary.mutate_immediate(|| {
+                services.capabilities().read && services.persistent_index().is_some()
+            })
+        })
+        .await
+        .map_err(|error| crate::error::CodeError::Internal(error.into()))?
+    }
+
     /// Run a structured semantic workspace query against this session.
     ///
     /// Returned source chunks are reread and digest-verified through the
@@ -197,29 +209,25 @@ impl AgentSession {
         self.correlation_id.as_deref()
     }
 
-    /// Return the Session-static cognitive-package binding, if configured.
+    /// Return the Session-static package binding, if configured.
     ///
     /// This compatibility accessor does not observe a later atomic Knowledge
     /// projection. New host code should use
-    /// [`current_cognitive_package_binding`](Self::current_cognitive_package_binding).
-    pub fn cognitive_package_binding(
-        &self,
-    ) -> Option<&crate::cognitive_context::CognitivePackageBindingV1> {
-        self.cognitive_context
+    /// [`current_package_binding`](Self::current_package_binding).
+    pub fn package_binding(&self) -> Option<&crate::package_context::PackageBindingV1> {
+        self.package_context
             .as_ref()
-            .map(crate::cognitive_context::CognitiveContextSession::binding)
+            .map(crate::package_context::PackageContextSession::binding)
     }
 
-    /// Return the exact cognitive-package binding visible to the next Run.
+    /// Return the exact package binding visible to the next Run.
     ///
     /// The returned value is owned because the current atomic catalog
     /// generation is pinned only for this read. An admitted Run records its
     /// own binding and remains on that generation across later cutover.
-    pub fn current_cognitive_package_binding(
-        &self,
-    ) -> Option<crate::cognitive_context::CognitivePackageBindingV1> {
+    pub fn current_package_binding(&self) -> Option<crate::package_context::PackageBindingV1> {
         let projection = self.capability_catalog.pin();
-        super::agent_loop_runtime::cognitive_binding_for_projection(self, projection.projection())
+        super::agent_loop_runtime::package_binding_for_projection(self, projection.projection())
     }
 
     /// Proactively close the session and release its in-flight work.
@@ -375,6 +383,19 @@ impl AgentSession {
         attachments: &[crate::llm::Attachment],
         history: Option<&[Message]>,
     ) -> Result<(mpsc::Receiver<AgentEvent>, JoinHandle<()>)> {
+        let stream = self
+            .stream_with_attachments_and_run(prompt, attachments, history)
+            .await?;
+        Ok((stream.events, stream.worker))
+    }
+
+    /// Stream image attachments with the exact Run handle captured at admission.
+    pub async fn stream_with_attachments_and_run(
+        &self,
+        prompt: &str,
+        attachments: &[crate::llm::Attachment],
+        history: Option<&[Message]>,
+    ) -> Result<AgentRunStream> {
         conversation_runtime::stream_with_attachments(self, prompt, attachments, history).await
     }
 
@@ -471,6 +492,14 @@ impl AgentSession {
     /// Return a snapshot of the session's conversation history.
     pub fn history(&self) -> Vec<Message> {
         SessionView::from_session(self).history()
+    }
+
+    /// Return the current typed plan from the same state saved with the session.
+    ///
+    /// The owned snapshot is read-only to callers and reflects a resumed session
+    /// without requiring hosts to parse historical tool arguments.
+    pub async fn plan_snapshot(&self) -> Result<Vec<crate::planning::Task>> {
+        Ok(crate::error::read_or_recover(&self.persistence_state).tasks_snapshot())
     }
 
     /// Product-visible transcript already committed to this session's fact log.
@@ -675,5 +704,122 @@ impl AgentSession {
     /// Returns `Ok(())` if saved successfully, or if no store is configured (no-op).
     pub async fn save(&self) -> Result<()> {
         session_save::save(self).await
+    }
+}
+
+#[cfg(test)]
+mod plan_snapshot_tests {
+    use super::*;
+    use crate::planning::{Task, TaskStatus};
+    use crate::store::SessionStore;
+
+    #[tokio::test]
+    async fn plan_snapshot_reads_owned_tasks_from_session_persistence_state() {
+        let root = tempfile::tempdir().unwrap();
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let session = agent
+            .session_async(root.path().display().to_string(), None)
+            .await
+            .unwrap();
+        assert!(session.plan_snapshot().await.unwrap().is_empty());
+
+        let tasks = [
+            TaskStatus::Pending,
+            TaskStatus::InProgress,
+            TaskStatus::Completed,
+            TaskStatus::Failed,
+            TaskStatus::Skipped,
+            TaskStatus::Cancelled,
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(index, status)| {
+            Task::new(format!("step-{index}"), status.to_string()).with_status(status)
+        })
+        .collect::<Vec<_>>();
+        crate::error::write_or_recover(&session.persistence_state).replace_tasks(tasks.clone());
+
+        let mut snapshot = session.plan_snapshot().await.unwrap();
+        assert_eq!(
+            snapshot.iter().map(|task| task.status).collect::<Vec<_>>(),
+            tasks.iter().map(|task| task.status).collect::<Vec<_>>()
+        );
+        snapshot.clear();
+        assert_eq!(session.plan_snapshot().await.unwrap().len(), tasks.len());
+        session.close().await;
+    }
+
+    #[tokio::test]
+    async fn plan_snapshot_and_resume_follow_the_real_runtime_event_owner() {
+        let root = tempfile::tempdir().unwrap();
+        let store = Arc::new(crate::store::MemorySessionStore::new());
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let client = Arc::new(crate::agent_api::tests::ScriptedStreamingClient::new(vec![
+            crate::agent_api::tests::scripted_tool_call_response(
+                "plan-call",
+                "update_plan",
+                serde_json::json!({"plan":[
+                    {"id":"pending","step":"Pending","status":"pending"},
+                    {"id":"active","step":"Active","status":"in_progress"},
+                    {"id":"done","step":"Done","status":"completed"},
+                    {"id":"failed","step":"Failed","status":"failed"},
+                    {"id":"skipped","step":"Skipped","status":"skipped"},
+                    {"id":"cancelled","step":"Cancelled","status":"cancelled"}
+                ]}),
+            ),
+            crate::agent_api::tests::scripted_text_response("Plan recorded"),
+        ]));
+        let session = agent
+            .build_session(
+                root.path().display().to_string(),
+                client,
+                &SessionOptions::new()
+                    .with_session_id("plan-snapshot-stream")
+                    .with_session_store(store.clone())
+                    .with_auto_save(true)
+                    .with_planning_mode(crate::PlanningMode::Disabled),
+            )
+            .unwrap();
+        let stream = session
+            .stream_with_run("Record the plan", None)
+            .await
+            .unwrap();
+        let mut events = stream.events;
+        let mut task_updates = Vec::new();
+        while let Some(event) = events.recv().await {
+            if let AgentEvent::TaskUpdated { tasks, .. } = event {
+                task_updates.push(tasks.len());
+            }
+        }
+        stream.worker.await.unwrap();
+        assert_eq!(
+            task_updates,
+            [6],
+            "no later empty update may reset the plan"
+        );
+        assert_eq!(session.plan_snapshot().await.unwrap().len(), 6);
+        session.save().await.unwrap();
+        assert_eq!(
+            store
+                .load("plan-snapshot-stream")
+                .await
+                .unwrap()
+                .unwrap()
+                .tasks
+                .len(),
+            6
+        );
+        session.close().await;
+        drop(session);
+
+        let resumed = agent
+            .resume_session_async(
+                "plan-snapshot-stream",
+                SessionOptions::new().with_session_store(store),
+            )
+            .await
+            .unwrap();
+        assert_eq!(resumed.plan_snapshot().await.unwrap().len(), 6);
+        resumed.close().await;
     }
 }

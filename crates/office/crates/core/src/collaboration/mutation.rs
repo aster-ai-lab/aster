@@ -506,6 +506,34 @@ pub(super) fn utf16_len(value: &str) -> UseResult<u32> {
     })
 }
 
+pub(super) fn utf16_slice(value: &str, start: u32, end: u32) -> Option<&str> {
+    let mut utf16 = 0_u32;
+    let mut start_byte = None;
+    let mut end_byte = None;
+    for (byte, character) in value.char_indices() {
+        if utf16 == start {
+            start_byte = Some(byte);
+        }
+        if utf16 == end {
+            end_byte = Some(byte);
+            break;
+        }
+        utf16 = utf16.checked_add(character.len_utf16() as u32)?;
+    }
+    if end_byte.is_none() && utf16 == end {
+        end_byte = Some(value.len());
+    }
+    if start == end {
+        let byte = start_byte.or(end_byte)?;
+        return value.get(byte..byte);
+    }
+    value.get(start_byte?..end_byte?)
+}
+
+#[cfg(test)]
+#[path = "mutation/utf16_tests.rs"]
+mod utf16_tests;
+
 pub(super) fn is_utf16_boundary(value: &str, offset: u32) -> bool {
     if offset == 0 {
         return true;

@@ -1,5 +1,5 @@
 export const meta = {
-  "title": "切换模型，同时保留会话约束",
+  "title": "模型切换与会话约束",
   "description": "目录 ID、配置选项、推理档位和会话替换。",
   "label": "模型与推理强度",
   "updated": "2026-10-26"
@@ -7,25 +7,25 @@ export const meta = {
 
 ## 使用代理给出的目录
 
-initialize 与会话响应提供模型状态，包含当前 ID 和 availableModels。ID 使用 provider/model；显示名称只用于界面。代理会拒绝目录之外的模型，不应把用户键入的任意字符串直接当成可用模型。
+initialize 与会话响应提供模型状态，包含当前 ID 和 availableModels。ID 使用 provider/model，显示名称只用于界面。代理拒绝目录之外的模型。不要把用户输入的任意字符串当成可用模型。
 
-新客户端可用 session/set_model。只支持 session config options 的客户端可用 session/set_config_option，当前唯一配置项 ID 是 model，value 必须是目录给出的模型 ID。两条路线进入同一替换实现。
+新客户端可用 session/set_model。只支持 session config options 的客户端可用 session/set_config_option。当前唯一配置项 ID 是 model，value 必须是目录给出的模型 ID。两条路线进入同一替换实现。
 
-## 一次切换怎样提交
+## 提交模型切换
 
 ```json
 {"jsonrpc":"2.0","id":12,"method":"session/set_model","params":{"sessionId":"SESSION_FROM_RESPONSE","modelId":"provider/model"}}
 ```
 
-将 provider/model 替换为本次目录里的真实 ID。收到成功前显示“切换中”；失败时保留旧选择并展示错误。排队期间不要对 UI 中的旧 modelId 宣称已生效。
+将 provider/model 替换为本次目录里的真实 ID。收到成功前显示“切换中”。失败时保留旧选择并展示错误。排队期间不要对 UI 中的旧 modelId 宣称已生效。
 
-代理在会话操作队列中重建 Core Session，保留原工作区、宿主约束、组件选择、MCP 与插件能力，重施活动目标并发布新的工具投影。它不是只修改一个显示字符串。
+代理在会话操作队列中重建 Core Session。原工作区、宿主约束、组件选择、MCP 与插件能力保持不变。代理重施活动目标并重新注册准入的工具，不是只修改显示字符串。
 
 ## 推理强度
 
-模型条目的元数据声明所支持的 reasoning effort 与当前选择。宿主 fallback 档位为 low、medium、high、xhigh、max；它们与供应商原生参数不一定一一对应。ultracode 不是 ReasoningEffort 枚举。
+模型条目的元数据声明支持的 reasoning effort 与当前选择。宿主 fallback 档位为 low、medium、high、xhigh、max。这些档位与供应商原生参数不一定一一对应。ultracode 不是 ReasoningEffort 枚举。
 
-切换时使用受支持的 reasoningEffort 元数据，查看返回状态确认实际选择。不能在不支持的供应商上把 xhigh 标签当成已开启相同推理预算。
+切换时使用受支持的 reasoningEffort 元数据，并查看返回状态。不能在不支持的供应商上把 xhigh 标签当成已启用相同推理预算。
 
 ## 认证与账号导入
 
@@ -35,7 +35,7 @@ ACP initialize 当前不发布登录方法，authenticate 返回空响应。实�
 
 ## 故障检查
 
-测试未知模型、无效 effort、当前 Run 尚未结束和替换失败。替换失败后旧 Session 的权限、目标和插件状态必须一致；成功后工具目录以新 generation 为准。凭据错误归属供应商或配置，不应冒充权限拒绝。
+测试未知模型、无效 effort、当前 Run 尚未结束和替换失败。替换失败后旧 Session 的权限、目标和插件状态必须一致；成功后界面以新的会话响应和后续标准通知为准。凭据错误归属供应商或配置，不应冒充权限拒绝。
 
 ## 实现依据
 

@@ -1,0 +1,77 @@
+export const meta = {
+  title: 'ORM 迁移与运行验证',
+  description: '事务取消、迁移账本、PostgreSQL 连接池和部署验收。',
+  label: '迁移与验证',
+  updated: '2026-10-29',
+};
+
+ORM 把事务清理、迁移账本和连接池策略写成显式合同。应用仍需选择权限、证书、截止日期和重试策略。
+
+## 事务与取消
+
+SQLite 和 PostgreSQL 的 scoped transaction 在操作错误时回滚。Tokio 任务取消时，连接会保留到回滚清理完成。
+
+PostgreSQL 事务隔离、访问模式和超时只作用于当前事务。SQLite 使用嵌套 savepoint 和连接门控，避免后续操作越过取消清理。
+
+错误分类可以识别序列化冲突、死锁、锁竞争、故障转移、连接丢失和池饱和。ORM 不会自动重放写入，也不会解决提交结果不确定的问题。
+
+## 迁移与只读核对
+
+迁移按版本排序，使用 SHA-256 校验和，并记录在 `a3s_orm_migrations`。重复执行未变化的集合是 no-op。修改或删除已应用迁移会返回错误。
+
+```rust
+use a3s_orm::{Migration, Migrator, SqliteExecutor};
+
+let executor = SqliteExecutor::open_in_memory().await?;
+let report = Migrator::new(executor)
+    .run([Migration::new(
+        "001",
+        "create people",
+        "create table person (id integer primary key, name text not null)",
+    )])
+    .await?;
+assert_eq!(report.applied, vec!["001"]);
+```
+
+没有 DDL 权限的 Serving 进程使用 `Migrator::verify_required`。该调用不建表、不获取迁移锁，也不写迁移账本。
+
+每个必需迁移必须已经存在且具有相同校验和。额外已应用迁移可以被接纳，用于明确的 expand-compatible 滚动升级。
+
+SQLite 使用 `BEGIN IMMEDIATE` 协调迁移。PostgreSQL 使用带截止日期的 transaction-scoped advisory lock。迁移 SQL 与账本记录原子提交。
+
+## PostgreSQL 连接与池
+
+生产部署使用 `PostgresExecutor::connect_tls`，并提供部署 CA 和可选客户端身份。`connect_no_tls` 只用于本地或另有安全保护的连接。
+
+<DocTable caption="PostgreSQL 运行控制" headers={['控制', '部署责任']} rows={[
+  ['PostgresPoolOptions', '设置池大小和获取、创建、回收期限'],
+  ['pool_metrics', '导出无标签指标，再由宿主添加有界标签'],
+  ['TLS Pool Rotation', '由宿主安排证书获取和轮换计划'],
+  ['Retry Classification', '只对幂等操作应用带期限的重试'],
+]} />
+
+内置 TLS 路径接受内存中的 PEM 材料。应用负责证书来源和轮换调度。
+
+## 当前限制
+
+- SQLite 内置驱动串行使用一个连接。
+- MySQL 没有内置运行时驱动。
+- 迁移不提供自动 Down Migration。
+- SELECT 行锁和表锁仅支持 PostgreSQL。
+- 标量函数与 Cast 的结果类型由调用方显式声明。
+- 部分带独立 CTE、排序或 LIMIT 的集合操作数会被拒绝。
+
+## 部署验收
+
+1. 核对连接 TLS、证书和池期限。
+2. 验证事务错误与任务取消后的清理。
+3. 分离迁移权限与 Serving 权限。
+4. 使用 `verify_required` 核对 Serving 准入。
+5. 只重试幂等操作并设置总期限。
+6. 在真实 SQLite 和 PostgreSQL 上执行集成测试。
+
+## 实现依据
+
+- [迁移与事务合同](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/README.md)
+- [生产部署清单](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/docs/production-readiness.md)
+- [PostgreSQL HA 控制](https://github.com/aster-ai-lab/aster/blob/main/crates/orm/docs/postgres-ha.md)

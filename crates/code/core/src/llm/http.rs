@@ -176,6 +176,20 @@ pub struct HttpMetricsRecord {
 /// The callback is called after each HTTP request completes.
 pub type HttpMetricsCallback = Arc<dyn Fn(HttpMetricsRecord) + Send + Sync>;
 
+pub(crate) fn invocation_headers(mut headers: Vec<(String, String)>) -> Vec<(String, String)> {
+    if headers
+        .iter()
+        .any(|(name, _)| name.eq_ignore_ascii_case("x-aster-source"))
+    {
+        headers.retain(|(name, _)| !name.eq_ignore_ascii_case("x-aster-request-id"));
+        headers.push((
+            "x-aster-request-id".into(),
+            uuid::Uuid::new_v4().to_string(),
+        ));
+    }
+    headers
+}
+
 /// Global HTTP metrics callback registry.
 ///
 /// Set this to enable HTTP metrics collection for LLM API calls.
@@ -354,6 +368,14 @@ pub(crate) fn stream_headers_timeout() -> Duration {
 }
 
 impl ReqwestHttpClient {
+    /// Use a host-configured transport while retaining the provider HTTP contract.
+    pub fn with_client(client: reqwest::Client) -> Self {
+        Self {
+            client,
+            request_timeout: None,
+        }
+    }
+
     pub fn new() -> Self {
         // Construction-level fallback, not an expect: the default builder
         // fails on a malformed http_proxy/https_proxy env var or a TLS
@@ -383,6 +405,17 @@ impl ReqwestHttpClient {
         Ok(Self {
             client: build_reqwest_client(None, None)?,
             request_timeout: Some(timeout),
+        })
+    }
+
+    /// Build a single-hop client for callers that admit one exact endpoint.
+    pub fn without_redirects() -> Result<Self> {
+        Ok(Self {
+            client: reqwest_client_builder(None, None)?
+                .redirect(reqwest::redirect::Policy::none())
+                .build()
+                .context("Failed to build single-hop HTTP client")?,
+            request_timeout: None,
         })
     }
 }
@@ -738,6 +771,15 @@ pub(crate) fn build_reqwest_client(
     timeout: Option<Duration>,
     default_headers: Option<reqwest::header::HeaderMap>,
 ) -> Result<reqwest::Client> {
+    reqwest_client_builder(timeout, default_headers)?
+        .build()
+        .context("Failed to build reqwest client")
+}
+
+fn reqwest_client_builder(
+    timeout: Option<Duration>,
+    default_headers: Option<reqwest::header::HeaderMap>,
+) -> Result<reqwest::ClientBuilder> {
     let mut builder = reqwest::Client::builder().no_proxy();
 
     // TCP+TLS connect only — no generation is involved, so a host (or proxy)
@@ -773,7 +815,7 @@ pub(crate) fn build_reqwest_client(
         );
     }
 
-    builder.build().context("Failed to build reqwest client")
+    Ok(builder)
 }
 
 fn explicit_proxy_config_from_env() -> ExplicitProxyConfig {
@@ -853,7 +895,13 @@ pub(crate) fn join_chat_completions_url(base_url: &str, chat_path: &str) -> Stri
 mod duplex_tests;
 
 #[cfg(test)]
+mod invocation_tests;
+
+#[cfg(test)]
 mod transport_error_tests;
+
+#[cfg(test)]
+mod redirect_tests;
 
 #[cfg(test)]
 mod tests {
@@ -956,12 +1004,12 @@ mod tests {
         );
     }
 
-    fn proxy_env_lock() -> &'static Mutex<()> {
+    pub(super) fn proxy_env_lock() -> &'static Mutex<()> {
         static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
         LOCK.get_or_init(|| Mutex::new(()))
     }
 
-    fn clear_proxy_env() {
+    pub(super) fn clear_proxy_env() {
         for key in [
             "http_proxy",
             "HTTP_PROXY",

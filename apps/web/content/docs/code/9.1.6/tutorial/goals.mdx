@@ -1,15 +1,15 @@
 export const meta = {
-  title: '11 · 把长任务拆成可推进的目标',
+  title: '11 · 长期目标与分轮推进',
   description: '绑定工作策略，创建目标与计划，再由宿主逐轮推进并处理等待和版本冲突。',
   label: '11 长期目标',
   updated: '2026-10-26',
 };
 
-## 先有目标，再决定是否续跑
+## 目标与续跑条件
 
-“解释测试入口”适合一次 Run。“检查调用方、修复问题、运行验收、整理结果”可以形成多个步骤。长期目标记录步骤、接受结果和等待条件；它不会因为普通消息比较长，就自动被创建。
+“解释测试入口”适合一次 Run。“检查调用方、修复问题、运行验收、整理结果”可以形成多个步骤。长期目标记录步骤、接受结果和等待条件。普通消息较长时不会自动创建目标。
 
-本章新建一个有工作策略的练习会话。不要给已保存且没有策略的旧会话补绑新策略。SDK 未设置宿主续跑策略时，不会自动启动下一轮。
+本练习新建一个有工作策略的会话。不要给已保存且没有策略的旧会话补绑新策略。SDK 未设置宿主续跑策略时，不会自动启动下一轮。
 
 ## 在创建会话前绑定工作要求与工作区
 
@@ -66,9 +66,9 @@ fn create_goal(session: &AgentSession, workspace: WorkspaceRef)
 
 `operation_id` 是宿主的幂等操作标识。本例只创建一次；不同操作应使用不同标识，重试同一操作则保留原 ID。不要每次重试都换 ID，否则无法利用同一次操作的重放语义。
 
-## 提出计划，再接受准确的计划版本
+## 提交并接受计划版本
 
-创建 `src/goals.rs`，把本章的目标与计划函数放在这里，在主模块声明 `mod goals;`。读取 `session.goal_definition()`，用其中的 binding、修订和序列构建 `GoalPlanCommandV1`。计划至少包含 `inspect` 和依赖它的 `verify`：
+创建 `src/goals.rs`，将目标与计划函数放在这个模块中，并在主模块声明 `mod goals;`。读取 `session.goal_definition()`，用其中的 binding、修订和序列构建 `GoalPlanCommandV1`。计划至少包含 `inspect` 和依赖它的 `verify`：
 
 ```rust
 use a3s_code_core::planning::{ExecutionPlan, Complexity, Task};
@@ -183,11 +183,16 @@ async fn advance_once(session: &AgentSession, operation_id: &str)
 
 工作区配置不能提高这些权限。也不要在界面里写一个没有边界的 `while` 循环反复 `send("继续")`。目标的每一轮都需要保留自己的运行身份、检查结果和资源收尾。
 
-## 本章验收
+## 验收
 
-未接受计划时不开始运行；过期版本命令被拒绝；暂停后不再接纳下一轮；只读工具或重复写入相同内容不重置“没有实际修改”的计数。恢复时还应保留这些累计限制。
+未接受计划时，目标拒绝开始运行。
+过期版本命令被拒绝，暂停后停止接纳下一轮。
+只读调用成功本身不代表进展。
+重复写入相同内容不会产生新工作区状态。
+当前 V3 进展还核对已接受步骤与原始进展维度。
+机制与历史版本见[长期任务设计](../../internals/long-running/)。
 
-## 继续查阅
+## 相关文档
 
 - [工作策略与长期目标](../../meta-harness/durable-work/)
 - [Goal 命令与版本字段](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/goal_control.rs)
@@ -195,4 +200,4 @@ async fn advance_once(session: &AgentSession, operation_id: &str)
 
 ## 可编译的接入函数
 
-本章的 Rust 函数也收录在参考工程的 [chapters.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/chapters.rs)。它们随 `cargo check --locked -p tutorial-agent --all-targets` 检查；调用时仍需本章说明的配置与宿主对象。编译这些函数不表示所有外部后端都已验证。
+这些 Rust 函数也收录在参考工程的 [chapters.rs](https://github.com/aster-ai-lab/aster/blob/main/apps/tutorial-agent/src/chapters.rs)。它们随 `cargo check --locked -p tutorial-agent --all-targets` 检查。调用时仍需上述配置与宿主对象。编译这些函数不表示所有外部后端都已验证。

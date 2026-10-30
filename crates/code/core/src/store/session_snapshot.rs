@@ -200,10 +200,10 @@ impl SessionSnapshotV1 {
                 );
             }
         }
-        if let Some(binding) = &self.session.cognitive_package_binding {
+        if let Some(binding) = &self.session.package_binding {
             binding.validate().map_err(|error| {
                 anyhow::anyhow!(
-                    "session snapshot {:?} has an invalid cognitive package binding: {error}",
+                    "session snapshot {:?} has an invalid package binding: {error}",
                     self.session.id
                 )
             })?;
@@ -220,10 +220,10 @@ impl SessionSnapshotV1 {
 
         for (run_index, record) in self.run_records.iter().enumerate() {
             let run_id = &record.snapshot.id;
-            if let Some(binding) = &record.snapshot.cognitive_package_binding {
+            if let Some(binding) = &record.snapshot.package_binding {
                 binding.validate().map_err(|error| {
                     anyhow::anyhow!(
-                        "run {:?} at record {} has an invalid cognitive package binding: {error}",
+                        "run {:?} at record {} has an invalid package binding: {error}",
                         run_id,
                         run_index
                     )
@@ -259,7 +259,7 @@ impl SessionSnapshotV1 {
 
             let mut previous_sequence = None;
             // Snapshots written before Run-level binding evidence was added
-            // may still carry repeated cognitive events. Keep those loadable
+            // may still carry repeated package events. Keep those loadable
             // when the events agree with each other; new snapshots bind the
             // value directly on RunSnapshot and no longer compare old Runs to
             // the Session's latest catalog generation.
@@ -277,25 +277,25 @@ impl SessionSnapshotV1 {
                     }
                 }
                 previous_sequence = Some(event.sequence);
-                if let crate::agent::AgentEvent::CognitiveContextBound { binding } = &event.event {
+                if let crate::agent::AgentEvent::PackageContextBound { binding } = &event.event {
                     binding.validate().map_err(|error| {
                         anyhow::anyhow!(
-                            "run {:?} event {} has an invalid cognitive package binding: {error}",
+                            "run {:?} event {} has an invalid package binding: {error}",
                             run_id,
                             event_index
                         )
                     })?;
-                    match &record.snapshot.cognitive_package_binding {
+                    match &record.snapshot.package_binding {
                         Some(expected) if expected == binding => {}
                         Some(_) => bail!(
-                            "run {:?} event {} carries a cognitive generation different from its admitted Run binding",
+                            "run {:?} event {} carries a package generation different from its admitted Run binding",
                             run_id,
                             event_index
                         ),
                         None => match &legacy_event_binding {
                             Some(expected) if expected == binding => {}
                             Some(_) => bail!(
-                                "legacy run {:?} event {} changes cognitive generation within one Run",
+                                "legacy run {:?} event {} changes package generation within one Run",
                                 run_id,
                                 event_index
                             ),

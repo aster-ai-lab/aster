@@ -1,7 +1,6 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use crate::llm::http::ReqwestHttpClient;
 use crate::llm::{
     default_http_client, structured, ContentBlock, HttpClient, LlmClient, LlmResponse,
     LlmResponseMeta, Message, ModelGenerationPool, StreamEvent, TokenUsage, ToolDefinition,
@@ -12,9 +11,25 @@ use serde_json::{json, Value};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
-const CODEX_BASE: &str = "https://chatgpt.com/backend-api/codex";
+/// Fixed account endpoint shared by authorized host transports; never read from disk configuration.
+pub const CODEX_BASE: &str = "https://chatgpt.com/backend-api/codex";
 const ORIGINATOR: &str = "codex_cli_rs";
 const USER_AGENT: &str = "codex_cli_rs (a3s-code-core)";
+
+mod account;
+
+#[derive(Debug, thiserror::Error)]
+#[error("codex /responses HTTP {status}: {body}")]
+pub struct CodexHttpError {
+    status: u16,
+    body: String,
+}
+
+impl CodexHttpError {
+    pub fn status(&self) -> u16 {
+        self.status
+    }
+}
 
 /// Codex account-backed Responses client used by local evaluation adapters.
 ///
@@ -27,13 +42,27 @@ pub struct CodexLoginClient {
     reasoning_effort: Option<String>,
     session_id: String,
     http: Arc<dyn HttpClient>,
+    api: Option<ResponsesApi>,
     /// One encrypted reasoning item per assistant tool-call turn. The
     /// Responses API requires the items to be replayed in their original
     /// order when a tool result is followed by another model request.
     encrypted_reasoning: Arc<std::sync::Mutex<Vec<Option<String>>>>,
 }
 
+#[derive(Clone)]
+struct ResponsesApi {
+    endpoint: String,
+    headers: Vec<(String, String)>,
+    max_output_tokens: Option<usize>,
+    temperature: Option<f32>,
+}
+
 impl CodexLoginClient {
+    /// Merge a local Codex login into configuration after the host authorizes account import.
+    pub fn import_local_account(config: &mut crate::CodeConfig) -> Result<bool> {
+        account::merge_into_config(config)
+    }
+
     /// Build from a validated auth snapshot (the account importer or an
     /// explicit provider block). Construction never reads disk and never
     /// fails; an unusable token surfaces per request like any other
@@ -52,6 +81,7 @@ impl CodexLoginClient {
             reasoning_effort: reasoning_effort.filter(|effort| !effort.trim().is_empty()),
             session_id: session_id.to_string(),
             http: default_http_client(),
+            api: None,
             encrypted_reasoning: Arc::new(std::sync::Mutex::new(Vec::new())),
         }
     }
@@ -60,6 +90,46 @@ impl CodexLoginClient {
     pub fn with_http_client(mut self, http: Arc<dyn HttpClient>) -> Self {
         self.http = http;
         self
+    }
+
+    /// Protocol identity shared by direct SDK requests and authorized account hosts.
+    pub fn account_protocol_headers() -> [(&'static str, &'static str); 3] {
+        [
+            ("OpenAI-Beta", "responses=experimental"),
+            ("originator", ORIGINATOR),
+            ("User-Agent", USER_AGENT),
+        ]
+    }
+
+    pub(super) fn for_api(
+        config: super::LlmConfig,
+        headers: std::collections::HashMap<String, String>,
+        http: Arc<dyn HttpClient>,
+    ) -> Self {
+        let mut client = Self::from_parts(
+            config.api_key.expose().to_owned(),
+            String::new(),
+            &config.model,
+            config.session_id.as_deref().unwrap_or(""),
+            config.reasoning_effort,
+        );
+        client.api = Some(ResponsesApi {
+            endpoint: super::metering::wire::UsageProtocol::OpenaiResponses.endpoint(
+                config
+                    .base_url
+                    .as_deref()
+                    .unwrap_or("https://api.openai.com/v1"),
+            ),
+            headers: headers.into_iter().collect(),
+            max_output_tokens: config.max_tokens,
+            temperature: if config.disable_temperature {
+                None
+            } else {
+                config.temperature
+            },
+        });
+        client.http = http;
+        client
     }
 
     /// Load the local Codex login used by developer-side evaluations.
@@ -79,32 +149,8 @@ impl CodexLoginClient {
         reasoning_effort: Option<String>,
     ) -> Result<Self> {
         let auth_path = auth_path.into();
-        let raw = crate::bounded_io::read_utf8_file_bounded(
-            &auth_path,
-            crate::bounded_io::MAX_AUTH_FILE_BYTES,
-        )
-        .with_context(|| format!("read Codex auth file {}", auth_path.display()))?;
-        let auth: Value = serde_json::from_str(&raw).context("parse Codex auth file")?;
-
-        let access_token = auth
-            .pointer("/tokens/access_token")
-            .or_else(|| auth.get("access_token"))
-            .and_then(Value::as_str)
-            .ok_or_else(|| anyhow!("no access_token in ~/.codex/auth.json; run `codex login`"))?
-            .to_string();
-
-        let account_id = auth
-            .pointer("/tokens/account_id")
-            .and_then(Value::as_str)
-            .map(str::to_string)
-            .or_else(|| {
-                auth.pointer("/tokens/id_token")
-                    .and_then(Value::as_str)
-                    .and_then(account_id_from_id_token)
-            })
-            .ok_or_else(|| {
-                anyhow!("no ChatGPT account id in ~/.codex/auth.json; re-run `codex login`")
-            })?;
+        let auth = read_auth_file(&auth_path)?;
+        let (access_token, account_id) = auth_credentials(&auth)?;
 
         Ok(Self::from_parts(
             access_token,
@@ -143,6 +189,14 @@ impl CodexLoginClient {
             body["include"] = json!(["reasoning.encrypted_content"]);
             body["reasoning"] = json!({"effort": effort, "summary": "auto"});
         }
+        if let Some(api) = &self.api {
+            if let Some(limit) = api.max_output_tokens {
+                body["max_output_tokens"] = json!(limit);
+            }
+            if let Some(temperature) = api.temperature {
+                body["temperature"] = json!(temperature);
+            }
+        }
         body
     }
 }
@@ -150,6 +204,15 @@ impl CodexLoginClient {
 #[async_trait]
 impl LlmClient for CodexLoginClient {
     fn model_generation_pool(&self) -> Option<ModelGenerationPool> {
+        if let Some(api) = &self.api {
+            return ModelGenerationPool::for_endpoint(
+                "openai-responses",
+                &self.model,
+                &api.endpoint,
+                self.model_generation_concurrency(),
+            )
+            .ok();
+        }
         ModelGenerationPool::for_account_endpoint(
             "codex",
             &self.model,
@@ -160,22 +223,6 @@ impl LlmClient for CodexLoginClient {
         .ok()
     }
 
-    fn with_active_generation_timeout(
-        &self,
-        timeout: std::time::Duration,
-    ) -> Option<Arc<dyn LlmClient>> {
-        let http = Arc::new(ReqwestHttpClient::with_timeout(timeout).ok()?);
-        Some(Arc::new(Self {
-            access_token: self.access_token.clone(),
-            account_id: self.account_id.clone(),
-            model: self.model.clone(),
-            reasoning_effort: self.reasoning_effort.clone(),
-            session_id: self.session_id.clone(),
-            http,
-            encrypted_reasoning: Arc::new(std::sync::Mutex::new(Vec::new())),
-        }))
-    }
-
     fn fork_for_session(&self, session_id: &str) -> Option<Arc<dyn LlmClient>> {
         Some(Arc::new(Self {
             access_token: self.access_token.clone(),
@@ -184,6 +231,7 @@ impl LlmClient for CodexLoginClient {
             reasoning_effort: self.reasoning_effort.clone(),
             session_id: session_id.to_string(),
             http: Arc::clone(&self.http),
+            api: self.api.clone(),
             encrypted_reasoning: Arc::new(std::sync::Mutex::new(Vec::new())),
         }))
     }
@@ -194,8 +242,10 @@ impl LlmClient for CodexLoginClient {
         system: Option<&str>,
         tools: &[ToolDefinition],
     ) -> Result<LlmResponse> {
+        let cancel = CancellationToken::new();
+        let _cancel_on_drop = cancel.clone().drop_guard();
         let mut rx = self
-            .complete_streaming(messages, system, tools, CancellationToken::new())
+            .complete_streaming(messages, system, tools, cancel)
             .await?;
         while let Some(event) = rx.recv().await {
             if let StreamEvent::Done(response) = event {
@@ -213,16 +263,29 @@ impl LlmClient for CodexLoginClient {
         cancel_token: CancellationToken,
     ) -> Result<mpsc::Receiver<StreamEvent>> {
         let body = self.build_body(messages, system, tools, true);
-        let url = format!("{CODEX_BASE}/responses");
+        let url = self.api.as_ref().map_or_else(
+            || format!("{CODEX_BASE}/responses"),
+            |api| api.endpoint.clone(),
+        );
+        let provider = if self.api.is_some() {
+            "openai-responses"
+        } else {
+            "codex"
+        };
         let bearer = format!("Bearer {}", self.access_token);
         let mut headers = vec![
             ("Authorization", bearer.as_str()),
-            ("OpenAI-Beta", "responses=experimental"),
-            ("originator", ORIGINATOR),
-            ("session_id", self.session_id.as_str()),
             ("Accept", "text/event-stream"),
-            ("User-Agent", USER_AGENT),
         ];
+        if let Some(api) = &self.api {
+            for (name, value) in &api.headers {
+                headers.retain(|(existing, _)| !name.eq_ignore_ascii_case(existing));
+                headers.push((name.as_str(), value.as_str()));
+            }
+        } else {
+            headers.extend(Self::account_protocol_headers());
+            headers.push(("session_id", self.session_id.as_str()));
+        }
         // `from_parts` permits an empty account id (explicit provider block
         // without one); the API then answers per request instead of this
         // client guessing an identity.
@@ -232,7 +295,7 @@ impl LlmClient for CodexLoginClient {
 
         let response = self
             .http
-            .post_streaming(&url, headers, &body, cancel_token)
+            .post_streaming(&url, headers, &body, cancel_token.clone())
             .await?;
         if !(200..300).contains(&response.status) {
             // Authentication, authorization, request-shape, and billing
@@ -242,17 +305,17 @@ impl LlmClient for CodexLoginClient {
             if matches!(response.status, 400..=404) {
                 return Err(anyhow::Error::new(
                     crate::llm::NonRetryableLlmError::from_status(
-                        "codex",
+                        provider,
                         response.status,
                         response.error_body,
                     ),
                 ));
             }
-            return Err(anyhow!(
-                "codex /responses HTTP {}: {}",
-                response.status,
-                response.error_body
-            ));
+            return Err(CodexHttpError {
+                status: response.status,
+                body: response.error_body,
+            }
+            .into());
         }
 
         let (tx, rx) = mpsc::channel(128);
@@ -264,6 +327,7 @@ impl LlmClient for CodexLoginClient {
             use futures::StreamExt;
 
             let mut buffer = String::new();
+            let mut decoder = crate::sse::Utf8StreamDecoder::default();
             let mut text = String::new();
             let mut reasoning = String::new();
             let mut response_id: Option<String> = None;
@@ -271,12 +335,18 @@ impl LlmClient for CodexLoginClient {
             let mut tool_calls: Vec<(String, PendingToolCall)> = Vec::new();
             let mut response_encrypted_reasoning: Option<String> = None;
 
-            while let Some(chunk) = stream.next().await {
+            while let Some(chunk) = tokio::select! {
+                biased;
+                _ = cancel_token.cancelled() => None,
+                chunk = stream.next() => chunk,
+            } {
                 let chunk = match chunk {
                     Ok(chunk) => chunk,
                     Err(_) => break,
                 };
-                buffer.push_str(&String::from_utf8_lossy(&chunk));
+                if decoder.push_to(&chunk, &mut buffer).is_err() {
+                    break;
+                }
 
                 // Same blank-line splitter as the other model streams. A
                 // trailing CR is not a frame: the next chunk may complete CRLF.
@@ -433,7 +503,7 @@ impl LlmClient for CodexLoginClient {
                                     ),
                                     token_logprobs: Vec::new(),
                                     meta: Some(LlmResponseMeta {
-                                        provider: Some("codex".to_string()),
+                                        provider: Some(provider.to_string()),
                                         request_model: Some(model.clone()),
                                         request_url: Some(url.clone()),
                                         response_id: response_id.clone(),
@@ -525,12 +595,50 @@ fn parse_tool_arguments(arguments: &str) -> Value {
     serde_json::from_str(arguments).unwrap_or_else(|_| json!({}))
 }
 
-fn account_id_from_id_token(jwt: &str) -> Option<String> {
+fn read_auth_file(path: &Path) -> Result<Value> {
+    let raw =
+        crate::bounded_io::read_utf8_file_bounded(path, crate::bounded_io::MAX_AUTH_FILE_BYTES)
+            .with_context(|| format!("read Codex auth file {}", path.display()))?;
+    serde_json::from_str(&raw).context("parse Codex auth file")
+}
+
+fn auth_credentials(auth: &Value) -> Result<(String, String)> {
+    let access_token = auth
+        .pointer("/tokens/access_token")
+        .or_else(|| auth.get("access_token"))
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|token| !token.is_empty())
+        .ok_or_else(|| anyhow!("no access_token in Codex auth file; run `codex login`"))?;
+    let account_id = auth
+        .pointer("/tokens/account_id")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|id| !id.is_empty())
+        .map(str::to_owned)
+        .or_else(|| {
+            auth.pointer("/tokens/id_token")
+                .and_then(Value::as_str)
+                .and_then(account_id_from_id_token)
+        })
+        .ok_or_else(|| anyhow!("no ChatGPT account id in Codex auth file; re-run `codex login`"))?;
+    Ok((access_token.to_owned(), account_id))
+}
+
+fn jwt_payload(jwt: &str) -> Option<Value> {
     use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 
-    let payload = jwt.split('.').nth(1)?;
+    let mut parts = jwt.split('.');
+    let (header, payload, signature) = (parts.next()?, parts.next()?, parts.next()?);
+    if parts.next().is_some() || header.is_empty() || payload.is_empty() || signature.is_empty() {
+        return None;
+    }
     let bytes = URL_SAFE_NO_PAD.decode(payload).ok()?;
-    let claims: Value = serde_json::from_slice(&bytes).ok()?;
+    serde_json::from_slice(&bytes).ok()
+}
+
+fn account_id_from_id_token(jwt: &str) -> Option<String> {
+    let claims = jwt_payload(jwt)?;
     claims
         .pointer("/https:~1~1api.openai.com~1auth/chatgpt_account_id")
         .and_then(Value::as_str)
@@ -550,6 +658,7 @@ fn convert_messages(messages: &[Message], encrypted_reasoning: &[Option<String>]
             if let Some(Some(encrypted_content)) = reasoning.next() {
                 out.push(json!({
                     "type": "reasoning",
+                    "summary": [],
                     "encrypted_content": encrypted_content,
                 }));
             }
@@ -612,10 +721,20 @@ fn convert_tools(tools: &[ToolDefinition]) -> Vec<Value> {
                 "name": tool.name,
                 "description": tool.description,
                 "parameters": tool.parameters,
+                // Responses otherwise promotes optional fields to required ones.
+                "strict": false,
             })
         })
         .collect()
 }
+
+#[cfg(test)]
+#[path = "codex_login_schema_tests.rs"]
+mod schema_tests;
+
+#[cfg(test)]
+#[path = "codex_login_cancellation_tests.rs"]
+mod cancellation_tests;
 
 #[cfg(test)]
 mod tests {
@@ -664,6 +783,11 @@ mod tests {
             .map(|item| item["encrypted_content"].as_str().unwrap())
             .collect::<Vec<_>>();
         assert_eq!(reasoning, ["encrypted-1", "encrypted-2"]);
+        for item in &converted {
+            if item["type"] == "reasoning" {
+                assert_eq!(item["summary"], json!([]));
+            }
+        }
     }
 
     fn codex_hello_sse(separator: &str) -> String {
@@ -672,22 +796,15 @@ mod tests {
         format!("data: {delta}{separator}{separator}data: {done}{separator}{separator}")
     }
 
-    fn codex_client(http: Arc<dyn HttpClient>) -> CodexLoginClient {
-        CodexLoginClient {
-            access_token: "token".to_string(),
-            account_id: "acct".to_string(),
-            model: "gpt-test".to_string(),
-            reasoning_effort: None,
-            session_id: "sess".to_string(),
-            http,
-            encrypted_reasoning: Arc::new(std::sync::Mutex::new(Vec::new())),
-        }
+    pub(super) fn codex_client(http: Arc<dyn HttpClient>) -> CodexLoginClient {
+        CodexLoginClient::from_parts("token".into(), "acct".into(), "gpt-test", "sess", None)
+            .with_http_client(http)
     }
 
-    struct ScriptedCodexSse {
-        incoming:
+    pub(super) struct ScriptedCodexSse {
+        pub(super) incoming:
             std::sync::Mutex<Option<tokio::sync::mpsc::UnboundedReceiver<Option<bytes::Bytes>>>>,
-        parked: std::sync::Arc<tokio::sync::Notify>,
+        pub(super) parked: std::sync::Arc<tokio::sync::Notify>,
     }
 
     #[async_trait]

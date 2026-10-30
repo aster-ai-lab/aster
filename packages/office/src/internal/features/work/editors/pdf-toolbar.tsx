@@ -177,6 +177,7 @@ export function PdfToolbar({
           </output>
           <Button
             tone="secondary"
+            size="compact"
             title={`${saveLabel}（Cmd/Ctrl+S）`}
             aria-keyshortcuts={pdfKeyboardShortcuts.save}
             disabled={!can.save()}

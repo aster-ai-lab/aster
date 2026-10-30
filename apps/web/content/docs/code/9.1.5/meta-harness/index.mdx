@@ -5,13 +5,13 @@ export const meta = {
   updated: '2026-10-26',
 };
 
-Meta Harness 是 A3S Code 提供给宿主的执行组合接口。你可以选择默认组件、注册自己的组件，或提供整棵组件树。它们最终进入同一个会话执行过程，使用事实日志记录结果。
+Meta Harness 是 A3S Code 的执行组合接口。宿主可以选择默认组件、注册组件或提供完整组件树。选定的组件进入同一个会话执行过程，并使用事实日志记录结果。
 
 <MetaHarnessDiagram />
 
-## 按需求找接口
+## 接口索引
 
-<DocTable caption="具体需求与使用入口" headers={['我想做什么', '使用入口', '继续阅读']} rows={[
+<DocTable caption="具体需求与使用入口" headers={['需求', '接口', '文档']} rows={[
   ['调整提示、调用次数和压缩阈值', 'HarnessComposeOptions + with_harness', <a href="./composition/">组件、预算与压缩</a>],
   ['挂载自己的执行组件', 'HostHarnessRegistry + host:<id>', <a href="./extensions/">自定义组件与调度</a>],
   ['替换整棵组件树', 'HostHarnessAssembler + admit_component_tree', <a href="./extensions/">自定义组件与调度</a>],
@@ -23,21 +23,21 @@ Meta Harness 是 A3S Code 提供给宿主的执行组合接口。你可以选择
   ['给长期任务绑定工作要求、计划和等待条件', 'WorkPolicyV1 + goal 接口', <a href="./durable-work/">工作策略与长期目标</a>],
 ]} />
 
-## 从哪种接入方式开始
+## 接入方式
 
-先准备一个能正常发送请求的 Rust `Agent`，模型配置与异步运行环境见[宿主接入](../integration/)。下文示例接收这个已有对象，不会另建一套模型连接。组件示例还使用工作区内的 `a3s-effect`；不需要为这些接口启用 `advanced-harness`。
+示例接收一个能正常发送请求的 Rust `Agent`。模型配置与异步运行环境见[宿主接入](../integration/)。示例不会另建模型连接。组件示例还使用工作区内的 `a3s-effect`，无需为这些接口启用 `advanced-harness`。
 
-通常先用 `SessionOptions::with_harness`。它能选择默认组件并调整参数，适合大多数嵌入场景。需要给现有执行过程补充一个组件时，增加 `HostHarnessRegistry`；只有需要自己搭建组件树时，才使用 `HostHarnessAssembler`。
+多数嵌入场景使用 `SessionOptions::with_harness` 选择默认组件并调整参数。补充一个组件时使用 `HostHarnessRegistry`。需要完整组件树时使用 `HostHarnessAssembler`。
 
-自定义组件和完整组件树是 Rust 宿主接口。ACP 客户端不能提交任意 Rust 组件；当前入口只接受三套预先列出的组合，具体列表见“组件、预算与压缩”。
+自定义组件和完整组件树是 Rust 宿主接口。ACP 客户端不能提交任意 Rust 组件。当前入口只接受三套预先列出的组合，具体列表见“组件、预算与压缩”。
 
-## 这些能力怎样配合
+## 能力协作
 
-例如，一个每日检查项目的 Agent 可以从目录读取指令和 Skills，由宿主定时提交任务，使用 MCP 获取外部信息，并在执行结束前提交测试报告。中断后，再从保存的会话或检查点恢复。
+一个每日检查项目的 Agent 可以从目录读取指令和 Skills。宿主定时提交任务，Agent 使用 MCP 获取外部信息，并在结束前提交测试报告。中断后可以从保存的会话或检查点恢复。
 
-其中，目录负责组织文件，宿主负责时钟与外部服务，Meta Harness 负责装配执行组件。它不会因为目录里有一条定时声明，就自行启动后台服务。
+目录负责组织文件，宿主负责时钟与外部服务，Meta Harness 负责装配执行组件。目录中的定时声明不会自行启动后台服务。
 
-上下文、工具、持久记忆和目标控制通过会话接入。它们不是五个默认组件之外随意添加的组件名称，也不都需要 `advanced-harness`。构建开关与会话配置请分别核对。
+上下文、工具、持久记忆和目标控制通过会话接入。它们不是五个默认组件之外随意添加的组件名称，也不都需要 `advanced-harness`。构建开关与会话配置需要分别核对。
 
 ## 组件不能改掉的规则
 

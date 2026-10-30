@@ -1,0 +1,17 @@
+suite "spreadsheet-derived-compatibility" {
+    version = 1
+    scenario "recalculated-results-reach-the-existing-change-callback" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58129/?editor=spreadsheet&import=1" }
+        wait "ready" { visible = role("textbox", "当前单元格输入") }
+        wait "calculated" { text = "0.6666666666666666" }
+        expect "controlled-result" { target = css("output[aria-label='Formula cache']") rendered_text = "0.6666666666666666" }
+        expect "no-initial-history" { disabled = role("button", "撤销") }
+        click "round-trip" { target = role("button", "Export and reopen") }
+        wait "reopened" { text = "reopened" }
+        expect "result-preserved" { target = css("output[aria-label='Formula cache']") rendered_text = "0.6666666666666666" }
+        expect "formula-preserved" { target = css("output[aria-label='Formula source']") rendered_text = "=SUM(C4:E4)/3" }
+    }
+}

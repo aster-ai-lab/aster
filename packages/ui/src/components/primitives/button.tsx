@@ -9,10 +9,10 @@ import { cn } from '../../lib/utils'
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-2 whitespace-nowrap',
-    'rounded-md font-normal transition-all',
+    'rounded-md font-normal motion-safe:transition-[background-color,color,border-color,box-shadow,opacity] motion-safe:duration-150 active:opacity-80',
     'disabled:pointer-events-none disabled:opacity-40',
     "shrink-0 outline-none aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_.lucide:not(.lucide-custom)]:text-current [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-    'data-[busy=true]:cursor-progress data-[busy=true]:opacity-40',
+    'data-[busy=true]:cursor-progress data-[busy=true]:opacity-100',
     'shadow-none'
   ),
   {
@@ -75,7 +75,7 @@ function Button({
   variant,
   size,
   asChild = false,
-  loading = false,
+  loading,
   loadingIcon,
   loadingIconClassName,
   disabled,
@@ -96,7 +96,9 @@ function Button({
   }
 
   // Default loading icon
-  const defaultLoadingIcon = <Loader className={cn('animate-spin', loadingIconClassName)} size={getSpinnerSize()} />
+  const defaultLoadingIcon = (
+    <Loader className={cn('motion-safe:animate-spin', loadingIconClassName)} size={getSpinnerSize()} />
+  )
 
   // Use custom icon or default icon
   const spinnerElement = loadingIcon ?? defaultLoadingIcon
@@ -115,11 +117,27 @@ function Button({
       {/* asChild mode does not support loading because Slot requires a single child element */}
       {asChild ? (
         children
+      ) : loading !== undefined ? (
+        <span className="relative inline-flex items-center justify-center gap-[inherit]">
+          <span
+            data-slot="button-label"
+            className={cn(
+              'inline-flex items-center justify-center gap-[inherit] motion-safe:transition-opacity motion-safe:duration-150',
+              loading && 'opacity-0'
+            )}>
+            {children}
+          </span>
+          {loading && (
+            <span
+              aria-hidden="true"
+              data-slot="button-pending"
+              className="pointer-events-none absolute inset-0 inline-flex items-center justify-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-150">
+              {spinnerElement}
+            </span>
+          )}
+        </span>
       ) : (
-        <>
-          {loading && spinnerElement}
-          {children}
-        </>
+        <>{children}</>
       )}
     </Comp>
   )

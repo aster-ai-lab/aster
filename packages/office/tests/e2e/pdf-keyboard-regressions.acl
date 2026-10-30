@@ -1,0 +1,71 @@
+suite "office-pdf-keyboard-regressions" {
+    version = 1
+
+    scenario "backspace-edits-text" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        insert_text "write-text" { value = "Reviewed" }
+        press "erase-one-character" { key = "Backspace" }
+        expect "native-text-edited" { target = role("textbox", "Annotation input") value = "Reviewe" }
+        click "save" { target = role("button", "Save") }
+        wait "file-saved" { text = "accepted" }
+        expect "annotation-retained" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewe\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+    }
+
+    scenario "keyboard-save-keeps-text-editing" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        insert_text "write-text" { value = "Reviewed" }
+        press "save-active-text" { key = "Meta+s" }
+        wait "file-saved" { text = "accepted" }
+        expect "current-draft-saved" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+        insert_text "continue-typing" { value = " again" }
+        expect "caret-and-focus-retained" { target = role("textbox", "Annotation input") value = "Reviewed again" }
+        press "save-next-edit" { key = "Meta+s" }
+        expect "second-save-accepted" { target = css("output[aria-label='Accepted saves']") rendered_text = "2" }
+        expect "continued-text-saved" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed again\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+    }
+
+    scenario "text-undo-redo-preserves-annotation" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        insert_text "write-text" { value = "Reviewed" }
+        press "undo-typing" { key = "Meta+z" }
+        press "redo-typing" { key = "Meta+Shift+z" }
+        click "save" { target = role("button", "Save") }
+        wait "file-saved" { text = "accepted" }
+        expect "text-history-preserves-annotation" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+    }
+
+    scenario "saving-does-not-add-undo-step" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        insert_text "write-text" { value = "Reviewed" }
+        press "save-active-text" { key = "Meta+s" }
+        wait "file-saved" { text = "accepted" }
+        click "undo-text-change" { target = role("button", "Undo") }
+        click "save-undone-text" { target = role("button", "Save") }
+        expect "second-save-accepted" { target = css("output[aria-label='Accepted saves']") rendered_text = "2" }
+        expect "one-undo-reverts-one-change" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Insert text\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+    }
+}

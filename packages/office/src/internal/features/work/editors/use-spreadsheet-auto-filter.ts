@@ -1,4 +1,5 @@
 import type { Selection } from '@fortune-sheet/core';
+import { DialogPresence } from '../../../design-system/primitives';
 import { showToast } from '../../../state/app-state';
 import {
   createElement,
@@ -472,7 +473,7 @@ export function useSpreadsheetAutoFilter({
   return {
     active,
     commandPort,
-    dialog: conditionSurface
+    dialog: createElement(DialogPresence, null, conditionSurface
       ? createElement(SpreadsheetAutoFilterConditionDialog, {
           source: conditionSurface,
           restoreFocusTarget: () =>
@@ -483,7 +484,7 @@ export function useSpreadsheetAutoFilter({
           onClear: clearCondition,
           onClose: closeConditionDialog,
         })
-      : null,
+      : null),
     reserveAltKey,
     selectionForChange,
     status: active ? officeMessage(messages, 'spreadsheet.autoFilter.statusActive') : '',

@@ -316,19 +316,21 @@ fn leader_kill_reconnect_reloads_without_duplicating_history() {
         )
         .await;
         let ok = load.is_ok();
-        // Drain the replay the load unicast to this client BEFORE finalizing, mirroring the production replay-then-finalize order
-        a.pump_until("reload replay lands", move |app| {
-            app.agents
-                .values()
-                .any(|agent| agent_message_text(agent).contains(T1))
-        })
-        .await;
+        // A reconnect cursor can legitimately produce no replay. Drain what the
+        // load delivered, then finalize so the no-replay branch restores the stash.
+        a.pump_once();
         a.app
             .agents
             .get_mut(&agent_id)
             .unwrap()
             .finish_session_reload(1, ok);
         assert!(ok, "reconnect session/load failed: {:?}", load.err());
+        a.pump_until("reload replay lands", move |app| {
+            app.agents
+                .values()
+                .any(|agent| agent_message_text(agent).contains(T1))
+        })
+        .await;
 
         assert_eq!(
             occurrences(&agent_message_text(a.agent_for_session(&sid)), T1),

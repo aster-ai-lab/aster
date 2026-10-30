@@ -1,0 +1,14 @@
+flowchart LR
+  accTitle: 无人值守仍然需要准入与结果
+  accDescr: 缺少成功动作证据时，适配器报告失败。无人值守不会默认批准工具。
+  input["接收任务<br/>显式输入"]
+  admit["检查宿主条件<br/>配置与期限"]
+  goal["准入目标<br/>有限续跑"]
+  run["执行原始 Run<br/>权限仍有效"]
+  settle["收尾与核对<br/>动作证据"]
+  report["写入结果记录<br/>真实终态"]
+  input --> admit
+  admit --> goal
+  goal --> run
+  run --> settle
+  settle --> report

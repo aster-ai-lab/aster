@@ -1,5 +1,5 @@
 .work-pdf-viewer {
-  --work-pdf-accent: #c84040;
+  --work-pdf-accent: var(--a3s-ink);
   --work-office-control-accent: var(--work-pdf-accent);
 
   display: flex;
@@ -8,12 +8,12 @@
   flex: 1;
   flex-direction: column;
   overflow: hidden;
-  background: #32363f;
+  background: var(--a3s-bg);
 }
 
 .work-pdf-annotation-style-panel,
 .work-pdf-overflow-panel {
-  --work-pdf-accent: #c84040;
+  --work-pdf-accent: var(--a3s-ink);
 }
 
 .work-pdf-toolbar {
@@ -41,9 +41,9 @@
 }
 
 .work-pdf-toolbar .ds-icon-button {
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
   border-radius: 8px;
 }
 
@@ -55,7 +55,7 @@
 .work-pdf-toolbar .ds-icon-button:disabled,
 .work-pdf-fit-button:disabled {
   cursor: default;
-  opacity: 0.38;
+  opacity: 0.4;
 }
 
 .work-pdf-history {
@@ -76,11 +76,11 @@
 }
 
 .work-pdf-annotation-color .work-office-color-trigger {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   padding: 0 5px;
   border-color: transparent;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .work-pdf-annotation-color .work-office-color-swatch {
@@ -96,9 +96,9 @@
   width: 238px;
   padding: 10px;
   border: 1px solid var(--a3s-line-strong);
-  border-radius: 9px;
+  border-radius: 12px;
   background: var(--a3s-panel);
-  box-shadow: 0 14px 34px rgb(15 23 42 / 18%);
+  box-shadow: var(--a3s-shadow);
 }
 
 .work-pdf-annotation-style-content,
@@ -122,8 +122,8 @@
   margin: 0;
   padding: 0;
   color: var(--a3s-muted);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .work-pdf-annotation-style-options {
@@ -137,15 +137,15 @@
   position: relative;
   display: grid;
   min-width: 0;
-  height: 28px;
+  height: 30px;
   place-items: center;
   padding: 0 5px;
   border: 1px solid var(--a3s-line);
-  border-radius: 5px;
+  border-radius: 8px;
   background: var(--a3s-panel);
   color: var(--a3s-muted);
   font: inherit;
-  font-size: 10px;
+  font-size: 13px;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
 }
@@ -174,10 +174,10 @@
 }
 
 .work-pdf-annotation-style-options > label:has(input:checked) {
-  border-color: color-mix(in srgb, var(--work-pdf-accent) 42%, var(--a3s-line));
-  background: color-mix(in srgb, var(--work-pdf-accent) 11%, var(--a3s-panel));
+  border-color: var(--a3s-line-strong);
+  background: var(--spec-selected-row);
   color: var(--work-pdf-accent);
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .work-pdf-annotation-style-options > label:has(input:disabled) {
@@ -214,7 +214,7 @@
 
 .work-pdf-search .work-office-text-field {
   width: 100%;
-  height: 27px;
+  height: 30px;
   min-width: 40px;
   padding: 0 4px;
   border: 0;
@@ -238,7 +238,7 @@
   align-items: center;
   justify-content: center;
   color: var(--a3s-faint);
-  font-size: 9px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -250,7 +250,7 @@
 
 .work-pdf-page-field.work-office-text-field {
   width: 38px;
-  height: 26px;
+  height: 30px;
   padding: 0 5px;
   text-align: center;
 }
@@ -275,10 +275,10 @@
 }
 
 .work-pdf-fit-button {
-  height: 27px;
+  height: 30px;
   padding: 0 7px;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 8px;
   background: transparent;
   color: var(--a3s-muted);
   font: inherit;
@@ -287,7 +287,7 @@
 
 .work-pdf-fit-button:hover:not(:disabled),
 .work-pdf-fit-button[aria-pressed="true"] {
-  background: var(--a3s-panel-soft);
+  background: var(--spec-selected-row);
   color: var(--a3s-ink);
 }
 
@@ -296,7 +296,7 @@
 }
 
 .work-pdf-save {
-  min-height: 29px;
+  min-height: 30px;
   margin-right: 3px;
   padding-right: 8px;
   border-right: 1px solid var(--a3s-line);
@@ -309,15 +309,7 @@
 
 .work-pdf-save .ds-status-badge {
   padding: 2px 6px;
-  font-size: 9px;
-}
-
-.work-pdf-save .ds-button {
-  min-height: 28px;
-  gap: 5px;
-  padding: 0 9px;
-  border-radius: 6px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-pdf-overflow {
@@ -431,7 +423,7 @@
   flex-direction: column;
   overflow: hidden;
   border-right: 1px solid var(--a3s-line);
-  background: color-mix(in srgb, var(--a3s-panel-soft) 60%, var(--a3s-panel));
+  background: var(--a3s-panel);
   color: var(--a3s-ink);
 }
 
@@ -443,24 +435,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-color: var(--a3s-line-strong) transparent;
   scrollbar-gutter: stable;
-  scrollbar-width: thin;
-}
-
-.work-pdf-thumbnail-viewport::-webkit-scrollbar {
-  width: 8px;
-}
-
-.work-pdf-thumbnail-viewport::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.work-pdf-thumbnail-viewport::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
-  border-radius: 999px;
-  background: var(--a3s-line-strong);
-  background-clip: padding-box;
 }
 
 .work-pdf-thumbnail-list {
@@ -480,7 +455,7 @@
   gap: 6px;
   padding: 4px 4px 4px 0;
   border: 2px solid transparent;
-  border-radius: 7px;
+  border-radius: 8px;
   outline: 0;
   background: transparent;
   color: inherit;
@@ -489,25 +464,25 @@
 }
 
 .work-pdf-thumbnail-list > button:hover {
-  background: var(--a3s-panel-strong);
+  background: var(--spec-hover-row);
 }
 
 .work-pdf-thumbnail-list > button:focus-visible {
-  border-color: color-mix(in srgb, var(--work-pdf-accent) 48%, var(--a3s-line));
-  box-shadow: 0 0 0 2px
-    color-mix(in srgb, var(--work-pdf-accent) 12%, transparent);
+  outline: 2px solid var(--a3s-ink);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
 .work-pdf-thumbnail-list > button.active {
-  border-color: color-mix(in srgb, var(--work-pdf-accent) 72%, var(--a3s-line));
-  background: color-mix(in srgb, var(--work-pdf-accent) 6%, var(--a3s-panel));
+  border-color: var(--a3s-ink);
+  background: var(--spec-selected-row);
 }
 
 .work-pdf-thumbnail-number {
   width: 18px;
   padding-top: 2px;
   color: var(--a3s-faint);
-  font-size: 9px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   text-align: center;
@@ -515,7 +490,7 @@
 
 .work-pdf-thumbnail-list > button.active .work-pdf-thumbnail-number {
   color: var(--work-pdf-accent);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .work-pdf-thumbnail-preview {
@@ -532,7 +507,6 @@
   border: 1px solid var(--a3s-line);
   border-radius: 3px;
   background: #ffffff;
-  box-shadow: 0 3px 9px rgb(25 31 45 / 10%);
 }
 
 .work-pdf-thumbnail-preview[data-pdf-thumbnail-state="loading"] {
@@ -588,7 +562,7 @@
 }
 
 .work-pdf-embed:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--work-pdf-accent) 66%, #ffffff);
+  outline: 2px solid var(--a3s-ink);
   outline-offset: -2px;
 }
 
@@ -632,7 +606,7 @@
 }
 
 .work-pdf-remote-participant strong {
-  font: 650 9px / 1.2 var(--a3s-ui-font);
+  font: 500 13px / 1.2 var(--a3s-ui-font);
 }
 
 .work-pdf-remote-participant small {
@@ -641,7 +615,7 @@
     var(--work-office-presence-color) 72%,
     var(--a3s-ink)
   );
-  font: 500 8px / 1.2 var(--a3s-ui-font);
+  font: 400 12px / 1.2 var(--a3s-ui-font);
 }
 
 .work-pdf-remote-participant[data-activity="idle"] {
@@ -701,7 +675,7 @@
   border-radius: 5px;
   background: rgb(24 28 34 / 82%);
   color: rgb(255 255 255 / 84%);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
   pointer-events: none;
 }
@@ -716,7 +690,7 @@
   gap: 8px;
   background: color-mix(in srgb, var(--a3s-bg) 88%, transparent);
   color: var(--a3s-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 @media (forced-colors: active) {
@@ -795,9 +769,6 @@
     flex: 0 0 auto;
   }
 
-  .work-pdf-save > output {
-    display: none;
-  }
 }
 
 @media (max-width: 720px) {
@@ -822,7 +793,6 @@
     min-width: 112px;
   }
 
-  .work-pdf-search-state,
   .work-pdf-search .ds-icon-button:not(.work-pdf-search-clear) {
     display: none;
   }
@@ -846,7 +816,7 @@
   }
 
   .work-pdf-page-navigation-toggle[aria-expanded="true"] {
-    background: color-mix(in srgb, var(--work-pdf-accent) 9%, var(--a3s-panel));
+    background: var(--spec-selected-row);
     color: var(--work-pdf-accent);
   }
 
@@ -857,7 +827,7 @@
     display: block;
     padding: 0;
     border: 0;
-    background: rgb(22 28 40 / 24%);
+    background: rgba(0, 0, 0, 0.20);
     cursor: default;
   }
 
@@ -900,8 +870,8 @@
   }
 
   .work-pdf-thumbnail-header > strong {
-    font-size: 11px;
-    font-weight: 680;
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .work-pdf-thumbnail-header > button {

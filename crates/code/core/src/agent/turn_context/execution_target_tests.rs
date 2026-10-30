@@ -204,8 +204,8 @@ fn windows_powershell_51_runner_note_names_the_chaining_limit() {
     .build();
     let ctx = ToolContext::new(root).with_workspace_services(services);
     let block = render_env_block_for_host(&ctx, "windows", "x86_64");
-    assert!(block.contains("Windows PowerShell 5.1"));
-    assert!(block.contains("`&&` and `||` do not work"));
+    assert!(block.contains("Windows PowerShell 5.1"), "{block}");
+    assert!(block.contains("`&&` and `||` do not work"), "{block}");
 }
 
 #[test]

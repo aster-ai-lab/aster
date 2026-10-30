@@ -6,6 +6,7 @@ The script has no switch that raises a ceiling.
 
 import json
 import re
+import tomllib
 import unittest
 from pathlib import Path
 
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE_PATH = Path(__file__).resolve().parent / "agent_runtime_boundary.json"
 
 ACP_CARGO = ROOT / "crates/code/acp/Cargo.toml"
+CORE_CARGO = ROOT / "crates/code/core/Cargo.toml"
 ACP_LIB = ROOT / "crates/code/acp/src/lib.rs"
 ASTER_CARGO = ROOT / "apps/aster/Cargo.toml"
 ASTER_MAIN = ROOT / "apps/aster/src/main.rs"
@@ -88,14 +90,26 @@ def floor(current, required, label):
         raise BoundaryError(label + " missing: " + ", ".join(missing))
 
 
-def package_description(text):
-    for line in text.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("description = \""):
-            if not stripped.endswith("\""):
-                raise BoundaryError("description is not one quoted line")
-            return stripped[len("description = \"") : -1]
-    raise BoundaryError("description is absent")
+def package_string(text, field):
+    try:
+        value = tomllib.loads(text)["package"][field]
+    except (KeyError, tomllib.TOMLDecodeError) as error:
+        raise BoundaryError(f"package {field} is absent or invalid") from error
+    if not isinstance(value, str) or not value:
+        raise BoundaryError(f"package {field} is absent or invalid")
+    return value
+
+
+def check_source_versions(core, acp, lib, baseline):
+    version = package_string(core, "version")
+    if package_string(acp, "version") != version:
+        raise BoundaryError("Core and ACP package versions differ")
+    marker = "a3s-code-core "
+    pinned_version = baseline["acp_description"].split(marker, 1)[1].split(" ", 1)[0]
+    # The frozen baseline owns architecture wording; manifests own the source version.
+    old, new = marker + pinned_version, marker + version
+    check_description(acp, baseline["acp_description"].replace(old, new))
+    check_crate_doc(lib, [line.replace(old, new) for line in baseline["acp_crate_doc"]])
 
 
 def crate_doc(text, count):
@@ -218,7 +232,7 @@ def account_mods(text):
 
 
 def check_description(text, expected):
-    found = package_description(text)
+    found = package_string(text, "description")
     if found != expected:
         raise BoundaryError("description mismatch: " + found)
 
@@ -397,8 +411,12 @@ def check_stale_core_version(text, limit):
 
 
 def check_repository(baseline):
-    check_description(ACP_CARGO.read_text(encoding="utf-8"), baseline["acp_description"])
-    check_crate_doc(ACP_LIB.read_text(encoding="utf-8"), baseline["acp_crate_doc"])
+    check_source_versions(
+        CORE_CARGO.read_text(encoding="utf-8"),
+        ACP_CARGO.read_text(encoding="utf-8"),
+        ACP_LIB.read_text(encoding="utf-8"),
+        baseline,
+    )
     check_terminal_paths(
         ACP_CARGO.read_text(encoding="utf-8"), baseline["acp_terminal_paths"]
     )
@@ -443,8 +461,28 @@ class AgentRuntimeBoundaryTest(unittest.TestCase):
     def test_repository_matches_the_closed_sets(self):
         check_repository(self.baseline)
 
+    def test_source_versions_follow_manifests_without_changing_the_ratchet(self):
+        for version in ("0.8.2", "9.1.6", "10.2.0-rc.1"):
+            with self.subTest(version=version):
+                manifest = f'[package]\nversion = "{version}"\n'
+                acp = manifest + f'description = "ACP stdio agent over a3s-code-core {version} for Aster desktop hosts"\n'
+                lib = f"//! ACP stdio agent over a3s-code-core {version}.\n" + "\n".join(self.baseline["acp_crate_doc"][1:])
+                check_source_versions(manifest, acp, lib, self.baseline)
+                with self.assertRaisesRegex(BoundaryError, "package versions differ"):
+                    check_source_versions(manifest.replace(version, "0.0.0"), acp, lib, self.baseline)
+                with self.assertRaisesRegex(BoundaryError, "description mismatch"):
+                    check_source_versions(manifest, acp.replace(f"core {version}", "core 0.0.0"), lib, self.baseline)
+                with self.assertRaisesRegex(BoundaryError, "crate doc mismatch"):
+                    check_source_versions(manifest, acp, lib.replace(f"core {version}", "core 0.0.0"), self.baseline)
+                with self.assertRaisesRegex(BoundaryError, "description mismatch"):
+                    check_source_versions(manifest, acp.replace("Aster desktop hosts", "legacy pager"), lib, self.baseline)
+
+    def test_dependency_version_cannot_stand_in_for_package_version(self):
+        with self.assertRaisesRegex(BoundaryError, "package version is absent"):
+            package_string('[package]\nname = "fixture"\n[dependencies.example]\nversion = "9.1.6"\n', "version")
+
     def test_description_growth_is_rejected(self):
-        text = 'description = "ACP stdio agent bridging the forked grok-build pager"\n'
+        text = '[package]\ndescription = "ACP stdio agent bridging the forked grok-build pager"\n'
         with self.assertRaises(BoundaryError) as caught:
             check_description(text, self.baseline["acp_description"])
         self.assertIn("description mismatch", str(caught.exception))

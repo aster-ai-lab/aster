@@ -12,13 +12,65 @@ pub(in crate::agent_api) async fn fork_session_async(
     agent: &Agent,
     snapshot: SessionSnapshotV1,
     workspace: String,
+    options: SessionOptions,
+) -> Result<AgentSession> {
+    fork_session_async_inner(agent, snapshot, workspace, options, None).await
+}
+
+pub(in crate::agent_api) async fn fork_session_prefix_async(
+    agent: &Agent,
+    source: &AgentSession,
+    request: crate::store::PrefixForkRequest,
     mut options: SessionOptions,
+) -> Result<AgentSession> {
+    if source.is_closed() || source.run_admission.is_active() {
+        return Err(fork_error("source has unfinished execution"));
+    }
+    if !source.pending_confirmations().await.is_empty() {
+        return Err(fork_error("source has a pending confirmation"));
+    }
+    if options
+        .session_id
+        .as_ref()
+        .is_some_and(|id| id != &request.target_session_id)
+    {
+        return Err(fork_error("target session id does not match request"));
+    }
+    options.session_id = Some(request.target_session_id.clone());
+    if options.llm_client.is_none() {
+        options.llm_client = Some(Arc::clone(&source.llm_client));
+    }
+    let snapshot = session_persistence::SessionPersistenceContext::from_session(source)
+        .capture_snapshot()
+        .await?;
+    fork_session_async_inner(
+        agent,
+        snapshot,
+        source.workspace().display().to_string(),
+        options,
+        Some(request),
+    )
+    .await
+}
+
+async fn fork_session_async_inner(
+    agent: &Agent,
+    snapshot: SessionSnapshotV1,
+    workspace: String,
+    mut options: SessionOptions,
+    prefix_request: Option<crate::store::PrefixForkRequest>,
 ) -> Result<AgentSession> {
     bail_if_agent_closed(agent)?;
     snapshot
         .validate_for_session(&snapshot.session.id)
         .map_err(fork_error)?;
     let target_id = required_session_id(&options)?.to_owned();
+    if prefix_request
+        .as_ref()
+        .is_some_and(|request| request.target_session_id != target_id)
+    {
+        return Err(fork_error("target session id does not match request"));
+    }
     if target_id.trim().is_empty() || target_id == snapshot.session.id {
         return Err(fork_error(
             "an explicit different target session is required",
@@ -38,10 +90,13 @@ pub(in crate::agent_api) async fn fork_session_async(
         return Err(fork_error("source has unfinished execution"));
     }
 
-    let source_workspace = std::path::Path::new(&snapshot.session.config.workspace);
+    let source_workspace = std::path::PathBuf::from(&snapshot.session.config.workspace);
     let source_directory =
-        crate::session_folder::effect_log_dir(source_workspace, &snapshot.session.id);
-    if snapshot.session.durable_source.is_some()
+        crate::session_folder::effect_log_dir(&source_workspace, &snapshot.session.id);
+    if (snapshot.session.durable_source.is_some()
+        || prefix_request.as_ref().is_some_and(|request| {
+            request.expected_cut.seq > 0 || !snapshot.session.messages.is_empty()
+        }))
         && !source_directory.try_exists().map_err(fork_error)?
     {
         return Err(fork_error("durable source is missing"));
@@ -61,8 +116,32 @@ pub(in crate::agent_api) async fn fork_session_async(
     {
         return Err(fork_error("snapshot omits the current durable source"));
     }
-    let policy =
-        crate::work_policy::prepare_policy(&facts, &source_thread, None).map_err(fork_error)?;
+    if let Some(request) = &prefix_request {
+        let actual = crate::store::TranscriptSourceCut::from(a3s_effect::cut_log(&facts));
+        if actual != request.expected_cut {
+            return Err(fork_error("source changed before prefix fork"));
+        }
+    }
+    let (snapshot, admission_facts, boundary_cut) = match &prefix_request {
+        Some(request) => {
+            let selected =
+                super::super::transcript::prepare_prefix_snapshot(&snapshot, &facts, request)
+                    .map_err(fork_error)?;
+            (
+                selected.snapshot,
+                selected.facts,
+                Some(selected.boundary_cut),
+            )
+        }
+        None => (snapshot, facts.clone(), None),
+    };
+    if boundary_cut.as_ref().is_some_and(|expected| {
+        crate::store::TranscriptSourceCut::from(a3s_effect::cut_log(&admission_facts)) != *expected
+    }) {
+        return Err(fork_error("verified prefix boundary changed"));
+    }
+    let policy = crate::work_policy::prepare_policy(&admission_facts, &source_thread, None)
+        .map_err(fork_error)?;
     if policy.policy.as_ref() != options.work_policy.as_ref() {
         return Err(fork_error(
             "source policy requires explicit identical acceptance",
@@ -75,9 +154,9 @@ pub(in crate::agent_api) async fn fork_session_async(
         .transpose()
         .map_err(fork_error)?;
     crate::goal_control::definition_from_facts(
-        &facts,
+        &admission_facts,
         &snapshot.session.id,
-        crate::workspace::WorkspaceServices::local(source_workspace).workspace_ref(),
+        crate::workspace::WorkspaceServices::local(&source_workspace).workspace_ref(),
         digest.as_deref(),
     )
     .map_err(fork_error)?;

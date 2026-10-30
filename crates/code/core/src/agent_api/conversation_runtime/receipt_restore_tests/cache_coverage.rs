@@ -912,6 +912,7 @@ async fn completion_gate_to_host_retains_typed_reconciliation() {
         run_admission::OriginalPublicationKind::End,
         "fixture-run",
         None,
+        None,
     )
     .await;
     assert!(

@@ -11,12 +11,13 @@ pub(crate) async fn assess_goal_step(
 ) -> Result<(
     Option<crate::goal_control::PreparedDefinition>,
     crate::llm::TokenUsage,
+    Option<crate::goal_control::GoalStepFeedback>,
 )> {
     if surface.cancel.is_cancelled() || result.forced_stop.is_some() {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     }
     let Some(run_id) = surface.run_id.as_deref() else {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     };
     let log = surface_fact_log(surface).map_err(|error| anyhow::anyhow!(error))?;
     let prepared = {
@@ -32,7 +33,7 @@ pub(crate) async fn assess_goal_step(
         )?
     };
     let Some((prepared, reports, evidence)) = prepared else {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     };
     let workspace = surface.agent.tool_context_handle().workspace.clone();
     if !crate::verification::should_emit_goal_achieved_for_workspace(
@@ -40,7 +41,7 @@ pub(crate) async fn assess_goal_step(
         &reports,
         Some(&workspace),
     ) {
-        return Ok((None, Default::default()));
+        return Ok((None, Default::default(), None));
     }
     let step = prepared
         .definition
@@ -102,7 +103,11 @@ pub(crate) async fn assess_goal_step(
             "goal step not accepted by its judgment"
         );
     }
-    Ok((accepted.then_some(prepared), usage))
+    let feedback = crate::goal_control::GoalStepFeedback {
+        step_id: step.id.clone(),
+        remaining_criteria: judgment.remaining_criteria,
+    };
+    Ok((accepted.then_some(prepared), usage, Some(feedback)))
 }
 
 pub(crate) fn commit_goal_step(
@@ -153,6 +158,7 @@ pub(crate) fn settle_goal_slice(
     surface: &SessionSurface,
     goal: &crate::goal_control::DurableGoalDefinitionV1,
     usage: Option<crate::llm::TokenUsage>,
+    feedback: Option<crate::goal_control::GoalStepFeedback>,
     original: &crate::agent_api::OriginalModelCallPort,
 ) -> Result<()> {
     let Some(run_id) = surface.run_id.as_deref() else {
@@ -167,7 +173,7 @@ pub(crate) fn settle_goal_slice(
     let facts = log.read(&thread)?;
     // The slice's accumulated turn deltas ride the settle fact; a poisoned
     // lock or a cancelled run falls back to mutation-only progress.
-    let progress = if surface.cancel.is_cancelled() {
+    let mut progress = if surface.cancel.is_cancelled() {
         None
     } else {
         surface
@@ -176,6 +182,18 @@ pub(crate) fn settle_goal_slice(
             .ok()
             .map(|mut guard| guard.take_slice_delta())
     };
+    if surface.goal_tick.is_some() {
+        if let Some(progress) = &mut progress {
+            // Correct new measurements; historical closeouts keep their recorded deltas.
+            progress.information_delta =
+                receipts::novel_information(&facts, &surface.session_id, run_id);
+            let accepted_step = facts.iter().any(|fact| {
+                fact.kind == crate::goal_control::GoalFactKindV1::StepAccepted.as_str()
+                    && fact.payload["body"]["run_id"].as_str() == Some(run_id)
+            });
+            progress.plan_delta = progress.plan_delta.max(u64::from(accepted_step));
+        }
+    }
     match crate::goal_control::prepare_settlement(
         &facts,
         &surface.session_id,
@@ -184,6 +202,7 @@ pub(crate) fn settle_goal_slice(
         run_id,
         usage.filter(|_| !surface.cancel.is_cancelled()),
         progress,
+        feedback.filter(|_| !surface.cancel.is_cancelled()),
     ) {
         Ok(Some(pending)) => {
             log.append(&thread, &[pending], None)?;
@@ -215,7 +234,7 @@ pub(crate) fn evidence_for_goal_step(
     attestation: Option<&VerificationReport>,
 ) -> Option<(Vec<VerificationReport>, String, bool)> {
     let start = facts.iter().position(|fact| fact.seq == run_sequence)?;
-    let debt = receipts::fold_cache_evidence(&facts[start..]);
+    let mut debt = receipts::fold_cache_evidence(&facts[start..]);
     if debt.integrity_invalid
         || !debt.unresolved.is_empty()
         || !debt.background_results.is_empty()
@@ -261,6 +280,14 @@ pub(crate) fn evidence_for_goal_step(
     {
         return None;
     }
+    // Internal metering hashes remain in the bound log, outside model context.
+    for (_, result) in &mut debt.results {
+        if let Some(mut envelope) = result.output.as_str().and_then(decode_fact_tool_result) {
+            if envelope.observation_digest.take().is_some() {
+                result.output = serde_json::to_string(&envelope).ok()?.into();
+            }
+        }
+    }
     let evidence = match attestation {
         Some(report) => serde_json::to_string(&serde_json::json!({
             "tool_receipts": debt.results, "completion_attestation": report,
@@ -280,14 +307,24 @@ pub(crate) fn evidence_for_goal_step(
 /// Progress is an actual identity change in this slice's original receipts,
 /// independent of a goal judgment. A successful tool or an accepted read-only
 /// step cannot refresh the stall budget, nor can an earlier/foreign Run.
+#[cfg(test)]
 pub(crate) fn goal_slice_made_progress(
     facts: &[a3s_effect::Fact],
     run_sequence: u64,
     session_id: &str,
     run_id: &str,
 ) -> bool {
+    goal_slice_workspace_evidence(facts, run_sequence, session_id, run_id).0
+}
+
+pub(crate) fn goal_slice_workspace_evidence(
+    facts: &[a3s_effect::Fact],
+    run_sequence: u64,
+    session_id: &str,
+    run_id: &str,
+) -> (bool, Option<Vec<a3s_effect::ToolPathChangeV1>>) {
     let Some(start) = facts.iter().position(|fact| fact.seq == run_sequence) else {
-        return false;
+        return (false, None);
     };
     let end = facts[start + 1..]
         .iter()
@@ -296,38 +333,61 @@ pub(crate) fn goal_slice_made_progress(
     let window = &facts[start..end];
     let debt = receipts::fold_cache_evidence(window);
     if debt.integrity_invalid || !debt.unresolved.is_empty() || debt.results.is_empty() {
-        return false;
+        return (false, None);
     }
     let mut capability = None;
-    let mut mutated = false;
     for (_, result) in &debt.results {
         let Some(admission) = result.identity.admission.as_ref() else {
-            return false;
+            return (false, None);
         };
         if admission.run_id != run_id
             || admission.thread_id != session_id
             || capability.is_some_and(|digest| digest != admission.capability_binding_digest)
         {
-            return false;
+            return (false, None);
         }
         capability = Some(admission.capability_binding_digest.as_str());
-        mutated |= observed_workspace_mutation(&result.effects);
     }
-    for (key, effects) in &debt.background_results {
+    for (key, _) in &debt.background_results {
         // The receipt fold validates the exact child/terminal binding. The
         // owner must also be this slice, rather than another session Run.
         if !window
             .iter()
             .any(|fact| &fact.key == key && fact.payload["source_run"].as_str() == Some(run_id))
         {
-            return false;
+            return (false, None);
         }
-        mutated |= observed_workspace_mutation(effects);
     }
-    mutated
+    let mut mutated = false;
+    let mut complete = true;
+    let mut changes = Vec::new();
+    for projection in &debt.projection_order {
+        let effects = match projection {
+            receipts::ReceiptProjection::Tool(index) => {
+                debt.results.get(*index).map(|(_, result)| &result.effects)
+            }
+            receipts::ReceiptProjection::Background(index) => debt
+                .background_results
+                .get(*index)
+                .map(|(_, effects)| effects),
+        };
+        let Some(effects) = effects else {
+            return (false, None);
+        };
+        mutated |= observed_workspace_mutation(effects);
+        complete &= effects.completeness == a3s_effect::ToolObservationCompleteness::Complete;
+        changes.extend(
+            effects
+                .changes
+                .iter()
+                .filter(|change| !crate::porcelain::is_harness_path(&change.path))
+                .cloned(),
+        );
+    }
+    (mutated, complete.then_some(changes))
 }
 
-fn observed_workspace_mutation(effects: &a3s_effect::ToolEffectObservationV1) -> bool {
+pub(super) fn observed_workspace_mutation(effects: &a3s_effect::ToolEffectObservationV1) -> bool {
     use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
     effects.completeness == ToolObservationCompleteness::Complete
         && effects.changes.iter().any(|change| {

@@ -3,6 +3,7 @@ import { sameSpreadsheetHistoryValue } from '../spreadsheet-history-value';
 import { sparseArrayIndexes } from '../spreadsheet-sparse';
 import {
   attachSpreadsheetShownCommentCells,
+  materializeSpreadsheetMergeCells,
   spreadsheetMatrixProfile,
 } from '../work-spreadsheet-matrix-profile';
 import type {
@@ -310,27 +311,10 @@ function spreadsheetMatrixForFortune(
     }
   }
 
-  for (const merge of Object.values(merges ?? {})) {
-    rowCount = Math.max(rowCount, merge.r + merge.rs);
-    columnCount = Math.max(columnCount, merge.c + merge.cs);
-    for (let rowIndex = merge.r; rowIndex < merge.r + merge.rs; rowIndex += 1) {
-      const row = projected[rowIndex] ?? [];
-      projected[rowIndex] = row;
-      for (
-        let columnIndex = merge.c;
-        columnIndex < merge.c + merge.cs;
-        columnIndex += 1
-      ) {
-        row[columnIndex] = Object.freeze({
-          ...(row[columnIndex] ?? {}),
-          mc:
-            rowIndex === merge.r && columnIndex === merge.c
-              ? { ...merge }
-              : { r: merge.r, c: merge.c },
-        });
-      }
-    }
-  }
+  const merged = materializeSpreadsheetMergeCells(projected, merges);
+  rowCount = Math.max(rowCount, merged.rowCount);
+  columnCount = Math.max(columnCount, merged.columnCount);
+  populatedCellCount += merged.addedCells;
 
   projected.length = rowCount;
   projected[0] ??= [];

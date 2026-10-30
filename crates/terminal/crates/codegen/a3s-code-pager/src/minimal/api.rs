@@ -358,6 +358,11 @@ pub fn session_starting_since(v: &AgentView) -> Option<std::time::Instant> {
     v.session_starting_since
 }
 
+/// Language published by the current user turn.
+pub fn output_language(v: &AgentView) -> Option<&str> {
+    v.session.tracker.output_language.as_deref()
+}
+
 /// `AgentView::plan_approval_view`.
 pub fn plan_approval_view(v: &AgentView) -> Option<&PlanApprovalViewState> {
     v.plan_approval_view.as_ref()

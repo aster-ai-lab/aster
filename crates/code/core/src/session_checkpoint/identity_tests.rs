@@ -157,7 +157,7 @@ fn durable_portable_snapshot_and_loop_must_bind_the_same_original_source() {
             session_id: loop_state.session_id.clone(),
             status: crate::run::RunStatus::Executing,
             prompt: "continue".into(),
-            cognitive_package_binding: None,
+            package_binding: None,
             capability_binding: None,
             created_at_ms: 1,
             updated_at_ms: 1,

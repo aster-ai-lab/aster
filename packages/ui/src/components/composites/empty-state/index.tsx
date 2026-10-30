@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 
-import { Button } from '../../primitives/button'
 import { cn } from '../../../lib/utils'
+import { Button } from '../../primitives/button'
 
 /**
  * @deprecated Presets no longer affect rendering — every preset renders the
@@ -117,7 +117,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center text-center',
+        'a3s-row-enter flex flex-col items-center justify-center text-center',
         compact ? 'px-4 py-8' : 'flex-1 px-6 py-12',
         className
       )}>

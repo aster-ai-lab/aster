@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Pack the two aster-cli release binaries into one archive.
-# Usage: scripts/package-aster-cli.sh <macos|linux|kylin|windows> <bin-dir> <out-file>
+# Usage: scripts/package-aster-cli.sh <macos|linux|windows> <bin-dir> <out-file>
 #
-# `kylin` is the Kylin V10 SP1 target: x86_64, glibc 2.31. It refuses binaries
-# that need a newer glibc, because the archive would fail on the target machine
+# `linux` targets x86_64, glibc 2.31. It refuses binaries that need a newer
+# glibc, because the archive would fail on the target machine
 # with a missing GLIBC_2.3x symbol rather than at packaging time.
 set -euo pipefail
 
 if [[ $# -ne 3 ]]; then
-  echo "Usage: scripts/package-aster-cli.sh <macos|linux|kylin|windows> <bin-dir> <out-file>" >&2
+  echo "Usage: scripts/package-aster-cli.sh <macos|linux|windows> <bin-dir> <out-file>" >&2
   exit 2
 fi
 
@@ -32,8 +32,8 @@ copy_file() {
 
 max_glibc=""
 case "$platform" in
-  macos|linux) suffix="" ;;
-  kylin)
+  macos) suffix="" ;;
+  linux)
     suffix=""
     max_glibc="2.31"
     ;;
@@ -43,6 +43,16 @@ esac
 copy_file "${bin_dir}/aster${suffix}" "${stage}/aster${suffix}"
 copy_file "${bin_dir}/a3s-code-acp${suffix}" "${stage}/a3s-code-acp${suffix}"
 chmod 755 "${stage}/aster${suffix}" "${stage}/a3s-code-acp${suffix}"
+release_files=("aster${suffix}" "a3s-code-acp${suffix}")
+if [[ "$platform" == macos ]]; then
+  members="$(python3 "${script_dir}/aster_sandbox.py" members --directory "${bin_dir}/sandbox")"
+  while IFS= read -r name; do
+    release_files+=("$name")
+    mkdir -p "${stage}/$(dirname "$name")"
+    copy_file "${bin_dir}/${name}" "${stage}/${name}"
+  done <<< "$members"
+  python3 "${script_dir}/aster_sandbox.py" verify --directory "${stage}/sandbox"
+fi
 if [[ -n "$max_glibc" ]]; then
   if command -v python3 >/dev/null 2>&1; then
     py=(python3)
@@ -68,10 +78,13 @@ sha256_file() {
   else result="$(shasum -a 256 -b "$1")"; fi
   printf '%s  %s\n' "${result%% *}" "$1"
 }
-(cd "$stage" && sha256_file "aster${suffix}" && sha256_file "a3s-code-acp${suffix}") > "${stage}/SHA256SUMS"
+(
+  cd "$stage"
+  for name in "${release_files[@]}"; do sha256_file "$name"; done
+) > "${stage}/SHA256SUMS"
 case "$platform" in
-  macos|linux|kylin)
-    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" aster a3s-code-acp BUILD_ID SHA256SUMS
+  macos|linux)
+    COPYFILE_DISABLE=1 tar -C "$stage" -czf "$out" "${release_files[@]}" BUILD_ID SHA256SUMS
     ;;
   windows)
     if command -v python3 >/dev/null 2>&1; then

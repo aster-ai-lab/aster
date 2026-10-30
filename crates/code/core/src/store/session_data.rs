@@ -237,14 +237,14 @@ pub struct SessionData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub durable_memory_binding: Option<crate::durable_memory::DurableMemoryBindingV1>,
 
-    /// Exact A3S Use cognitive-package generation visible to the next Run.
+    /// Exact A3S Use package generation visible to the next Run.
     ///
     /// The provider/lease is intentionally not serialized. A resume host must
     /// inject a provider with this byte-equivalent binding; Code never resolves
     /// a replacement or `latest` generation. Historical Runs retain their own
     /// exact binding on [`crate::run::RunSnapshot`].
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cognitive_package_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+    pub package_binding: Option<crate::package_context::PackageBindingV1>,
 
     /// Secret-free identity of the host immutable-content authority.
     ///

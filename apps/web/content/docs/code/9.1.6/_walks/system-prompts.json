@@ -1,0 +1,112 @@
+{
+  "title": "系统提示词源码漫游",
+  "intro": "从默认模板到宿主装配，查看提示词如何进入本轮模型输入。",
+  "steps": [
+    {
+      "title": "找到真正的默认文本",
+      "body": "默认文本通过 include_str! 编入 Rust 程序。修改提示文件后需要重新构建程序。",
+      "takeaway": "提示模板有独立文件，不是隐藏在一次模型请求里。",
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "pub const SYSTEM_DEFAULT: &str = include_str!(\"../prompts/common/system_default.md\");",
+        "before": 0,
+        "after": 7
+      }
+    },
+    {
+      "title": "阅读默认角色原文",
+      "body": "默认文本区分实现请求和解释请求。只有请求实现时，模型才应修改文件。",
+      "takeaway": "这里显示编入本版程序的原始文本。",
+      "source": {
+        "path": "crates/code/core/prompts/common/system_default.md",
+        "match": "You are A3S Code, an expert AI coding agent working inside the user's workspace.",
+        "after": 25
+      }
+    },
+    {
+      "title": "阅读默认操作循环",
+      "body": "模板把理解、检查、执行、观察、验证和结束分开。",
+      "takeaway": "这是模型指导，实际步骤仍由运行状态决定。",
+      "source": {
+        "path": "crates/code/core/prompts/common/system_default.md",
+        "match": "## Operating Loop",
+        "after": 13
+      }
+    },
+    {
+      "title": "阅读共同运行契约",
+      "body": "运行契约解释用户目标、项目指导和宿主策略的权责。",
+      "takeaway": "仓库资料不会仅因进入上下文就获得授权。",
+      "source": {
+        "path": "crates/code/core/prompts/common/runtime_contract.md",
+        "match": "## Runtime Contract",
+        "after": 26
+      }
+    },
+    {
+      "title": "阅读目标评审提示",
+      "body": "评审要求返回结构化判断，并为每项接受条件核对新证据。",
+      "takeaway": "判断器的输出不能作为自己的前置验收条件。",
+      "source": {
+        "path": "crates/code/core/prompts/planning/llm_goal_check_system.md",
+        "match": "You are an evaluation assistant. Given a goal with success criteria and the current state, evaluate progress. Respond with JSON only, no markdown fences. Use this schema:",
+        "after": 15
+      }
+    },
+    {
+      "title": "查看宿主支持哪些槽",
+      "body": "SystemPromptSlots 把角色、准则、格式、语言和附加说明分开。",
+      "takeaway": "这些字段修改模型上下文，不授予执行能力。",
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "pub struct SystemPromptSlots {",
+        "before": 0,
+        "after": 30
+      }
+    },
+    {
+      "title": "保留共同契约",
+      "body": "装配器先加入基础文本，再加入运行、工具和安全契约。",
+      "takeaway": "自定义角色不会删除共同运行契约。",
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "parts.push(RUNTIME_CONTRACT.replace",
+        "before": 3,
+        "after": 23
+      }
+    },
+    {
+      "title": "选择主会话角色",
+      "body": "主会话缺少明确角色时保留 GeneralPurpose。本地关键词检测只写调试记录。",
+      "takeaway": "公开辅助函数与主运行路径要分开阅读。",
+      "source": {
+        "path": "crates/code/core/src/agent/prompt_runtime.rs",
+        "match": "async fn resolve_effective_style(&self, prompt: &str) -> AgentStyle {",
+        "before": 0,
+        "after": 23
+      }
+    },
+    {
+      "title": "投影宿主验证清单",
+      "body": "宿主已准入的检查 ID、命令和覆盖范围进入提示词。",
+      "takeaway": "模型看到检查命令，也仍需通过工具执行权限。",
+      "source": {
+        "path": "crates/code/core/src/agent/prompt_runtime.rs",
+        "match": "fn with_verification_context(&self, mut system: String) -> String {",
+        "before": 0,
+        "after": 27
+      }
+    },
+    {
+      "title": "按本轮用户请求选择语言",
+      "body": "本轮语言覆盖写在模型调用附近。代码与路径保留原文。",
+      "takeaway": "历史摘要和工具输出不会替代用户语言。",
+      "source": {
+        "path": "crates/code/core/src/prompts.rs",
+        "match": "pub fn apply_turn_output_language(",
+        "before": 0,
+        "after": 22
+      }
+    }
+  ]
+}

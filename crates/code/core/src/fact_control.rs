@@ -51,8 +51,10 @@ pub(crate) use fact_reads::{
 };
 use fact_reads::{exit_to_error, message_from_fact};
 pub use fact_reads::{phase_name, project_needs_confirmation, read_workspace_facts};
+#[cfg(test)]
+pub(crate) use goal_evidence::goal_slice_made_progress;
 pub(crate) use goal_evidence::{
-    assess_goal_step, commit_goal_step, evidence_for_goal_step, goal_slice_made_progress,
+    assess_goal_step, commit_goal_step, evidence_for_goal_step, goal_slice_workspace_evidence,
     settle_goal_slice,
 };
 #[cfg(test)]
@@ -210,6 +212,7 @@ pub(crate) struct MemoryTelemetryBatch {
 pub(crate) struct SessionSurface {
     pub(crate) agent: crate::agent::AgentLoop,
     pub(crate) session_id: String,
+    pub(crate) persistence: Option<crate::agent_api::SessionPersistenceContext>,
     pub(crate) fact_log: Arc<Mutex<Option<Arc<FileLog>>>>,
     pub(crate) checkpoint: Option<CheckpointEmit>,
     pub(crate) events: Option<tokio::sync::mpsc::Sender<crate::agent::AgentEvent>>,
@@ -228,6 +231,7 @@ pub(crate) struct SessionSurface {
     pub(crate) cancel: tokio_util::sync::CancellationToken,
     pub(crate) transcript: Arc<Mutex<Vec<Message>>>,
     pub(crate) usage: Arc<Mutex<crate::llm::TokenUsage>>,
+    pub(crate) response_meta: Arc<Mutex<Option<crate::llm::LlmResponseMeta>>>,
     pub(crate) confirmation: Option<Arc<dyn crate::hitl::ConfirmationProvider>>,
     pub(crate) run_store: Option<Arc<crate::run::InMemoryRunStore>>,
     pub(crate) run_id: Option<String>,
@@ -628,6 +632,14 @@ impl Completion for LiveCompletion {
                 .and_then(|prepared| prepared.source_index(&request))
                 .map(|index| index + summary_offset);
             let thread_facts = surface.as_ref().map(surface_thread_facts);
+            let cycle = match (&surface, &thread_facts) {
+                (Some(surface), Some(Ok(facts)))
+                    if original_model.is_some() || surface.agent.is_child_run() =>
+                {
+                    model_call::run_execution_cycle(surface, facts)?
+                }
+                _ => None,
+            };
             let (kept_len, mut user_images) = match &thread_facts {
                 Some(Ok(facts)) => user_attachment_plan(facts),
                 _ => (0, std::collections::VecDeque::new()),
@@ -692,6 +704,14 @@ impl Completion for LiveCompletion {
                         text: "(Response interrupted by the user.)".into(),
                     });
                 }
+                // A newly committed user steer can supersede the candidate window.
+                if cycle.is_some() {
+                    if let Some(cycle) =
+                        model_call::run_execution_cycle(surface, &surface_thread_facts(surface)?)?
+                    {
+                        return Err(ActorError::Defect(cycle.diagnostic()));
+                    }
+                }
             }
             // The standing system prompt is cached on the first call. Restate
             // the latest user script on every call, and do not write it back
@@ -704,7 +724,12 @@ impl Completion for LiveCompletion {
                 system.take(),
                 &user_text,
                 published.as_deref(),
-                false,
+                surface.as_ref().is_some_and(|surface| {
+                    surface
+                        .agent
+                        .tool_context_handle()
+                        .preserves_parent_reply_language()
+                }),
             );
             system = next_system;
             if let (Some(language), Some(surface)) = (&turn_language, surface.as_ref()) {
@@ -1103,6 +1128,7 @@ impl FactRun {
                 executor,
                 checkpoint: None,
                 events: None,
+                persistence: None,
                 context,
                 permission: permission.clone(),
                 checker: None,
@@ -1432,6 +1458,7 @@ impl FactRun {
                 executor,
                 checkpoint,
                 events,
+                persistence: surface.persistence.clone(),
                 context,
                 permission,
                 checker,
@@ -1755,6 +1782,9 @@ mod conversation_history_tests;
 
 #[cfg(test)]
 mod tool_history_tests;
+
+#[cfg(test)]
+mod approval_identity_tests;
 
 #[cfg(test)]
 mod no_count_limit_tests;

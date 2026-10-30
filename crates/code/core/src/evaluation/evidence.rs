@@ -155,7 +155,7 @@ pub struct EvidenceRunStateV1 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capability_binding_digest: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cognitive_binding_digest: Option<String>,
+    pub package_binding_digest: Option<String>,
 }
 
 impl EvidenceRunStateV1 {
@@ -222,10 +222,10 @@ impl EvidenceRunStateV1 {
             .map(|value| digest_json("a3s.code.evidence.capability-binding.v1", value))
             .transpose()
             .map_err(EvidenceError::Serialization)?;
-        let cognitive_binding_digest = snapshot
-            .cognitive_package_binding
+        let package_binding_digest = snapshot
+            .package_binding
             .as_ref()
-            .map(|value| digest_json("a3s.code.evidence.cognitive-binding.v1", value))
+            .map(|value| digest_json("a3s.code.evidence.package-binding.v1", value))
             .transpose()
             .map_err(EvidenceError::Serialization)?;
         Ok(Self {
@@ -247,7 +247,7 @@ impl EvidenceRunStateV1 {
             error_digest,
             workspace_change_set_digest,
             capability_binding_digest,
-            cognitive_binding_digest,
+            package_binding_digest,
         })
     }
 }

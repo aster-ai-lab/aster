@@ -3,6 +3,9 @@
 use super::*;
 use serde_json::json;
 
+#[path = "source_mutation_tests.rs"]
+mod source_mutation;
+
 struct Vault(PathBuf);
 
 impl Vault {
@@ -35,7 +38,7 @@ impl Vault {
         )
         .unwrap();
         fs::write(staging.join(MANIFEST), serde_json::to_vec(&json!({
-            "sources":job.sources,"summary":"The meeting provides new evidence.",
+            "sources":job.sources,"summary":"The meeting provides new evidence.","categories":{"concepts/shared.md":["Meetings"]},
             "pages":[{"path":"concepts/shared.md","title":"Shared decision","kind":"concept","change":change,"reason":"The meeting provides new evidence.","requires_review":false,"sources":job.sources}]
         })).unwrap()).unwrap();
     }
@@ -45,6 +48,96 @@ impl Drop for Vault {
     fn drop(&mut self) {
         let _ = fs::remove_dir_all(self.0.parent().unwrap().parent().unwrap());
     }
+}
+
+#[test]
+fn staging_owns_the_output_directory_before_the_agent_runs() {
+    let vault = Vault::new();
+    vault.write("source.md", "# Source\nFrozen source bytes.\n");
+    let job = vault.begin();
+    let concepts = Path::new(&job.staging).join("concepts");
+    assert!(concepts.is_dir());
+    assert_eq!(fs::read_dir(&concepts).unwrap().count(), 0);
+    fs::remove_dir(&concepts).unwrap();
+    let resumed = vault.begin();
+    assert_eq!(resumed.id, job.id);
+    assert!(concepts.is_dir());
+    assert_eq!(
+        fs::read_to_string(vault.0.join("source.md")).unwrap(),
+        "# Source\nFrozen source bytes.\n"
+    );
+    abandon_knowledge_maintenance(&vault.0, &job.id).unwrap();
+}
+
+#[test]
+fn compile_admission_requires_the_current_unpublished_job() {
+    let vault = Vault::new();
+    vault.write("source.md", "Frozen evidence.");
+    let job = vault.begin();
+    assert_eq!(
+        knowledge_compile_workspace(&vault.0, &job.id).unwrap(),
+        PathBuf::from(&job.staging)
+    );
+    assert!(knowledge_compile_workspace(&vault.0, &"0".repeat(64)).is_err());
+    vault.propose(&job, "create");
+    finish_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    assert!(knowledge_compile_workspace(&vault.0, &job.id).is_err());
+    assert_eq!(
+        fs::read_to_string(vault.0.join("source.md")).unwrap(),
+        "Frozen evidence."
+    );
+}
+
+#[test]
+fn concurrent_jobs_can_create_shared_staging_parents_without_admitting_links() {
+    let vault = Vault::new();
+    let parent = vault.0.join("shared");
+    let barrier = std::sync::Barrier::new(8);
+    std::thread::scope(|scope| {
+        for _ in 0..8 {
+            scope.spawn(|| {
+                let mut errors = Vec::new();
+                for index in 0..24 {
+                    barrier.wait();
+                    if let Err(error) =
+                        create_owned_directory(&parent.join(index.to_string()).join("nested"))
+                    {
+                        errors.push(error);
+                    }
+                }
+                assert!(errors.is_empty(), "{errors:?}");
+            });
+        }
+    });
+    #[cfg(unix)]
+    {
+        let linked = vault.0.join("linked");
+        std::os::unix::fs::symlink(&parent, &linked).unwrap();
+        assert!(create_owned_directory(&linked.join("new")).is_err());
+        assert!(!parent.join("new").exists());
+    }
+}
+
+#[test]
+#[cfg(unix)]
+fn resuming_a_job_refuses_a_linked_output_directory() {
+    let vault = Vault::new();
+    vault.write("source.md", "Frozen source bytes.");
+    let job = vault.begin();
+    let concepts = Path::new(&job.staging).join("concepts");
+    let outside = vault.0.parent().unwrap().join("outside");
+    fs::create_dir(&outside).unwrap();
+    fs::remove_dir(&concepts).unwrap();
+    std::os::unix::fs::symlink(&outside, &concepts).unwrap();
+    let error =
+        begin_knowledge_maintenance(&vault.0, &[], MaintenanceOperation::Ingest).unwrap_err();
+    assert!(error.to_string().contains("knowledge.symlink_refused"));
+    assert_eq!(fs::read_dir(&outside).unwrap().count(), 0);
+    assert_eq!(
+        fs::read_to_string(vault.0.join("source.md")).unwrap(),
+        "Frozen source bytes."
+    );
+    abandon_knowledge_maintenance(&vault.0, &job.id).unwrap();
 }
 
 #[test]
@@ -194,7 +287,9 @@ fn unknown_manifest_values_and_unsafe_paths_fail_closed() {
     for invalid in [
         "../../outside.md",
         "concepts/../outside.md",
-        "concepts/sub/page.md",
+        "concepts/.hidden/page.md",
+        "concepts/sub/index.md",
+        "concepts/a/b/c/d/page.md",
     ] {
         let vault = Vault::new();
         vault.write("meeting.md", "Input.");
@@ -229,6 +324,97 @@ fn a_changed_review_candidate_cannot_be_accepted() {
         review_knowledge_change(&vault.0, &job.id, &change.path, &change.generation, true).is_err()
     );
     assert!(!vault.0.join(&change.path).exists());
+}
+
+#[test]
+fn cancellation_is_durable_and_releases_sources_without_publishing_late_work() {
+    let vault = Vault::new();
+    vault.write("meeting.md", "Unchanged source.");
+    let job = vault.begin();
+    assert!(with_knowledge_source_mutation(&vault.0, |_| Ok(())).is_err());
+    assert!(cancel_knowledge_maintenance(&vault.0, "wrong-job").is_err());
+    let cancelled = cancel_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    assert!(cancelled.active.is_none());
+    assert_eq!(cancelled.activity[0].status, ActivityStatus::Cancelled);
+    assert_eq!(cancelled.sources[0].status, SourceStatus::Pending);
+    assert_eq!(
+        knowledge_maintenance_plan(&vault.0).unwrap().activity[0].status,
+        ActivityStatus::Cancelled
+    );
+    assert_eq!(
+        knowledge_maintenance_job(&vault.0, &job.id)
+            .unwrap()
+            .error
+            .as_deref(),
+        Some("knowledge.agent_cancelled")
+    );
+    assert!(!Path::new(&job.staging).exists());
+    assert!(finish_knowledge_maintenance(&vault.0, &job.id).is_err());
+    with_knowledge_source_mutation(&vault.0, |_| Ok(())).unwrap();
+    assert_eq!(
+        fs::read_to_string(vault.0.join("meeting.md")).unwrap(),
+        "Unchanged source."
+    );
+    let resumed = vault.begin();
+    assert_ne!(resumed.id, job.id);
+    assert_eq!(resumed.sources, job.sources);
+    cancel_knowledge_maintenance(&vault.0, &resumed.id).unwrap();
+}
+
+#[test]
+fn cancelling_an_audit_preserves_current_sources_and_cannot_discard_reviewable_changes() {
+    let vault = Vault::new();
+    vault.write("meeting.md", "Input.");
+    let initial = vault.begin();
+    vault.propose(&initial, "create");
+    finish_knowledge_maintenance(&vault.0, &initial.id).unwrap();
+    let published = fs::read(vault.0.join("concepts/shared.md")).unwrap();
+    let audit = begin_knowledge_maintenance(&vault.0, &[], MaintenanceOperation::Audit).unwrap();
+    let cancelled = cancel_knowledge_maintenance(&vault.0, &audit.id).unwrap();
+    assert_eq!(cancelled.sources[0].status, SourceStatus::Current);
+    assert_eq!(cancelled.pages, 1);
+    assert_eq!(
+        fs::read(vault.0.join("concepts/shared.md")).unwrap(),
+        published
+    );
+    let update = begin_knowledge_maintenance(
+        &vault.0,
+        &["meeting.md".into()],
+        MaintenanceOperation::Ingest,
+    )
+    .unwrap();
+    vault.propose(&update, "update");
+    finish_knowledge_maintenance(&vault.0, &update.id).unwrap();
+    assert!(cancel_knowledge_maintenance(&vault.0, &update.id).is_err());
+    assert!(
+        knowledge_maintenance_plan(&vault.0)
+            .unwrap()
+            .active
+            .unwrap()
+            .ready
+    );
+    abandon_knowledge_maintenance(&vault.0, &update.id).unwrap();
+}
+
+#[test]
+fn abandoned_review_retains_the_proposal_for_history_readback() {
+    let vault = Vault::new();
+    vault.write("meeting.md", "Input.");
+    vault.write(
+        "concepts/shared.md",
+        "---\ntype: Concept\ntitle: Shared decision\n---\n\nCurrent version.\n",
+    );
+    let job = vault.begin();
+    vault.propose(&job, "update");
+    let ready = finish_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    assert!(ready.active.as_ref().unwrap().ready);
+    let before = knowledge_change(&vault.0, &job.id, "concepts/shared.md").unwrap();
+    abandon_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    let archived = knowledge_change(&vault.0, &job.id, "concepts/shared.md").unwrap();
+    assert_eq!(archived.after, before.after);
+    assert!(fs::read_to_string(vault.0.join("concepts/shared.md"))
+        .unwrap()
+        .contains("Current version."));
 }
 
 #[test]
@@ -357,6 +543,7 @@ fn source_citations_encode_literal_url_characters() {
     let body = cited_body(
         b"---\ntype: Concept\ntitle: Evidence\n---\nEvidence.\n",
         &["notes/a%20b?# (final).md".into()],
+        "concepts/evidence.md",
     )
     .unwrap();
     assert!(body.contains("../notes/a%2520b%3F%23%20%28final%29.md"));
@@ -389,4 +576,128 @@ fn literal_backslashes_in_filenames_cannot_become_parent_traversals() {
     vault.write(r"x\..\..\escaped.md", "Untrusted filename.");
     assert!(knowledge_maintenance_plan(&vault.0).is_err());
     assert!(begin_knowledge_maintenance(&vault.0, &[], MaintenanceOperation::Ingest).is_err());
+}
+
+#[test]
+fn classified_pages_publish_with_valid_index_and_depth_correct_source_citations() {
+    let vault = Vault::new();
+    vault.write("meeting.md", "Original evidence remains unchanged.");
+    let job = vault.begin();
+    vault.propose(&job, "create");
+    let path = "concepts/产品 规划/极光/决策.md";
+    let staging = Path::new(&job.staging);
+    let target = staging.join(path);
+    fs::create_dir_all(target.parent().unwrap()).unwrap();
+    fs::rename(staging.join("concepts/shared.md"), &target).unwrap();
+    let mut manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(staging.join(MANIFEST)).unwrap()).unwrap();
+    manifest["pages"][0]["path"] = json!(path);
+    manifest["categories"] = json!({path:["产品 规划", "极光"]});
+    fs::write(
+        staging.join(MANIFEST),
+        serde_json::to_vec(&manifest).unwrap(),
+    )
+    .unwrap();
+    let result = finish_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    assert!(result.active.is_none());
+    assert_eq!(result.pages, 1);
+    let published = fs::read_to_string(vault.0.join(path)).unwrap();
+    assert!(published.contains("[meeting.md](../../../meeting.md)"));
+    let index = fs::read_to_string(vault.0.join("index.md")).unwrap();
+    assert!(index.contains("/concepts/产品%20规划/极光/决策.md"));
+    assert_eq!(
+        fs::read_to_string(vault.0.join("meeting.md")).unwrap(),
+        "Original evidence remains unchanged."
+    );
+    assert!(knowledge_page_path(path));
+    for path in [
+        "concepts/../a.md",
+        "concepts/a//b.md",
+        "concepts/a/.private/b.md",
+        "concepts/a/b/c/d/e.md",
+        "concepts/a/log.md",
+    ] {
+        assert!(!knowledge_page_path(path), "{path}");
+    }
+}
+
+#[test]
+fn legacy_page_classification_keeps_paths_bytes_and_links_and_is_durable() {
+    let vault = Vault::new();
+    let old = "---\ntype: Concept\ntitle: 发布计划\n---\n\nSee [index](./indexing.md).\n";
+    vault.write("concepts/plan.md", old);
+    vault.write(
+        "concepts/indexing.md",
+        "---\ntype: Concept\ntitle: 离线索引\n---\n\nExisting evidence.\n",
+    );
+    let job = begin_knowledge_maintenance(&vault.0, &[], MaintenanceOperation::Audit).unwrap();
+    assert!(job.sources.is_empty());
+    assert!(job.classification_required);
+    let categories =
+        json!({"concepts/plan.md":["产品","极光"],"concepts/indexing.md":["技术","检索"]});
+    let manifest = json!({"sources":[],"summary":"Classified existing pages by their subject matter without changing their content.","pages":[],"categories":categories});
+    fs::write(
+        Path::new(&job.staging).join(MANIFEST),
+        serde_json::to_vec(&manifest).unwrap(),
+    )
+    .unwrap();
+    let result = finish_knowledge_maintenance(&vault.0, &job.id).unwrap();
+    assert!(result.active.is_none());
+    assert_eq!(result.categories["concepts/plan.md"], vec!["产品", "极光"]);
+    assert_eq!(
+        result.categories["concepts/indexing.md"],
+        vec!["技术", "检索"]
+    );
+    assert_eq!(
+        fs::read_to_string(vault.0.join("concepts/plan.md")).unwrap(),
+        old
+    );
+    assert!(!vault.0.join("concepts/产品/极光/plan.md").exists());
+    assert_eq!(
+        knowledge_maintenance_plan(&vault.0).unwrap().categories,
+        result.categories
+    );
+    assert_eq!(
+        knowledge_maintenance_job(&vault.0, &job.id)
+            .unwrap()
+            .categories,
+        result.categories
+    );
+}
+
+#[test]
+fn classification_refuses_missing_pages_unsafe_topics_and_changed_legacy_content() {
+    for (path, topics, changed) in [
+        ("concepts/missing.md", vec!["Product"], false),
+        ("concepts/old.md", vec!["../outside"], false),
+        ("concepts/old.md", vec![".private"], false),
+        ("concepts/old.md", vec!["Product"], true),
+    ] {
+        let vault = Vault::new();
+        vault.write(
+            "concepts/old.md",
+            "---\ntype: Concept\ntitle: Old\n---\n\nOriginal.\n",
+        );
+        let job = begin_knowledge_maintenance(&vault.0, &[], MaintenanceOperation::Audit).unwrap();
+        if changed {
+            vault.write("concepts/old.md", "External edit must survive.");
+        }
+        let manifest = json!({"sources":[],"summary":"Classify existing content.","pages":[],"categories":{path:topics}});
+        fs::write(
+            Path::new(&job.staging).join(MANIFEST),
+            serde_json::to_vec(&manifest).unwrap(),
+        )
+        .unwrap();
+        assert!(finish_knowledge_maintenance(&vault.0, &job.id).is_err());
+        assert!(knowledge_maintenance_plan(&vault.0)
+            .unwrap()
+            .categories
+            .is_empty());
+        if changed {
+            assert_eq!(
+                fs::read_to_string(vault.0.join("concepts/old.md")).unwrap(),
+                "External edit must survive."
+            );
+        }
+    }
 }

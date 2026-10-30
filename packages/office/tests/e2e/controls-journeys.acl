@@ -1,0 +1,163 @@
+suite "office-shared-controls" {
+    version = 1
+
+    scenario "prompt-escape-stays-closed" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-prompt" { target = role("button", "Prompt") }
+        wait "prompt-visible" { visible = role("dialog", "Prompt title") }
+        expect "field-focus" { focused = role("textbox", "Value") }
+        press "cancel-prompt" { key = "Escape" }
+        wait "prompt-exited" { hidden = role("dialog", "Prompt title") }
+        expect "stays-closed" { hidden = role("dialog", "Prompt title") stable_for_ms = 300 sample_interval_ms = 25 }
+        expect "invoker-focus" { focused = role("button", "Prompt") }
+        expect "cancel-result" { target = css("output[aria-label='Prompt result']") rendered_text = "cancelled" }
+    }
+
+    scenario "dialog-motion-lifetime" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        expect "normal-motion" { target = css("output[aria-label='Motion preference']") rendered_text = "no-preference" }
+        click "open-dialog" { target = role("button", "Format") }
+        wait "entrance-complete" { text = "a3s-dialog-in:end:0.16" }
+        click "close-dialog" { target = role("button", "关闭") }
+        wait "exit-complete" { text = "a3s-dialog-out:end:0.2" }
+        expect "removed" { hidden = role("dialog", "Format") }
+        expect "invoker-focus" { focused = role("button", "Format") }
+    }
+
+    scenario "localized-dialog-close" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls?locale=en-US" }
+        click "open-dialog" { target = role("button", "Proofing") }
+        wait "dialog-entered" { visible = role("dialog", "Set proofing language") }
+        expect "localized-title" { visible = role("dialog", "Set proofing language") }
+        expect "localized-close" { pointer_reachable = role("button", "Close") }
+        click "close-dialog" { target = role("button", "Close") }
+        wait "dialog-exited" { hidden = role("dialog", "Set proofing language") }
+        expect "dialog-closed" { hidden = role("dialog", "Set proofing language") }
+        expect "invoker-focus" { focused = role("button", "Proofing") }
+        click "open-prompt" { target = role("button", "Prompt") }
+        wait "prompt-entered" { visible = role("dialog", "Prompt title") }
+        expect "localized-confirm" { enabled = role("button", "OK") }
+        expect "localized-cancel" { visible = role("button", "Cancel") }
+        press "cancel-prompt" { key = "Escape" }
+        wait "prompt-exited" { hidden = role("dialog", "Prompt title") }
+        expect "prompt-invoker-focus" { focused = role("button", "Prompt") }
+    }
+
+    scenario "base-control-layout" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-dialog" { target = role("button", "Format") }
+        wait "dialog-entered" { visible = role("dialog", "Format") }
+        expect "pending-disabled" { disabled = role("button", "Pending action") }
+        expect "pending-preserves-target" {
+            target = role("button", "Pending action")
+            relative_to = role("button", "Idle action")
+            layout = "same_size"
+            tolerance_px = 0
+        }
+        expect "text-field-and-picker-height" {
+            target = role("textbox", "Name")
+            relative_to = css(".ds-dialog button[role='combobox']")
+            layout = "same_height"
+            tolerance_px = 0
+        }
+        expect "field-reachable" { pointer_reachable = role("textbox", "Name") }
+        click "focus-field" { target = role("textbox", "Name") }
+        expect "field-focus" { focused = role("textbox", "Name") }
+        screenshot "base-controls" { path = "screenshots/base-controls.png" }
+    }
+
+    scenario "picker-search-and-nested-escape" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-font" { target = role("combobox", "Font") }
+        fill "search-by-keyword" { target = css("input[role='combobox']") value = "中文字体" }
+        wait "matching-suggestion" { visible = role("option", "Sans serif") }
+        expect "one-suggestion" { target = css("[role='option']") visible_count = 1 }
+        press "choose" { key = "Enter" }
+        expect "chosen" { target = css("output[aria-label='Selected font']") rendered_text = "sans-serif" }
+        expect "picker-closed" { hidden = role("listbox", "Font") }
+        expect "trigger-focus" { focused = role("combobox", "Font") }
+        click "open-dialog" { target = role("button", "Format") }
+        click "open-nested-picker" { target = css(".ds-dialog [role='combobox']") }
+        expect "menu-visible" { visible = role("listbox", "Font") }
+        press "dismiss-menu" { key = "Escape" }
+        expect "menu-closed" { hidden = role("listbox", "Font") }
+        expect "dialog-retained" { visible = role("dialog", "Format") }
+        expect "nested-trigger-focus" { focused = css(".ds-dialog [role='combobox']") }
+        press "dismiss-dialog" { key = "Escape" }
+        wait "dialog-exited" { hidden = role("dialog", "Format") }
+        expect "dialog-closed" { hidden = role("dialog", "Format") }
+        expect "return-to-owner" { focused = role("button", "Format") }
+    }
+
+    scenario "proofing-pointer-close" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-dialog" { target = role("button", "Proofing") }
+        click "choose-language" { target = role("option", "en-GB") }
+        expect "input-collapsed" { collapsed = role("combobox", "拉丁文字校对语言") }
+        wait "exit-finished" { hidden = role("listbox", "Suggestions") }
+        expect "menu-stays-closed" { hidden = role("listbox", "Suggestions") stable_for_ms = 300 sample_interval_ms = 25 }
+        expect "value-preserved" { target = role("combobox", "拉丁文字校对语言") value = "en-GB" }
+        expect "input-focus" { focused = role("combobox", "拉丁文字校对语言") }
+        click "apply" { target = role("button", "应用") }
+        expect "exact-editor-patch" { target = css("output[aria-label='Applied proofing']") rendered_text = "{\"languages\":{\"latin\":\"en-GB\"}}" }
+    }
+
+    scenario "proofing-keyboard-without-query" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-dialog" { target = role("button", "Proofing") }
+        press "next-language" { key = "ArrowDown" }
+        press "choose-language" { key = "Enter" }
+        expect "input-collapsed" { collapsed = role("combobox", "拉丁文字校对语言") }
+        wait "exit-finished" { hidden = role("listbox", "Suggestions") }
+        expect "menu-closed" { hidden = role("listbox", "Suggestions") }
+        expect "value-preserved" { target = role("combobox", "拉丁文字校对语言") value = "en-GB" }
+        click "apply" { target = role("button", "应用") }
+        expect "exact-editor-patch" { target = css("output[aria-label='Applied proofing']") rendered_text = "{\"languages\":{\"latin\":\"en-GB\"}}" }
+    }
+
+    scenario "proofing-custom-draft-and-tab" {
+        surface = "web"
+        timeout_ms = 30000
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-dialog" { target = role("button", "Proofing") }
+        fill "custom-language" { target = css("input[aria-label='拉丁文字校对语言']") value = "pt-BR" }
+        press "leave-field" { key = "Tab" }
+        expect "input-collapsed" { collapsed = role("combobox", "拉丁文字校对语言") }
+        wait "exit-finished" { hidden = role("listbox", "Suggestions") }
+        expect "menu-closed" { hidden = role("listbox", "Suggestions") }
+        expect "draft-preserved" { target = role("combobox", "拉丁文字校对语言") value = "pt-BR" }
+        expect "next-control-focus" { focused = role("button", "拉丁文字跟随样式") }
+        click "apply" { target = role("button", "应用") }
+        expect "exact-editor-patch" { target = css("output[aria-label='Applied proofing']") rendered_text = "{\"languages\":{\"latin\":\"pt-BR\"}}" }
+    }
+
+    scenario "narrow-proofing-layout" {
+        surface = "web"
+        timeout_ms = 30000
+        viewport "narrow" { width = 420 height = 720 scale = 1 }
+        navigate "open" { url = "http://127.0.0.1:58128/controls" }
+        click "open-dialog" { target = role("button", "Proofing") }
+        expect "dialog-fits" { in_viewport = role("dialog", "设置校对语言") }
+        expect "input-reachable" { pointer_reachable = role("combobox", "拉丁文字校对语言") }
+        click "choose-language" { target = role("option", "en-GB") }
+        expect "input-collapsed" { collapsed = role("combobox", "拉丁文字校对语言") }
+        wait "exit-finished" { hidden = role("listbox", "Suggestions") }
+        expect "menu-stays-closed" { hidden = role("listbox", "Suggestions") stable_for_ms = 300 sample_interval_ms = 25 }
+        expect "apply-reachable" { pointer_reachable = role("button", "应用") }
+        screenshot "narrow-dialog" { path = "screenshots/narrow-dialog.png" }
+    }
+}

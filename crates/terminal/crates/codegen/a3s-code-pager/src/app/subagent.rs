@@ -1002,11 +1002,20 @@ pub(crate) fn format_subagent_meta(
 
 /// Concise display label for the subagent scrollback block and the fullscreen title bar.
 /// Callers handle the `None` activity separately.
-pub(crate) fn format_activity_label(activity: &crate::acp::tracker::TurnActivity) -> String {
+pub(crate) fn format_activity_label(
+    activity: &crate::acp::tracker::TurnActivity,
+    language: Option<&str>,
+) -> String {
+    let chinese = matches!(language, Some("zh-CN" | "zh-TW" | "zh"));
     use crate::acp::tracker::TurnActivity;
     match activity {
-        TurnActivity::Thinking => "Thinking".to_string(),
-        TurnActivity::Responding => "Responding".to_string(),
+        TurnActivity::Thinking => if chinese { "正在思考" } else { "Thinking" }.to_string(),
+        TurnActivity::Responding => if chinese {
+            "正在回复"
+        } else {
+            "Responding"
+        }
+        .to_string(),
         TurnActivity::ToolRunning { title, description } => {
             if let Some(desc) = description
                 .as_deref()
@@ -1033,7 +1042,12 @@ pub(crate) fn format_activity_label(activity: &crate::acp::tracker::TurnActivity
                 }
             }
         }
-        TurnActivity::AutoCompacting => "Compacting".to_string(),
+        TurnActivity::AutoCompacting => if chinese {
+            "正在整理上下文"
+        } else {
+            "Compacting"
+        }
+        .to_string(),
         TurnActivity::Retrying {
             attempt,
             max_retries,
@@ -1044,7 +1058,7 @@ pub(crate) fn format_activity_label(activity: &crate::acp::tracker::TurnActivity
             crate::app::error_display::RetryLabelStyle::Compact,
         ),
         TurnActivity::WritingToolCall(writing) => writing.label(),
-        TurnActivity::Waiting(reason) => reason.label(),
+        TurnActivity::Waiting(reason) => reason.label_for_language(language),
     }
 }
 

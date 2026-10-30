@@ -1,0 +1,95 @@
+export const meta = {
+  title: 'AIX 包与接入',
+  description: 'AIX schema v3、Manifest、文件清单、Registry 目标和计划应用。',
+  label: 'AIX 包与接入',
+  updated: '2026-10-29',
+};
+
+`.aix` 使用 ZIP 容器。包根目录必须包含 `a3s-use-extension.acl`，Manifest Schema Version 必须为 `3`。
+
+Use 也接受包目录和旧版 `.tar.gz`、`.tgz`、`.zip` 来源。旧版格式不会获得 AIX 的原生 Manifest 语义。
+
+## Manifest 示例
+
+以下包只声明一个 Skill 表面：
+
+```acl
+extension "acme/research" {
+  schema_version = 3
+  version        = "2.0.0"
+  route          = "research"
+  requires_use   = ">=0.3.0, <0.4.0"
+  actions        = ["read"]
+
+  skill "review" {
+    path          = "skills/review/SKILL.md"
+    requires_tool = []
+    requires_mcp  = []
+    optional      = false
+  }
+}
+```
+
+`package_id` 使用 `publisher/name`。`version` 和 `requires_use` 使用 SemVer 约束。`route` 是宿主调用该包的稳定路由。
+
+Manifest 还可以声明 `repository`、`tool`、`mcp`、`okf` 和 `ui`。每个表面使用自己的类型化字段和依赖关系。
+
+## 包结构校验
+
+<DocTable caption="AIX 本地准入边界" headers={['检查', '要求']} rows={[
+  ['Manifest 位置', '必须位于压缩包根目录'],
+  ['Manifest 编码与大小', 'UTF-8，最大 1 MiB'],
+  ['Schema', 'schema_version = 3'],
+  ['文件清单', '声明文件必须与实际包内容匹配'],
+  ['路径', '拒绝路径逃逸、链接和重解析点'],
+  ['身份', '包 ID、版本、路由和文件摘要保持一致'],
+]} />
+
+Use 在有界临时目录中解压并检查包。缺少 Manifest、文件清单不匹配或路径越界都会拒绝准入。
+
+## Registry 发布路径
+
+Registry Target 使用以下层次：
+
+```text
+extensions/<publisher>/<name>/<version>/<channel>/<target>/<archive>
+```
+
+Target 必须匹配签名目录中的包身份、版本、渠道和平台。归档摘要必须匹配目标元数据与签名目录证据。
+
+Registry Source 使用显式信任根。新增来源时提供 `--trust-root <sha256>`，不要把下载 URL 当作信任依据。
+
+本地 AIX 校验只证明包结构可接受。它不会证明发布者身份或发布渠道可信。
+
+## 构建 CLI 并审查计划
+
+```bash
+cargo build --locked -p a3s-use
+./target/debug/a3s-use capabilities --json
+./target/debug/a3s-use doctor --json
+```
+
+生成安装计划：
+
+```bash
+./target/debug/a3s-use plugin plan-install acme/research \
+  --scope-id current --json
+```
+
+核对计划中的包、版本、摘要、动作和表面后，使用计划返回的 Operation ID 与 Digest：
+
+```bash
+./target/debug/a3s-use plugin apply-plan \
+  --operation-id <plan-operation-id> \
+  --plan-digest <plan-sha256> \
+  --scope-id current --yes --json
+```
+
+占位值必须替换为当前计划返回的值。Digest 不匹配或计划已经变化时，不要应用该计划。
+
+## 实现依据
+
+- [AIX 本地包准入](https://github.com/aster-ai-lab/aster/blob/main/crates/use/extension/src/source.rs)
+- [Manifest 示例](https://github.com/aster-ai-lab/aster/blob/main/crates/use/extension/fixtures/manifests/plugin-v3.acl)
+- [Registry Target 校验](https://github.com/aster-ai-lab/aster/blob/main/crates/use/extension/src/remote/target.rs)
+- [CLI 计划命令](https://github.com/aster-ai-lab/aster/blob/main/crates/use/src/cli.rs)

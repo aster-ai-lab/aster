@@ -1,23 +1,23 @@
 export const meta = {
-  "title": "把检查放在真正执行的位置",
+  "title": "权限、沙箱与完成检查",
   "description": "权限层、沙箱、确认、Hook、预算和完成证据的接线顺序。",
   "label": "权限、Hooks 与验证",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
-## 从一次写操作看调用顺序
+## 写操作的调用顺序
 
-用户要求修复文件时，先准入 Run 与能力快照，再对每个调用检查参数、权限及所需确认，执行 Hook、预算与沙箱约束，最后记录结果和变化。组件可以安排动作，权限执行器决定动作能否执行。
+修复文件时，先准入 Run 与能力快照，再对每个调用检查参数、权限及所需确认，执行 Hook、预算与沙箱约束，最后记录结果和变化。组件可以安排动作，权限执行器决定动作能否执行。
 
 [教程第四章](../../tutorial/permissions/)给出默认拒绝、只读工具允许和确认管理器的接线。生产宿主应分别测试读取、写入、命令、网络和越界路径，不能只测“工具成功返回”。
 
-## 权限与沙箱分别约束什么
+## 权限与沙箱的职责
 
-权限策略说明哪些调用被允许、拒绝或需要询问；工作区能力限定后端能做什么；沙箱限制真正的进程、文件和网络访问。允许一个工具名不会放宽另外两层。
+权限策略决定调用被允许、拒绝还是需要询问。工作区能力限定后端支持的操作。沙箱限制进程、文件和网络访问。允许一个工具名不会放宽另外两层。
 
-Rust 宿主可通过 `BashSandbox` 注入进程隔离实现，使用 `with_sandbox_handle` 绑定，另有网络模式与 allow 范围。允许 host process sandbox 是显式宿主决定。不要把一个仅检查字符串的策略当成操作系统隔离，也不能用项目 ACL 开启原本未获准的主机执行。
+Rust 宿主可通过 `BashSandbox` 注入进程隔离实现，使用 `with_sandbox_handle` 绑定，另有网络模式与 allow 范围。允许 host process sandbox 是显式宿主决定。不要把仅检查字符串的策略当成操作系统隔离，也不能用项目 ACL 启用原本未获准的主机执行。
 
-租户、用户、工作区和路径身份都应由可信宿主提供。`source_review`、只读会话和固定快照审阅等更窄约束不能被提示、Hook 或后续工具注册解除。
+租户、用户、工作区和路径身份都应由可信宿主提供。`source_review`、只读会话和固定快照审阅的更窄约束不能被提示、Hook 或后续工具注册解除。
 
 ## Hook 的注册与撤销
 
@@ -37,11 +37,17 @@ Hook 可以阻止或调整流程，但不能批准被权限拒绝的操作。Hoo
 
 `verify_commands` 执行已选验证命令并保留报告；`verification_reports`、`verification_summary` 读取结果。命令本身仍需要受控执行权限。进程退出码为零只证明这条检查按其规则成功，不自动证明用户需求全部满足。
 
+<PeleAtlasDiagram name="completion-gate" label="完成门禁与资源收尾" description="先处理不确定结果与未完成事项，再判断 Narrative、Waived 或 Verified；任何可结束状态都还要等待清理。" />
+
 宿主使用 `CompletionAttestor` 提交独立检查结果时，报告应绑定当前修改摘要和检查身份。修改后旧报告需要失效或重新检查。明确豁免应保留原因，不能把缺失检查改名为通过。
+
+验证入口见 <SourceRef path="crates/code/core/src/agent_api/governance_facade.rs" match="pub async fn verify_commands(">AgentSession::verify_commands</SourceRef>；完成判定见 <SourceRef path="crates/code/core/src/harness_loop.rs" match="pub(crate) fn decide_with_contracts(">decide_with_contracts</SourceRef>，它先拒绝未解决事项，再检查当前 `effect_digest` 的豁免或 Passed 报告。
 
 ## 资源清理也要有结果
 
 Turn 资源在单轮结束清理；跨轮使用的监听器、浏览器页面、文档模型引用和租约注册为 Run effect。`CapabilityEffect::close` 负责释放原资源并返回失败，不能只清空宿主字典。完整接口见[验证与资源清理](../../meta-harness/verification-resources/)。
+
+实现资源时从 <SourceRef path="crates/code/core/src/capability/effect.rs" match="pub trait CapabilityEffect: Send + 'static {">CapabilityEffect</SourceRef> 的异步 `close` 合同开始核对。
 
 验收至少覆盖：权限拒绝时未执行；确认过期时未执行；Hook 出错可定位；预算耗尽停止；取消后资源结算；清理失败不伪装成成功。
 

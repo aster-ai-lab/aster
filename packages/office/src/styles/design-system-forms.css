@@ -8,26 +8,26 @@
   height: auto;
   max-height: none;
   margin: 0;
-  padding: 16px;
+  padding: 24px;
   place-items: center;
   border: 0;
-  background: rgb(9 12 22 / 42%);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.2);
   color: var(--a3s-ink);
   font-family: var(--a3s-ui-font);
 }
 
 .ds-dialog {
+  position: relative;
   box-sizing: border-box;
   display: flex;
-  width: min(440px, 100%);
-  max-height: calc(100dvh - 32px);
+  width: min(512px, 100%);
+  max-height: calc(100dvh - 48px);
   flex-direction: column;
   /* Keep overflow visible so portaled OfficeSelect / Popover menus inside the
      dialog focus scope are not clipped by the rounded surface. Scroll stays on
      .ds-dialog-body. */
   overflow: visible;
-  border: 1px solid var(--a3s-overlay-border);
+  border: 0;
   border-radius: var(--a3s-overlay-radius);
   background: var(--a3s-overlay-surface);
   box-shadow: var(--a3s-shadow-soft);
@@ -37,14 +37,25 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 20px 24px 16px;
+  padding: 24px 48px 16px 24px;
   flex: 0 0 auto;
+}
+
+.ds-dialog .ds-dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 8px;
+  color: var(--a3s-body);
 }
 
 .ds-dialog h2 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .ds-dialog header p {
@@ -67,7 +78,7 @@
   flex: 0 0 auto;
   padding: 14px 24px;
   border-top: 1px solid var(--a3s-line);
-  background: var(--a3s-panel-soft);
+  background: var(--a3s-panel);
 }
 
 .ds-dialog > footer .ds-button.danger {
@@ -90,7 +101,7 @@
   }
 
   .ds-dialog > header {
-    padding: 16px 16px 12px;
+    padding: 16px 48px 12px 16px;
   }
 
   .ds-dialog-body {
@@ -111,52 +122,54 @@
 .ds-field-label {
   color: var(--a3s-muted);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
-.ds-field input,
-.ds-field select {
+.ds-field > input {
   width: 100%;
-  height: 40px;
+  height: 36px;
   padding: 0 11px;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--a3s-radius-sm);
   outline: 0;
-  background: var(--a3s-panel);
+  background: var(--a3s-panel-soft);
   color: var(--a3s-ink);
+  font: inherit;
+  font-size: 13px;
 }
 
-.ds-field textarea {
+.ds-field > textarea {
   width: 100%;
   min-height: 92px;
   padding: 10px 11px;
   resize: vertical;
-  border: 1px solid var(--a3s-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--a3s-radius-sm);
   outline: 0;
-  background: var(--a3s-panel);
+  background: var(--a3s-panel-soft);
   color: var(--a3s-ink);
-  font: 13px / 1.6 inherit;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.ds-field input:focus,
-.ds-field select:focus,
-.ds-field textarea:focus {
-  border-color: var(--a3s-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3s-blue) 11%, transparent);
+.ds-field > input:focus-visible,
+.ds-field > textarea:focus-visible {
+  outline: 2px solid var(--a3s-ink);
+  outline-offset: 2px;
+  box-shadow: inset 0 0 0 2px rgb(0 0 0 / 10%);
 }
 
-.ds-field.invalid input,
-.ds-field.invalid select,
-.ds-field.invalid textarea {
-  border-color: color-mix(in srgb, var(--a3s-red) 62%, var(--a3s-line));
+.ds-field.invalid > input,
+.ds-field.invalid > textarea {
+  border-color: var(--a3s-red);
 }
 
 .ds-field-description,
 .ds-field-error {
   color: var(--a3s-muted);
-  font-size: 11px;
-  line-height: 17px;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .ds-field-error {

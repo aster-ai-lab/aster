@@ -1,11 +1,11 @@
 export const meta = {
-  title: '08 · 接入项目资料、Skills 和 MCP',
+  title: '08 · 项目资料、Skills 与 MCP',
   description: '给同一个终端助手补充上下文与外部能力，并区分操作说明、工具注册和访问权限。',
   label: '08 上下文与 MCP',
   updated: '2026-10-26',
 };
 
-## 先分清要补充的是资料还是动作
+## 资料与动作的区别
 
 假设练习项目有三类额外信息：一段项目约定、一套发布检查说明、一个能查询工单的 MCP 服务。它们分别使用 ContextProvider、Skills 和 MCP 接入，不需要为每项都写一个 Harness 组件。
 
@@ -32,9 +32,9 @@ fn add_project_notes(options: SessionOptions) -> SessionOptions {
 }
 ```
 
-这些内容仍经过上下文组装的排序、去重和预算处理，不能保证每个 Item 永远进入模型输入。把稳定标识用于同一份资料，资料变化时再明确更新，不要每次查询都随机生成一个 ID 来避开去重。
+这些内容仍经过排序、去重和预算处理，不能保证每个 Item 都进入模型输入。同一份资料使用稳定标识，资料变化时明确更新。不要通过随机 ID 避开去重。
 
-动态检索来源实现 `ContextProvider::query`。能缺省的资料采用 BestEffort；任务必须读取的业务规则则用 Required 失败策略。来源失败时界面要说明缺少资料，不应该悄悄用模型记忆补出一份。
+动态检索来源实现 `ContextProvider::query`。可以省略的资料采用 BestEffort，任务必须读取的业务规则采用 Required。来源失败时，界面要说明缺少资料，不能用模型记忆补出一份。
 
 ## 加入项目 Skills
 
@@ -74,11 +74,11 @@ async fn connect_server(session: &AgentSession, server: McpServerConfig)
 
 应用关闭时释放会话拥有的连接。继承自宿主、由多个会话共享的 MCP 管理器有自己的寿命，不能随意被一个终端标签页断开。
 
-## 本章验收
+## 验收
 
 添加一条只有 Provider 才能提供的项目约定，检查上下文报告和实际回答。再移除该来源，验证 Required 与 BestEffort 的区别。最后断开 MCP 服务，确认界面显示连接失败，而不是继续宣称外部查询成功。
 
-## 继续查阅
+## 相关文档
 
 - [上下文、工具与 Hooks](../../meta-harness/context-tools/)
 - [会话扩展接口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/agent_api/capability_facade.rs)

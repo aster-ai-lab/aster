@@ -8,6 +8,7 @@ use std::io;
 #[cfg(unix)]
 fn fixture_git(root: &Path, arguments: &[&str]) -> Vec<u8> {
     let output = std::process::Command::new("git")
+        .args(["-c", "commit.gpgsign=false"])
         .args(arguments)
         .current_dir(root)
         .output()
@@ -207,6 +208,150 @@ async fn a_nested_git_workspace_observes_only_its_exact_relative_bytes() {
 
 #[tokio::test]
 #[cfg(unix)]
+async fn an_ignored_nested_workspace_observes_its_actual_bytes_and_no_parent_paths() {
+    use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
+    for force_tracked in [false, true] {
+        let repository = tempfile::tempdir().unwrap();
+        fixture_repository(repository.path());
+        fs::write(repository.path().join(".gitignore"), "scratch space/\n").unwrap();
+        let workspace = repository.path().join("scratch space/workspace");
+        fs::create_dir_all(&workspace).unwrap();
+        fs::write(workspace.join("changed.txt"), b"before\n").unwrap();
+        fs::write(workspace.join("deleted.txt"), b"deleted\n").unwrap();
+        if force_tracked {
+            fixture_git(
+                repository.path(),
+                &["add", "--force", "scratch space/workspace"],
+            );
+            fixture_git(
+                repository.path(),
+                &["commit", "-m", "tracked ignored contents"],
+            );
+        }
+        let watch = Watch::start(&workspace).await;
+        let run = RunWatch::start(&workspace).await;
+        fs::write(
+            repository.path().join("outside.txt"),
+            b"foreign parent edit\n",
+        )
+        .unwrap();
+        overwrite_preserving_mtime(&workspace.join("changed.txt"), b"after!\n");
+        fs::write(workspace.join("created.txt"), b"created\n").unwrap();
+        fs::remove_file(workspace.join("deleted.txt")).unwrap();
+
+        let effects = watch.finish_effects_with_revision(&workspace, true).await;
+        assert_eq!(effects.completeness, ToolObservationCompleteness::Complete);
+        assert!(!effects.budget_exceeded);
+        assert_eq!(
+            effects
+                .changes
+                .iter()
+                .map(|change| change.path.as_str())
+                .collect::<Vec<_>>(),
+            vec!["changed.txt", "created.txt", "deleted.txt"]
+        );
+        let changed = &effects.changes[0];
+        assert_eq!(
+            changed.before.as_ref().unwrap().content_digest,
+            Some(format!("sha256:{:x}", Sha256::digest(b"before\n")))
+        );
+        assert_eq!(
+            changed.after.content_digest,
+            Some(format!("sha256:{:x}", Sha256::digest(b"after!\n")))
+        );
+        assert_eq!(
+            effects.changes[1].before.as_ref().unwrap().kind,
+            ToolFileKind::Missing
+        );
+        assert_eq!(effects.changes[1].after.kind, ToolFileKind::File);
+        assert_eq!(
+            effects.changes[2].before.as_ref().unwrap().kind,
+            ToolFileKind::File
+        );
+        assert_eq!(effects.changes[2].after.kind, ToolFileKind::Missing);
+        let run_changes = run.file_changes(&workspace);
+        assert!(!run_changes.incomplete && !run_changes.budget_exceeded);
+        assert_eq!(
+            run_changes.paths,
+            vec!["changed.txt", "created.txt", "deleted.txt"]
+        );
+        let git_changes = run.baseline_changes(&workspace).await;
+        assert!(!git_changes.incomplete && !git_changes.budget_exceeded);
+        assert!(
+            git_changes.paths.is_empty(),
+            "the complete file index must supply every path together"
+        );
+    }
+}
+
+#[tokio::test]
+#[cfg(unix)]
+async fn an_ignored_nested_workspace_child_retains_its_live_file_baseline() {
+    for reserved in [false, true] {
+        let repository = tempfile::tempdir().unwrap();
+        fixture_repository(repository.path());
+        fs::write(repository.path().join(".git/info/exclude"), "scratch/\n").unwrap();
+        let workspace = repository.path().join("scratch/workspace");
+        fs::create_dir_all(&workspace).unwrap();
+        let id = format!("ignored-child-{}", uuid::Uuid::new_v4());
+        if reserved {
+            reserve_workspace_child(&id);
+            begin_workspace_child(&id, &workspace).await;
+        } else {
+            install_workspace_child(&id, Watch::start(&workspace).await);
+        }
+        let marker = child_marker(&id).unwrap();
+        assert!(marker.nongit);
+        assert!(
+            marker.porcelain.is_none() && marker.head.is_none(),
+            "Git fields cannot stand in for a lost file index"
+        );
+        fs::write(workspace.join("child.txt"), b"owned child effect\n").unwrap();
+        settle_workspace_child(&id, &workspace).await;
+        assert_eq!(
+            take_settled_workspace_child(&id).unwrap(),
+            vec!["child.txt"]
+        );
+        assert!(!workspace_child_pending(&id));
+    }
+}
+
+#[tokio::test]
+#[cfg(unix)]
+async fn an_ignored_nested_workspace_boundary_change_or_lost_baseline_stays_unknown() {
+    for ignored in [false, true] {
+        let repository = tempfile::tempdir().unwrap();
+        fixture_repository(repository.path());
+        let ignore = repository.path().join(".gitignore");
+        fs::write(&ignore, if ignored { "scratch/\n" } else { "" }).unwrap();
+        let workspace = repository.path().join("scratch/workspace");
+        fs::create_dir_all(&workspace).unwrap();
+        assert_eq!(workspace_ignored(&workspace).await, Some(ignored));
+        assert_eq!(workspace_ignored(&workspace.join("absent")).await, None);
+        let watch = Watch::start(&workspace).await;
+        fs::write(&ignore, if ignored { "" } else { "scratch/\n" }).unwrap();
+        fs::write(workspace.join("changed.txt"), b"current bytes\n").unwrap();
+        let effects = watch.finish_effects_with_revision(&workspace, false).await;
+        assert_eq!(
+            effects.completeness,
+            a3s_effect::ToolObservationCompleteness::Incomplete
+        );
+        assert!(effects
+            .changes
+            .iter()
+            .all(|change| !change.path.contains(".gitignore")));
+        if !ignored {
+            let recovered = baseline_delta(&workspace, Some(Vec::new()), None, Vec::new()).await;
+            assert!(
+                recovered.incomplete,
+                "a Git-only old baseline cannot reconstruct ignored bytes"
+            );
+        }
+    }
+}
+
+#[tokio::test]
+#[cfg(unix)]
 async fn harness_directory_components_do_not_hide_literal_unix_backslash_files() {
     use a3s_effect::{ToolFileKind, ToolObservationCompleteness};
     let names = [
@@ -232,6 +377,12 @@ async fn harness_directory_components_do_not_hide_literal_unix_backslash_files()
             fs::write(root.path().join(metadata).join("internal"), "harness state").unwrap();
             assert!(is_harness_path(&format!("{metadata}/internal")));
         }
+        fs::write(
+            root.path().join(".a3s-agent-retrievals"),
+            "host retrieval paths",
+        )
+        .unwrap();
+        assert!(is_harness_path(".a3s-agent-retrievals"));
         let observed = watch
             .finish_observed_with_revision(root.path(), false)
             .await;
@@ -1097,6 +1248,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             hidden_index_budget: false,
             status_budget: false,
             git_worktree: true,
+            ignored_root: false,
         },
         files: None,
     };
@@ -1128,6 +1280,7 @@ fn a_large_status_list_is_a_digest_in_the_prepared_baseline() {
             hidden_index_budget: false,
             status_budget: false,
             git_worktree: true,
+            ignored_root: false,
         },
         files: None,
     };

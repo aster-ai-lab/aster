@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { createElement as h } from 'react';
 import { table } from '../../../../scripts/docs_components.mjs';
+import { PeleAtlasDiagram } from '../../../../scripts/docs_atlas.mjs';
 import { PeleDiagram } from '../../../../scripts/docs_diagrams.mjs';
 
 const definitions = [
@@ -15,7 +16,7 @@ const definitions = [
 function codeDiagram(name) {
   const entry = definitions.find(([id]) => id === name);
   if (!entry) throw new Error(`Unknown Code diagram: ${name}`);
-  return h(PeleDiagram, { name, label: entry[1], description: entry[2] });
+  return h(PeleAtlasDiagram, { name, label: entry[1], description: entry[2] });
 }
 
 export function ArchitectureDiagram() {
@@ -27,11 +28,7 @@ export function WorkflowDiagram() {
 }
 
 export function VerificationDiagram() {
-  return h('figure', { className: 'verification-figure' },
-    h('div', { className: 'verification-row' }, h('span', { className: 'version' }, '版本 A'), h('div', null, h('strong', null, '修改摘要 A'), h('span', null, '测试通过，报告对应 A')), h('span', { className: 'result-pill' }, 'Verified')),
-    h('div', { className: 'version-change' }, '↓ 再次修改，产生新的 effect_digest'),
-    h('div', { className: 'verification-row' }, h('span', { className: 'version' }, '版本 B'), h('div', null, h('strong', null, '修改摘要 B'), h('span', null, '需要重新运行相应检查')), h('span', { className: 'result-pill result-open' }, '待验证')),
-    h('figcaption', null, 'FIG. 03 · A 的测试结果不能证明 B 也通过了测试。'));
+  return h(PeleAtlasDiagram, { name: 'verification-revision', label: '修改与验证的版本关联' });
 }
 
 export function Principles() {
@@ -58,6 +55,18 @@ export function MetaHarnessDiagram() {
   return codeDiagram('meta-harness');
 }
 
+export function MetaHarnessDefinitionDiagram() {
+  return h(PeleDiagram, { name: 'meta-harness-definition', label: 'Meta Harness 是什么', description: 'Meta Harness 装配可替换的执行组件。会话与事实日志保持不变，Core 的固定约束始终生效。' });
+}
+
+export function MetaHarnessWhyDiagram() {
+  return h(PeleDiagram, { name: 'meta-harness-why', label: '为什么需要 Meta Harness', description: '直接修改执行程序需要重新核对整套约束。组合组件可以保留固定运行边界，只比较执行策略的差异。' });
+}
+
+export function MetaHarnessRuntimeDiagram() {
+  return h(PeleDiagram, { name: 'meta-harness-runtime', label: 'Meta Harness 的工作原理', description: '组件从事实重建状态，调度器选择动作，Core 检查动作，结果再写回事实日志。' });
+}
+
 export function TutorialArchitectureDiagram() {
   return codeDiagram('tutorial-architecture');
 }
@@ -80,12 +89,7 @@ export function CompletionStates() {
 }
 
 export function StackDiagram() {
-  return h('figure', { className: 'stack-figure' }, ...[
-    ['应用', 'Aster · IDE · 业务应用', '提供界面、用户任务与业务信息'],
-    ['Agent Harness', 'A3S Code · Codex · Claude Agent SDK · Deep Agents', '模型循环、工具、上下文、运行规则'],
-    ['编排运行时', '例如 LangGraph', '保存状态、安排步骤，处理暂停与恢复'],
-  ].map(([label, title, text]) => h('div', { key: label }, h('span', { className: 'mini-label' }, label), h('strong', null, title), h('span', null, text))),
-    h('figcaption', null, 'FIG. 04 · 各 harness 采用各自的编排实现，其中 Deep Agents 使用 LangGraph。'));
+  return h(PeleAtlasDiagram, { name: 'framework-layers', label: '应用、Harness 与编排的职责' });
 }
 
 export function FrameworkTable() {
@@ -122,3 +126,5 @@ export function CapabilityIndex() {
     record.tier + (record.hostOwned ? ' · 宿主持有策略、凭据或生命周期' : ' · Core 合同'),
   ]));
 }
+
+export { RsiEvolutionDemo, MetaHarnessExplorer } from './_harness-demo.mjs';

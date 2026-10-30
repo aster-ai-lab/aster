@@ -5,6 +5,15 @@ use std::os::fd::{AsRawFd, FromRawFd, OwnedFd};
 
 use a3s_oci_sdk::{Error, ErrorCode, Result};
 
+// Linux UAPI mount.h values are not consistently exposed by libc targets.
+pub(crate) const FSOPEN_CLOEXEC: libc::c_uint = 0x0000_0001;
+pub(crate) const FSMOUNT_CLOEXEC: libc::c_uint = 0x0000_0001;
+pub(crate) const FSCONFIG_SET_FLAG: libc::c_uint = 0;
+pub(crate) const FSCONFIG_SET_STRING: libc::c_uint = 1;
+pub(crate) const FSCONFIG_CMD_CREATE: libc::c_uint = 6;
+pub(crate) const MOVE_MOUNT_F_EMPTY_PATH: libc::c_uint = 0x0000_0004;
+pub(crate) const MOVE_MOUNT_T_EMPTY_PATH: libc::c_uint = 0x0000_0040;
+
 pub(crate) const MOUNT_ATTR_RDONLY: u64 = 0x0000_0001;
 pub(crate) const MOUNT_ATTR_NOSUID: u64 = 0x0000_0002;
 pub(crate) const MOUNT_ATTR_NODEV: u64 = 0x0000_0004;

@@ -3,6 +3,193 @@
 
 use super::*;
 
+const TRANSCRIPT_UPDATE_METHOD: &str = "a3s/session/transcript/update";
+const TRANSCRIPT_UPDATE_SCHEMA: &str = "a3s.acp.session-transcript-update.v1";
+
+#[derive(Debug)]
+enum ReplayNotification {
+    Acp(acp::SessionNotification),
+    Typed(acp::ExtNotification),
+}
+
+fn replay_meta(entry: &a3s_code_core::store::TranscriptEntry) -> acp::Meta {
+    let mut meta = acp::Meta::new();
+    meta.insert("isReplay".into(), serde_json::json!(true));
+    meta.insert("entryId".into(), serde_json::json!(entry.entry_id));
+    meta.insert("factSeq".into(), serde_json::json!(entry.fact_seq));
+    meta.insert("origin".into(), serde_json::json!("core.transcript_page"));
+    meta.insert("digest".into(), serde_json::json!(entry.digest));
+    meta
+}
+
+fn replay_session(
+    session_id: &acp::SessionId,
+    update: acp::SessionUpdate,
+    meta: acp::Meta,
+) -> ReplayNotification {
+    let mut notification = acp::SessionNotification::new(session_id.clone(), update);
+    notification.meta = Some(meta);
+    ReplayNotification::Acp(notification)
+}
+
+fn replay_typed(
+    session_id: &acp::SessionId,
+    update: serde_json::Value,
+    meta: acp::Meta,
+) -> acp::Result<ReplayNotification> {
+    let raw = serde_json::value::to_raw_value(&serde_json::json!({
+        "schema": TRANSCRIPT_UPDATE_SCHEMA,
+        "sessionId": session_id.0.as_ref(),
+        "update": update,
+        "_meta": meta,
+    }))
+    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+    Ok(ReplayNotification::Typed(acp::ExtNotification::new(
+        TRANSCRIPT_UPDATE_METHOD,
+        raw.into(),
+    )))
+}
+
+fn transcript_replay_notifications(
+    session_id: &acp::SessionId,
+    entry: &a3s_code_core::store::TranscriptEntry,
+) -> acp::Result<Vec<ReplayNotification>> {
+    use a3s_code_core::store::TranscriptEntryPayload as Payload;
+
+    let meta = replay_meta(entry);
+    let mut notifications = Vec::new();
+    match &entry.payload {
+        Payload::User { text } => notifications.push(replay_session(
+            session_id,
+            acp::SessionUpdate::UserMessageChunk(acp::ContentChunk::new(acp::ContentBlock::Text(
+                acp::TextContent::new(text.clone()),
+            ))),
+            meta,
+        )),
+        Payload::Assistant { text } => notifications.push(replay_session(
+            session_id,
+            acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(acp::ContentBlock::Text(
+                acp::TextContent::new(text.clone()),
+            ))),
+            meta,
+        )),
+        Payload::Tool {
+            calls,
+            results,
+            complete: _,
+        } => {
+            for call in calls {
+                if let Some(text) = &call.text {
+                    notifications.push(replay_session(
+                        session_id,
+                        acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(
+                            acp::ContentBlock::Text(acp::TextContent::new(text.clone())),
+                        )),
+                        meta.clone(),
+                    ));
+                }
+                if let Some(reasoning) = &call.reasoning {
+                    notifications.push(replay_session(
+                        session_id,
+                        acp::SessionUpdate::AgentThoughtChunk(acp::ContentChunk::new(
+                            acp::ContentBlock::Text(acp::TextContent::new(reasoning.clone())),
+                        )),
+                        meta.clone(),
+                    ));
+                }
+                let result = results.iter().find(|result| result.tool_call_id == call.id);
+                let status = match result {
+                    Some(result) if result.ok => acp::ToolCallStatus::Completed,
+                    Some(_) => acp::ToolCallStatus::Failed,
+                    None => acp::ToolCallStatus::InProgress,
+                };
+                let tool_call = acp::ToolCall::new(
+                    acp::ToolCallId::new(call.id.clone()),
+                    tool_title(&call.name),
+                )
+                .kind(tool_kind_for(&call.name))
+                .status(status)
+                .raw_input(call.args.clone());
+                notifications.push(replay_session(
+                    session_id,
+                    acp::SessionUpdate::ToolCall(tool_call),
+                    meta.clone(),
+                ));
+                if let Some(result) = result {
+                    let fields = acp::ToolCallUpdateFields::new()
+                        .title(tool_title(&call.name))
+                        .kind(tool_kind_for(&call.name))
+                        .status(status)
+                        .content(tool_call_content(
+                            &call.name,
+                            Some(&call.args),
+                            &result.output,
+                        ))
+                        .raw_output(serde_json::json!(result.output));
+                    notifications.push(replay_session(
+                        session_id,
+                        acp::SessionUpdate::ToolCallUpdate(acp::ToolCallUpdate::new(
+                            acp::ToolCallId::new(call.id.clone()),
+                            fields,
+                        )),
+                        meta.clone(),
+                    ));
+                }
+            }
+        }
+        Payload::Compaction {
+            summary,
+            kept_lines,
+        } => {
+            notifications.push(replay_typed(
+                session_id,
+                serde_json::json!({
+                    "sessionUpdate": "compaction",
+                    "summary": summary,
+                    "keptLines": kept_lines,
+                }),
+                meta,
+            )?);
+        }
+        Payload::TurnComplete {
+            terminal,
+            effect_digest,
+            forced_stop,
+            log_cut,
+        } => {
+            notifications.push(replay_typed(
+                session_id,
+                serde_json::json!({
+                    "sessionUpdate": "turn_complete",
+                    "terminal": terminal,
+                    "effectDigest": effect_digest,
+                    "forcedStop": forced_stop,
+                    "logCut": log_cut,
+                }),
+                meta,
+            )?);
+        }
+        Payload::LegacyHistory {
+            source_kind,
+            fact_key,
+            reason,
+            display,
+        } => {
+            let mut update = serde_json::json!({
+                "sessionUpdate": "legacy_history",
+                "sourceKind": source_kind,
+                "factKey": fact_key,
+                "reason": reason,
+            });
+            if let Some(display) = display {
+                update["display"] = serde_json::json!(display);
+            }
+            notifications.push(replay_typed(session_id, update, meta)?);
+        }
+    }
+    Ok(notifications)
+}
+
 impl A3sCodeAgent {
     pub(super) async fn handle_compact_extension(
         &self,
@@ -92,7 +279,7 @@ impl A3sCodeAgent {
         Ok(acp::ExtResponse::new(raw.into()))
     }
 
-    /// `x.ai/session/info` is the pager's `/session-info` and `/context` source.
+    /// `a3s/session/info` is the pager's `/session-info` and `/context` source.
     /// The pager decodes `ExtMethodResult<SessionInfoResponse>` and treats any
     /// other body, including JSON null, as an invalid response.
     pub(super) async fn handle_session_info(
@@ -109,13 +296,13 @@ impl A3sCodeAgent {
             .and_then(|value| value.as_str())
             .filter(|value| !value.is_empty())
             .ok_or_else(|| acp::Error::invalid_params().data("session info request: sessionId"))?;
-        let live = match self.snapshot_session_info(session_id).await {
+        let live = match self.snapshot_session_info(session_id).await? {
             Some(live) => Some(live),
             None => {
                 // The pager paints "Loading session" and accepts /session-info
                 // before this load inserts the id.
                 self.session_loads.wait(session_id).await;
-                self.snapshot_session_info(session_id).await
+                self.snapshot_session_info(session_id).await?
             }
         };
         let body = match live {
@@ -160,32 +347,63 @@ impl A3sCodeAgent {
         &self,
         session_id: &acp::SessionId,
         session: &AgentSession,
-    ) {
-        let mut meta = acp::Meta::new();
-        meta.insert("isReplay".to_string(), serde_json::json!(true));
-        for message in session.durable_transcript() {
-            if !message.is_product_transcript() {
-                continue;
+    ) -> acp::Result<()> {
+        let mut cursor = None;
+        let mut entries = Vec::new();
+        loop {
+            let page = session
+                .transcript_page(a3s_code_core::store::TranscriptPageRequest { cursor, limit: 256 })
+                .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+            entries.extend(page.entries);
+            match page.next_cursor {
+                Some(next) => cursor = Some(next),
+                None => break,
             }
-            let text = message.transcript_display_text();
-            if text.trim().is_empty() {
-                continue;
+        }
+        let plan = session
+            .plan_projection()
+            .await
+            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+
+        for entry in entries {
+            for notification in transcript_replay_notifications(session_id, &entry)? {
+                match notification {
+                    ReplayNotification::Acp(notification) => self.emit(notification).await,
+                    ReplayNotification::Typed(notification) => {
+                        let client = self.client.borrow().clone();
+                        if let Some(client) = client {
+                            let _ = client.ext_notification(notification).await;
+                        }
+                    }
+                }
             }
-            let block = acp::ContentBlock::Text(acp::TextContent::new(text));
-            let update = if message.role.eq_ignore_ascii_case("assistant") {
-                acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(block))
-            } else if message.role.eq_ignore_ascii_case("user") {
-                acp::SessionUpdate::UserMessageChunk(acp::ContentChunk::new(block))
-            } else {
-                continue;
-            };
-            let mut notification = acp::SessionNotification::new(session_id.clone(), update);
-            notification.meta = Some(meta.clone());
+        }
+        if !plan.tasks.is_empty() {
+            let entries = plan
+                .tasks
+                .iter()
+                .map(task_to_plan_entry)
+                .collect::<Vec<_>>();
+            let mut notification = acp::SessionNotification::new(
+                session_id.clone(),
+                acp::SessionUpdate::Plan(acp::Plan::new(entries)),
+            );
+            let mut meta = acp::Meta::new();
+            meta.insert("isReplay".into(), serde_json::json!(true));
+            meta.insert(
+                "entryId".into(),
+                serde_json::json!(format!("plan:{}", plan.digest)),
+            );
+            meta.insert("origin".into(), serde_json::json!("core.plan_projection"));
+            meta.insert("digest".into(), serde_json::json!(plan.digest));
+            meta.insert("planRevision".into(), serde_json::json!(plan.revision));
+            notification.meta = Some(meta);
             self.emit(notification).await;
         }
+        Ok(())
     }
 
-    /// `x.ai/permission_posture` admits a named next-run posture.
+    /// `a3s/permission_posture` admits a named next-run posture.
     ///
     /// Optional `deny` rules are stored on that policy. This method does not
     /// execute a tool or write a caller-supplied path. A later prompt is what
@@ -267,7 +485,7 @@ impl A3sCodeAgent {
         Ok(acp::ExtResponse::new(raw.into()))
     }
 
-    /// `x.ai/session/delete` is the pager's `/delete` confirmation.
+    /// `a3s/session/delete` is the pager's `/delete` confirmation.
     ///
     /// The pager removes its live view only after this returns without an
     /// error. The session directory under the a3s home is what `--continue`
@@ -292,10 +510,11 @@ impl A3sCodeAgent {
             .get("cwd")
             .and_then(|value| value.as_str())
             .map(str::to_string);
-        let workspace = {
-            let mut sessions = self.sessions.lock().await;
-            sessions.remove(session_id).map(|live| live.workspace)
-        };
+        let live = self.sessions.lock().await.remove(session_id);
+        let workspace = live.as_ref().map(|live| live.workspace.clone());
+        if let Some(live) = live {
+            live.session.close().await;
+        }
         // A deleted session's servers leave the global union: resync so the
         // remaining sessions' sets are exactly served (no stale superset).
         if workspace.is_some() {
@@ -319,6 +538,22 @@ impl A3sCodeAgent {
         if let Some(cwd) = cwd.as_deref() {
             if let Err(error) = remove_fact_log(std::path::Path::new(cwd), session_id) {
                 failures.push(error);
+            }
+        }
+        use a3s_code_core::store::{FileSessionStore, SessionStore};
+        let directory =
+            Self::interactive_session_store_dir(self.launch.config.sessions_dir.as_deref());
+        if directory
+            .try_exists()
+            .map_err(|error| acp::Error::internal_error().data(error.to_string()))?
+        {
+            match FileSessionStore::new(directory).await {
+                Ok(store) => {
+                    if let Err(error) = store.delete(session_id).await {
+                        failures.push(format!("delete session snapshot: {error}"));
+                    }
+                }
+                Err(error) => failures.push(format!("open session snapshot store: {error}")),
             }
         }
         if let Err(error) = remove_recorded_session(session_id) {
@@ -361,38 +596,39 @@ pub(super) fn parse_interject_params(raw: &str) -> Result<InterjectParams, Strin
 }
 
 pub(super) async fn answer_wiki_search(args: &acp::ExtRequest) -> acp::Result<acp::ExtResponse> {
-    let request: serde_json::Value = serde_json::from_str(args.params.get()).map_err(|error| {
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Request {
+        wiki: String,
+        query: String,
+        #[serde(default)]
+        admit: bool,
+    }
+    let request: Request = serde_json::from_str(args.params.get()).map_err(|error| {
         acp::Error::invalid_params().data(format!("wiki search request: {error}"))
     })?;
-    let wiki = request
-        .get("wiki")
-        .and_then(|value| value.as_str())
-        .unwrap_or("")
-        .to_owned();
-    let query = request
-        .get("query")
-        .and_then(|value| value.as_str())
-        .unwrap_or("")
-        .to_owned();
-    let body = tokio::task::spawn_blocking(move || {
-        crate::wiki_search::search_published_body(std::path::Path::new(&wiki), &query)
-    })
-    .await
-    .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
+    let wiki = request.wiki;
+    let query = request.query;
+    if wiki.is_empty()
+        || wiki.len() > 8192
+        || query.trim().is_empty()
+        || query.chars().count() > 2000
+        || query.contains('\0')
+    {
+        return Err(acp::Error::invalid_params().data("invalid Wiki search"));
+    }
+    let body = if request.admit {
+        crate::wiki_search::search_admitted_body(std::path::Path::new(&wiki), &query).await
+    } else {
+        tokio::task::spawn_blocking(move || {
+            crate::wiki_search::search_published_body(std::path::Path::new(&wiki), &query)
+        })
+        .await
+        .map_err(|error| acp::Error::internal_error().data(error.to_string()))?
+    };
     let raw = serde_json::value::to_raw_value(&body)
         .map_err(|error| acp::Error::internal_error().data(error.to_string()))?;
     Ok(acp::ExtResponse::new(raw.into()))
-}
-
-pub(super) fn product_prompt_turns(workspace: &std::path::Path, session_id: &str) -> u64 {
-    let thread = a3s_code_core::fact_control::thread_for_session(session_id);
-    let Ok(facts) = a3s_code_core::fact_control::read_workspace_facts(workspace, &thread) else {
-        return 0;
-    };
-    facts
-        .iter()
-        .filter(|fact| fact.kind == "user.message")
-        .count() as u64
 }
 
 pub(super) fn remove_fact_log(workspace: &std::path::Path, session_id: &str) -> Result<(), String> {
@@ -503,3 +739,7 @@ pub(super) fn remove_recorded_session(session_id: &str) -> Result<(), String> {
     );
     remove_recorded_session_under(session_id, &homes)
 }
+
+#[cfg(test)]
+#[path = "plan_replay_tests.rs"]
+mod plan_replay_tests;

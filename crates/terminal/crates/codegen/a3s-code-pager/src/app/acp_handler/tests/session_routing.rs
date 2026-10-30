@@ -305,7 +305,7 @@
         });
         let raw = serde_json::value::to_raw_value(&payload).unwrap();
         AcpClientMessage::ExtNotification(a3s_acp_lib::AcpArgs {
-            request: acp::ExtNotification::new("x.ai/session_notification", raw.into()),
+            request: acp::ExtNotification::new("a3s/session_notification", raw.into()),
             response_tx: tx,
         })
     }

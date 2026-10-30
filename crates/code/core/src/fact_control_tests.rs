@@ -1371,9 +1371,11 @@ fn timeout_run(client: Arc<dyn LlmClient>, timeout_ms: u64) -> (tempfile::TempDi
         config,
     );
     let surface = SessionSurface {
+        response_meta: Default::default(),
         agent,
         fact_log: Default::default(),
         session_id: "timeout-session".into(),
+        persistence: None,
         checkpoint: None,
         events: None,
         pending_memory_telemetry: std::sync::Arc::new(std::sync::Mutex::new(Vec::new())),
@@ -2351,9 +2353,11 @@ async fn fact_log_follow_up_sends_the_recorded_tool_call() {
         config,
     );
     let surface = SessionSurface {
+        response_meta: Default::default(),
         agent,
         fact_log: Default::default(),
         session_id: THREAD.into(),
+        persistence: None,
         checkpoint: None,
         events: None,
         pending_memory_telemetry: std::sync::Arc::new(std::sync::Mutex::new(Vec::new())),
@@ -2855,9 +2859,11 @@ fn bash_confirmation_surface(
         },
     );
     SessionSurface {
+        response_meta: Default::default(),
         agent,
         fact_log: Default::default(),
         session_id: "bash-unavailable".into(),
+        persistence: None,
         checkpoint: None,
         events: None,
         pending_memory_telemetry: Arc::new(Mutex::new(Vec::new())),
@@ -2961,6 +2967,7 @@ fn tools_for_surface(
         capability_operation: None,
         checkpoint: None,
         events: None,
+        persistence: None,
         context: crate::tools::ToolContext::new(root.to_path_buf()),
         permission,
         checker: None,

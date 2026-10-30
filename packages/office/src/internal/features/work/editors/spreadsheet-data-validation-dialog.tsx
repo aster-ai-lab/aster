@@ -166,6 +166,7 @@ export function SpreadsheetDataValidationDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.dv.title')}
       description={`${source.sheetName}!${source.rangeReference}`}
       className="work-spreadsheet-data-validation-dialog"

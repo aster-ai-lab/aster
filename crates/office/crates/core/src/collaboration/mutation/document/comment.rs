@@ -24,7 +24,7 @@ use super::super::super::{
     collaboration_error, NativeOfficeCollaborationManifest, NativeOfficeCollaborationMode,
     NativeOfficeCollaborationMutation,
 };
-use super::super::{is_utf16_boundary, utf16_len};
+use super::super::{is_utf16_boundary, utf16_len, utf16_slice};
 use super::identity::{
     document_identity_attribute, is_identity_paragraph_tag, validate_paragraph_id_input,
     PARAGRAPH_ID_ATTRIBUTE, TEXT_ID_ATTRIBUTE,
@@ -772,33 +772,6 @@ fn parse_digits(value: &[u8]) -> Option<u32> {
             .iter()
             .fold(0, |result, digit| result * 10 + u32::from(*digit - b'0')),
     )
-}
-
-fn utf16_slice(value: &str, start: u32, end: u32) -> Option<&str> {
-    let mut cursor = 0_u32;
-    let mut start_byte = None;
-    let mut end_byte = None;
-    if start == 0 {
-        start_byte = Some(0);
-    }
-    if end == 0 {
-        end_byte = Some(0);
-    }
-    for (byte_index, character) in value.char_indices() {
-        cursor = cursor.checked_add(character.len_utf16() as u32)?;
-        let next_byte = byte_index + character.len_utf8();
-        if cursor == start {
-            start_byte = Some(next_byte);
-        }
-        if cursor == end {
-            end_byte = Some(next_byte);
-            break;
-        }
-        if cursor > end {
-            return None;
-        }
-    }
-    Some(&value[start_byte?..end_byte?])
 }
 
 pub(super) fn invalid_shared_comments(message: impl Into<String>) -> a3s_use_core::UseError {

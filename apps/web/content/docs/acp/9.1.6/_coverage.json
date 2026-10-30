@@ -60,19 +60,23 @@
     "page": "../memory/"
   },
   {
-    "method": "x.ai/session/info",
+    "method": "a3s/models/list",
     "page": "../sessions/"
   },
   {
-    "method": "x.ai/session/list",
+    "method": "a3s/session/info",
     "page": "../sessions/"
   },
   {
-    "method": "x.ai/session/delete",
+    "method": "a3s/session/list",
     "page": "../sessions/"
   },
   {
-    "method": "x.ai/permission_posture",
+    "method": "a3s/session/delete",
+    "page": "../sessions/"
+  },
+  {
+    "method": "a3s/permission_posture",
     "page": "../permissions/"
   },
   {
@@ -96,11 +100,11 @@
     "page": "../sessions/"
   },
   {
-    "method": "x.ai/compact_conversation",
+    "method": "a3s/compact_conversation",
     "page": "../sessions/"
   },
   {
-    "method": "x.ai/interject",
+    "method": "a3s/interject",
     "page": "../sessions/"
   }
 ]

@@ -1,19 +1,13 @@
 import { Button } from "@a3s-lab/ui/components/primitives/button";
 import { Checkbox } from "@a3s-lab/ui/components/primitives/checkbox";
 import { Input } from "@a3s-lab/ui/components/primitives/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@a3s-lab/ui/components/primitives/select";
+import { SearchSelect } from "@a3s-lab/ui/components/console/SearchSelect";
 import { Input as Textarea } from "@a3s-lab/ui/components/primitives/textarea";
 import { Slider } from "@a3s-lab/ui/components/primitives/slider";
 import { useMemo, useState, type ReactNode } from "react";
 
-import { holdsControl, propsOf, validAnswers, type UiNode, type Values } from "./document";
-import { compileOpenUi } from "./openui";
+import { holdsControl, validAnswers, type UiNode, type Values } from "./document";
+import { compileJsonRender } from "./jsonRender";
 
 export type SubmitOutcome = "sent" | "busy" | "failed";
 export type IntelligentUIProps = {
@@ -37,7 +31,7 @@ const isAction = (node: UiNode) => node.name === "Button";
 
 export function IntelligentUI({ source, streaming, submit, labels }: IntelligentUIProps) {
   const doc = useMemo(() => {
-    const compiled = compileOpenUi(source, streaming);
+    const compiled = compileJsonRender(source, streaming);
     return compiled.ok
       ? { ...compiled.document, error: undefined }
       : { nodes: [], initial: {}, pending: false, error: compiled.error };
@@ -89,12 +83,7 @@ export function IntelligentUI({ source, streaming, submit, labels }: Intelligent
     if (node.name === "Card") {
       const body = (node.children ?? []).filter((child) => !isAction(child));
       const actions = (node.children ?? []).filter(isAction);
-      let title = "";
-      try {
-        title = String(propsOf(node, values).title ?? "");
-      } catch {
-        title = "";
-      }
+      const title = String(node.props?.title ?? "");
       // A form reads top to bottom at a readable measure; a display card may use the full column.
       const form = holdsControl(node);
       return (
@@ -118,12 +107,7 @@ export function IntelligentUI({ source, streaming, submit, labels }: Intelligent
       );
     }
     const children = node.children?.map((child, i) => render(child, `${key}.${i}`));
-    let p: ReturnType<typeof propsOf>;
-    try {
-      p = propsOf(node, values);
-    } catch {
-      return <span key={key}>—</span>;
-    }
+    const p = node.props ?? {};
     const name = String(p.name ?? "");
     const label = typeof p.label === "string" ? p.label : "";
     const mark =
@@ -133,9 +117,18 @@ export function IntelligentUI({ source, streaming, submit, labels }: Intelligent
         </span>
       ) : null;
     switch (node.name) {
+      case "Form":
       case "Stack":
         return (
-          <div key={key} className="flex flex-col gap-4">
+          <div
+            key={key}
+            className={
+              node.name === "Stack" && p.direction === "horizontal" && !holdsControl(node)
+                ? "flex flex-row gap-4"
+                : "flex flex-col gap-4"
+            }
+            style={typeof p.gap === "number" ? { gap: p.gap } : undefined}
+          >
             {children}
           </div>
         );
@@ -159,7 +152,7 @@ export function IntelligentUI({ source, streaming, submit, labels }: Intelligent
       case "Text":
         return (
           <div key={key} className={label13}>
-            {children}
+            {String(p.content ?? "")}
           </div>
         );
       case "Input":
@@ -258,29 +251,24 @@ export function IntelligentUI({ source, streaming, submit, labels }: Intelligent
               {label}
               {mark}
             </div>
-            <Select
+            <SearchSelect
               disabled={disabled}
+              aria-label={label}
               value={String(values[name])}
-              onValueChange={(value) => change(name, value)}
-            >
-              <SelectTrigger aria-label={label}>
-                <SelectValue placeholder={p.placeholder as string | undefined} />
-              </SelectTrigger>
-              <SelectContent>
-                {(p.options as string[]).map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder={p.placeholder as string | undefined}
+              options={(p.options as string[]).map((option) => ({ value: option, label: option }))}
+              onChange={(value) => change(name, value ?? "")}
+            />
           </div>
         );
       case "Metric":
         return (
           <div key={key} className="rounded-[8px] bg-[#f5f5f5] px-3 py-2.5">
             <div className="text-[12px] leading-5 text-[#8a8a8a]">{label}</div>
-            <output aria-label={label} className="text-[22px] leading-7 font-semibold text-[#1a1a1a]">
+            <output
+              aria-label={label}
+              className="text-[22px] leading-7 font-semibold text-[#1a1a1a]"
+            >
               {typeof p.value === "number"
                 ? new Intl.NumberFormat().format(p.value)
                 : String(p.value ?? "")}

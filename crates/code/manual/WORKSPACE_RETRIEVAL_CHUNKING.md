@@ -82,57 +82,16 @@ selected strategy. A second call fails instead of replacing a catalog already
 observed by another session. Hosts that own a non-manifest catalog can construct
 it directly with `WorkspaceChunkCatalog::new_with_strategy`.
 
-## SDK built-in strategy configuration
+## Rust built-in strategy configuration
 
-Node, Python, and Go expose the three built-ins as typed objects. They do not
-accept a primitive strategy name, and omission preserves `Lines`:
-
-```js
-const chunking = new RecursiveWorkspaceChunkingStrategy(
-  8 * 1024,
-  512,
-  ['\n\n', '\n', '. ', ' '],
-)
-const retrieval = new WorkspaceRetrievalOptions(provider, null, chunking)
-```
-
-```python
-chunking = RecursiveWorkspaceChunkingStrategy(
-    8 * 1024,
-    512,
-    ["\n\n", "\n", ". ", " "],
-)
-retrieval = WorkspaceRetrievalOptions(
-    provider,
-    chunking_strategy=chunking,
-)
-```
-
-```go
-chunking, err := code.NewRecursiveWorkspaceChunkingStrategy(
-    8*1024,
-    512,
-    "\n\n", "\n", ". ", " ",
-)
-if err != nil {
-    return err
-}
-retrieval := code.NewWorkspaceRetrievalOptions(provider)
-retrieval.ChunkingStrategy = chunking
-```
-
-Fixed and recursive targets must contain at least four bytes, overlap must be
-smaller than the target, and the target cannot exceed the active catalog byte
-ceiling. Recursive lists contain one to sixteen unique, non-empty separators;
-each is at most 64 UTF-8 bytes and contains no NUL. Node and Python validate
-immutable strategy objects through Core. Go checks the same bounds before
-provider descriptor access or callback registration, and the Rust bridge
-revalidates its mutually exclusive typed wire blocks through Core.
-
-The shared `workspace-chunking-sdk-v1` fixture locks line, overlapping fixed,
-and separator-aware recursive byte ranges across Core and all three bindings.
-Arbitrary custom splitters remain on the Rust host boundary until a separate
-bounded callback lifecycle is designed for each language runtime.
+The typed Rust examples above select Lines, Fixed or Recursive through Core.
+Omission preserves Lines. Fixed and recursive targets must contain at least
+four bytes; overlap must be smaller than the target, and the target cannot
+exceed the active catalog byte ceiling. Recursive lists contain one to sixteen
+unique, non-empty separators, each at most 64 UTF-8 bytes with no NUL.
+Core validates these bounds before invoking the provider. The versioned
+`workspace-chunking-sdk-v1` fixture retains its original protocol identifier
+and checks the built-in byte ranges. Custom splitters use the Rust host contract.
 
 ## Custom strategy contract
 
@@ -191,34 +150,10 @@ let retrieval = WorkspaceRetrievalOptions::new(embedding_provider)
     .with_rerank_options(WorkspaceRerankOptions::deterministic());
 ```
 
-### SDK reranker configuration
-
-Node, Python, and Go expose the same opt-in as a typed object. They do not
-accept a mode or algorithm string:
-
-```js
-const reranker = new DeterministicWorkspaceReranker()
-reranker.maxCandidates = 100
-const retrieval = new WorkspaceRetrievalOptions(provider, reranker)
-```
-
-```python
-reranker = DeterministicWorkspaceReranker()
-reranker.max_candidates = 100
-retrieval = WorkspaceRetrievalOptions(provider, reranker)
-```
-
-```go
-retrieval := code.NewWorkspaceRetrievalOptions(provider)
-retrieval.Reranker = code.NewDeterministicWorkspaceReranker()
-```
-
-Omitting the object (or leaving Go `Reranker` as `nil`) preserves RRF-only.
-The typed defaults are 100 candidates, 4 KiB of sampled feature bytes per
-candidate, 128 fingerprints per candidate, and 4 MiB of checked scratch.
-SDKs reject out-of-range values before provider execution; Go also validates
-before registering the provider callback, and the Rust bridge revalidates the
-wire representation against Core.
+Omitting rerank options preserves RRF-only. The typed defaults are 100
+candidates, 4 KiB of sampled feature bytes per candidate, 128 fingerprints per
+candidate, and 4 MiB of checked scratch. Core rejects out-of-range values before
+provider execution.
 
 The deterministic v1 stage sorts the fused pool first, then examines at most
 100 candidates. For each candidate it samples bounded UTF-8-safe head/tail

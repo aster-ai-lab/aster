@@ -1,0 +1,99 @@
+export const meta = {
+  title: 'Power 服务与嵌入式接入',
+  description: 'OpenAI 兼容服务、嵌入式运行时、模型制品、后端和请求准入。',
+  label: '服务与接入',
+  updated: '2026-10-29',
+};
+
+Power 支持独立服务和无监听器的嵌入式运行时。两种方式共享制品、设备、准入、取消和执行回执合同。
+
+## 启动 OpenAI 兼容服务
+
+安装当前版本并启动本地监听器：
+
+```bash
+cargo install a3s-power --version 0.10.0 --locked
+a3s-power serve --host 127.0.0.1 --port 11434
+```
+
+拉取一个模型后，可以使用 CLI 发起对话：
+
+```bash
+a3s-power models pull Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+a3s-power chat Qwen/Qwen2.5-0.5B-Instruct-GGUF:q4_k_m
+```
+
+模型和内容寻址 blob 默认保存在 `~/.a3s/power`。设置 `A3S_POWER_HOME` 可以更换存储目录。
+
+<DocTable caption="主要服务接口" headers={['接口', '用途']} rows={[
+  ['GET /health', '读取服务健康、模型和 worker 观测'],
+  ['POST /v1/chat/completions', '聊天、工具、结构化输出和 SSE'],
+  ['POST /v1/completions', '文本补全和 SSE'],
+  ['POST /v1/embeddings', '嵌入推理'],
+  ['GET /metrics', '读取 Prometheus 指标'],
+  ['GET /v1/models', '列出已注册模型'],
+  ['POST /v1/models', '注册模型权重和辅助制品'],
+]} />
+
+## 嵌入式运行时
+
+嵌入式运行时适用于拥有模型图的 Rust crate。构造 `EmbeddedRuntime` 不会启动监听器，也不会下载模型。
+
+```toml
+[dependencies]
+a3s-power = { version = "0.10.0", default-features = false, features = ["embedded-inference"] }
+```
+
+```rust
+use a3s_power::inference::{DevicePreference, EmbeddedRuntime, InferenceLimits};
+
+let runtime = EmbeddedRuntime::new(
+    DevicePreference::Auto,
+    InferenceLimits::default(),
+)?;
+```
+
+调用方提供经过审查的模型图，并保留语义状态。Power 提供有界执行和证据合同。
+
+## 制品与后端
+
+模型名称不能唯一确定一次执行。Power 测量制品长度和 SHA-256，并把制品、设备路径、运行策略和输出身份绑定到执行回执。
+
+<DocTable caption="主要后端与原生依赖" headers={['Feature 或后端', '能力', '依赖或边界']} rows={[
+  ['mistralrs', '默认 GGUF、SafeTensors、视觉和嵌入后端', '不需要 C++ 推理引擎'],
+  ['llamacpp', 'GGUF 和原生 MTP', 'CMake、C++ 编译器和 libclang'],
+  ['llamacpp-cuda', 'llama.cpp 的 CUDA 执行', 'CUDA toolkit'],
+  ['picolm', '纯 Rust 的 GGUF 分层流式执行', '面向受限 TEE 内存'],
+  ['Prism', 'PrismML / Bonsai 和加速配置', '需要外部 Prism runtime'],
+]} />
+
+后端能力不能跨模型推断。部署前必须核对所选 feature、模型制品和设备路径。
+
+## 请求准入
+
+HTTP 准入与引擎执行槽分别受限。ACL 可以设置活动请求数、排队长度和排队期限。
+
+```acl
+max_concurrent_requests = 1
+max_queued_requests = 8
+queue_timeout_ms = 1000
+```
+
+队列已满或排队超时返回 HTTP 429。Power 不在内部重试这些请求。活动请求上限必须大于零。
+
+无效 ACL、摘要、执行配置或显式后端会在推理前失败。Power 不会静默改用另一个模型或设备。
+
+## 验收清单
+
+1. 启动服务并读取 `/health`。
+2. 注册模型并核对制品摘要。
+3. 发送 JSON 与 SSE 请求。
+4. 在活动请求期间取消调用。
+5. 填满队列并核对 HTTP 429。
+6. 核对 `/metrics` 中的准入和缓存计数。
+
+## 实现依据
+
+- [服务与嵌入式快速开始](https://github.com/aster-ai-lab/aster/blob/main/crates/power/README.md)
+- [服务验收](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/serving-qualification.md)
+- [嵌入式推理架构](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/embedded-inference-architecture.md)

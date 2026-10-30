@@ -7,6 +7,7 @@ pub mod a3s_spawn;
 pub mod leader_bridge;
 pub mod meta;
 pub mod model_state;
+pub(crate) mod prefix_fork;
 pub mod spawn;
 pub(crate) mod subagent_label_registry;
 mod subagent_message;
@@ -17,7 +18,7 @@ pub(crate) use version_mismatch::{is_version_mismatch_banner, version_mismatch_b
 /// TUI dispatch, headless dispatch, and the session-load ACP barrier all share this list.
 /// A new method thus cannot be handled in one path and classified `Unrelated` in another.
 pub(crate) fn is_session_update_ext_method(method: &str) -> bool {
-    matches!(method, "x.ai/session_notification" | "x.ai/session/update")
+    matches!(method, "a3s/session_notification" | "a3s/session/update")
 }
 use crate::client_identity::{PAGER_CLIENT_TYPE, PAGER_CLIENT_VERSION};
 use a3s_acp_lib::{AcpAgentTx, AcpClientRx, acp_send};
@@ -118,7 +119,7 @@ pub struct AcpConnection {
     /// Whether cancel-rewind is enabled (resolved by shell from config layers).
     pub cancel_rewind_enabled: bool,
     /// Whether the session-recap feature is rolled out for this connection. The client gates its automatic away-recap
-    /// poll and the manual `/recap` on this so a disabled feature produces zero `x.ai/recap` traffic.
+    /// poll and the manual `/recap` on this so a disabled feature produces zero `a3s/recap` traffic.
     pub session_recap_available: bool,
     /// Shell-side feedback trace-offer eligibility (see `feedbackTraceOffer`).
     pub feedback_trace_offer: bool,
@@ -146,7 +147,7 @@ pub struct ConnectFlags {
     pub laziness_debug_log: Option<std::path::PathBuf>,
     /// Storage mode override.
     pub storage_mode: Option<String>,
-    /// Whether this client will draw a status row, advertised as `x.ai/statusLine` so the agent can skip an unpainted payload.
+    /// Whether this client will draw a status row, advertised as `a3s/statusLine` so the agent can skip an unpainted payload.
     pub status_line: bool,
     /// Client identifier for ACP Initialize metadata.
     pub client_identifier: Option<String>,
@@ -406,10 +407,10 @@ fn client_capabilities_meta(flags: &ConnectFlags, target: CapabilityTarget) -> s
     let hunk_mode =
         crate::settings::canonical_hunk_tracker_mode(flags.hunk_tracker_mode.as_deref());
     let mut meta = serde_json::json!({
-        "x.ai/incrementalBashOutput": true,
-        "x.ai/hunkTracker": { "mode": hunk_mode },
-        "x.ai/bashOutputNoColor": true,
-        "x.ai/gitHeadChanged": true,
+        "a3s/incrementalBashOutput": true,
+        "a3s/hunkTracker": { "mode": hunk_mode },
+        "a3s/bashOutputNoColor": true,
+        "a3s/gitHeadChanged": true,
     });
     if let Some(obj) = meta.as_object_mut() {
         obj.insert(
@@ -799,9 +800,9 @@ mod tests {
     use super::*;
     #[test]
     fn is_session_update_ext_method_covers_both_carriers() {
-        assert!(is_session_update_ext_method("x.ai/session_notification"));
-        assert!(is_session_update_ext_method("x.ai/session/update"));
-        assert!(!is_session_update_ext_method("x.ai/task_completed"));
+        assert!(is_session_update_ext_method("a3s/session_notification"));
+        assert!(is_session_update_ext_method("a3s/session/update"));
+        assert!(!is_session_update_ext_method("a3s/task_completed"));
         assert!(!is_session_update_ext_method("session/update"));
     }
     #[test]
@@ -1074,19 +1075,19 @@ mod tests {
             .as_object()
             .expect("capabilities meta is an object")
             .keys()
-            .filter(|key| key.starts_with("x.ai/"))
+            .filter(|key| key.starts_with("a3s/"))
             .map(String::as_str)
             .collect();
         keys.sort_unstable();
         assert_eq!(
             keys,
             [
-                "x.ai/bashOutputNoColor",
-                "x.ai/gitHeadChanged",
-                "x.ai/hunkTracker",
-                "x.ai/incrementalBashOutput",
-                "x.ai/statusLine",
-                "x.ai/userMessageEcho",
+                "a3s/bashOutputNoColor",
+                "a3s/gitHeadChanged",
+                "a3s/hunkTracker",
+                "a3s/incrementalBashOutput",
+                "a3s/statusLine",
+                "a3s/userMessageEcho",
             ]
         );
     }
@@ -1097,7 +1098,7 @@ mod tests {
             .as_object()
             .expect("capabilities meta is an object")
             .keys()
-            .filter(|key| key.starts_with("x.ai/"))
+            .filter(|key| key.starts_with("a3s/"))
             .map(String::as_str)
             .collect();
         assert!(keys.is_empty(), "{keys:?}");
@@ -1107,7 +1108,7 @@ mod tests {
         let absent = client_capabilities_meta(&ConnectFlags::default(), CapabilityTarget::Leader);
         assert_eq!(
             absent
-                .get("x.ai/hunkTracker")
+                .get("a3s/hunkTracker")
                 .and_then(|v| v.get("mode"))
                 .and_then(|v| v.as_str()),
             Some("off")
@@ -1121,7 +1122,7 @@ mod tests {
         );
         assert_eq!(
             blank
-                .get("x.ai/hunkTracker")
+                .get("a3s/hunkTracker")
                 .and_then(|v| v.get("mode"))
                 .and_then(|v| v.as_str()),
             Some("off")
@@ -1166,7 +1167,7 @@ mod tests {
                 CapabilityTarget::Leader,
             );
             assert_eq!(
-                meta.get("x.ai/hunkTracker")
+                meta.get("a3s/hunkTracker")
                     .and_then(|v| v.get("mode"))
                     .and_then(|v| v.as_str()),
                 Some("off"),

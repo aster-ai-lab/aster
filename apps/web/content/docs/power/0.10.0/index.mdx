@@ -1,0 +1,54 @@
+export const meta = {
+  title: 'Aster Power 产品概览',
+  description: 'a3s-power 的模型中立执行层、服务边界、分布式推理和发布状态。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-power` 是模型中立的 Rust 推理执行层。Power 为模型 crate 提供制品身份、设备放置、请求准入、取消、有界状态和执行回执。
+
+当前版本为 `0.10.0`。该版本属于 pre-v1，尚未通过生产版 v1 的完整证据门。
+
+<PowerArchitectureDiagram />
+
+## 职责边界
+
+Power 核心不按模型家族分派执行。模型 crate 保留模型语义，Power 管理共享执行边界。
+
+<DocTable caption="Power 与相邻组件的职责" headers={['组件', '职责', '明确边界']} rows={[
+  ['Power', '制品身份、设备、准入、取消、状态和执行回执', '不拥有模型拓扑和生成策略'],
+  ['模型 crate', '拓扑、tokenizer、预处理、可变状态和生成策略', '不复制通用运行时边界'],
+  ['Gateway', '客户端认证、模型授权、路由和协议编排', '不执行模型或保存 KV 内容'],
+  ['Cloud', '副本、放置、部署代际和快照', '不处理每个请求的同步转发'],
+]} />
+
+## 使用方式
+
+<DocTable caption="Power 的主要使用方式" headers={['方式', '适用场景', '网络行为']} rows={[
+  ['嵌入式运行时', 'Rust 模型 crate 使用共享执行合同', '不启动监听器或下载模型'],
+  ['OpenAI 兼容服务', '现有客户端请求 chat、completion 或 embedding', '显式启用 HTTP、RA-TLS 或 vsock'],
+  ['制品供应', '安装锁定修订的模型包', '按策略下载并校验内容摘要'],
+  ['Gateway 执行后端', '聚合或 P/D 推理', '使用经过认证的内部协议'],
+]} />
+
+Power 提供 CPU、CUDA 和 Metal 执行边界。具体后端、模型和硬件仍需分别验证。
+
+## 当前发布状态
+
+strict v1 证据门要求 CPU、CUDA、Metal 和 confidential GPU 四类捕获。当前缺少同一冻结父提交的 Metal 与 SEV-SNP confidential GPU 证据。
+
+因此，`0.10.0` 不是生产版 v1 的替代品。`v1.0.0` 尚未作为生产版本发布。
+
+## 文档入口
+
+- [服务与嵌入式接入](./serving/)：安装、接口、后端、制品和请求准入。
+- [分布式推理与缓存](./distributed-inference/)：P/D、状态传输、worker 观测和前缀缓存。
+- [运行与发布验证](./operations/)：资源边界、性能证据、feature 和发布验收。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Power 架构与当前发布状态](https://github.com/aster-ai-lab/aster/blob/main/crates/power/README.md)
+- [嵌入式推理架构](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/embedded-inference-architecture.md)
+- [生产发布证据门](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/release-evidence-gate.md)

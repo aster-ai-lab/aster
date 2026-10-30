@@ -44,7 +44,7 @@ export function createWorkDocumentModelFromContent(
   );
   const root = windowDocumentModel(
     ProseMirrorDOMParser.fromSchema(workDocumentSchema())
-      .parse(document.body)
+      .parse(document.body, { preserveWhitespace: 'full' })
       .toJSON() as unknown as WorkDocumentNode,
   );
   return {

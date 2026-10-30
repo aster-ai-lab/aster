@@ -1,11 +1,11 @@
 export const meta = {
-  "title": "选择构建能力，再给会话接入模型",
+  "title": "构建配置与模型接入",
   "description": "构建 profile、ACL 信任层、模型适配器与超时边界。",
   "label": "构建与模型配置",
   "updated": "2026-10-26"
 };
 
-## 先决定交付什么
+## 交付形式
 
 Core 是本地 Rust SDK，ACP 是供终端和桌面宿主启动的伴随进程。仓库不提供额外语言 SDK；终端 `aster` 与 `a3s-code-acp` 一起构建、分发。已有异步 Rust 应用优先嵌入 Core；需要进程隔离或跨语言宿主时走 ACP。
 

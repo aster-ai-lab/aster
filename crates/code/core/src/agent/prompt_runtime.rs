@@ -82,9 +82,10 @@ impl crate::agent::TurnEngine {
             .collect();
         system.push_str(
             "\n\nHost verification contracts for this workspace:\n\
-             The following JSON is the admitted host manifest. When verifying covered edits, \
-             use the command string as the entire bash command, with no extra arguments, \
-             prefixes, suffixes or shell composition. Read-only inspection is not verification. \
+             The following JSON is the admitted host manifest. When running a declared command, \
+             including a requested baseline check, use the command string as the entire bash command, \
+             with no extra arguments, prefixes, suffixes or shell composition. The bash tool already \
+             reports its exit code; do not append echo to print it. Read-only inspection is not verification. \
              A successful checker must run after the latest edit; a failed check or a later edit \
              cannot yield Verified completion. These declarations do not authorize execution, \
              waive permission or sandbox checks, or allow changing the checker or the manifest. \

@@ -47,6 +47,7 @@ export function SpreadsheetTableDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.tableDialog.title')}
       description={source.sheetName}
       className="work-spreadsheet-table-dialog"

@@ -215,6 +215,11 @@ impl AgentSession {
         })?
     }
 
+    /// Language published for user-visible prose by the latest model call.
+    pub fn reply_language(&self) -> Option<String> {
+        self.tool_context.reply_language()
+    }
+
     /// Runtime agent-style override. Outer `None` means unset; inner value is
     /// the style (or cleared specialty when `Some(None)`).
     pub(crate) fn runtime_agent_style_override(
@@ -280,6 +285,8 @@ impl AgentSession {
 
     /// Resolve a pending HITL tool confirmation.
     ///
+    /// Use the opaque ID from the pending request or confirmation event, rather
+    /// than a model-supplied tool ID. Each original invocation owns its consent.
     /// Returns `Ok(true)` when a pending confirmation was found and completed,
     /// `Ok(false)` when the tool ID is not pending or HITL is not configured.
     pub async fn confirm_tool_use(
@@ -297,8 +304,8 @@ impl AgentSession {
                 return Ok(true);
             }
         }
-        // A stale answer cannot reopen a policy-bound Run through the legacy owner.
-        if self.config.work_policy.is_some() {
+        // A stale answer cannot reopen a bound Run through the legacy owner.
+        if self.config.work_policy.is_some() || self.goal_definition()?.is_some() {
             return Ok(false);
         }
         let run = super::conversation_runtime::FactSession::from(self).open()?;

@@ -87,8 +87,10 @@ async fn surface() -> (
         cancel.clone(),
     );
     let surface = SessionSurface {
+        response_meta: Default::default(),
         agent: invocation.bind_agent_loop(&agent),
         session_id: "parent-original".into(),
+        persistence: None,
         fact_log: Default::default(),
         checkpoint: None,
         events: None,

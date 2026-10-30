@@ -578,7 +578,7 @@ async fn real_agent_dialogue_resumes_after_process_restart() {
 }
 
 /// The mid-turn interjection: while the agent is working a multi-round turn,
-/// the user injects a late instruction over `x.ai/interject`. The steer must
+/// the user injects a late instruction over `a3s/interject`. The steer must
 /// land in the conversation (steer fact + the injected instruction shaping a
 /// visible answer) and the dialogue continues normally afterwards.
 #[tokio::test(flavor = "multi_thread")]
@@ -641,7 +641,7 @@ async fn real_agent_interject_mid_turn_lands_in_the_dialogue() {
             .expect("interject params");
             let interjected = acp::Agent::ext_method(
                 conn.as_ref(),
-                acp::ExtRequest::new("x.ai/interject", std::sync::Arc::from(params)),
+                acp::ExtRequest::new("a3s/interject", std::sync::Arc::from(params)),
             )
             .await
             .expect("interject over the wire");
@@ -1264,7 +1264,7 @@ async fn real_agent_wire_soak_fourteen_turns() {
             let info: serde_json::Value = serde_json::from_str(
                 acp::Agent::ext_method(
                     conn.as_ref(),
-                    acp::ExtRequest::new("x.ai/session/info", std::sync::Arc::from(params)),
+                    acp::ExtRequest::new("a3s/session/info", std::sync::Arc::from(params)),
                 )
                 .await
                 .expect("session info")

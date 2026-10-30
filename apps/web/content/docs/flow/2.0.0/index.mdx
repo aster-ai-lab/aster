@@ -1,0 +1,48 @@
+export const meta = {
+  title: 'Aster Flow 产品概览',
+  description: '持久工作流、确定性重放、宿主副作用与等待恢复的职责边界。',
+  label: '产品概览',
+  updated: '2026-10-30',
+};
+
+`a3s-flow` 是持久工作流引擎和 Rust SDK，当前源码版本为 `2.0.0`。它通过追加式历史保存步骤、等待、重试、子工作流和终态，在进程重启或 Worker 替换后重新投影状态。
+
+Flow 适合跨多次调度、需要等待审批或外部事件的任务。纯内存排队不需要承担完整工作流历史时，可先了解 [Lane](../../lane/0.5.1/)；需要理解智能体 Harness 的事实折叠，可阅读 [Effect](../../effect/0.2.1/)。
+
+<FlowArchitectureDiagram />
+
+## 决策与操作分开
+
+`FlowRuntime::run_workflow` 读取历史投影并返回下一条确定性 `RuntimeCommand`。外部访问放在 `run_step` 或 `run_activity`，不要在每次重放的决策函数里直接调用工具、网络或模型。见 <SourceRef path="crates/flow/src/runtime.rs" match="pub trait FlowRuntime: Send + Sync">运行时接口</SourceRef>。
+
+已提交的步骤结果可以重放。相同步骤身份对应的输入、策略或等待条件发生漂移时，引擎拒绝非确定性重放，不会把它解释成同一次操作。
+
+## 核心能力
+
+<DocTable caption="Flow 的持久生命周期" headers={['能力', '保存的内容', '宿主仍需提供']} rows={[
+  ['步骤与 Activity', '身份、尝试、结果、重试和未明结果', '工具实现、幂等性和外部结果核实'],
+  ['等待与审批', '定时器、命名 Signal、Hook 与回调路由', '事件来源、审批授权和唤醒调度'],
+  ['子工作流', '子身份、策略和终态关联', '允许启动的工作流与资源额度'],
+  ['取消与续接', '取消清理和 continue_as_new 关联', '清理实现与外部操作核对'],
+  ['部署恢复', '运行时 Build 身份、补丁与事件历史', '兼容实现、Worker 放置和租户策略'],
+]} />
+
+`start_with_id` 允许同一运行 ID、工作流定义和输入安全重试创建；不同定义或输入会发生冲突。见 <SourceRef path="crates/flow/src/engine/runs.rs" match="pub async fn start_with_id(">持久运行创建</SourceRef>。
+
+## 与宿主的边界
+
+Flow 管理工作流历史和生命周期。宿主负责身份、授权、租户隔离、凭据、可用节点与工具、业务发布和调度资源。一个工作流图通过结构检查，不表示其中的节点已获得执行许可。
+
+外部副作用的物理边界是**至少一次**。如果操作已经成功，但结果尚未持久化时进程退出，恢复后可能再次执行。Flow 的持久历史不等于外部系统中的恰好一次效果。
+
+## 文档入口
+
+- [Rust 接入与确定性步骤](./integration/)：最小 Runtime、创建运行和结果读取。
+- [恢复、存储与运行验证](./operations/)：等待、未明结果、Worker 兼容、持久化和取消。
+
+<ChapterCards />
+
+## 实现依据
+
+- [执行模型与能力边界](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/README.md)
+- [Flow 公开 API](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/src/lib.rs)

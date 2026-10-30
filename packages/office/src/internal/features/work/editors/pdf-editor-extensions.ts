@@ -386,7 +386,7 @@ export function createPdfEditorExtensions(): readonly OfficeEditorExtension<
           if (
             event.repeat ||
             isOfficeShortcutBlocked(event.target) ||
-            isPdfTextEditingTarget(event.target) ||
+            isPdfTextEditingTarget(event) ||
             !context.annotation.state.activeToolId ||
             !can.selectAnnotationTool(null)
           ) {
@@ -417,11 +417,12 @@ function runPdfTextAwareShortcut(
   canExecute: () => boolean,
   execute: () => void,
 ): boolean {
-  if (isPdfTextEditingTarget(event.target)) return false;
+  if (isPdfTextEditingTarget(event)) return false;
   return runPdfShortcut(event, canExecute, execute);
 }
 
-function isPdfTextEditingTarget(target: EventTarget | null): boolean {
+function isPdfTextEditingTarget(event: KeyboardEvent): boolean {
+  const target = event.composedPath()[0] ?? event.target;
   if (!(target instanceof HTMLElement)) return false;
   return (
     target instanceof HTMLInputElement ||

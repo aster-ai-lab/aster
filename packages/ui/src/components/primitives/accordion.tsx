@@ -33,7 +33,7 @@ function AccordionTrigger({ className, children, ...props }: React.ComponentProp
         )}
         {...props}>
         {children}
-        <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-foreground/60 transition-transform duration-200" />
+        <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-foreground/60 motion-safe:transition-transform motion-safe:duration-200" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )
@@ -48,7 +48,7 @@ function AccordionContent({ className, contentClassName, children, ...props }: A
     <AccordionPrimitive.Content
       data-slot="accordion-content"
       className={cn(
-        'overflow-hidden text-sm leading-5 text-foreground/60 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+        'overflow-hidden text-sm leading-5 text-foreground/60 motion-safe:data-[state=closed]:animate-accordion-up motion-safe:data-[state=open]:animate-accordion-down',
         contentClassName
       )}
       {...props}>

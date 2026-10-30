@@ -1,0 +1,131 @@
+suite "markdown-mode-history" {
+    version = 1
+
+    scenario "visual-to-source-history" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=Alpha" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "focus" { target = role("textbox", "Markdown 编辑区") }
+        press "select" { key = "Meta+A" }
+        click "bold" { target = role("button", "加粗") }
+        expect "formatted" { target = role("textbox", "序列化 Markdown") value = "**Alpha**" }
+        click "source" { target = role("button", "源码编辑") }
+        expect "history-retained" { enabled = role("button", "撤销") }
+        click "undo" { target = role("button", "撤销") }
+        expect "undone" { target = role("textbox", "序列化 Markdown") value = "Alpha" }
+        click "redo" { target = role("button", "重做") }
+        expect "redone" { target = role("textbox", "序列化 Markdown") value = "**Alpha**" }
+        click "back-to-visual" { target = role("button", "可视化编辑") }
+        expect "editing-focus" { focused = role("textbox", "Markdown 编辑区") }
+        press "replace-original-selection" { key = "Z" }
+        expect "selection-and-bold-retained" { target = role("textbox", "序列化 Markdown") value = "**Z**" }
+        press "undo-typing" { key = "Meta+Z" }
+        expect "typing-undone" { target = role("textbox", "序列化 Markdown") value = "**Alpha**" }
+        press "redo-typing" { key = "Meta+Shift+Z" }
+        expect "typing-redone" { target = role("textbox", "序列化 Markdown") value = "**Z**" }
+    }
+
+    scenario "source-to-visual-history" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=Alpha" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "source" { target = role("button", "源码编辑") }
+        click "focus" { target = role("textbox", "Markdown 源码") }
+        press "start-1" { key = "ArrowLeft" }
+        press "start-2" { key = "ArrowLeft" }
+        press "start-3" { key = "ArrowLeft" }
+        press "start-4" { key = "ArrowLeft" }
+        press "start-5" { key = "ArrowLeft" }
+        press "select-1" { key = "Shift+ArrowRight" }
+        press "select-2" { key = "Shift+ArrowRight" }
+        press "select-3" { key = "Shift+ArrowRight" }
+        press "select-4" { key = "Shift+ArrowRight" }
+        press "select-5" { key = "Shift+ArrowRight" }
+        click "bold" { target = role("button", "加粗") }
+        expect "formatted" { target = role("textbox", "序列化 Markdown") value = "**Alpha**" }
+        click "visual" { target = role("button", "可视化编辑") }
+        expect "history-retained" { enabled = role("button", "撤销") }
+        click "undo" { target = role("button", "撤销") }
+        expect "undone" { target = role("textbox", "序列化 Markdown") value = "Alpha" }
+        click "redo" { target = role("button", "重做") }
+        expect "redone" { target = role("textbox", "序列化 Markdown") value = "**Alpha**" }
+    }
+
+    scenario "shortcuts-stay-inside-editor" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=Alpha" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "outside" { target = role("textbox", "编辑器外输入") }
+        press "outside-bold" { key = "Meta+B" }
+        press "outside-link" { key = "Meta+K" }
+        press "outside-save" { key = "Meta+S" }
+        expect "no-link-dialog" { hidden = role("dialog", "添加链接") }
+        expect "no-format" { target = role("textbox", "序列化 Markdown") value = "Alpha" }
+        expect "no-save" { target = role("textbox", "保存内容") value = "" }
+    }
+
+    scenario "unicode-history-and-save" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "focus" { target = role("textbox", "Markdown 编辑区") }
+        type "unicode" { target = css("[role='textbox'][aria-label='Markdown 编辑区']") value = "中文🌟 Alpha" }
+        expect "typed" { target = role("textbox", "序列化 Markdown") value = "中文🌟 Alpha" }
+        press "undo" { key = "Meta+Z" }
+        expect "undone" { target = role("textbox", "序列化 Markdown") value = "" }
+        press "redo" { key = "Meta+Shift+Z" }
+        expect "redone" { target = role("textbox", "序列化 Markdown") value = "中文🌟 Alpha" }
+        click "source" { target = role("button", "源码编辑") }
+        click "source-focus" { target = role("textbox", "Markdown 源码") }
+        press "source-undo" { key = "Control+Z" }
+        expect "source-undone" { target = role("textbox", "序列化 Markdown") value = "" }
+        press "source-redo" { key = "Control+Y" }
+        expect "source-redone" { target = role("textbox", "序列化 Markdown") value = "中文🌟 Alpha" }
+        click "split" { target = role("button", "分屏编辑") }
+        expect "source-intact" { target = role("textbox", "Markdown 源码") value = "中文🌟 Alpha" }
+        click "save-focus" { target = role("textbox", "Markdown 源码") }
+        press "save" { key = "Control+S" }
+        expect "saved" { target = role("textbox", "保存内容") value = "中文🌟 Alpha" }
+    }
+
+    scenario "table-history-keeps-cell-selection" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "table" { target = role("button", "表格") }
+        expect "table-created" { target = css("table tr") visible_count = 3 }
+        click "source" { target = role("button", "源码编辑") }
+        click "undo" { target = role("button", "撤销") }
+        expect "table-undone" { target = role("textbox", "序列化 Markdown") value = "" }
+        click "redo" { target = role("button", "重做") }
+        click "visual" { target = role("button", "可视化编辑") }
+        expect "cell-focus" { focused = role("textbox", "Markdown 编辑区") }
+        press "type-in-restored-cell" { key = "X" }
+        expect "first-cell-edited" { target = css("table th:first-of-type") rendered_text = "X" }
+        press "undo-cell-edit" { key = "Meta+Z" }
+        expect "cell-edit-undone" { target = css("table th:first-of-type") rendered_text = "" }
+        press "redo-cell-edit" { key = "Meta+Shift+Z" }
+        expect "cell-edit-redone" { target = css("table th:first-of-type") rendered_text = "X" }
+        expect "table-intact" { target = css("table tr") visible_count = 3 }
+    }
+
+    scenario "split-task-checkbox-history" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58128/?markdown=-%20%5B%20%5D%20Alpha" }
+        wait "ready" { visible = role("textbox", "Markdown 编辑区") }
+        click "split" { target = role("button", "分屏编辑") }
+        click "complete-task" { target = role("checkbox", "未完成：Alpha") }
+        expect "checked-source" { target = role("textbox", "Markdown 源码") value = "- [x] Alpha" }
+        expect "undo-available" { enabled = role("button", "撤销") }
+        click "undo" { target = role("button", "撤销") }
+        expect "unchecked-source" { target = role("textbox", "Markdown 源码") value = "- [ ] Alpha" }
+        click "redo" { target = role("button", "重做") }
+        expect "redone-source" { target = role("textbox", "Markdown 源码") value = "- [x] Alpha" }
+    }
+}

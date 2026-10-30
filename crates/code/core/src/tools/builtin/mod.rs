@@ -79,6 +79,14 @@ pub fn register_builtins(
     registry: &ToolRegistry,
     workspace_services: &crate::workspace::WorkspaceServices,
 ) {
+    register_builtins_with_tracker(registry, workspace_services, None)
+}
+
+pub(crate) fn register_builtins_with_tracker(
+    registry: &ToolRegistry,
+    workspace_services: &crate::workspace::WorkspaceServices,
+    background_tracker: Option<Arc<crate::subagent_task_tracker::InMemorySubagentTaskTracker>>,
+) {
     let capabilities = workspace_services.capabilities();
     if capabilities.read {
         registry.register_builtin(Arc::new(read::ReadTool));
@@ -98,7 +106,11 @@ pub fn register_builtins(
         registry.register_builtin(Arc::new(bash::BashTool));
         // WC-BG1: background execution rides the same exec capability gate
         // as bash — it spawns shell commands.
-        registry.register_builtin(Arc::new(background::BackgroundTool::default()));
+        let background = match background_tracker {
+            Some(tracker) => background::BackgroundTool::with_subagent_tracker(tracker),
+            None => background::BackgroundTool::default(),
+        };
+        registry.register_builtin(Arc::new(background));
     }
     let retrieval = workspace_services.workspace_retrieval();
     let semantic_enabled = capabilities.read && retrieval.is_some();

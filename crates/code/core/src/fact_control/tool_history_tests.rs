@@ -1,6 +1,47 @@
 #![cfg(test)]
 
+use super::receipts::{runner_interrupted_value, runner_result_value};
 use super::*;
+
+#[test]
+fn folded_tool_messages_preserve_typed_exit_codes_without_changing_original_receipts() {
+    for code in [0, 7, 137] {
+        let receipt = runner_result_value("original stdout", code != 0, &[], code, None, None);
+        let original = receipt.clone();
+        let message = message_from_folded_tool("original-call", receipt.as_str().unwrap(), false);
+        let crate::llm::ContentBlock::ToolResult {
+            tool_use_id,
+            content,
+            is_error,
+            ..
+        } = &message.content[0]
+        else {
+            panic!("expected original tool-result message")
+        };
+        assert_eq!(tool_use_id, "original-call");
+        let expected = format!("Tool exit code: {code}\noriginal stdout");
+        assert_eq!(content, expected.as_str());
+        assert_eq!(*is_error, Some(code != 0));
+        assert_eq!(
+            receipt, original,
+            "the original fact remains byte-for-byte unchanged"
+        );
+    }
+    let message = message_from_folded_tool("legacy", "original stdout", false);
+    assert!(
+        matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "original stdout")
+    );
+    let silent = runner_result_value("", true, &[], 7, None, None);
+    let message = message_from_folded_tool("silent", silent.as_str().unwrap(), true);
+    assert!(
+        matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "Tool exit code: 7\n")
+    );
+    let interrupted = runner_interrupted_value("interrupted output");
+    let message = message_from_folded_tool("interrupted", interrupted.as_str().unwrap(), true);
+    assert!(
+        matches!(&message.content[0],crate::llm::ContentBlock::ToolResult { content, .. } if content == "interrupted output")
+    );
+}
 
 // Mount the original workspace log without initializing any command sandbox.
 pub(super) fn surface(workspace: &Path, client: Arc<dyn LlmClient>) -> SessionSurface {
@@ -30,6 +71,7 @@ pub(super) fn surface_with_config(
 ) -> SessionSurface {
     let executor = Arc::new(ToolExecutor::new(workspace.to_string_lossy().into_owned()));
     SessionSurface {
+        response_meta: Default::default(),
         agent: crate::agent::AgentLoop::new(
             client,
             executor,
@@ -38,6 +80,7 @@ pub(super) fn surface_with_config(
         ),
         fact_log: Default::default(),
         session_id: THREAD.into(),
+        persistence: None,
         checkpoint: None,
         events: None,
         pending_memory_telemetry: Arc::new(Mutex::new(Vec::new())),

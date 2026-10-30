@@ -37,6 +37,8 @@ fn is_github_actions() -> bool {
 ///
 /// Returns `Ok(None)` if not found and not in a strict environment (GitHub Actions).
 pub fn find_protoc() -> anyhow::Result<Option<PathBuf>> {
+    println!("cargo:rerun-if-env-changed=PROTOC");
+    println!("cargo:rerun-if-env-changed=PATH");
     // 1. Check the PROTOC env var first. This is the standard override used by prost-build
     //    and is set by Bazel cargo_build_script build_script_env to point at a hermetic
     //    protoc binary instead of the dotslash wrapper.
@@ -78,8 +80,14 @@ pub fn find_protoc() -> anyhow::Result<Option<PathBuf>> {
     }
 
     // 3. Try protoc from PATH (system install or other tooling).
-    if check_protoc_good(Path::new("protoc")).is_ok() {
-        return Ok(Some(PathBuf::from("protoc")));
+    if let Some(paths) = env::var_os("PATH") {
+        for directory in env::split_paths(&paths) {
+            let protoc =
+                std::path::absolute(directory.join(format!("protoc{}", env::consts::EXE_SUFFIX)))?;
+            if check_protoc_good(&protoc).is_ok() {
+                return Ok(Some(protoc));
+            }
+        }
     }
 
     // 4. Not found anywhere.
@@ -90,4 +98,57 @@ pub fn find_protoc() -> anyhow::Result<Option<PathBuf>> {
     }
     eprintln!("`protoc` not found; likely it is missing in docker image");
     Ok(None)
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    use std::os::unix::fs::PermissionsExt;
+
+    #[test]
+    fn path_lookup_returns_the_existing_compiler_file() {
+        const PROBE: &str = "ASTER_PROTOC_PATH_PROBE";
+        if env::var_os(PROBE).is_some() {
+            let compiler = find_protoc().unwrap().expect("fixture compiler");
+            assert!(
+                compiler.is_absolute(),
+                "a PATH command is not a Cargo file dependency: {compiler:?}"
+            );
+            assert!(
+                compiler.is_file(),
+                "watched compiler must exist: {compiler:?}"
+            );
+            return;
+        }
+        let root = tempfile::tempdir().unwrap();
+        let empty = root.path().join("empty");
+        let valid = root.path().join("installed compiler");
+        std::fs::create_dir(&empty).unwrap();
+        std::fs::create_dir(&valid).unwrap();
+        let compiler = valid.join("protoc");
+        std::fs::write(&compiler, "#!/bin/sh\nprintf 'fixture protoc\\n'\n").unwrap();
+        std::fs::set_permissions(&compiler, std::fs::Permissions::from_mode(0o755)).unwrap();
+        let output = Command::new(env::current_exe().unwrap())
+            .args([
+                "find_protoc::tests::path_lookup_returns_the_existing_compiler_file",
+                "--exact",
+                "--nocapture",
+            ])
+            .current_dir(root.path())
+            .env_remove("PROTOC")
+            .env(
+                "PATH",
+                env::join_paths([PathBuf::new(), empty, valid]).unwrap(),
+            )
+            .env(PROBE, "1")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(String::from_utf8_lossy(&output.stdout).contains("1 passed"));
+    }
 }

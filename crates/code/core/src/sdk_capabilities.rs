@@ -1,11 +1,8 @@
-//! Cross-language SDK capability contract.
+//! Rust SDK capability contract inventory.
 //!
-//! The Rust core has a deliberately larger implementation surface than any
-//! one FFI binding (for example, Rust hosts can provide native trait objects).
-//! This module is the single source of truth for the *product* capability
-//! surface.  Every official SDK exposes this inventory verbatim so an
-//! embedding application can discover features instead of guessing from
-//! package versions or parsing tool definitions.
+//! The inventory declares product contracts, including optional host and build
+//! surfaces. It is not a runtime availability check; use session tool projection,
+//! resource status and typed refusals for the current executable surface.
 //!
 //! Capabilities are tagged with a [`CapabilityTier`]:
 //! - **baseline** — required for a governed local coding-agent harness
@@ -39,7 +36,7 @@ impl CapabilityTier {
     }
 }
 
-/// A product capability exposed by the Core and its official SDKs.
+/// A product capability declared by the Rust Core.
 ///
 /// `host_owned` means that the embedding application supplies policy,
 /// credentials, or a lifecycle owner.  It does not mean that the capability
@@ -53,8 +50,7 @@ pub struct SdkCapability {
     pub category: String,
     /// Human-readable contract summary.
     pub description: String,
-    /// Canonical operation names. Language bindings map these to their naming
-    /// conventions (for example `web_search` becomes `webSearch` in Node).
+    /// Canonical Core operation identifiers for Rust hosts and ACP adapters.
     pub operations: Vec<String>,
     /// Whether the host owns policy, credentials, or an external lifecycle.
     pub host_owned: bool,
@@ -296,12 +292,12 @@ const CAPABILITY_SPECS: &[CapabilitySpec] = &[
         tier: CapabilityTier::Advanced,
     },
     CapabilitySpec {
-        id: "cognitive_packages",
+        id: "packages",
         category: "context",
-        description: "Bind exact cited cognitive knowledge generations supplied by an authoritative host.",
+        description: "Bind exact cited package knowledge generations supplied by an authoritative host.",
         operations: &[
-            "session.cognitive_package_binding",
-            "session.current_cognitive_package_binding",
+            "session.package_binding",
+            "session.current_package_binding",
         ],
         host_owned: true,
         tier: CapabilityTier::Advanced,

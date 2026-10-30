@@ -15,7 +15,7 @@ fn code_app() -> AppView {
 
 #[test]
 fn code_backend_unavailable_commands_never_become_model_prompts() {
-    for input in ["/dashboard", "/sessions", "/fork new-branch"] {
+    for input in ["/dashboard", "/sessions"] {
         let mut app = code_app();
         let effects = dispatch(Action::SendPrompt(input.into()), &mut app);
         assert!(
@@ -29,6 +29,14 @@ fn code_backend_unavailable_commands_never_become_model_prompts() {
             "is unavailable with the Code backend. Use /help for available commands."
         ));
     }
+
+    let mut app = code_app();
+    let effects = dispatch(Action::SendPrompt("/fork new-branch".into()), &mut app);
+    assert!(
+        matches!(effects.as_slice(), [Effect::ForkSession { .. }]),
+        "the enabled prefix fork must stay a local action: {effects:?}"
+    );
+    assert!(agent_ref(&app, AgentId(0)).prompt.text().is_empty());
 }
 
 #[test]

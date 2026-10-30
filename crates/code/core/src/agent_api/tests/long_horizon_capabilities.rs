@@ -24,6 +24,18 @@ fn tool_use(id: &str, name: &str, input: serde_json::Value) -> crate::llm::Conte
     }
 }
 
+fn native_bash_qualified(session: &AgentSession) -> bool {
+    let qualified = session
+        .tool_context
+        .sandbox
+        .as_ref()
+        .is_some_and(|sandbox| sandbox.supports_background_execution());
+    if !qualified {
+        eprintln!("skipping real Bash qualification: no qualified process backend is installed");
+    }
+    qualified
+}
+
 #[async_trait::async_trait]
 impl crate::llm::LlmClient for LongHorizonTwinClient {
     async fn complete(
@@ -174,6 +186,9 @@ async fn plan_batch_and_recovery_choreography_survives_the_fact_spine() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     let result = session
         .send("Plan, read in parallel, verify, fix, verify again.", None)
@@ -523,6 +538,9 @@ async fn declared_suite_contract_binds_a_passing_run_and_completes_verified() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     let result = session
         .send("Fix the file, run the suite, stop.", None)
@@ -775,6 +793,17 @@ async fn crash_mid_long_task_resumes_its_mutation_ledger_and_completes_verified(
         Arc::clone(&client),
         parked_marker,
     );
+    let backend_agent = Agent::from_config(test_config()).await.unwrap();
+    let backend_probe = backend_agent
+        .build_session(
+            root.to_string_lossy().into_owned(),
+            Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
+            &SessionOptions::new(),
+        )
+        .unwrap();
+    if !native_bash_qualified(&backend_probe) {
+        return;
+    }
     tokio::task::spawn_blocking(move || {
         std::thread::spawn(move || {
             let runtime = tokio::runtime::Builder::new_multi_thread()
@@ -1036,6 +1065,9 @@ async fn interrupted_run_mutations_carry_into_the_next_send_gate() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     // A foreground stream is what makes the session's run-control surface
     // active — the interrupt boundary the continuation seam hangs off.
@@ -1274,6 +1306,9 @@ async fn compaction_between_debt_and_settlement_does_not_forgive_it() {
         Arc::clone(&client) as Arc<dyn crate::llm::LlmClient>,
         true,
     );
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     let first = session
         .send("Fix the file, then stop.", None)
@@ -1544,6 +1579,9 @@ async fn debts_from_multiple_unsettled_turns_settle_together() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     // Turn 1: edit impl.mjs, answer in text → refused.
     session
@@ -1986,6 +2024,9 @@ async fn settled_end_carries_the_gates_verification_summary() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     let (mut events, _worker) = session
         .stream("Fix the file, run the suite, stop.", None)

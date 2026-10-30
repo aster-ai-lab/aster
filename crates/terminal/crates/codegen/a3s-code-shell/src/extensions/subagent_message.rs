@@ -1,4 +1,4 @@
-//! `x.ai/subagent/message` — queue or steer literal text to an owned child.
+//! `a3s/subagent/message` — queue or steer literal text to an owned child.
 
 use a3s_code_tools::implementations::grok_build::send_subagent_message::resolve_delivery;
 use a3s_code_tools::implementations::grok_build::task::types::{

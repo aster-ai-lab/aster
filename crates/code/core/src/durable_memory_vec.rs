@@ -18,6 +18,8 @@ use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, OnceLock, Weak};
 
+pub mod management;
+
 static ENGINE_INIT: OnceLock<Result<(), String>> = OnceLock::new();
 
 fn ensure_initialized() -> Result<(), String> {
@@ -87,6 +89,11 @@ pub struct MemoryRecord {
 }
 
 impl VecMemoryStore {
+    /// Stored record count from collection metadata, without reading memory bodies.
+    pub fn record_count(&self) -> Result<usize> {
+        self.collection.count().map_err(display_error)
+    }
+
     /// True when the exact text digest is already known — a write is a
     /// duplicate and is skipped. Callers absorb the digest on every real
     /// insert so the guard stays complete without a collection re-scan.
@@ -128,6 +135,7 @@ pub struct VecMemoryStore {
     /// True when the exclusive lock was held by a live peer and the store
     /// opened with a shared (read-only) lock instead (#17).
     read_only: bool,
+    mutation: std::sync::Mutex<()>,
     /// Same-process exclusion. The engine file lock does not stop a second open here.
     /// Held so `Drop` releases the directory; the field itself is not read.
     _open_lease: OpenLease,
@@ -303,12 +311,17 @@ impl VecMemoryStore {
             hygiene: std::sync::Mutex::new(Vec::new()),
             embedding_dimension,
             read_only,
+            mutation: std::sync::Mutex::new(()),
             _open_lease: open_lease,
         })
     }
 
     /// Insert or replace one memory record by id.
     pub fn put(&self, record: &MemoryRecord) -> Result<()> {
+        let _mutation = self
+            .mutation
+            .lock()
+            .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
         if self.read_only {
             return Err(anyhow!(
                 "memory store is read-only: another Aster session holds the collection lock; \
@@ -836,14 +849,18 @@ impl MemoryStore for VecMemoryStore {
     }
 
     async fn delete(&self, id: &str) -> Result<()> {
-        let result = self.collection.delete(&[id]).map_err(display_error)?;
-        if result.error_count != 0 {
-            return Err(anyhow!("a3s-vec memory delete rejected {id}"));
-        }
-        Ok(())
+        let _mutation = self
+            .mutation
+            .lock()
+            .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
+        self.delete_record(id)
     }
 
     async fn clear(&self) -> Result<()> {
+        let _mutation = self
+            .mutation
+            .lock()
+            .map_err(|_| anyhow!("memory mutation lock is poisoned"))?;
         let mut ids = Vec::new();
         for document in self.collection.iter().map_err(display_error)? {
             ids.push(memory_id(&document.map_err(display_error)?)?);
@@ -859,11 +876,20 @@ impl MemoryStore for VecMemoryStore {
                 result.error_count
             ));
         }
+        self.hygiene
+            .lock()
+            .map_err(|_| anyhow!("memory hygiene lock is poisoned"))?
+            .clear();
+        self.vectors
+            .lock()
+            .map_err(|_| anyhow!("memory vectors lock is poisoned"))?
+            .clear();
+        self.collection.flush().map_err(display_error)?;
         Ok(())
     }
 
     async fn count(&self) -> Result<usize> {
-        self.collection.count().map_err(display_error)
+        self.record_count()
     }
 }
 

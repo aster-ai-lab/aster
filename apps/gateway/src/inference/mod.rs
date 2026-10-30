@@ -83,7 +83,7 @@ pub(crate) use scheduling::{
     InferenceWorkerCandidate, InferenceWorkerPairSelection, InferenceWorkerPairSelectionRequest,
     InferenceWorkerSelection, InferenceWorkerSelectionRequest,
 };
-pub(crate) use supplier_keys::load_supplier_credentials;
+pub(crate) use supplier_keys::{load_supplier_credentials, SupplierCredential};
 pub(crate) use token_reconcile::{
     track_attributed_token_budget_response, track_token_budget_response, UsageAttribution,
 };

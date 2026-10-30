@@ -29,6 +29,7 @@ export const officeChromeUiMessagesZhCN = {
   'office.dialog.gotIt': '知道了',
   'office.dialog.continue': '继续',
   'office.dialog.cancel': '取消',
+  'office.dialog.close': '关闭',
   'office.table.panel': '选择表格大小',
   'office.table.rows': '行数',
   'office.table.columns': '列数',
@@ -65,7 +66,9 @@ export const officeChromeUiMessagesZhCN = {
   'office.collab.location.page': '第 {page} 页',
   'office.number.increase': '增加{label}',
   'office.number.decrease': '减少{label}',
-  'office.select.placeholder': '请选择'
+  'office.select.placeholder': '请选择',
+  'office.select.search': '搜索选项',
+  'office.select.empty': '没有匹配的选项'
 } as const;
 
 export type OfficeChromeUiMessageKey = keyof typeof officeChromeUiMessagesZhCN;

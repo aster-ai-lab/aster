@@ -1111,9 +1111,8 @@ systemctl restart a3s-code
 
 ### B. API 文档
 
-- Rust: https://docs.rs/a3s-code-core
-- Python: https://pypi.org/project/a3s-code
-- Node.js: https://www.npmjs.com/package/@a3s-lab/code
+- [本地 Rust API](../core/src/lib.rs)
+- [Rust 与 ACP 接入](USER_GUIDE_CN.md)
 
 ### C. 社区资源
 

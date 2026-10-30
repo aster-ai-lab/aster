@@ -1,9 +1,9 @@
 /**
- * Project an agent JSON Schema onto the closed OpenUI catalog.
+ * Project an agent JSON Schema onto the closed JSON Render catalog.
  * The accepted subset matches `agent_parameters.rs`.
  */
 
-import { compileOpenUi } from "./openui";
+import { compileJsonRender } from "./jsonRender";
 
 export type AgentParameterKind = "string" | "number" | "integer" | "boolean";
 
@@ -28,7 +28,9 @@ const PROPERTY_KEYS = new Set(["type", "title", "enum", "minimum", "maximum", "m
 
 export function projectAgentParameterSchema(
   source: string,
-): { ok: true; fields: AgentParameterField[]; openUi: string } | { ok: false; error: "invalid" | "limit" } {
+):
+  | { ok: true; fields: AgentParameterField[]; spec: string }
+  | { ok: false; error: "invalid" | "limit" } {
   if (source.length === 0 || source.length > 65_536) return { ok: false, error: "limit" };
   let parsed: unknown;
   try {
@@ -38,12 +40,15 @@ export function projectAgentParameterSchema(
   }
   const fields = schemaFields(parsed);
   if (!fields) return { ok: false, error: "invalid" };
-  const openUi = openUiFor(fields);
-  if (!openUi || !compileOpenUi(openUi, false).ok) return { ok: false, error: "invalid" };
-  return { ok: true, fields, openUi };
+  const spec = jsonRenderFor(fields);
+  if (!spec || !compileJsonRender(spec, false).ok) return { ok: false, error: "invalid" };
+  return { ok: true, fields, spec };
 }
 
-export function parameterValuesReady(fields: readonly AgentParameterField[], values: ParameterValues): boolean {
+export function parameterValuesReady(
+  fields: readonly AgentParameterField[],
+  values: ParameterValues,
+): boolean {
   return validateParameterValues(fields, values).ok;
 }
 
@@ -70,12 +75,16 @@ export function validateParameterValues(
 }
 
 /** Keep extracted keys that still match the schema. A bad extract fills nothing. */
-export function acceptedParameterPrefill(fields: readonly AgentParameterField[], raw: unknown): ParameterValues {
+export function acceptedParameterPrefill(
+  fields: readonly AgentParameterField[],
+  raw: unknown,
+): ParameterValues {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
   const candidate: ParameterValues = {};
   for (const field of fields) {
     const value = (raw as Record<string, unknown>)[field.name];
-    if (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean") continue;
+    if (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean")
+      continue;
     const checked = checkedValue(field, value);
     if (checked !== undefined) candidate[field.name] = checked;
   }
@@ -112,7 +121,8 @@ function schemaFields(value: unknown): AgentParameterField[] | null {
   if (value.required !== undefined) {
     if (!Array.isArray(value.required)) return null;
     for (const item of value.required) {
-      if (typeof item !== "string" || required.has(item) || !Object.hasOwn(value.properties, item)) return null;
+      if (typeof item !== "string" || required.has(item) || !Object.hasOwn(value.properties, item))
+        return null;
       required.add(item);
     }
   }
@@ -126,20 +136,31 @@ function schemaFields(value: unknown): AgentParameterField[] | null {
   return fields;
 }
 
-function readField(name: string, spec: Record<string, unknown>, required: boolean): AgentParameterField | null {
+function readField(
+  name: string,
+  spec: Record<string, unknown>,
+  required: boolean,
+): AgentParameterField | null {
   for (const key of Object.keys(spec)) {
     if (!PROPERTY_KEYS.has(key)) return null;
   }
   const kind = spec.type;
-  if (kind !== "string" && kind !== "number" && kind !== "integer" && kind !== "boolean") return null;
+  if (kind !== "string" && kind !== "number" && kind !== "integer" && kind !== "boolean")
+    return null;
   let label = name;
   if (spec.title !== undefined) {
-    if (typeof spec.title !== "string" || spec.title.trim().length === 0 || [...spec.title].length > 80) return null;
+    if (
+      typeof spec.title !== "string" ||
+      spec.title.trim().length === 0 ||
+      [...spec.title].length > 80
+    )
+      return null;
     label = spec.title.trim();
   }
   let maxLength: number | undefined;
   if (spec.maxLength !== undefined) {
-    if (kind !== "string" || !whole(spec.maxLength) || spec.maxLength < 1 || spec.maxLength > 4096) return null;
+    if (kind !== "string" || !whole(spec.maxLength) || spec.maxLength < 1 || spec.maxLength > 4096)
+      return null;
     maxLength = spec.maxLength;
   }
   const minimum = bound(spec.minimum, kind);
@@ -180,7 +201,8 @@ function bound(value: unknown, kind: AgentParameterKind): number | undefined {
 
 function readEnum(value: unknown, kind: AgentParameterKind): Array<string | number> | null {
   if (value === undefined) return null;
-  if (kind === "boolean" || !Array.isArray(value) || value.length < 1 || value.length > 8) return null;
+  if (kind === "boolean" || !Array.isArray(value) || value.length < 1 || value.length > 8)
+    return null;
   const values: Array<string | number> = [];
   for (const item of value) {
     if (kind === "string") {
@@ -197,7 +219,10 @@ function readEnum(value: unknown, kind: AgentParameterKind): Array<string | numb
   return values;
 }
 
-function checkedValue(field: AgentParameterField, value: string | number | boolean | undefined): string | number | boolean | undefined {
+function checkedValue(
+  field: AgentParameterField,
+  value: string | number | boolean | undefined,
+): string | number | boolean | undefined {
   if (field.enumValues && !field.enumValues.some((item) => item === value)) return undefined;
   if (field.kind === "string") {
     if (typeof value !== "string" || value.includes("\u0000")) return undefined;
@@ -213,42 +238,43 @@ function checkedValue(field: AgentParameterField, value: string | number | boole
   return value;
 }
 
-function openUiFor(fields: readonly AgentParameterField[]): string | null {
-  const lines: string[] = [];
-  const children: string[] = [];
+function jsonRenderFor(fields: readonly AgentParameterField[]): string {
+  const elements: Record<string, unknown> = {};
+  const form: ParameterValues = {};
   fields.forEach((field, index) => {
-    const id = `n${index}`;
-    const line = fieldLine(id, field);
-    if (!line) return;
-    lines.push(line);
-    children.push(id);
+    const props: Record<string, unknown> = { label: field.label, required: field.required };
+    let type = "Input";
+    let initial: string | number | boolean =
+      field.kind === "boolean" ? false : field.kind === "string" ? "" : (field.minimum ?? 0);
+    if (field.enumValues?.every((item) => typeof item === "string")) {
+      type = "Select";
+      props.options = field.enumValues;
+      initial = String(field.enumValues[0]);
+    } else if (
+      field.slider &&
+      field.minimum !== undefined &&
+      field.maximum !== undefined &&
+      field.minimum < field.maximum
+    ) {
+      type = "Slider";
+      delete props.required;
+      props.min = field.minimum;
+      props.max = field.maximum;
+      props.step = 1;
+    } else if (field.kind === "boolean") type = "Checkbox";
+    else if (field.longText) type = "Textarea";
+    else props.type = field.kind === "string" ? "text" : "number";
+    props[type === "Checkbox" ? "checked" : "value"] = { $bindState: `/form/${field.name}` };
+    elements[`n${index}`] = { type, props };
+    form[field.name] = initial;
   });
-  if (children.length !== fields.length) return null;
-  lines.push('submit = Button("submit", "提交")');
-  children.push("submit");
-  lines.push(`root = Card("参数", [${children.join(", ")}])`);
-  return lines.join("\n");
-}
-
-function fieldLine(id: string, field: AgentParameterField): string | null {
-  const name = quote(field.name);
-  const label = quote(field.label);
-  if (field.enumValues && field.enumValues.every((item) => typeof item === "string")) {
-    const selected = quote(String(field.enumValues[0]));
-    const options = field.enumValues.map((item) => quote(String(item))).join(", ");
-    return `${id} = Select(${name}, ${label}, ${selected}, [${options}])`;
-  }
-  if (field.slider && field.minimum !== undefined && field.maximum !== undefined) {
-    return `${id} = Slider(${name}, ${label}, ${field.minimum}, ${field.minimum}, ${field.maximum}, 1)`;
-  }
-  if (field.kind === "boolean") return `${id} = Checkbox(${name}, ${label}, false)`;
-  if (field.longText) return `${id} = Textarea(${name}, ${label}, "")`;
-  if (field.kind === "string") return `${id} = Input(${name}, ${label}, "", "text")`;
-  return `${id} = Input(${name}, ${label}, 0, "number")`;
-}
-
-function quote(value: string): string {
-  return JSON.stringify(value);
+  elements.submit = { type: "Button", props: { action: "submit", label: "提交" } };
+  elements.root = {
+    type: "Card",
+    props: { title: "参数" },
+    children: [...fields.map((_, i) => `n${i}`), "submit"],
+  };
+  return JSON.stringify({ root: "root", elements, state: { form } });
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

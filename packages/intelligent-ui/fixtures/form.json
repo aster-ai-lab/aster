@@ -1,0 +1,91 @@
+{
+  "root": "root",
+  "elements": {
+    "root": {
+      "type": "Card",
+      "props": {
+        "title": "Details"
+      },
+      "children": [
+        "name",
+        "amount",
+        "ready",
+        "choice",
+        "notes",
+        "submit"
+      ]
+    },
+    "name": {
+      "type": "Input",
+      "props": {
+        "label": "Name",
+        "value": {
+          "$bindState": "/form/name"
+        },
+        "type": "text",
+        "required": true
+      }
+    },
+    "amount": {
+      "type": "Input",
+      "props": {
+        "label": "Amount",
+        "value": {
+          "$bindState": "/form/amount"
+        },
+        "type": "number",
+        "min": 1,
+        "max": 5
+      }
+    },
+    "ready": {
+      "type": "Checkbox",
+      "props": {
+        "label": "Ready",
+        "checked": {
+          "$bindState": "/form/ready"
+        },
+        "required": true
+      }
+    },
+    "choice": {
+      "type": "Select",
+      "props": {
+        "label": "Choice",
+        "value": {
+          "$bindState": "/form/choice"
+        },
+        "options": [
+          "alpha",
+          "beta"
+        ],
+        "required": true
+      }
+    },
+    "notes": {
+      "type": "Textarea",
+      "props": {
+        "label": "Notes",
+        "value": {
+          "$bindState": "/form/notes"
+        }
+      }
+    },
+    "submit": {
+      "type": "Button",
+      "props": {
+        "action": "submit",
+        "label": "Continue"
+      }
+    }
+  },
+  "state": {
+    "form": {
+      "name": "",
+      "amount": 3,
+      "ready": false,
+      "choice": "beta",
+      "notes": ""
+    }
+  }
+}

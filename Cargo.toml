@@ -1,9 +1,11 @@
 [workspace]
 resolver = "3"
-exclude = ["crates/code/fixtures/s3-compat"]
+exclude = ["crates/code/fixtures/s3-compat", "crates/power/third-party/magnitude/inference"]
 members = [
     "crates/embedding",
+    "crates/capture",
     "apps/aster",
+    "apps/tutorial-agent",
     "apps/auth",
     "apps/billing",
     "apps/runner",
@@ -37,6 +39,7 @@ members = [
     "crates/lane",
     "crates/memory",
     "crates/okf",
+    "crates/sag",
     "crates/sandbox",
     "crates/search",
     "crates/oci-runtime/crates/agent",
@@ -166,6 +169,7 @@ members = [
 default-members = ["apps/aster", "crates/code/acp"]
 
 [workspace.package]
+version = "0.1.0"
 edition = "2024"
 rust-version = "1.97"
 license = "MIT"

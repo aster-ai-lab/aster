@@ -2159,7 +2159,7 @@ impl WorkspaceHandle {
     }
     /// Run one poll tick for an active fuzzy search.
     /// Returns the next batch of results (paths absolutized against the search root) or a signal to keep polling / stop.
-    /// Drives the `x.ai/search/fuzzy/status` notification loop.
+    /// Drives the `a3s/search/fuzzy/status` notification loop.
     pub async fn fuzzy_poll(
         &self,
         search_id: &str,
@@ -2232,7 +2232,7 @@ impl WorkspaceHandle {
             sink(method, params);
         }
     }
-    /// Drive the `x.ai/search/fuzzy/status` stream for an active search.
+    /// Drive the `a3s/search/fuzzy/status` stream for an active search.
     /// Poll until done / closed / superseded, emitting each new result batch to the client through the ext-notification sink.
     /// Co-located with the manager so it polls in-process in both local and proxy mode.
     pub async fn run_fuzzy_notifications(
@@ -2287,13 +2287,13 @@ impl WorkspaceHandle {
                         }),
                 );
             }
-            self.emit_client_ext("x.ai/search/fuzzy/status".to_string(), params);
+            self.emit_client_ext("a3s/search/fuzzy/status".to_string(), params);
             if data.done {
                 break;
             }
         }
     }
-    /// Run a streaming content (ripgrep) search rooted at `cwd`, emitting each batch as `x.ai/search/content/status` via the client sink.
+    /// Run a streaming content (ripgrep) search rooted at `cwd`, emitting each batch as `a3s/search/content/status` via the client sink.
     /// Returns the final result. Co-located with the sink so it streams in both modes.
     pub async fn run_content_search(
         &self,
@@ -2311,7 +2311,7 @@ impl WorkspaceHandle {
                 "done": batch.done,
                 "truncated": batch.truncated,
             });
-            handle.emit_client_ext("x.ai/search/content/status".to_string(), params);
+            handle.emit_client_ext("a3s/search/content/status".to_string(), params);
         })
         .await
         .map_err(|e| WorkspaceError::HubError(e.to_string()))
@@ -4323,7 +4323,7 @@ pub struct LocalWorkspaceConnectOptions {
     /// the default catalog (sandbox-launched standalone servers). A hub-only
     /// `host_kind` fails them closed whatever this says.
     pub require_explicit_toolset: bool,
-    /// Confine `x.ai/fs/*` resolution to the workspace root (remote
+    /// Confine `a3s/fs/*` resolution to the workspace root (remote
     /// sandboxes, where the root is a tenant boundary).
     pub confine_fs_to_workspace_root: bool,
     /// MCP servers every admitted hub session binds; hot-swappable via

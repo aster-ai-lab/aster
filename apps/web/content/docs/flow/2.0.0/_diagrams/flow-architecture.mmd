@@ -1,0 +1,13 @@
+flowchart TB
+  accTitle: Flow 的持久工作流执行循环
+  accDescr: 追加式历史决定状态。引擎校验工作流命令并提交调度事件，再执行宿主操作并保存结果。等待期间不保留计算栈，恢复后再次投影历史。
+  history["追加式事件历史"] --> snapshot["投影 WorkflowRunSnapshot"]
+  snapshot --> decision["run_workflow<br/>确定性 RuntimeCommand"]
+  decision --> validate["校验命令与历史一致"]
+  validate --> planned["追加调度与生命周期事件"]
+  planned --> step["宿主 run_step / run_activity<br/>执行外部操作"]
+  step --> append["按 expected sequence 追加事件"]
+  append --> history
+  planned --> wait["持久等待：定时器 / Signal / Hook"]
+  wait -. 外部状态满足后唤醒 .-> history
+  planned --> terminal["完成、失败或取消"]

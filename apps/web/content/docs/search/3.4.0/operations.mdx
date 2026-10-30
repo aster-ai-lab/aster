@@ -1,0 +1,69 @@
+export const meta = {
+  title: 'Search 排名与运行验证',
+  description: 'URL 融合、结构回执、浏览器后端、故障分类和可靠性控制。',
+  label: '排名与验证',
+  updated: '2026-10-29',
+};
+
+Search 的结构策略评估来源数量、URL、主机、来源证据和共识。它不会读取查询语义来判断答案质量。
+
+## 排名融合不是语义评分
+
+URL 规范化和去重后，每个来源贡献以下分数：
+
+```text
+engine weight × reciprocal rank × provider-local relevance factor
+```
+
+提供方相关性只在该提供方内部校准。不同 API 的原始分数不会放到同一标尺，也不会用查询文本匹配替代它们。
+
+`RetrievalRequirements::for_limit` 在单结果请求中要求一个逻辑来源。多结果请求要求两个独立逻辑来源。同一上游的 Browser 与 HTTP 变体只算一个来源。
+
+`select_structural_window` 使用 URL 有效性、主机、来源证据和共识选择可见 Top-K。它不会根据标题、摘要、语言或发布者判断内容质量。
+
+## 回执的信任边界
+
+CLI 输出 `cascade_receipt` 和 `cascade_receipt_binding`。回执记录层级、结果、失败和结构要求。
+
+`receipt_binding()` 是对已验证回执计算的域分隔 SHA-256。它可以检测回执替换，但不能证明执行者身份，也不能证明网页陈述为真。
+
+## 浏览器与全文
+
+<DocTable caption="浏览器构建和后端" headers={['构建或参数', '行为']} rows={[
+  ['默认 / headless / moli', '从 A3S_MOLI_EXECUTABLE、PATH 或安装位置发现 Moli'],
+  ['--browser chrome', '显式使用 Chrome / Chromium 后端'],
+  ['lightpanda feature', '显式使用 Lightpanda，Windows 需要 WSL2'],
+  ['--no-default-features', '不包含 Browser / CDP 栈'],
+]} />
+
+HTML Engine 遇到 CAPTCHA、Consent 或反自动化页面时返回 `challenge`。无关成功页面返回 `invalid_response`，不会伪装为空结果集。
+
+`enrich_full_text` 可以为摘要结果补充正文。补充失败会保留原摘要，不改变排名或级联决定。
+
+## 可靠性控制
+
+<DocTable caption="可靠性组件的职责" headers={['组件', '控制范围']} rows={[
+  ['HealthMonitor', '一个 Search 实例上的连续失败暂停'],
+  ['CircuitBreaker', '共享 closed、open、half-open 来源状态'],
+  ['Bulkhead', '每个 Engine 的在途请求和排队等待'],
+  ['SearchCoalescer', '合并相同的重叠请求，不作为缓存'],
+  ['RetryBudget', '只限制浏览器渲染重试放大'],
+]} />
+
+只在兼容的租户、凭据、Endpoint 和代理之间共享控制。CLI 的持久 Circuit 不保存查询、结果或秘密。`A3S_SEARCH_STATE_DIR` 必须使用绝对目录来隔离状态。
+
+## 验收清单
+
+1. 分别验证默认级联与显式 Engine 列表。
+2. 模拟空结果、超时、拒绝和 Circuit Open。
+3. 验证一个上游的两种传输只算一个逻辑来源。
+4. 验证 Challenge 不会被视为空结果。
+5. 核对回执绑定与实际回执。
+6. 在宿主中单独评估相关性和事实依据。
+7. 检查日志、状态和指标不包含凭据。
+
+## 实现依据
+
+- [排名与结构回执](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [浏览器与可靠性控制](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [开发与发布验证](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)

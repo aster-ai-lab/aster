@@ -35,4 +35,17 @@ describe('Button', () => {
 
     expect(screen.getByRole('button', { name: 'Refresh' }).querySelector('svg')).toHaveAttribute('width', '18')
   })
+
+  it('retains the same label node and accessible name throughout a pending exchange', () => {
+    const { container, rerender } = render(<Button loading={false}>Save changes</Button>)
+    const label = container.querySelector('[data-slot="button-label"]')
+    rerender(<Button loading>Save changes</Button>)
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled()
+    expect(container.querySelector('[data-slot="button-label"]')).toBe(label)
+    expect(container.querySelector('[data-slot="button-pending"]')).toHaveAttribute('aria-hidden', 'true')
+    rerender(<Button loading={false}>Save changes</Button>)
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeEnabled()
+    expect(container.querySelector('[data-slot="button-label"]')).toBe(label)
+    expect(container.querySelector('[data-slot="button-pending"]')).toBeNull()
+  })
 })

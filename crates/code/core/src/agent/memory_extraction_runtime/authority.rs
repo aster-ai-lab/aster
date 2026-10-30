@@ -421,6 +421,32 @@ impl<'a> MemoryRetentionAttempt<'a> {
 
     pub(super) fn finish(&mut self) {
         self.finished = true;
+        let disposition = self.progress.disposition(self.valid_output);
+        let status = match disposition {
+            MemoryRetentionDispositionV1::NoItems | MemoryRetentionDispositionV1::Stored => {
+                crate::memory::MemoryExtractionStatus::Completed
+            }
+            _ if self.cancel.is_cancelled() => crate::memory::MemoryExtractionStatus::Cancelled,
+            _ => crate::memory::MemoryExtractionStatus::Failed,
+        };
+        self.ticket.finish(
+            status,
+            format!(
+                "{}; accepted={}; rejected={}; stored={}; reason={}",
+                disposition.as_str(),
+                self.progress.accepted_items,
+                self.progress.rejected_items,
+                self.progress
+                    .primary
+                    .iter()
+                    .filter(|item| item.canonical_id.is_some())
+                    .count(),
+                self.progress
+                    .refusal()
+                    .map(MemoryRetentionRefusalV1::as_str)
+                    .unwrap_or("none")
+            ),
+        );
         self.progress.trace(
             self.progress.disposition(self.valid_output),
             self.session_id,
@@ -432,6 +458,14 @@ impl<'a> MemoryRetentionAttempt<'a> {
 impl Drop for MemoryRetentionAttempt<'_> {
     fn drop(&mut self) {
         if !self.finished {
+            self.ticket.finish(
+                if self.cancel.is_cancelled() {
+                    crate::memory::MemoryExtractionStatus::Cancelled
+                } else {
+                    crate::memory::MemoryExtractionStatus::Failed
+                },
+                "interrupted".into(),
+            );
             self.progress.refuse(if self.cancel.is_cancelled() {
                 MemoryRetentionRefusalV1::Cancelled
             } else {

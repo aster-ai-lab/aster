@@ -190,14 +190,3 @@ name = "acl_parse"
 harness = false
 
 # ── Release profile ─────────────────────────────────────────────────────────
-[profile.release]
-# The shipped binary is latency-sensitive on small proxy responses.
-opt-level = 3
-# Fat LTO: the linker sees all crates at once → aggressive dead-code elimination
-lto = "fat"
-# Single codegen unit maximises inlining and dead-code removal across modules
-codegen-units = 1
-# Strip local symbols and debuginfo (keeps panic location strings)
-strip = "symbols"
-# Abort on panic: drops the entire stack-unwinding machinery (~hundreds of KB)
-panic = "abort"

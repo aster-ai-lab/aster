@@ -310,25 +310,25 @@ fn validate_session_options(options: &SessionOptions) -> Result<String> {
     if options
         .context_providers
         .iter()
-        .any(|provider| provider.cognitive_package_binding().is_some())
+        .any(|provider| provider.package_binding().is_some())
     {
         return Err(CodeError::SessionConfiguration {
-            field: "cognitive_context",
-            message: "typed cognitive providers must be installed with with_cognitive_context so their exact binding is persisted".to_string(),
+            field: "package_context",
+            message: "typed package providers must be installed with with_package_context so their exact binding is persisted".to_string(),
         });
     }
-    if let Some(context) = &options.cognitive_context {
+    if let Some(context) = &options.package_context {
         context
             .binding()
             .validate()
             .map_err(|error| CodeError::SessionConfiguration {
-                field: "cognitive_context",
+                field: "package_context",
                 message: error.to_string(),
             })?;
         if !options.context_providers.is_empty() {
             return Err(CodeError::SessionConfiguration {
-                field: "cognitive_context",
-                message: "general-purpose context providers cannot accompany an exact cognitive package; workspace instructions and skills remain available through Code-owned providers".to_string(),
+                field: "package_context",
+                message: "general-purpose context providers cannot accompany an exact package; workspace instructions and skills remain available through Code-owned providers".to_string(),
             });
         }
     }

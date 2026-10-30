@@ -70,7 +70,7 @@ async fn workbook(root: &Path) {
 async fn read(root: &Path, args: Value) -> Result<Value> {
     let binding = crate::plugin_workspace::WorkspaceBinding::new(root)?;
     let ctx = ToolContext::new(root.to_path_buf());
-    read_source(&args, &ctx, || binding.validate(root)).await
+    read_source(&args, &ctx, None, || binding.validate(root)).await
 }
 
 #[tokio::test]
@@ -297,7 +297,7 @@ async fn native_reads_keep_the_selected_credential_and_hardlink_boundary() {
     let ctx = ToolContext::new(root.path().to_path_buf()).with_workspace_services(services);
     let binding = crate::plugin_workspace::WorkspaceBinding::new(root.path()).unwrap();
     for name in [".env.xlsx", "alias.xlsx", "missing.xlsx"] {
-        let error = read_source(&json!({"file_path":name}), &ctx, || {
+        let error = read_source(&json!({"file_path":name}), &ctx, None, || {
             binding.validate(root.path())
         })
         .await

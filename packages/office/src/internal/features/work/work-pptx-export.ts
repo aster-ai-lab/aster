@@ -29,6 +29,7 @@ import {
 import { attribute, directChildren, parseXml } from './work-ooxml-package';
 import type {
   WorkArtifact,
+  WorkSlide,
   WorkSlideChart,
   WorkSlideChartLegendPosition,
   WorkSlideElement,
@@ -152,7 +153,7 @@ export async function createPptxBlob(
   const patched = await patchPptxNativeGroups(withAnimations, groups);
   // pptxgenjs writes one slideMaster content-type override per slide, but only
   // slideMaster1.xml. Drop overrides whose parts were never written.
-  const repaired = await removeDanglingContentTypeOverrides(patched);
+  const repaired = await finalizePptxPackage(patched, slides);
   return new Blob([repaired], {
     type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   });
@@ -534,14 +535,28 @@ function pptxShapeType(
   return presentation.ShapeType.rect;
 }
 
-async function removeDanglingContentTypeOverrides(
+async function finalizePptxPackage(
   buffer: ArrayBuffer,
+  slides: readonly WorkSlide[],
 ): Promise<ArrayBuffer> {
   const archive = await JSZip.loadAsync(buffer);
   const entry = archive.file('[Content_Types].xml');
   if (!entry) return buffer;
   const document = parseXml(await entry.async('text'), '[Content_Types].xml');
   let changed = false;
+  // pptxgenjs does not expose slide names in its public API.
+  for (let index = 0; index < slides.length; index += 1) {
+    const path = `ppt/slides/slide${index + 1}.xml`;
+    const slideEntry = archive.file(path);
+    if (!slideEntry) throw new Error(`PowerPoint export is missing ${path}.`);
+    const slideDocument = parseXml(await slideEntry.async('text'), path);
+    const commonSlide = directChildren(slideDocument.documentElement, 'cSld')[0];
+    if (!commonSlide) throw new Error(`PowerPoint export is missing cSld in ${path}.`);
+    if (commonSlide.getAttribute('name') === slides[index].name) continue;
+    commonSlide.setAttribute('name', slides[index].name);
+    archive.file(path, new XMLSerializer().serializeToString(slideDocument));
+    changed = true;
+  }
   for (const override of [
     ...directChildren(document.documentElement, 'Override'),
   ]) {

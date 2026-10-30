@@ -199,7 +199,7 @@ impl RunControlState {
     pub(super) async fn start_run_with_bindings(
         &self,
         prompt: &str,
-        cognitive_binding: Option<crate::cognitive_context::CognitivePackageBindingV1>,
+        package_binding: Option<crate::package_context::PackageBindingV1>,
         capability_binding: crate::capability::RunCapabilityBindingV1,
     ) -> Result<crate::run::RunHandle> {
         let id = format!("run-{}", self.host_env.next_id());
@@ -216,8 +216,8 @@ impl RunControlState {
         let original = self.owned_original()?;
         self.bind_capability_generation(&id, capability_binding)
             .await?;
-        if let Some(binding) = cognitive_binding {
-            self.bind_cognitive_package(&id, binding).await?;
+        if let Some(binding) = package_binding {
+            self.bind_package(&id, binding).await?;
         }
         original.created_handle()
     }
@@ -257,17 +257,17 @@ impl RunControlState {
         Ok(reservation)
     }
 
-    pub(super) async fn bind_cognitive_package(
+    pub(super) async fn bind_package(
         &self,
         run_id: &str,
-        binding: crate::cognitive_context::CognitivePackageBindingV1,
+        binding: crate::package_context::PackageBindingV1,
     ) -> Result<crate::run::RunSnapshot> {
         self.run_store
-            .bind_cognitive_package(run_id, binding)
+            .bind_package(run_id, binding)
             .await
             .map_err(|error| {
                 CodeError::Session(format!(
-                    "could not bind exact cognitive generation to Run '{run_id}': {error}"
+                    "could not bind exact package generation to Run '{run_id}': {error}"
                 ))
             })
     }

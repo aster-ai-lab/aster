@@ -207,8 +207,12 @@ fn studio_host_keeps_the_budget_line_in_the_session_options() {
         guidelines: "每次都带上".to_string(),
         review_subagent: true,
         source_review: false,
+        knowledge_compile: None,
+        office_tools: false,
         output_language: Some("zh-CN".to_string()),
         assets: None,
+        workspace_wiki_search: false,
+        workspace_memory_search: false,
     };
     let options = A3sCodeAgent::host_session_options(
         "sid",
@@ -356,7 +360,9 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     assert!(standing.contains("brief-writer"));
     assert!(standing.contains("Write a short brief"));
     assert!(standing.contains("search_wiki"));
-    assert!(standing.contains("scope=agent"));
+    assert!(standing.contains("current workspace"));
+    assert!(!standing.contains("scope=local"));
+    assert!(!standing.contains("scope=team"));
     assert!(!standing.contains("产品手册甲"));
     assert!(!standing.contains("Saved handbook page"));
     assert!(!standing.contains("红烧排骨只写在个人笔记9f3a"));
@@ -414,113 +420,51 @@ async fn studio_local_assets_session_opens_only_the_selected_item() {
     assert!(page.output.contains(WIKI_BODY));
     assert!(!page.output.contains(SKILL_BODY));
     assert!(!page.output.contains(CONNECTOR_BODY));
-    let mut nested = None;
-    for _ in 0..80 {
-        let hit = session
-            .tool("search_wiki", serde_json::json!({ "query": "红烧排骨" }))
-            .await
-            .expect("wiki search");
-        if hit.output.contains("红烧排骨只写在个人笔记9f3a") {
-            nested = Some(hit);
-            break;
-        }
-        assert!(
-            hit.output == "not-ready" || hit.output == "no-match",
-            "unpublished wiki text leaked: {}",
-            hit.output
-        );
-        tokio::time::sleep(std::time::Duration::from_millis(100)).await;
-    }
-    let nested = nested.expect("nested personal note was not searchable");
-    assert!(nested.output.contains("local/食谱.md"));
-    assert!(!nested.output.contains(WIKI_BODY));
-    assert!(!nested.output.contains(SECRET));
-
-    {
-        let mut sessions = agent.sessions.lock().await;
-        let live = sessions.get_mut(&session_id).expect("live session");
-        live.permissions
-            .lock()
-            .unwrap()
-            .denies
-            .push("Skill".to_string());
-        live.permissions
-            .lock()
-            .unwrap()
-            .denies
-            .push("mcp__session-notes".to_string());
-        remember_denies(live);
-    }
-    let denied_skill = session
-        .tool(
-            "open_local_asset",
-            serde_json::json!({ "kind": "skill", "name": "brief-writer" }),
-        )
+    let refused = session
+        .tool("search_wiki", serde_json::json!({ "query": "红烧排骨" }))
         .await
-        .expect("denied skill still returns a tool result");
-    let denied_connector = session
-        .tool(
-            "open_local_asset",
-            serde_json::json!({ "kind": "connector", "name": "session-notes" }),
-        )
-        .await
-        .expect("denied connector still returns a tool result");
-    assert_eq!(denied_skill.output, "denied");
-    assert_eq!(denied_connector.output, "denied");
-    assert!(!denied_skill.output.contains(SKILL_BODY));
-    assert!(!denied_connector.output.contains(CONNECTOR_BODY));
-    let wiki_still = session
-        .tool(
-            "open_local_asset",
-            serde_json::json!({ "kind": "wiki", "name": "产品手册甲" }),
-        )
-        .await
-        .expect("wiki stays readable");
-    assert!(wiki_still.output.contains(WIKI_BODY));
-    {
-        let mut sessions = agent.sessions.lock().await;
-        let live = sessions.get_mut(&session_id).expect("live session");
-        live.permissions
-            .lock()
-            .unwrap()
-            .denies
-            .push("open_local_asset".to_string());
-        remember_denies(live);
-    }
-    let denied_wiki = session
-        .tool(
-            "open_local_asset",
-            serde_json::json!({ "kind": "wiki", "name": "产品手册甲" }),
-        )
-        .await
-        .expect("tool deny still returns a result");
-    assert_eq!(denied_wiki.output, "denied");
-    assert!(!denied_wiki.output.contains(WIKI_BODY));
-    eprintln!(
-        "local-asset deny skill={} connector={} wiki={}",
-        denied_skill.output, denied_connector.output, denied_wiki.output
-    );
-
-    drop(created);
-    drop(session);
+        .expect("wiki search refuses the personal catalog");
+    assert!(refused
+        .output
+        .contains("workspace encyclopedia is not bound"));
+    assert!(!refused.output.contains("红烧排骨只写在个人笔记9f3a"));
     drop(agent);
     let _ = std::fs::remove_dir_all(&root);
 }
 
-/// A handwritten note under `wiki/local` is what Studio admits. `search_wiki`
-/// returns it only after the index publishes, and a markdown file outside
-/// `wiki/` stays out of the hits.
+/// An ACP session searches only its host-bound published workspace encyclopedia.
 #[tokio::test]
-async fn local_note_is_searchable() {
+async fn workspace_wiki_is_searchable_through_the_admitted_acp_session() {
     const SENTENCE: &str = "桂花糖藕只写在本地笔记7c2e";
     const OUTSIDE: &str = "工作区根上的句子不要被检索到9d1f";
     let root = std::env::temp_dir().join(format!("a3s-acp-local-note-{}", uuid::Uuid::new_v4()));
     let _ = std::fs::remove_dir_all(&root);
-    let wiki = root.join("wiki");
-    let local = wiki.join("local");
-    std::fs::create_dir_all(&local).unwrap();
-    std::fs::write(local.join("家常.md"), format!("# 家常\n\n{SENTENCE}\n")).unwrap();
+    std::fs::create_dir_all(&root).unwrap();
+    let source = format!("{SENTENCE}\n");
+    std::fs::write(root.join("evidence.md"), &source).unwrap();
     std::fs::write(root.join("readme.md"), format!("{OUTSIDE}\n")).unwrap();
+    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        &root,
+        "acp-saved-workspace",
+        &format!("sha256:{}", "a".repeat(64)),
+        vec![a3s_okf::WorkspaceKnowledgeSource::text("evidence.md", source.as_bytes()).unwrap()],
+    )
+    .unwrap();
+    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+        .unwrap()
+        .unwrap();
+    let stage = std::path::Path::new(&job.staging);
+    std::fs::write(
+        stage.join("concepts/overview.md"),
+        format!("---\ntype: Synthesis\ntitle: 家常\n---\n\n{SENTENCE}\n"),
+    )
+    .unwrap();
+    std::fs::write(stage.join(".wiki-changes.json"), serde_json::to_vec(&serde_json::json!({
+        "sources":job.sources,"summary":"家常","categories":{},
+        "pages":[{"path":"concepts/overview.md","title":"家常","kind":"synthesis","change":"create","reason":"Saved source","requires_review":false,"sources":job.sources}]
+    })).unwrap()).unwrap();
+    a3s_okf::finish_workspace_knowledge_maintenance(&input, &job.id).unwrap();
+    let wiki = input.output_root().to_path_buf();
 
     let mut launch = test_launch(Some(root.join("sessions")));
     launch.workspace = root.clone();
@@ -564,7 +508,7 @@ async fn local_note_is_searchable() {
         tokio::time::sleep(std::time::Duration::from_millis(100)).await;
     }
     let found = found.expect("local note was not searchable");
-    assert!(found.output.contains("local/家常.md"));
+    assert!(found.output.contains("concepts/overview.md"));
     assert!(!found.output.contains(OUTSIDE));
 
     drop(created);
@@ -588,7 +532,7 @@ fn reasoning_meta_offers_parseable_budget_levels() {
         .iter()
         .filter_map(|entry| entry.get("value").and_then(|v| v.as_str()))
         .collect();
-    assert_eq!(values, ["low", "medium", "high", "xhigh", "max"]);
+    assert_eq!(values, ["default", "low", "medium", "high", "xhigh", "max"]);
     let high = efforts
         .iter()
         .find(|entry| entry.get("value").and_then(|v| v.as_str()) == Some("high"))
@@ -645,7 +589,7 @@ fn reasoning_menu_follows_the_model() {
     let glm_values = effort_values(&glm);
     assert!(!glm_values.contains(&"medium"));
     assert!(!glm_values.contains(&"xhigh"));
-    assert_eq!(glm_values, vec!["low", "high", "max"]);
+    assert_eq!(glm_values, vec!["default", "low", "high", "max"]);
 
     let local = reasoning_effort_catalog_meta("ollama/llama3");
     assert_eq!(
@@ -654,7 +598,7 @@ fn reasoning_menu_follows_the_model() {
     );
     assert_eq!(
         effort_values(&local),
-        vec!["low", "medium", "high", "xhigh", "max"]
+        vec!["default", "low", "medium", "high", "xhigh", "max"]
     );
 }
 
@@ -714,6 +658,33 @@ fn subagent_progress_reports_the_resolved_window() {
     assert!(parse_interject_params(r#"{"sessionId":"s1"}"#).is_err());
     assert_eq!(progress_duration_ms(1_000, 1_500), 500);
     assert_eq!(progress_duration_ms(0, 1_500), 0);
+}
+
+#[test]
+fn bash_terminal_events_preserve_the_real_disposition_and_command() {
+    let mut progress = ChildProgress {
+        command: Some("exit 7".into()),
+        ..Default::default()
+    };
+    note_child_progress(
+        &mut progress,
+        "finished",
+        &serde_json::json!({"disposition":"failed","exitCode":7}),
+    );
+    let failed =
+        subagent_finished_update("bash-1", "bash-1", false, "exit status 7", 300, &progress);
+    assert_eq!(failed["status"], "error");
+    assert_eq!(failed["command"], "exit 7");
+    assert_eq!(failed["exitCode"], 7);
+    note_child_progress(
+        &mut progress,
+        "finished",
+        &serde_json::json!({"disposition":"cancelled"}),
+    );
+    assert_eq!(
+        subagent_finished_update("bash-1", "bash-1", false, "", 300, &progress)["status"],
+        "stopped"
+    );
 }
 
 #[test]
@@ -1042,6 +1013,17 @@ fn tool_cards_use_pager_kind_and_raw_input() {
     assert_eq!(bash["command"], "echo hi");
     assert_eq!(bash["output"], "hi\n");
     assert_eq!(bash["total_bytes"], 3);
+
+    let search_output = "result-line\n".repeat(500);
+    assert!(search_output.len() > 4_000);
+    for name in ["grep", "glob", "search", "web_search"] {
+        assert_eq!(
+            tool_raw_output(name, None, &search_output, 0),
+            Some(serde_json::Value::String(search_output.clone())),
+            "{name} must keep full details beyond the ACP preview"
+        );
+    }
+
     let delta = streaming_bash_delta("chunk");
     assert_eq!(
         (&delta["output"], &delta["output_delta"]),
@@ -1221,7 +1203,7 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
     let entry = root.join("tools").join("echo");
     std::fs::write(
         &entry,
-        "#!/bin/sh\nprintf '%s\\n' '{\"message\":\"cognitive package ready\"}'\n",
+        "#!/bin/sh\nprintf '%s\\n' '{\"message\":\"package ready\"}'\n",
     )
     .expect("echo script");
     #[cfg(unix)]
@@ -1286,7 +1268,7 @@ async fn session_new_plugin_tool_runs_the_unpacked_executable() {
     let _ = std::fs::remove_dir_all(&root);
     assert_eq!(ran.exit_code, 0);
     assert!(
-        ran.output.contains("cognitive package ready"),
+        ran.output.contains("package ready"),
         "echo output: {}",
         ran.output
     );
@@ -1693,9 +1675,11 @@ fn tui_mappings_cover_cards_catalog_and_questions() {
     let _ = A3sCodeAgent::core_session_options("sid", "model", None);
     assert!(effort_limits_from_meta(None).is_none());
 
-    let text =
-        A3sCodeAgent::prompt_text(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))]);
+    let (text, attachments) =
+        A3sCodeAgent::prompt_content(&[acp::ContentBlock::Text(acp::TextContent::new(" hello "))])
+            .expect("text prompt");
     assert_eq!(text, " hello ");
+    assert!(attachments.is_empty());
 
     let session_id = acp::SessionId::new("s");
     let request = tool_permission_request(
@@ -1861,6 +1845,9 @@ async fn tui_turn_renders_every_pager_event() {
         child_progress: HashMap::new(),
         prompted_questions: std::collections::HashSet::new(),
         painted_tools: std::collections::HashSet::new(),
+        last_turn_usage: None,
+        end_usage: None,
+        model_calls: 0,
     };
     let sid = created.session_id.clone();
     let events = vec![
@@ -2040,6 +2027,96 @@ async fn tui_turn_renders_every_pager_event() {
     let _ = std::fs::remove_dir_all(&root);
 }
 
+#[test]
+fn prompt_images_preserve_bytes_and_order() {
+    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+        acp::ContentBlock::Text(acp::TextContent::new("first")),
+        acp::ContentBlock::Image(acp::ImageContent::new("AQID", "image/png")),
+        acp::ContentBlock::Text(acp::TextContent::new("second")),
+        acp::ContentBlock::Image(acp::ImageContent::new("BAUG", "image/webp")),
+    ])
+    .expect("supported image prompt");
+    assert_eq!(text, "first\nsecond");
+    assert_eq!(attachments.len(), 2);
+    assert_eq!(attachments[0].data, [1, 2, 3]);
+    assert_eq!(attachments[0].media_type, "image/png");
+    assert_eq!(attachments[1].data, [4, 5, 6]);
+    assert_eq!(attachments[1].media_type, "image/webp");
+}
+
+#[test]
+fn invalid_prompt_images_fail_before_admission() {
+    use base64::Engine as _;
+    let oversized = base64::engine::general_purpose::STANDARD.encode(vec![
+        0;
+        a3s_code_core::llm::MAX_ATTACHMENT_BYTES
+            + 1
+    ]);
+    for (data, mime) in [
+        ("%%%", "image/png"),
+        ("", "image/png"),
+        ("AQID", "application/pdf"),
+        (oversized.as_str(), "image/png"),
+    ] {
+        let error = A3sCodeAgent::prompt_content(&[acp::ContentBlock::Image(
+            acp::ImageContent::new(data, mime),
+        )])
+        .err()
+        .expect("invalid image rejected");
+        assert_eq!(error.code, acp::ErrorCode::InvalidParams);
+    }
+}
+
+#[test]
+fn unsupported_prompt_content_fails_closed_before_a_turn() {
+    let (text, attachments) = A3sCodeAgent::prompt_content(&[
+        acp::ContentBlock::Text(acp::TextContent::new("first")),
+        acp::ContentBlock::Text(acp::TextContent::new("second")),
+    ])
+    .expect("text-only prompt");
+    assert_eq!(text, "first\nsecond");
+    assert!(attachments.is_empty());
+
+    let blocks = vec![
+        (
+            "audio",
+            acp::ContentBlock::Audio(acp::AudioContent::new("aGVsbG8=", "audio/wav")),
+        ),
+        (
+            "resource",
+            acp::ContentBlock::Resource(acp::EmbeddedResource::new(
+                acp::EmbeddedResourceResource::TextResourceContents(
+                    acp::TextResourceContents::new("note", "file:///note.txt"),
+                ),
+            )),
+        ),
+        (
+            "resource",
+            acp::ContentBlock::Resource(acp::EmbeddedResource::new(
+                acp::EmbeddedResourceResource::BlobResourceContents(
+                    acp::BlobResourceContents::new("aGVsbG8=", "file:///note.bin"),
+                ),
+            )),
+        ),
+        (
+            "resource_link",
+            acp::ContentBlock::ResourceLink(acp::ResourceLink::new("note", "file:///note.txt")),
+        ),
+    ];
+    for (kind, block) in blocks {
+        let error = A3sCodeAgent::prompt_content(&[
+            acp::ContentBlock::Text(acp::TextContent::new("must not run")),
+            block,
+        ])
+        .expect_err("unsupported content must not be silently dropped");
+        assert_eq!(error.code, acp::ErrorCode::InvalidParams);
+        let data = error.data.and_then(|data| data.as_str().map(str::to_owned));
+        let data = data.expect("fail-closed explanation");
+        assert!(data.contains(kind), "{data}");
+        assert!(data.contains("did not send"), "{data}");
+    }
+}
+
 /// Session functions the TUI renders. Each entry is an observed effect, not a
 /// line of `agent.rs` that executed.
 #[test]
@@ -2153,7 +2230,7 @@ fn tui_session_function_coverage_is_at_least_95_percent() {
         });
     record(
         "effort-menu",
-        values.as_deref() == Some(&["low", "medium", "high", "xhigh", "max"][..]),
+        values.as_deref() == Some(&["default", "low", "medium", "high", "xhigh", "max"][..]),
     );
     record(
         "effort-high-budget",
@@ -2486,6 +2563,9 @@ async fn user_question_with_form_round_trips_the_submitted_values() {
                 child_progress: HashMap::new(),
                 prompted_questions: std::collections::HashSet::new(),
                 painted_tools: std::collections::HashSet::new(),
+        last_turn_usage: None,
+        end_usage: None,
+        model_calls: 0,
             };
             let spec = r#"<Card title="Leave request"><Input name="reason" label="Reason" /><Button action="submit" label="Submit" /></Card>"#;
             let event = AgentEvent::UserQuestion {
@@ -2606,6 +2686,9 @@ async fn user_question_choices_round_trip_typed_and_selected_answers() {
                 child_progress: HashMap::new(),
                 prompted_questions: std::collections::HashSet::new(),
                 painted_tools: std::collections::HashSet::new(),
+                last_turn_usage: None,
+                end_usage: None,
+                model_calls: 0,
             };
             let session_id = created.session_id.clone();
             tokio::task::spawn_local(async move {
@@ -3028,4 +3111,46 @@ fn only_a_learnable_bash_command_offers_allow_always_and_only_it_learns() {
     assert!(permission_response_always(&answer("allow-always")));
     assert!(!permission_response_approved(&answer("reject-once")));
     assert!(!permission_response_always(&answer("reject-once")));
+}
+
+#[test]
+fn model_catalog_preserves_configured_limits_and_marks_unknown_context() {
+    let mut launch = test_launch(None);
+    let mut kimi = test_model("k3.1-pro", "Kimi", "openai");
+    launch.config.providers[0].name = "kimi".into();
+    launch.config.providers[0].models =
+        vec![kimi.clone(), test_model("unknown", "Unknown", "openai")];
+    let agent = A3sCodeAgent::new(launch.clone());
+    let infos = agent.available_model_infos();
+    assert_eq!(
+        infos[0].meta.as_ref().unwrap()["totalContextTokens"],
+        1_048_576
+    );
+    assert_eq!(infos[1].meta.as_ref().unwrap()["contextWindowKnown"], false);
+    assert!(!infos[1]
+        .meta
+        .as_ref()
+        .unwrap()
+        .contains_key("totalContextTokens"));
+    kimi.limit.context = 65_536;
+    launch.config.providers[0].models[0] = kimi;
+    let infos = A3sCodeAgent::new(launch).available_model_infos();
+    assert_eq!(
+        infos[0].meta.as_ref().unwrap()["totalContextTokens"],
+        65_536
+    );
+    assert_eq!(
+        a3s_code_core::context_window_for_model(None, None, "kimi/k3.1-pro", true, 128_000),
+        1_048_576
+    );
+    assert_eq!(
+        a3s_code_core::context_window_for_model(
+            Some(32_768),
+            Some(65_536),
+            "kimi/k3.1-pro",
+            true,
+            128_000
+        ),
+        32_768
+    );
 }

@@ -4,7 +4,7 @@ use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::Style;
 use ratatui::widgets::StatefulWidget;
-use std::ops::Range;
+use std::{borrow::Cow, ops::Range};
 
 use crate::render::SafeBuf;
 use crate::render::color::{blend_color, fade_region};
@@ -62,6 +62,9 @@ fn prepend_header_selection(
     model: &mut ResolvedSelectionModel,
     headers: Vec<StickyHeaderSelection>,
 ) {
+    if headers.is_empty() {
+        return;
+    }
     let mut merged = ResolvedSelectionModel::default();
     let blocks: Vec<VisibleBlockGeometry> = headers
         .into_iter()
@@ -318,7 +321,7 @@ impl ScrollbackPane {
         let use_sticky = state.appearance().scrollback.display.sticky_headers
             && !state.appearance().prompt.compact;
         let sticky = if use_sticky {
-            compute_sticky_layout(state.scroll_offset(), area.height, &prompts)
+            compute_sticky_layout(state.scroll_offset(), area.height, prompts.as_ref())
         } else {
             StickyHeaderLayout::default()
         };
@@ -521,17 +524,24 @@ impl ScrollbackPane {
     }
 
     /// Build prompt descriptors for a range of entries. NOTE: This method uses cached data from prepare_layout().
-    fn build_prompt_descriptors_for_range(
+    fn build_prompt_descriptors_for_range<'a>(
         &self,
-        state: &ScrollbackState,
+        state: &'a ScrollbackState,
         _entry_content_width: u16, // Kept for API compat, but not used (heights from cache)
         _theme: &Theme,            // Kept for API compat, but not used
         entry_range: Range<usize>,
-    ) -> Vec<PromptDescriptor> {
+    ) -> Cow<'a, [PromptDescriptor]> {
         // Get cached data; must be valid after prepare_layout()
         let cached_descriptors = state
             .get_cached_prompt_descriptors()
             .expect("layout cache must be valid - was prepare_layout() called?");
+
+        // AllTurns already has exactly the absolute coordinates computed by
+        // prepare_layout. Borrow them instead of cloning every prompt on every
+        // animation/streaming frame; only a filtered range needs rebasing.
+        if entry_range.start == 0 && entry_range.end == state.len() {
+            return Cow::Borrowed(cached_descriptors);
+        }
 
         let cached_virtual_y = state
             .get_cached_virtual_y()
@@ -545,17 +555,19 @@ impl ScrollbackPane {
             .unwrap_or(0);
 
         // Filter descriptors to only those in the entry range, and adjust y_virtual to be relative to range start
-        cached_descriptors
-            .iter()
-            .filter(|p| entry_range.contains(&p.entry_idx))
-            .map(|p| PromptDescriptor {
-                entry_idx: p.entry_idx,
-                y_virtual: p.y_virtual.saturating_sub(y_offset),
-                full_height: p.full_height,
-                min_height: p.min_height,
-                sticky: p.sticky,
-            })
-            .collect()
+        Cow::Owned(
+            cached_descriptors
+                .iter()
+                .filter(|p| entry_range.contains(&p.entry_idx))
+                .map(|p| PromptDescriptor {
+                    entry_idx: p.entry_idx,
+                    y_virtual: p.y_virtual.saturating_sub(y_offset),
+                    full_height: p.full_height,
+                    min_height: p.min_height,
+                    sticky: p.sticky,
+                })
+                .collect(),
+        )
     }
 
     /// Render a sticky header (pushed or pinned).
@@ -1300,6 +1312,27 @@ mod tests {
             checked_clipped_lines > 0,
             "a top-clipped header published no selectable line, so every \
              rebase assertion was skipped\n{trace}"
+        );
+    }
+
+    #[test]
+    fn all_turn_prompt_descriptors_reuse_the_layout_cache() {
+        let mut state = ScrollbackState::new();
+        state.push_block(RenderBlock::user_prompt("first"));
+        state.push_block(RenderBlock::agent_message("answer one"));
+        state.push_block(RenderBlock::user_prompt("second"));
+        state.push_block(RenderBlock::agent_message("answer two"));
+        state.prepare_layout(80, 20);
+
+        let pane = ScrollbackPane::new();
+        let theme = Theme::current();
+        let descriptors =
+            pane.build_prompt_descriptors_for_range(&state, 80, &theme, 0..state.len());
+
+        assert!(matches!(&descriptors, Cow::Borrowed(_)));
+        assert_eq!(
+            descriptors.as_ref(),
+            state.get_cached_prompt_descriptors().unwrap()
         );
     }
 

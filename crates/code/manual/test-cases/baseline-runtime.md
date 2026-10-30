@@ -47,12 +47,12 @@ Create, bind, resume, replace, and close sessions.
 
 ### I-RT-01
 
-- **Invariant:** Node, Python, and Go create and close a session with the same id shape and the same close error on double-close.
+- **Invariant:** The public Rust facade preserves session identity and makes close idempotent.
 - **Pre:** hermetic temp workspace; no model call.
-- **Stimulus:** session create, close, close through each SDK.
-- **Oracle:** alignment script passes; each SDK's second close matches the Rust typed outcome.
-- **Fail:** one language creates a session the others cannot close, or a language swallows the error.
-- **Home:** `scripts/sdk_api_alignment_check.mjs`; `sdk/node/test_session_close.mjs`; `sdk/python/tests/test_session_close.py`; `sdk/go/session_test.go`.
+- **Stimulus:** session create, close, close through the public Rust facade.
+- **Oracle:** the second close preserves the typed idempotent close contract.
+- **Fail:** close changes the identity, repeats cleanup or permits work after closure.
+- **Home:** `core/tests/test_session_close_lifecycle.rs` and `core/src/agent_api/tests/close.rs`.
 
 ### I-RT-02
 
@@ -212,12 +212,12 @@ Atomic save and restore of session, runs, artifacts, traces, verification.
 
 ### I-PE-02
 
-- **Invariant:** SDK checkpoint export fixtures match the Rust digest.
+- **Invariant:** Checkpoint exports preserve the versioned Rust digest contract.
 - **Pre:** shared fixture bytes.
-- **Stimulus:** export through Node, Python, and Go.
-- **Oracle:** the three exports and the Rust export have the same digest and schema id.
-- **Fail:** a language drops a field the others keep.
-- **Home:** `sdk/node/test_sdk_checkpoint_export_fixture.mjs`, `sdk/python/tests/test_sdk_checkpoint_export_fixture.py`, `sdk/go/sdk_checkpoint_export_fixture_test.go`.
+- **Stimulus:** export and decode through the public Rust checkpoint API.
+- **Oracle:** round-tripped exports retain their digest and schema id.
+- **Fail:** a host projection drops a required field.
+- **Home:** `core/tests/agent_live_checkpoint_export_v1.rs` and `core/src/agent_api/runtime_checkpoints.rs`.
 
 ## run_observability
 

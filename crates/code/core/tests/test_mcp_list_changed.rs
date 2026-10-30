@@ -42,11 +42,10 @@ for line in sys.stdin:
             reply({"jsonrpc": "2.0", "id": mid, "result": {"tools": [
                 {"name": "seed", "description": "Initial tool.", "inputSchema": {"type": "object", "properties": {}}}
             ]}})
-            # After the first listing, the server grows its tool set and
-            # announces it — exactly once, unsolicited.
-            expanded = True
-            sys.stdout.write(json.dumps({"jsonrpc": "2.0", "method": "notifications/tools/list_changed"}) + "\n")
-            sys.stdout.flush()
+    elif method == "tools/call":
+        reply({"jsonrpc": "2.0", "id": mid, "result": {"content": [{"type": "text", "text": "Catalog expanded."}]}})
+        expanded = True
+        reply({"jsonrpc": "2.0", "method": "notifications/tools/list_changed"})
     else:
         reply({"jsonrpc": "2.0", "id": mid, "result": {}})
 "#
@@ -85,6 +84,12 @@ async fn tools_list_changed_grows_the_cached_catalog_without_reconnect() {
         "the connect-time catalog holds the seed tool: {initial:?}"
     );
 
+    // Advance only after the initial cache has been observed.
+    manager
+        .call_tool("mcp__grow__seed", None)
+        .await
+        .expect("trigger catalog expansion");
+
     // The refresher re-lists on the pushed notification; poll until the
     // grown tool surfaces (bounded).
     let mut refreshed = Vec::new();
@@ -101,4 +106,5 @@ async fn tools_list_changed_grows_the_cached_catalog_without_reconnect() {
     .await
     .expect("the grown tool never surfaced without a reconnect");
     assert_eq!(refreshed.len(), 2, "the refresh replaces, not appends");
+    manager.disconnect("grow").await.expect("disconnect fixture");
 }

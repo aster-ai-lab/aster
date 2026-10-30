@@ -36,6 +36,7 @@ export function SpreadsheetSortOptionsDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.sort.options.title')}
       description={officeMessage(messages, 'spreadsheet.sort.options.desc')}
       className="work-spreadsheet-sort-options-dialog"

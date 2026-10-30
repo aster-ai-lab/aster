@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "OpenUI Lang interactive UI for Studio messages and parked forms",
+  "description": "Closed JSON Render interactions for Aster messages and parked forms",
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "acorn": "8.19.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -23,11 +22,10 @@
     "jsdom": "26.1.0",
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
-    "vitest": "3.2.4",
-    "@types/estree": "1.0.8"
+    "vitest": "3.2.4"
   },
   "exports": {
     ".": "./src/IntelligentUI.tsx",
-    "./openui": "./src/openui.ts"
+    "./json-render": "./src/jsonRender.ts"
   }
 }

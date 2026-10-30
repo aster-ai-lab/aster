@@ -1,0 +1,49 @@
+export const meta = {
+  title: 'Aster ACL 产品概览',
+  description: 'Agent Configuration Language 的语法、结构校验、规范摘要与宿主接纳边界。',
+  label: '产品概览',
+  updated: '2026-10-30',
+};
+
+`a3s-acl` 提供 Agent Configuration Language 的解析器、生成器和结构校验。当前源码版本为 `0.3.0`。Aster 用 ACL 描述模型、工具和宿主配置；具体字段与生效规则由消费该配置的组件声明。
+
+ACL 不是权限控制表的缩写。解析一份 ACL 文本，只表示语法和数据结构可读取，不表示其中的操作已获得授权。
+
+<AclArchitectureDiagram />
+
+## 文档、块与值
+
+```acl
+providers "example" {
+  api_key = env("EXAMPLE_API_KEY")
+  models = ["example-model"]
+}
+```
+
+`providers` 是块名，`"example"` 是标签，`api_key` 与 `models` 是属性。块可以嵌套，属性值可以是字符串、数字、布尔、列表、对象、null 或函数调用。
+
+解析结果使用 `Document`、`Block` 和 `Value`。`env("EXAMPLE_API_KEY")` 保留为 `Value::Call`，解析器不会因此读取环境变量。是否允许该调用、从哪里取值、是否可以激活配置，都由宿主决定。见 <SourceRef path="crates/acl/src/ast.rs" match="Call(String, Vec<Value>),">函数调用的 AST 表示</SourceRef>。
+
+## 能力与边界
+
+<DocTable caption="ACL 与宿主的分工" headers={['环节', 'ACL 负责', '宿主负责']} rows={[
+  ['解析', '语法、值类型、源码位置和资源限制', '选择可信配置来源与读取上限'],
+  ['结构校验', '已声明字段、值类型、标签数量和嵌套结构', '数值范围、路径、模型与工具是否可用'],
+  ['生成与摘要', 'ACL 文本、规范 UTF-8 和确定性摘要', '保存、签名、版本管理和发布策略'],
+  ['激活', '提供已解析或已校验的数据', '凭据解析、工作区信任、权限与沙箱约束'],
+]} />
+
+Schema 默认拒绝未知属性和块。需要额外字段时，应由拥有该结构的组件明确声明，而不是在各层重复猜测字段含义。Schema 的公开入口见 <SourceRef path="crates/acl/src/schema.rs" match="pub struct Schema {">Schema 定义</SourceRef>。
+
+## 选择入口
+
+- 阅读或编辑配置：[语法与 Rust 接入](./integration/)。
+- 接纳外部输入、展示错误或比较配置身份：[诊断、限制与规范摘要](./operations/)。
+- 了解 Aster 会话怎样消费配置：[Code 配置与工具](../../code/9.1.6/reference/configuration/)。
+
+<ChapterCards />
+
+## 实现依据
+
+- [ACL 公开导出](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/src/lib.rs)
+- [语法与兼容合同](https://github.com/aster-ai-lab/aster/blob/main/crates/acl/README.md)

@@ -22,7 +22,7 @@ use crate::router::RouterTable;
 use crate::service::{Backend, HealthCheckTasks, PreparedHealthChecks, ServiceRegistry};
 use crate::usage::UsageSpool;
 use crate::{GatewayState, HealthStatus};
-use std::collections::{BTreeMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, RwLock, Weak};
@@ -81,6 +81,7 @@ pub struct Gateway {
     runtime: Arc<RwLock<Option<entrypoint::GatewayRuntime>>>,
     /// Programmatic middleware instances available to every runtime snapshot.
     middleware_registry: Arc<MiddlewareRegistry>,
+    embedded_supplier_keys: Option<HashMap<String, String>>,
     /// Serializes start, reload, and shutdown lifecycle transactions.
     lifecycle_lock: Arc<tokio::sync::Mutex<()>>,
     /// Discovery polling loop handle (if discovery is configured)
@@ -122,6 +123,7 @@ pub(crate) struct GatewayReloadHandle {
     handles: Arc<RwLock<entrypoint::EntryPointHandles>>,
     runtime: Arc<RwLock<Option<entrypoint::GatewayRuntime>>>,
     middleware_registry: Arc<MiddlewareRegistry>,
+    embedded_supplier_keys: Option<HashMap<String, String>>,
     lifecycle_lock: Arc<tokio::sync::Mutex<()>>,
     discovery_handle: Arc<RwLock<Option<tokio::task::JoinHandle<()>>>>,
     provider_handles: Arc<RwLock<Vec<tokio::task::JoinHandle<()>>>>,
@@ -179,6 +181,7 @@ async fn build_runtime(
     middleware_registry: &MiddlewareRegistry,
     previous_inference_authorizer: Option<&crate::inference::InferenceAuthorizer>,
     usage_spool: Option<Arc<UsageSpool>>,
+    embedded_supplier_keys: Option<&HashMap<String, String>>,
 ) -> Result<BuiltRuntime> {
     let router_table = RouterTable::from_config(&config.routers)?;
     tracing::info!(routes = router_table.len(), "Router table compiled");
@@ -248,7 +251,14 @@ async fn build_runtime(
                 ))
             })?;
 
-    let supplier_keys = if config.inference.is_some() {
+    let supplier_keys = if let Some(keys) = embedded_supplier_keys {
+        keys.iter()
+            .map(|(name, api_key)| crate::inference::SupplierCredential {
+                name: name.clone(),
+                api_key: api_key.clone(),
+            })
+            .collect()
+    } else if config.inference.is_some() {
         crate::inference::load_supplier_credentials(config).await
     } else {
         Vec::new()
@@ -496,6 +506,7 @@ impl GatewayReloadHandle {
             self.middleware_registry.as_ref(),
             previous_inference_authorizer.as_deref(),
             usage_spool,
+            self.embedded_supplier_keys.as_ref(),
         )
         .await
         {
@@ -620,6 +631,26 @@ impl Gateway {
         Self::with_middlewares(config, MiddlewareRegistry::new())
     }
 
+    /// Create an embedded gateway from a complete host-owned snapshot.
+    ///
+    /// Unlike an operator's cloud-managed bootstrap ACL, an embedded host is
+    /// itself the desired-state authority, so its initial snapshot may contain
+    /// routers, services, and inference policy. Runtime activation checks still
+    /// apply; only the external bootstrap-delivery rule is skipped. Supplier
+    /// keys are keyed by service name and stay with the embedded host.
+    pub fn new_embedded(
+        config: GatewayConfig,
+        supplier_keys: HashMap<String, String>,
+    ) -> Result<Self> {
+        Self::with_components(
+            config,
+            MiddlewareRegistry::new(),
+            None,
+            None,
+            Some(supplier_keys),
+        )
+    }
+
     /// Create a gateway from configuration and the root ACL path used for hot
     /// reload.
     ///
@@ -640,7 +671,7 @@ impl Gateway {
         config: GatewayConfig,
         middleware_registry: MiddlewareRegistry,
     ) -> Result<Self> {
-        Self::with_components(config, middleware_registry, None, None)
+        Self::with_components(config, middleware_registry, None, None, None)
     }
 
     /// Same as [`Self::with_middlewares`], probing the root ACL parent watch
@@ -655,6 +686,7 @@ impl Gateway {
             middleware_registry,
             None,
             Some(config_path.as_ref()),
+            None,
         )
     }
 
@@ -663,6 +695,7 @@ impl Gateway {
         middleware_registry: MiddlewareRegistry,
         managed_services: Option<Arc<ManagedServiceStore>>,
         config_path: Option<&Path>,
+        embedded_supplier_keys: Option<HashMap<String, String>>,
     ) -> Result<Self> {
         if managed_services.is_some()
             && middleware_registry.contains(MANAGED_SERVICE_MIDDLEWARE_NAME)
@@ -686,16 +719,23 @@ impl Gateway {
                 config.management.enabled = false;
             }
         }
-        match config_path {
-            Some(path) => crate::validate_activation_with_custom_middlewares_at_path(
+        if embedded_supplier_keys.is_some() {
+            crate::validate_runtime_activation_with_custom_middlewares(
                 &config,
                 &middleware_registry.names(),
-                path,
-            )?,
-            None => crate::validate_activation_with_custom_middlewares(
-                &config,
-                &middleware_registry.names(),
-            )?,
+            )?;
+        } else {
+            match config_path {
+                Some(path) => crate::validate_activation_with_custom_middlewares_at_path(
+                    &config,
+                    &middleware_registry.names(),
+                    path,
+                )?,
+                None => crate::validate_activation_with_custom_middlewares(
+                    &config,
+                    &middleware_registry.names(),
+                )?,
+            }
         }
         // Same router pipeline compile as build_runtime — ACL + custom registry
         // composition (e.g. dual retry policies) must fail at construct, not only
@@ -717,6 +757,7 @@ impl Gateway {
             handles: Arc::new(RwLock::new(entrypoint::EntryPointHandles::new())),
             runtime: Arc::new(RwLock::new(None)),
             middleware_registry: Arc::new(middleware_registry),
+            embedded_supplier_keys,
             lifecycle_lock: Arc::new(tokio::sync::Mutex::new(())),
             discovery_handle: Arc::new(RwLock::new(None)),
             provider_handles: Arc::new(RwLock::new(Vec::new())),
@@ -903,6 +944,7 @@ impl Gateway {
             handles: self.handles.clone(),
             runtime: self.runtime.clone(),
             middleware_registry: self.middleware_registry.clone(),
+            embedded_supplier_keys: self.embedded_supplier_keys.clone(),
             lifecycle_lock: self.lifecycle_lock.clone(),
             discovery_handle: self.discovery_handle.clone(),
             provider_handles: self.provider_handles.clone(),

@@ -1,6 +1,6 @@
 //! Hermetic `aster update` checks. Each run starts the shipped binary.
 //! The previous `aster` in the install directory is a fixture that execs
-//! `CARGO_BIN_EXE_aster` and keeps that path as argv[0], so the install
+//! the selected shipped binary and keeps that path as argv[0], so the install
 //! directory is the fixture directory and the installer is the shipped command.
 
 use std::fs;
@@ -18,8 +18,10 @@ const OTHER_ID: &str = "aster-cli-pair-v1:fixture-other:local";
 const FIXTURE_VERSION: &str = "9.9.9";
 const STALE_VERSION: &str = "0.1.0";
 
-fn shipped_aster() -> &'static str {
-    env!("CARGO_BIN_EXE_aster")
+fn shipped_aster() -> PathBuf {
+    std::env::var_os("A3S_CODE_TUI_BIN")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_aster")))
 }
 
 fn repo_root() -> PathBuf {
@@ -54,7 +56,7 @@ fn write_pair(dir: &Path, identity: &str, forward_update: bool, pad: bool) {
     let aster = if forward_update {
         format!(
             "#!/bin/bash\nif [ \"$1\" = \"--build-id\" ]; then\n  printf '%s\\n' '{identity}'\n  exit 0\nfi\nexec -a \"$0\" '{}' \"$@\"\nexit 127\n",
-            shipped_aster().replace('\'', "")
+            shipped_aster().to_string_lossy().replace('\'', "")
         )
     } else {
         format!(
@@ -101,9 +103,27 @@ fn chmod(path: &Path) {
     }
 }
 
+fn copy_tree(source: &Path, destination: &Path) {
+    for (name, _) in snapshot(source) {
+        let target = destination.join(&name);
+        fs::create_dir_all(target.parent().expect("fixture parent")).expect("fixture directory");
+        fs::copy(source.join(name), target).expect("fixture copy");
+    }
+}
+
 fn package(bin_dir: &Path, assets: &Path, version: &str) -> PathBuf {
     fs::create_dir_all(assets).expect("assets");
     let archive = assets.join(asset_name(version));
+    if cfg!(target_os = "macos") {
+        let status = Command::new("python3")
+            .arg("-c")
+            .arg("import hashlib,json,sys\nfrom pathlib import Path\nsys.path.insert(0,sys.argv[1])\nfrom sandbox_assets import FILES\nroot=Path(sys.argv[2])\nfor name in FILES:\n p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(('synthetic runtime '+name).encode())\nfor name in ['a3s-oci','a3s-oci-krun-shim']: (root/name).chmod(0o755)\n(root/'manifest.json').write_text(json.dumps({'schema':1,'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in FILES}}))")
+            .arg(repo_root().join("apps/studio/scripts"))
+            .arg(bin_dir.join("sandbox"))
+            .status()
+            .expect("sandbox fixture");
+        assert!(status.success(), "sandbox fixture could not be created");
+    }
     let status = Command::new("bash")
         .arg(repo_root().join("scripts/package-aster-cli.sh"))
         .arg(if cfg!(target_os = "macos") {
@@ -452,7 +472,17 @@ fn shipped_update_installs_newer_pair_with_progress_bar() {
                     .into_owned()
             })
             .collect();
-        assert_eq!(names.len(), 2, "{names:?}");
+        assert_eq!(
+            names.len(),
+            if cfg!(target_os = "macos") { 3 } else { 2 },
+            "{names:?}"
+        );
+        if cfg!(target_os = "macos") {
+            assert_eq!(
+                snapshot(&install.join("sandbox")),
+                snapshot(&bins.join("sandbox"))
+            );
+        }
         let _ = root;
     }
 }
@@ -524,6 +554,9 @@ fn shipped_update_check_and_current_leave_bytes() {
     fs::copy(bins.join("a3s-code-acp"), current.join("a3s-code-acp")).expect("copy acp");
     chmod(&current.join("aster"));
     chmod(&current.join("a3s-code-acp"));
+    if cfg!(target_os = "macos") {
+        copy_tree(&bins.join("sandbox"), &current.join("sandbox"));
+    }
     let current_aster = fs::read(current.join("aster")).expect("current aster");
     let current_acp = fs::read(current.join("a3s-code-acp")).expect("current acp");
     let (current_code, current_stdout, current_stderr) =
@@ -543,6 +576,157 @@ fn shipped_update_check_and_current_leave_bytes() {
         current_acp
     );
     assert_eq!(snapshot(&current_home), current_before);
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn shipped_update_repairs_the_runtime_when_the_binary_pair_is_already_current() {
+    use std::os::unix::fs::PermissionsExt;
+    for damage in ["missing", "changed", "not-executable"] {
+        let root = temp_root(damage);
+        let home = prepare_home(&root);
+        let home_before = snapshot(&home);
+        let bins = root.join("bins");
+        write_pair(&bins, NEW_ID, true, true);
+        let assets = root.join("assets");
+        package(&bins, &assets, FIXTURE_VERSION);
+        let install = root.join("install");
+        fs::create_dir(&install).unwrap();
+        for name in ["aster", "a3s-code-acp"] {
+            fs::copy(bins.join(name), install.join(name)).unwrap();
+        }
+        if damage != "missing" {
+            copy_tree(&bins.join("sandbox"), &install.join("sandbox"));
+            if damage == "changed" {
+                fs::write(install.join("sandbox/bundle/rootfs.tar"), "changed runtime").unwrap();
+            } else {
+                fs::set_permissions(
+                    install.join("sandbox/a3s-oci"),
+                    fs::Permissions::from_mode(0o644),
+                )
+                .unwrap();
+            }
+        }
+        let (code, stdout, stderr) =
+            capture_pipe(&install.join("aster"), &["update"], &home, &assets);
+        assert_eq!(code, 0, "{damage}: {stdout}\n{stderr}");
+        assert!(stdout.contains("installed Aster"), "{damage}: {stdout}");
+        assert_eq!(
+            snapshot(&install.join("sandbox")),
+            snapshot(&bins.join("sandbox"))
+        );
+        assert_eq!(
+            fs::metadata(install.join("sandbox/a3s-oci"))
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o111,
+            0o111
+        );
+        assert_eq!(snapshot(&home), home_before);
+    }
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn shipped_update_rejects_a_binary_only_macos_release_with_valid_checksums() {
+    let root = temp_root("missing-runtime");
+    let home = prepare_home(&root);
+    let bins = root.join("bins");
+    write_pair(&bins, NEW_ID, true, true);
+    fs::write(bins.join("BUILD_ID"), format!("{NEW_ID}\n")).unwrap();
+    fs::write(
+        bins.join("SHA256SUMS"),
+        format!(
+            "{}  aster\n{}  a3s-code-acp\n",
+            sha256_hex(&bins.join("aster")),
+            sha256_hex(&bins.join("a3s-code-acp"))
+        ),
+    )
+    .unwrap();
+    let assets = root.join("assets");
+    fs::create_dir(&assets).unwrap();
+    let archive = assets.join(asset_name(FIXTURE_VERSION));
+    assert!(
+        Command::new("tar")
+            .env("COPYFILE_DISABLE", "1")
+            .current_dir(&bins)
+            .arg("-czf")
+            .arg(&archive)
+            .args(["aster", "a3s-code-acp", "BUILD_ID", "SHA256SUMS"])
+            .status()
+            .unwrap()
+            .success()
+    );
+    write_manifest(&assets, &archive, FIXTURE_VERSION);
+    let install = root.join("install");
+    write_pair(&install, OLD_ID, true, false);
+    fs::create_dir(install.join("sandbox")).unwrap();
+    fs::write(install.join("sandbox/keep"), "previous runtime").unwrap();
+    let before = snapshot(&install);
+    let home_before = snapshot(&home);
+    let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
+    assert_ne!(code, 0, "{stdout}\n{stderr}");
+    assert!(
+        stderr.contains("macOS release is missing sandbox companions"),
+        "{stderr}"
+    );
+    assert_eq!(snapshot(&install), before);
+    assert_eq!(snapshot(&home), home_before);
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn shipped_update_rejects_a_tampered_runtime_before_changing_the_installation() {
+    let root = temp_root("runtime-tampering");
+    let home = prepare_home(&root);
+    let bins = root.join("bins");
+    write_pair(&bins, NEW_ID, true, true);
+    let assets = root.join("assets");
+    let archive = package(&bins, &assets, FIXTURE_VERSION);
+    let members = Command::new("tar")
+        .arg("-tzf")
+        .arg(&archive)
+        .output()
+        .unwrap();
+    assert!(members.status.success());
+    let members = String::from_utf8(members.stdout).unwrap();
+    let unpack = root.join("unpack");
+    fs::create_dir(&unpack).unwrap();
+    assert!(
+        Command::new("tar")
+            .arg("-xzf")
+            .arg(&archive)
+            .arg("-C")
+            .arg(&unpack)
+            .status()
+            .unwrap()
+            .success()
+    );
+    fs::write(unpack.join("sandbox/bundle/rootfs.tar"), "tampered runtime").unwrap();
+    assert!(
+        Command::new("tar")
+            .env("COPYFILE_DISABLE", "1")
+            .arg("-czf")
+            .arg(&archive)
+            .args(members.lines())
+            .current_dir(&unpack)
+            .status()
+            .unwrap()
+            .success()
+    );
+    write_manifest(&assets, &archive, FIXTURE_VERSION);
+    let install = root.join("install");
+    write_pair(&install, OLD_ID, true, false);
+    fs::create_dir(install.join("sandbox")).unwrap();
+    fs::write(install.join("sandbox/keep"), "previous runtime").unwrap();
+    let before = snapshot(&install);
+    let home_before = snapshot(&home);
+    let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
+    assert_ne!(code, 0, "{stdout}\n{stderr}");
+    assert!(stderr.contains("checksum mismatch"), "{stderr}");
+    assert_eq!(snapshot(&install), before);
+    assert_eq!(snapshot(&home), home_before);
 }
 
 #[test]
@@ -713,7 +897,7 @@ fn package_two_binaries(bin_dir: &Path, archive: &Path) {
 }
 
 #[test]
-fn shipped_update_installs_two_file_release_without_build_id() {
+fn shipped_update_handles_legacy_two_file_release() {
     let root = temp_root("two-file");
     let home = prepare_home(&root);
     let before_home = snapshot(&home);
@@ -736,6 +920,17 @@ fn shipped_update_installs_two_file_release_without_build_id() {
     let old_acp = fs::read(install.join("a3s-code-acp")).expect("old acp");
     let (code, stdout, stderr) = capture_pipe(&install.join("aster"), &["update"], &home, &assets);
     println!("CAPTURE two-file\n{stdout}\n{stderr}");
+    if cfg!(target_os = "macos") {
+        assert_ne!(code, 0, "{stdout}\n{stderr}");
+        assert!(
+            stderr.contains("macOS release is missing sandbox companions"),
+            "{stderr}"
+        );
+        assert_eq!(fs::read(install.join("aster")).unwrap(), old_aster);
+        assert_eq!(fs::read(install.join("a3s-code-acp")).unwrap(), old_acp);
+        assert_eq!(snapshot(&home), before_home);
+        return;
+    }
     assert_eq!(code, 0, "{stdout}\n{stderr}");
     assert!(
         stdout.contains(&format!("installed Aster v{FIXTURE_VERSION}")),

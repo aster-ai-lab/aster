@@ -49,7 +49,6 @@ pub(super) async fn project_pending_partitions(
     state.batching.document_inputs = plan.document_inputs;
     state.batching.document_text_bytes = plan.document_text_bytes;
     state.batching.batch_limit_lower_bound = plan.batch_limit_lower_bound;
-    publish_progress(status, snapshot, index, state, pending.len(), false);
 
     let mut remaining = pending.iter().cloned().collect::<BTreeSet<_>>();
     let mut unpublished = BTreeMap::<String, Vec<VectorRecord>>::new();
@@ -70,8 +69,8 @@ pub(super) async fn project_pending_partitions(
         );
         state.record_first_ready();
         remaining.remove(path);
-        publish_progress(status, snapshot, index, state, remaining.len(), false);
     }
+    publish_progress(status, snapshot, index, state, remaining.len(), false);
 
     tracing::debug!(
         document_inputs = plan.document_inputs,
@@ -180,8 +179,9 @@ pub(super) async fn project_pending_partitions(
             state.record_first_ready();
             state.failed.remove(&path);
             remaining.remove(&path);
-            publish_progress(status, snapshot, index, state, remaining.len(), false);
         }
+        // Coverage validation traverses ready partitions, so publish once per provider batch.
+        publish_progress(status, snapshot, index, state, remaining.len(), false);
     }
 }
 
@@ -228,25 +228,18 @@ pub(super) fn publish_progress(
     semantic_failure: bool,
 ) {
     let vector = index.status();
-    let indexed_files = state
+    let (indexed_files, indexed_chunks) = state
         .ready
         .iter()
-        .filter(|(path, ready)| {
+        .filter_map(|(path, ready)| {
             snapshot
-                .content_digest(&crate::workspace::WorkspacePath::from_normalized(*path))
+                .content_digest(&crate::workspace::WorkspacePath::from_normalized(path))
                 .is_some_and(|digest| digest == ready.digest)
+                .then_some(ready.chunk_count)
         })
-        .count();
-    let indexed_chunks = state
-        .ready
-        .iter()
-        .filter(|(path, ready)| {
-            snapshot
-                .content_digest(&crate::workspace::WorkspacePath::from_normalized(*path))
-                .is_some_and(|digest| digest == ready.digest)
-        })
-        .map(|(_, ready)| ready.chunk_count)
-        .sum();
+        .fold((0usize, 0usize), |(files, chunks), count| {
+            (files + 1, chunks + count)
+        });
     let eligible_files = snapshot.eligible_file_count();
     let failed_files = snapshot
         .failed_file_count()

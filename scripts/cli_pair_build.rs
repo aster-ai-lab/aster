@@ -14,11 +14,11 @@ pub fn stamp(root: &Path) -> io::Result<()> {
             "--exclude-standard",
             "--",
             "apps/aster",
-            "crates/code",
-            "crates/terminal",
+            "crates",
             "Cargo.toml",
             "Cargo.lock",
             "rust-toolchain.toml",
+            ".cargo/config.toml",
             "scripts/cli_pair_build.rs",
         ])
         .output()?;

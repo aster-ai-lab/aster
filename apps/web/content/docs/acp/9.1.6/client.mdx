@@ -1,15 +1,15 @@
 export const meta = {
-  title: '运行一个能处理确认、问题和表单的 ACP 客户端',
+  title: 'ACP 客户端交互处理',
   description: '从可编译的 Rust 例子接入 stdio，保持接收更新，并显式处理交互、取消和会话恢复。',
-  label: '动手接入客户端',
+  label: '客户端实现',
   updated: '2026-10-26',
 };
 
-## 这次从完整程序开始
+## 完整示例程序
 
-前一章展示协议消息；这一章使用仓库中的 [interactive_client.rs](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/examples/interactive_client.rs)。它启动真实 ACP 伴随进程，持续消费通知，用命令行回答交互，并在退出时清理自己启动的进程。
+仓库中的 [interactive_client.rs](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/examples/interactive_client.rs) 启动真实 ACP 伴随进程，持续消费通知，用命令行回答交互，并在退出时清理自己启动的进程。
 
-这个例子采用 JSON 显示协议内容，便于看清 sessionId、toolCallId、选项和状态。实际产品可以把同一组事件接到 TUI、桌面或网页界面。它不提供 Node、Python 等额外 SDK。
+示例采用 JSON 显示 sessionId、toolCallId、选项和状态。实际产品可以把同一组事件接到 TUI、桌面或网页界面。仓库不提供 Node 或 Python SDK。
 
 ## 构建并连接
 
@@ -54,7 +54,7 @@ initialize 返回当前能力和模型信息后，程序创建会话并打印 se
 
 `/cancel` 先标记取消状态，关闭已排队交互，再通知代理停止。此后新到的交互直接返回取消。原 prompt future 保留到结束，期间继续接收晚到的工具状态；不会因为取消通知发送成功就显示“已完成”。
 
-退出时最多等待十秒。期限内没有原 prompt 终态，会明确返回错误并清理本客户端启动的子进程；这不能证明远程副作用被撤销。重新尝试任务前仍需核对原操作，不能无条件重发写入。
+退出时最多等待 10 秒。期限内没有原 prompt 终态时，程序返回错误并清理本客户端启动的子进程。这不能证明远程副作用被撤销。重新尝试任务前仍需核对原操作，不能无条件重发写入。
 
 ## 重新打开会话
 

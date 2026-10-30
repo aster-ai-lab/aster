@@ -1,0 +1,114 @@
+export const meta = {
+  title: 'standalone 快速开始',
+  description: '本地 ACL、OpenAI 兼容后端、配置校验、启动和热更新。',
+  label: '快速开始',
+  updated: '2026-10-29',
+};
+
+`standalone` 模式使用本地 ACL 作为期望状态。Gateway 校验完整配置后启动监听器，不需要 Cloud 控制平面。
+
+## 准备条件
+
+- Rust 1.88 或更新版本。仓库构建沿用固定工具链。
+- 一个 OpenAI 兼容后端。示例地址为 `127.0.0.1:8000`。
+- 一个独立的练习配置目录，不要放入真实凭据。
+
+从仓库根目录构建：
+
+```bash
+cargo build --locked -p a3s-gateway
+```
+
+生成二进制位于 `target/debug/a3s-gateway`。使用已安装的版本时，直接运行 `a3s-gateway`。
+
+## 编写 gateway.acl
+
+以下配置在 `127.0.0.1:8080` 监听，并将 `/v1` 请求转发到本地模型后端：
+
+```acl
+mode { kind = "standalone" }
+
+entrypoints "web" {
+  address = "127.0.0.1:8080"
+}
+
+routers "models" {
+  rule        = "PathPrefix(`/v1`)"
+  service     = "models"
+  entrypoints = ["web"]
+}
+
+services "models" {
+  load_balancer {
+    strategy             = "least-connections"
+    request_timeout      = "30s"
+    stream_idle_timeout  = "5m"
+    stream_total_timeout = "60m"
+    servers = [{ url = "http://127.0.0.1:8000" }]
+  }
+}
+```
+
+`request_timeout` 限制首次响应前的等待。`stream_idle_timeout` 限制流中连续空闲的时间。`stream_total_timeout` 限制整个操作的时间。
+
+## 校验并启动
+
+先校验配置，再查看摘要：
+
+```bash
+./target/debug/a3s-gateway validate --config gateway.acl
+./target/debug/a3s-gateway config --config gateway.acl summary
+```
+
+校验通过后启动：
+
+```bash
+./target/debug/a3s-gateway --config gateway.acl
+curl http://127.0.0.1:8080/v1/models
+```
+
+配置文件不存在时，Gateway 返回错误，不会回退到默认公开监听器。校验失败时，当前运行中的配置保持不变。
+
+## 配置检查命令
+
+<DocTable caption="Gateway 配置与运行检查" headers={['命令', '用途']} rows={[
+  ['validate --config gateway.acl', '执行结构与激活检查，不启动流量监听'],
+  ['config --config gateway.acl summary', '查看入口、路由、服务、中间件和提供方数量'],
+  ['config --config gateway.acl routes', '列出路由及其匹配规则'],
+  ['config --config gateway.acl services', '列出服务与后端数量'],
+  ['config --config gateway.acl providers', '列出已启用的提供方'],
+  ['config --config gateway.acl json', '输出解析后的配置 JSON'],
+]} />
+
+`validate` 会检查实际激活所需的部分外部条件。TLS、提供方、托管快照和用量投递配置不能只按字段存在判断为可用。
+
+## 模型流量策略
+
+OpenAI 兼容路径支持模型目录、chat completions、completions 和 embeddings。策略可以限制端点与模型，重写模型别名，并限制 RPM、突发和并发请求。
+
+`tokens_per_minute` 使用临时 `kense.gateway.tokenizer.v1` 预约。该 tokenizer 不是 Cloud 计费级依据，也不证明 Power 观测已交付。
+
+后端故障时，Gateway 使用健康状态、熔断、加权选择和故障转移。重试只发生在响应开始前。已经开始的响应不会通过重放来改变内容。
+
+## 热更新
+
+`providers.file.watch` 启用后，Gateway 监视 ACL 文件变化。新配置通过校验后，运行时以原子方式替换。
+
+无效更新会被拒绝，旧运行时继续服务。文件监视器本身无法启动时，Gateway 返回错误，不会静默切换为不更新的运行方式。
+
+## 验收
+
+1. 运行 `validate`，确认配置通过。
+2. 运行 `config summary`，核对入口和服务数量。
+3. 请求 `/v1/models`，确认后端响应经过 Gateway。
+4. 请求未授权的模型或路径，确认 Gateway 拒绝准入。
+5. 停止后端，确认故障不会绕过健康边界。
+6. 写入无效配置并热更新，确认旧配置仍然有效。
+
+配置加载入口为 <SourceRef path="apps/gateway/src/provider/file_watcher.rs" match="pub fn load_merged_gateway_config(">load_merged_gateway_config</SourceRef>。结构与激活检查入口为 <SourceRef path="apps/gateway/src/lib.rs" match="pub fn validate_activation(">validate_activation</SourceRef>。
+
+## 实现依据
+
+- [快速开始与完整 ACL 示例](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/README.md)
+- [CLI 命令与配置检查](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/src/main.rs)
+- [配置合并与文件监视](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/src/provider/)

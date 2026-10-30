@@ -1,0 +1,56 @@
+export const meta = {
+  title: 'Aster Office 产品概览',
+  description: 'a3s-office 的五种编辑器、浏览器与原生执行平面、格式和宿主边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+Aster Office 提供五种格式原生编辑器，以及独立的原生自动化平面。浏览器包名为 `@a3s-lab/office`，原生 Rust crate 名为 `a3s-office`。
+
+Office 负责格式模型、导入导出、布局、渲染和类型化修改。宿主产品负责持久化、身份、授权、协作传输和 AI 提供方。核心编辑与文件流程不需要 A3S 后端。
+
+<OfficeArchitectureDiagram />
+
+## 当前源码版本
+
+<DocTable caption="Office 包与版本" headers={['包', '当前版本', '用途']} rows={[
+  ['@a3s-lab/office', '0.312.0', '浏览器编辑器、Core API 和框架适配器'],
+  ['a3s-office', '0.45.0', '原生 Rust 文件操作与协作副本'],
+  ['a3s-office-cli', '0.45.0', 'a3s-office 命令行与 MCP 进程'],
+  ['a3s-office-web-kernel', '0.45.0', '浏览器布局与计算 WASM'],
+]} />
+
+这些包属于 pre-1.0。公开模型和组件属性仍可能在 minor 版本中变化。升级前必须阅读变更记录并重新验证文件往返。
+
+## 五种格式原生表面
+
+<DocTable caption="格式能力与主要边界" headers={['表面', '主要格式与能力', '当前边界']} rows={[
+  ['Document', 'DOCX、HTML、TXT；分页、表格、引用、审阅和 PDF 输出', '长尾 DrawingML、域和精确布局仍有限制'],
+  ['Spreadsheet', 'XLSX、XLS、ODS、CSV；公式、表格、筛选、图表和透视表', '宏、外部数据和完整公式兼容性尚未覆盖'],
+  ['Presentation', 'PPTX；场景对象、母版、切换、动画和演讲者视图', '部分形状、媒体、动画和视频输出仍有限制'],
+  ['Markdown', 'MD；GFM 源码、可视编辑、分栏预览和自动化', '不是所有富文档结构的通用转换层'],
+  ['PDF', 'PDFium 渲染、搜索、表单、注释和页面整理', '内容流编辑、OCR、签名和可信擦除需要其他能力'],
+]} />
+
+不支持的语义会保留为兼容性边界，或返回明确错误。语义预览不能证明 Microsoft Office 的布局一致性。
+
+## 两个执行平面
+
+<DocTable caption="浏览器与原生自动化分工" headers={['执行平面', '主要职责', '运行边界']} rows={[
+  ['浏览器编辑', '五种编辑器、Workers、Rust/WASM 和 PDFium', '宿主提供内容、存储和显式运行时资产'],
+  ['原生自动化', 'OOXML 文件读写、校验、批处理、CLI 和 MCP', '原生文件命令覆盖 DOCX、XLSX 和 PPTX'],
+  ['协作副本', 'Yjs/Yrs 状态、类型化修改和事件游标', '五种格式共享状态，宿主负责房间与传输'],
+]} />
+
+## 文档入口
+
+- [浏览器编辑器接入](./browser/)：React、Vue、Web Components、Core API 和协作边界。
+- [原生自动化](./automation/)：CLI、MCP、Rust API、冲突保护和结果验证。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Office 产品架构与能力边界](https://github.com/aster-ai-lab/aster/blob/main/crates/office/README.md)
+- [浏览器包与导出入口](https://github.com/aster-ai-lab/aster/blob/main/packages/office/package.json)
+- [原生 Office crate](https://github.com/aster-ai-lab/aster/blob/main/crates/office/crates/core/Cargo.toml)

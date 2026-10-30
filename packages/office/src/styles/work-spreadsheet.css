@@ -1,5 +1,4 @@
 .work-spreadsheet-editor {
-  --work-spreadsheet-accent: var(--a3s-green);
   position: relative;
   display: flex;
   min-width: 0;

@@ -1,7 +1,11 @@
 # Build the TUI and its ACP companion into the same target directory.
 [unix]
 build:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
     cargo build --locked
+    if [[ "$(uname -s)" == Darwin && "$(uname -m)" == arm64 ]]; then python3 scripts/aster_sandbox.py stage; fi
 
 # Windows has no sh on PATH. powershell -File keeps the cargo exit code.
 # An already-open terminal does not see a User PATH change, so point PROTOC
@@ -17,6 +21,7 @@ build:
         $env:PROTOC = $knownProtoc
         $env:PATH = "$(Split-Path -Parent $knownProtoc);$env:PATH"
     }
+    if (-not (Test-Path Env:RUSTC_WRAPPER) -and (Get-Command sccache -ErrorAction SilentlyContinue)) { $env:RUSTC_WRAPPER = 'sccache' }
     cargo build --locked
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -27,6 +32,7 @@ code *args: build
     #!/usr/bin/env python3
     import json
     import os
+    import platform
     from pathlib import Path
     import subprocess
     import sys
@@ -37,6 +43,8 @@ code *args: build
         if acl.is_file():
             os.environ["A3S_CONFIG"] = str(acl.resolve())
     metadata = json.loads(subprocess.check_output(["cargo", "metadata", "--locked", "--offline", "--no-deps", "--format-version", "1"]))
+    if sys.platform == "darwin" and platform.machine() in ("arm64", "aarch64") and not os.environ.get("ASTER_SANDBOX_DIR"):
+        os.environ["ASTER_SANDBOX_DIR"] = subprocess.check_output([sys.executable, str(Path(r"{{justfile_directory()}}") / "scripts/aster_sandbox.py"), "cache", "--target-dir", metadata["target_directory"]], text=True).strip()
     executable = Path(metadata["target_directory"]) / "debug" / ("aster.exe" if os.name == "nt" else "aster")
     os.execv(str(executable), [str(executable), *sys.argv[1:]])
 
@@ -67,9 +75,12 @@ code *args: build
 
 # Build the two companion executables shared by Studio from this workspace.
 build-companions:
-    cargo build --locked -p a3s-code-acp -p a3s-office-cli
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
+    cargo build --locked -p a3s-code-acp -p a3s-office-cli --features a3s-code-acp/headless-search
 
-# Build Studio with its ACP and Office companions in the shared target directory.
+# Build Studio and its companions apart from CLI/check/test artifacts.
 build-studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
     set -euo pipefail
@@ -77,10 +88,29 @@ build-studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     export A3S_TENANT_SLUG="$slug"
     TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$slug" tauri-config)"
     export TAURI_CONFIG
-    cargo build --locked -p a3s-code-acp -p a3s-office-cli
-    cargo build --locked -p a3s-studio --no-default-features --features "$feature"
+    if [ "${CARGO_TARGET_DIR+x}" != x ]; then
+      CARGO_TARGET_DIR="$(python3 apps/studio/scripts/studio_product.py "$slug" dev-target)"
+      export CARGO_TARGET_DIR
+    fi
+    TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$slug" tauri-config --target-dir "$CARGO_TARGET_DIR")"
+    export TAURI_CONFIG STUDIO_COMPANIONS_STAGED=1
+    if [ "${RUSTC_WRAPPER+x}" != x ] && command -v sccache >/dev/null 2>&1; then export RUSTC_WRAPPER=sccache; fi
+    # One feature graph keeps shared dependencies reusable across both stages.
+    python3 apps/studio/scripts/document_assets.py "$CARGO_TARGET_DIR/debug/studio-resources/document"
+    build_args=(build --locked -p a3s-studio -p a3s-code-acp -p a3s-office-cli --no-default-features --features "a3s-studio/$feature,a3s-code-acp/default,a3s-code-acp/headless-search,a3s-office-cli/default")
+    cargo "${build_args[@]}" --bin a3s-code-acp --bin a3s-office
+    python3 apps/studio/scripts/studio_product.py "$slug" stage-companions
+    cargo "${build_args[@]}" --bin Studio
 
-# Start Studio with renderer hot reload on 127.0.0.1:4318.
+# Second window on an already-built app: no cargo, so it never waits on the build-directory lock.
+fork $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster') port='4321':
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export A3S_STUDIO_INSTANCE=fork
+    export STUDIO_RENDERER_PORT="{{port}}"
+    exec just studio "$slug"
+
+# Start Studio with isolated renderer hot reload: Aster on 4318, ToYou on 4319.
 # Default tenant is aster. `just studio toyou` starts the original ToWork product.
 studio $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     #!/usr/bin/env bash
@@ -124,7 +154,6 @@ studio-ime $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
       exit 1
     fi
     python3 apps/studio/scripts/studio_product.py "$slug" feature >/dev/null
-    root="$PWD"
     if [ "$(id -u)" -eq 0 ]; then
       echo "warning: Studio is starting as root; the XIM bridge still commits text, but the session input method is owned by another uid, so prefer the session user." >&2
     fi
@@ -133,18 +162,6 @@ studio-ime $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     export GDK_BACKEND=x11
     export GTK_IM_MODULE=xim
     export XMODIFIERS="${XMODIFIERS:-@im=fcitx}"
-    binary="$root/target/debug/Studio"
-    renderer="http://127.0.0.1:${STUDIO_RENDERER_PORT:-4318}/windows/main/index.html"
-    # A renderer left behind by an earlier session still serves this product, but
-    # the ownership probe in scripts/studio-dev.mjs cannot attribute it once its
-    # parent is gone and then refuses to reuse the port. Match the page instead.
-    page="$(curl -fsS --max-time 2 "$renderer" 2>/dev/null | head -c 2000 || true)"
-    if [[ -x "$binary" && "$page" == *data-a3s-product* ]]; then
-      export TAURI_CONFIG="$(python3 apps/studio/scripts/studio_product.py "$slug" tauri-config)"
-      export A3S_ACP_AGENT_BIN="${A3S_ACP_AGENT_BIN:-$root/target/debug/a3s-code-acp}"
-      cd apps/studio
-      exec "$binary"
-    fi
     cd apps/studio
     exec scripts/studio-shell.sh
 
@@ -156,11 +173,10 @@ build-studio-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     cd apps/studio
     exec pnpm package:host
 
-# Regenerate the Aster app icons: the three SVG sources, the size ladder, and
-# the .ico/.icns containers. Sources live in apps/web/public/tenant/aster.
+# Export every Aster icon from apps/web/public/tenant/aster/logo.png.
 app-icons:
-    python3 scripts/app-icon.py
     python3 scripts/app-icon-assets.py
+    python3 scripts/app-icon.py
 
 # Install this checkout as a desktop application: a launcher entry plus the
 # hicolor icon ladder under $XDG_DATA_HOME. Without it a dock has no entry to
@@ -181,7 +197,8 @@ build-desktop-release $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
     just build-studio-release {{slug}}
 
 # Start Aster Studio with renderer hot reload. `just dev:toyou` selects that tenant.
-dev $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'): (studio slug)
+dev $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'):
+    STUDIO_RENDERER_DEV=1 just studio "$slug"
 
 # Start Aster Studio for this tenant. `just work:toyou` selects that tenant.
 work $slug=env_var_or_default('A3S_TENANT_SLUG', 'aster'): (studio slug)

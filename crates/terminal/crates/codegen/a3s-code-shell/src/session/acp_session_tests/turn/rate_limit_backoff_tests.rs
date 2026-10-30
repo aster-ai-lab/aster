@@ -36,7 +36,7 @@ pub(super) fn drain_gateway(
                     let _ = args.response_tx.send(Ok(()));
                 }
                 a3s_acp_lib::AcpClientMessage::ExtNotification(args)
-                    if args.request.method.as_ref() == "x.ai/session_notification" =>
+                    if args.request.method.as_ref() == "a3s/session_notification" =>
                 {
                     if let Ok(SessionNotification {
                         update: SessionUpdate::RetryState(rs),

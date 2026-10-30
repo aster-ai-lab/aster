@@ -1,20 +1,15 @@
-sequenceDiagram
-  accTitle: 一次任务的执行过程
-  accDescr: 宿主提交任务后，Core 在模型与受控工具间循环，记录执行结果，完成检查并等待资源清理后返回。
-  participant H as 宿主
-  participant C as Core
-  participant M as 模型
-  participant T as 受控工具
-  H->>C: 提交任务与工作区
-  loop 需要继续执行时
-    C->>M: 组装上下文并请求推理
-    M-->>C: 工具调用或结束意图
-    opt 请求工具调用
-      C->>C: 检查权限 / 必要时等待确认
-      C->>T: 获准后执行
-      T-->>C: 执行结果与修改回执
-      C->>C: 写入事实日志
-    end
-  end
-  C->>C: 检查完成条件并等待资源清理
-  C-->>H: 返回结果或未完成原因
+flowchart LR
+  accTitle: 一次任务的受控执行
+  accDescr: 工具结果进入下一轮输入。模型提出结束时，Core 检查完成条件。
+  input["接收任务<br/>user.message"]
+  model["模型提案<br/>下一步动作"]
+  permit["权限判定<br/>Allow / Ask / Deny"]
+  tool["执行工具<br/>受控效果"]
+  facts["保存事实<br/>原始回执"]
+  gate["检查完成<br/>证据与收尾"]
+  input --> model
+  model --> permit
+  permit --> tool
+  tool --> facts
+  facts --> gate
+  facts -.->|下一轮| model

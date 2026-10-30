@@ -8,6 +8,7 @@ pub(super) struct ExecutorTools {
     pub(super) capability_operation: Option<Arc<crate::capability::AgentCapabilityOperation>>,
     pub(super) checkpoint: Option<CheckpointState>,
     pub(super) events: Option<tokio::sync::mpsc::Sender<crate::agent::AgentEvent>>,
+    pub(super) persistence: Option<crate::agent_api::SessionPersistenceContext>,
     pub(super) context: crate::tools::ToolContext,
     pub(super) permission: PermissionPolicy,
     pub(super) checker: Option<Arc<dyn crate::permissions::PermissionChecker>>,
@@ -39,11 +40,21 @@ pub(super) struct CheckpointState {
 
 impl ExecutorTools {
     pub(super) async fn emit(&self, event: crate::agent::AgentEvent) {
+        if let crate::agent::AgentEvent::TaskUpdated { tasks, .. } = &event {
+            if let Some(persistence) = &self.persistence {
+                persistence.replace_tasks(tasks.clone());
+            }
+        }
         if let (Some(store), Some(run_id)) = (&self.run_store, &self.run_id) {
             store.record_event(run_id, event.clone()).await;
         }
         if let Some(events) = &self.events {
-            let _ = events.send(event).await;
+            let cancellation = self.context.cancellation_token();
+            tokio::select! {
+                biased;
+                _ = events.send(event) => {},
+                _ = cancellation.cancelled() => {},
+            }
         }
     }
 
@@ -251,6 +262,7 @@ impl ToolRunner for ExecutorTools {
         let executor = Arc::clone(&self.executor);
         let context = self.context.clone();
         let events = self.events.clone();
+        let persistence = self.persistence.clone();
         let permission = self.permission.clone();
         let checker = self.checker.clone();
         let agent = self.agent.clone();
@@ -282,6 +294,7 @@ impl ToolRunner for ExecutorTools {
                 executor,
                 checkpoint,
                 events,
+                persistence,
                 context,
                 permission,
                 checker,
@@ -377,10 +390,14 @@ impl ToolRunner for ExecutorTools {
                             call.name
                         )
                     })?;
-                    let decision = agent
-                        .tool_safety_gate()
-                        .confirmation_decision(&call.name, &call.args, true)
-                        .await;
+                    let cancellation = tools.context.cancellation_token();
+                    let gate = agent.tool_safety_gate();
+                    let decision = tokio::select! {
+                        biased;
+                        _ = cancellation.cancelled() => return Err("Operation cancelled before confirmation policy resolved.".into()),
+                        _ = host_cancel.cancelled() => return Err("Operation cancelled before confirmation policy resolved.".into()),
+                        decision = gate.confirmation_decision(&call.name, &call.args, true) => decision,
+                    };
                     match decision {
                         crate::safety_gate::ToolGateDecision::Confirm {
                             timeout_ms,
@@ -419,7 +436,9 @@ impl ToolRunner for ExecutorTools {
                                 match tokio::time::timeout(timeout, settlement_future).await {
                                     Ok(resolution) => resolution,
                                     Err(_) => {
-                                        manager.cancel(&call.id).await;
+                                        if crate::tool_confirmation::cancel_confirmation(manager.as_ref(), &call.id).await.is_none() {
+                                            tools.emit(crate::tool_confirmation::cancellation_unresolved_event(&call.id)).await;
+                                        }
                                         crate::tool_confirmation::ToolConfirmationResolution::Rejected {
                                             output: format!(
                                                 "Tool '{}' confirmation timed out; execution rejected.",
@@ -620,6 +639,11 @@ impl ToolRunner for ExecutorTools {
                     .unwrap_or_else(std::sync::PoisonError::into_inner)
                     .observe_tool(&call.name, result.exit_code, metadata.as_ref());
             }
+            let observation_digest = crate::content_digest::digest_json(
+                "a3s.code.tool-observation.v1",
+                &super::tool_results::message_from_tool_observation("observation", &output, result.exit_code != 0,
+                    &result.images, Some(result.exit_code)),
+            ).map_err(|error| ActorError::Schema(format!("tool_observation_digest: {error}")))?;
             if let Some(note) = repeated_result_note(&tools.repeats, &call.name, &call.args, &output) {
                 output.push_str(&note);
             }
@@ -643,6 +667,7 @@ impl ToolRunner for ExecutorTools {
                 &result.images,
                 result.exit_code,
                 metadata.as_ref(),
+                Some(&observation_digest),
             ))
             }.await;
             // The turn stays open: a run-owned effect closes with the run,

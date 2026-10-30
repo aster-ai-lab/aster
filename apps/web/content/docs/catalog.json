@@ -10,7 +10,7 @@
         {
           "id": "9.1.6",
           "label": "9.1.6 · 当前源码",
-          "sourceRef": "main",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
           "pages": [
             {
               "slug": "",
@@ -39,6 +39,62 @@
               "label": "宿主接入",
               "title": "接入你的应用",
               "description": "创建会话、配置验证命令和记忆"
+            },
+            {
+              "slug": "internals/",
+              "file": "internals/index",
+              "label": "原理漫游起点",
+              "title": "跟着一次修复读源码",
+              "description": "从职责图进入运行机制",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/system-prompts/",
+              "file": "internals/system-prompts",
+              "label": "系统提示词设计",
+              "title": "提示词如何装配",
+              "description": "默认文本、插槽与实际执行约束",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/context/",
+              "file": "internals/context",
+              "label": "上下文与压缩",
+              "title": "本轮模型看到了什么",
+              "description": "来源替换、去重、预算与历史",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/execution/",
+              "file": "internals/execution",
+              "label": "执行循环内部",
+              "title": "一次 Run 如何推进",
+              "description": "提案、权限、事实与控制",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/long-running/",
+              "file": "internals/long-running",
+              "label": "长期任务设计",
+              "title": "目标怎样分轮完成",
+              "description": "计划、等待、进展和有限续跑",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/recovery/",
+              "file": "internals/recovery",
+              "label": "恢复与未决效果",
+              "title": "重启后先证明什么",
+              "description": "检查点、事实与外部效果",
+              "section": "内核原理"
+            },
+            {
+              "slug": "internals/completion/",
+              "file": "internals/completion",
+              "label": "完成判定内部",
+              "title": "何时才能说完成",
+              "description": "摘要、验证、豁免与资源结清",
+              "section": "内核原理"
             },
             {
               "slug": "design/philosophy/",
@@ -539,7 +595,7 @@
         {
           "id": "9.1.6",
           "label": "9.1.6 · 当前源码",
-          "sourceRef": "main",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
           "pages": [
             {
               "slug": "",
@@ -547,6 +603,30 @@
               "label": "ACP 概览",
               "title": "把 Aster 接进自己的客户端",
               "description": "先理解进程与协议边界，再接入模型、会话和宿主扩展。"
+            },
+            {
+              "slug": "internals/",
+              "file": "internals/index",
+              "label": "协议原理漫游",
+              "title": "ACP 与 Core 怎样分工",
+              "description": "从一条消息追踪责任层",
+              "section": "协议原理"
+            },
+            {
+              "slug": "internals/events/",
+              "file": "internals/events",
+              "label": "事件与确认内部",
+              "title": "从事件到工具行",
+              "description": "准确 ID、完整参数与确认回答",
+              "section": "协议原理"
+            },
+            {
+              "slug": "internals/goals/",
+              "file": "internals/goals",
+              "label": "目标与无人值守内部",
+              "title": "有界执行与结果依据",
+              "description": "目标唤醒、停止原因与证据",
+              "section": "协议原理"
             },
             {
               "slug": "launch/",
@@ -595,7 +675,7 @@
               "file": "sessions",
               "label": "目录、历史与工具清单",
               "title": "查询会话，不必先启动一次任务",
-              "description": "会话目录、分页、前缀分支、工具投影与原始身份。"
+              "description": "会话目录、加载重放、工具事件与运行控制。"
             },
             {
               "slug": "plugins/",
@@ -623,7 +703,7 @@
               "file": "memory",
               "label": "记忆、知识与检索",
               "title": "在正确的数据范围中查询和维护资料",
-              "description": "记忆管理、现场快照、Wiki 搜索和知识编译范围。"
+              "description": "记忆管理、Wiki 搜索、检索配置与宿主边界。"
             },
             {
               "slug": "unattended/",
@@ -638,6 +718,642 @@
               "label": "协议参考与能力索引",
               "title": "ACP 扩展与宿主元数据参考",
               "description": "标准协议之外，代理接受哪些请求、发出哪些通知，以及谁提供元数据。"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "acl",
+      "title": "Aster ACL",
+      "label": "配置语言",
+      "description": "使用 a3s-acl 解析、校验和生成配置，并核对规范摘要与宿主接纳边界。",
+      "defaultVersion": "0.3.0",
+      "versions": [
+        {
+          "id": "0.3.0",
+          "label": "0.3.0 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster ACL 产品概览",
+              "description": "语法、结构校验、规范摘要与宿主边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "语法与接入",
+              "title": "ACL 语法与 Rust 接入",
+              "description": "块、类型化值、有界解析和 Schema 校验"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "诊断与验证",
+              "title": "ACL 诊断、限制与规范摘要",
+              "description": "输入限制、错误截断、规范字节和验证"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "flow",
+      "title": "Aster Flow",
+      "label": "持久工作流",
+      "description": "使用 a3s-flow 保存工作流历史，组织步骤、等待、恢复和宿主副作用。",
+      "defaultVersion": "2.0.0",
+      "versions": [
+        {
+          "id": "2.0.0",
+          "label": "2.0.0 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Flow 产品概览",
+              "description": "持久历史、确定性重放与宿主副作用边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "Rust 接入",
+              "title": "Flow Rust 接入与确定性步骤",
+              "description": "FlowRuntime、步骤身份、创建运行与结果读取"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "恢复与验证",
+              "title": "Flow 恢复、存储与运行验证",
+              "description": "持久 Store、未明结果、Worker 和部署兼容"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "effect",
+      "title": "Aster Effect",
+      "label": "事实日志 Actor",
+      "description": "使用 a3s-effect 描述程序值，并从不可变事实日志恢复 Harness 状态转换。",
+      "defaultVersion": "0.2.1",
+      "versions": [
+        {
+          "id": "0.2.1",
+          "label": "0.2.1 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Effect 产品概览",
+              "description": "程序值、事实日志、Actor 恢复和等待边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "Effect 与接入",
+              "title": "Effect 与 Harness 接入",
+              "description": "Effect、服务、Coding Actor 和组合部件"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "恢复与验证",
+              "title": "Effect 恢复与运行验证",
+              "description": "日志折叠、幂等、等待恢复和结构化取消"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "lane",
+      "title": "Aster Lane",
+      "label": "优先级任务调度",
+      "description": "使用 a3s-lane 管理优先级 Lane、类型化队列、持久 Job Backend 和 Worker 租约。",
+      "defaultVersion": "0.5.1",
+      "versions": [
+        {
+          "id": "0.5.1",
+          "label": "0.5.1 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Lane 产品概览",
+              "description": "优先级 Lane、类型化队列和 Job Backend"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "队列与调度",
+              "title": "Lane 队列与调度接入",
+              "description": "Command、PriorityQueue、LaneConfig 和生命周期"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "可靠性与验证",
+              "title": "Lane 可靠性与运行验证",
+              "description": "DLQ、持久化、Worker 租约、指标和恢复"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "event",
+      "title": "Aster Event",
+      "label": "事件发布订阅",
+      "description": "使用 a3s-event 通过统一 EventBus 接入 Memory、NATS、Iggy 或自定义 Provider。",
+      "defaultVersion": "0.4.0",
+      "versions": [
+        {
+          "id": "0.4.0",
+          "label": "0.4.0 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Event 产品概览",
+              "description": "Provider、发布订阅、持久化和交付边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "发布订阅接入",
+              "title": "Event 发布订阅接入",
+              "description": "EventBus、Subject、订阅和自定义 Provider"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "交付与验证",
+              "title": "Event 交付与运行验证",
+              "description": "Ack、DLQ、加密、Broker 限制和故障测试"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "title": "Aster Memory",
+      "label": "记忆与向量索引",
+      "description": "使用 a3s-memory 保存 MemoryItem、证据化记忆节点和调用方向量索引。",
+      "defaultVersion": "0.1.5",
+      "versions": [
+        {
+          "id": "0.1.5",
+          "label": "0.1.5 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Memory 产品概览",
+              "description": "存储、证据化 Repository、向量索引和宿主边界"
+            },
+            {
+              "slug": "repository/",
+              "file": "repository",
+              "label": "存储与 Repository",
+              "title": "Memory 存储与 Repository",
+              "description": "MemoryItem、证据生命周期、修订和持久化"
+            },
+            {
+              "slug": "retrieval/",
+              "file": "retrieval",
+              "label": "向量检索与验证",
+              "title": "Memory 向量检索与验证",
+              "description": "精确 Top-K、SQLite、修订 CAS 和测试"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "search",
+      "title": "Aster Search",
+      "label": "多源检索",
+      "description": "使用 a3s-search 统一访问原生 API、HTTP/RSS 和浏览器来源，并保留结构化执行证据。",
+      "defaultVersion": "3.4.0",
+      "versions": [
+        {
+          "id": "3.4.0",
+          "label": "3.4.0 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Search 产品概览",
+              "description": "多源检索、级联计划、结果和结构回执"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "检索接入",
+              "title": "Search 检索接入",
+              "description": "CLI、Rust 级联、来源选择和 ACL"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "排名与验证",
+              "title": "Search 排名与运行验证",
+              "description": "排名融合、回执、浏览器和可靠性控制"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "vec",
+      "title": "Aster Vec",
+      "label": "向量与全文检索",
+      "description": "在进程内保存文档与向量，使用派生索引提供候选，并通过精确重排返回确定性结果。",
+      "defaultVersion": "0.1.8",
+      "versions": [
+        {
+          "id": "0.1.8",
+          "label": "0.1.8 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Vec 产品概览",
+              "description": "向量与全文检索、精确重排和持久化边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "接入指南",
+              "title": "Vec 接入",
+              "description": "Collection、Schema、CRUD、向量和全文查询"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "运行与验证",
+              "title": "Vec 运行与验证",
+              "description": "WAL、资源上限、维护、平台和性能证据"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "apofasi",
+      "title": "Aster Apofasi",
+      "label": "类型化决策",
+      "description": "使用词法或神经 System-1 引擎返回 choice、score 和 noul 类型化答案。",
+      "defaultVersion": "0.1.1",
+      "versions": [
+        {
+          "id": "0.1.1",
+          "label": "0.1.1 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Apofasi 产品概览",
+              "description": "类型化决策、执行路径、路由和宿主边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "接入指南",
+              "title": "Apofasi 接入",
+              "description": "请求、答案、置信度、门禁和 checkpoint 路由"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "推理与验证",
+              "title": "Apofasi 推理与验证",
+              "description": "checkpoint、设备、feature 和性能证据"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "use",
+      "title": "Aster Use",
+      "label": "扩展包与能力宿主",
+      "description": "使用 a3s-use 和 .aix 管理 Tool、MCP、Skill、OKF 与 UI 扩展，并通过审查计划应用变更。",
+      "defaultVersion": "0.3.3",
+      "versions": [
+        {
+          "id": "0.3.3",
+          "label": "0.3.3 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Use 产品概览",
+              "description": "AIX、五类扩展表面、计划应用和宿主边界"
+            },
+            {
+              "slug": "aix/",
+              "file": "aix",
+              "label": "AIX 包与接入",
+              "title": "AIX 包与接入",
+              "description": "Manifest、文件清单、Registry 和计划应用"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "运行与恢复",
+              "title": "Use 运行与恢复",
+              "description": "作用域、MCP、Registry、状态备份与恢复"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "office",
+      "title": "Aster Office",
+      "label": "文档编辑与自动化",
+      "description": "使用 a3s-office 编辑 Document、Spreadsheet、Presentation、Markdown 和 PDF，并通过 CLI、MCP 或 Rust API 自动化文件流程。",
+      "defaultVersion": "current",
+      "versions": [
+        {
+          "id": "current",
+          "label": "当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Office 产品概览",
+              "description": "五种编辑器、双执行平面、格式和宿主边界"
+            },
+            {
+              "slug": "browser/",
+              "file": "browser",
+              "label": "浏览器接入",
+              "title": "Office 浏览器编辑器接入",
+              "description": "React、Vue、Web Components、Core API 和协作"
+            },
+            {
+              "slug": "automation/",
+              "file": "automation",
+              "label": "原生自动化",
+              "title": "Office 原生自动化",
+              "description": "CLI、MCP、Rust API、协作副本和验证"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "sandbox",
+      "title": "Aster Sandbox",
+      "label": "隔离与执行",
+      "description": "使用 a3s-sandbox 限制命令进程树，或使用 a3s-box 管理 OCI Sandbox 的完整生命周期。",
+      "defaultVersion": "current",
+      "versions": [
+        {
+          "id": "current",
+          "label": "当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Sandbox 产品概览",
+              "description": "a3s-sandbox 与 a3s-box 的职责和选择"
+            },
+            {
+              "slug": "native/",
+              "file": "native",
+              "label": "a3s-sandbox",
+              "title": "a3s-sandbox 命令边界",
+              "description": "原生后端、默认策略、能力探测和 Rust 接口"
+            },
+            {
+              "slug": "box/",
+              "file": "box",
+              "label": "a3s-box",
+              "title": "a3s-box 生命周期与隔离",
+              "description": "OCI 镜像、隔离方式、生命周期和 CLI"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "CLI 与 Rust SDK",
+              "title": "Sandbox 接入与验证",
+              "description": "Rust SDK、构建边界和运行验收"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "boot",
+      "title": "Aster Boot",
+      "label": "模块化服务框架",
+      "description": "使用 a3s-boot 组合模块、类型化 Provider、协议中立管线和可替换适配器。",
+      "defaultVersion": "0.2.0",
+      "versions": [
+        {
+          "id": "0.2.0",
+          "label": "0.2.0 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Boot 产品概览",
+              "description": "模块、Provider、管线和适配器边界"
+            },
+            {
+              "slug": "application/",
+              "file": "application",
+              "label": "应用与管线",
+              "title": "Boot 应用与管线",
+              "description": "模块、Controller、工厂、生命周期和协议"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "运行与验证",
+              "title": "Boot 运行与验证",
+              "description": "Feature、PostgreSQL 队列、安全和测试"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "orm",
+      "title": "Aster ORM",
+      "label": "类型化 SQL",
+      "description": "使用 a3s-orm 构建参数化 SQL，并通过异步 PostgreSQL、SQLite 或自定义 Executor 执行。",
+      "defaultVersion": "0.3.1",
+      "versions": [
+        {
+          "id": "0.3.1",
+          "label": "0.3.1 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster ORM 产品概览",
+              "description": "类型化查询、方言、Executor 和迁移边界"
+            },
+            {
+              "slug": "integration/",
+              "file": "integration",
+              "label": "查询与接入",
+              "title": "ORM 查询与接入",
+              "description": "Schema、Query、Executor 和受控原生 SQL"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "迁移与验证",
+              "title": "ORM 迁移与运行验证",
+              "description": "事务、迁移、连接池和部署验收"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "gateway",
+      "title": "Aster Gateway",
+      "label": "流量数据平面",
+      "description": "使用 a3s-gateway 处理请求准入、模型路由、健康选择、流式响应和快照生命周期。",
+      "defaultVersion": "1.1.1",
+      "versions": [
+        {
+          "id": "1.1.1",
+          "label": "1.1.1 · 当前源码",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Gateway 产品概览",
+              "description": "流量职责、部署模式和产品边界"
+            },
+            {
+              "slug": "quickstart/",
+              "file": "quickstart",
+              "label": "快速开始",
+              "title": "standalone 快速开始",
+              "description": "本地 ACL、配置校验、启动和热更新"
+            },
+            {
+              "slug": "model-routing/",
+              "file": "model-routing",
+              "label": "模型路由与 P/D",
+              "title": "模型路由、P/D 分离与缓存亲和",
+              "description": "自动目标选择、Prefill/Decode 分离和 KV Cache 亲和"
+            },
+            {
+              "slug": "traffic/",
+              "file": "traffic",
+              "label": "流量与快照",
+              "title": "流量与快照",
+              "description": "协议、健康选择、Cloud、Box 和托管 Runtime Service"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "部署与安全",
+              "title": "部署与安全",
+              "description": "静态对象、用量投递、Node API 和运行验收"
+            }
+          ],
+          "components": "_components"
+        }
+      ]
+    },
+    {
+      "id": "power",
+      "title": "Aster Power",
+      "label": "模型推理执行",
+      "description": "使用 a3s-power 管理模型制品、设备、准入、取消、分布式执行和执行回执。",
+      "defaultVersion": "0.10.0",
+      "versions": [
+        {
+          "id": "0.10.0",
+          "label": "0.10.0 · pre-v1",
+          "sourceRef": "8729d7c84a2d887c61dc206ba47bf8a63425e768",
+          "pages": [
+            {
+              "slug": "",
+              "file": "index",
+              "label": "产品概览",
+              "title": "Aster Power 产品概览",
+              "description": "模型中立执行层、产品边界和发布状态"
+            },
+            {
+              "slug": "serving/",
+              "file": "serving",
+              "label": "服务与接入",
+              "title": "Power 服务与嵌入式接入",
+              "description": "OpenAI 服务、嵌入式运行时、制品和后端"
+            },
+            {
+              "slug": "distributed-inference/",
+              "file": "distributed-inference",
+              "label": "分布式推理与缓存",
+              "title": "Power 分布式推理与缓存",
+              "description": "worker 观测、P/D 分离、状态传输和前缀缓存"
+            },
+            {
+              "slug": "operations/",
+              "file": "operations",
+              "label": "运行与验证",
+              "title": "Power 运行与发布验证",
+              "description": "资源边界、性能证据、feature 和发布门"
             }
           ],
           "components": "_components"

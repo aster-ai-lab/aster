@@ -63,11 +63,9 @@ pub(super) fn validate_payload(
                 logical_resume.run_id
             )));
         }
-        if payload.snapshot.session.cognitive_package_binding
-            != source.snapshot.cognitive_package_binding
-        {
+        if payload.snapshot.session.package_binding != source.snapshot.package_binding {
             return Err(SessionCheckpointError::InvalidPayload(format!(
-                "logical resume source run {:?} and its portable Session snapshot carry different cognitive authorities",
+                "logical resume source run {:?} and its portable Session snapshot carry different package authorities",
                 logical_resume.run_id
             )));
         }

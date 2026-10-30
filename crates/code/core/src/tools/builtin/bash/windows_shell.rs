@@ -66,7 +66,10 @@ pub(crate) fn windows_shell_guidance(shell: Option<&std::path::Path>) -> String 
         return "Shell: no PowerShell was found, so the `bash` tool cannot run commands on this machine.".to_string();
     };
     let legacy = shell
-        .file_name()
+        .as_os_str()
+        .to_string_lossy()
+        .rsplit(|character| character == '\\' || character == '/')
+        .next()
         .is_some_and(|name| name.eq_ignore_ascii_case("powershell.exe"));
     let name = if legacy {
         "Windows PowerShell 5.1"

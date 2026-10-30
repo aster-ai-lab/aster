@@ -23,7 +23,15 @@ pub(crate) const REGISTRY: &[(&str, &[(&str, &str)])] = &[
             ),
             (
                 "turn_progress_delta_v1",
-                "a_zero_delta_stall_terminates_instead_of_admitting_forever",
+                "historical_negative_progress_preserves_already_admitted_slices",
+            ),
+            (
+                "turn_progress_delta_v2",
+                "growing_uncertainty_does_not_reset_stall_across_replay_and_reopen",
+            ),
+            (
+                "turn_progress_delta_v3",
+                "net_zero_write_cycles_cannot_refresh_automatic_progress_after_reopen",
             ),
         ],
     ),
@@ -123,6 +131,8 @@ fn every_registered_dimension_covers_all_its_members() {
             "ProgressBasis" => vec![
                 ProgressBasis::ObservedWorkspaceMutationV1.as_str(),
                 ProgressBasis::TurnProgressDeltaV1.as_str(),
+                ProgressBasis::TurnProgressDeltaV2.as_str(),
+                ProgressBasis::TurnProgressDeltaV3.as_str(),
             ],
             "GoalTickDecisionV1" => vec![
                 GoalTickDecisionV1::Advance.as_str(),

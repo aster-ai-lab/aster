@@ -553,7 +553,12 @@ async fn close_preserves_accepted_controls_and_run_slots_and_drains_memory_befor
         // Close seals admission, while preserving every accepted control and
         // original slot. Sealing is not proof that the queue has drained.
         before["active"] = serde_json::Value::Bool(false);
-        let ticket = f.session.memory.as_ref().unwrap().enqueue_llm_extraction();
+        let ticket = f
+            .session
+            .memory
+            .as_ref()
+            .unwrap()
+            .enqueue_llm_extraction("fixture-session");
         let mut close = Box::pin(f.session.close_handle.close());
         assert!(futures::poll!(close.as_mut()).is_pending());
         assert!(f.session.is_closed());

@@ -363,6 +363,73 @@ async fn forwarder_exposes_and_persists_only_sanitized_events() {
 }
 
 #[tokio::test]
+async fn typed_failure_flushes_to_stream_store_and_hooks_without_waiting_for_eof() {
+    let run_store = Arc::new(crate::run::InMemoryRunStore::new());
+    let run = run_store.create_run("session-1", "prompt").await;
+    let hook = Arc::new(RecordingRuntimeEvents::default());
+    let sink = RuntimeEventSink::new(RuntimeEventSinkConfig {
+        run_store: Arc::clone(&run_store),
+        run_id: run.id.clone(),
+        session_id: "session-1".into(),
+        hook_executor: Some(hook.clone()),
+        security_provider: Some(Arc::new(crate::security::DefaultSecurityProvider::new())),
+        persistence_state: persistence_state(),
+        active_tools: active_tools(),
+        subagent_tasks: Arc::new(crate::subagent_task_tracker::InMemorySubagentTaskTracker::new()),
+    });
+    let (runtime_tx, runtime_rx) = mpsc::channel(4);
+    let (stream_tx, mut stream_rx) = mpsc::channel(4);
+    let forwarder = sink.spawn_forwarder(runtime_rx, stream_tx, None, None);
+    for text in ["sensitive@", "example.com"] {
+        runtime_tx
+            .send(AgentEvent::TextDelta { text: text.into() })
+            .await
+            .unwrap();
+    }
+    let terminal = AgentEvent::ToolEffectUnresolved {
+        error: crate::harness_loop::ToolEffectUnresolved {
+            obligation_ids: vec!["original-op".into()],
+        },
+    };
+    runtime_tx.send(terminal.clone()).await.unwrap();
+    let mut streamed = Vec::new();
+    for _ in 0..2 {
+        streamed.push(
+            tokio::time::timeout(std::time::Duration::from_secs(2), stream_rx.recv())
+                .await
+                .expect("failure must flush before the producer closes")
+                .unwrap(),
+        );
+    }
+    assert!(
+        matches!(&streamed[0], AgentEvent::TextDelta { text } if text.contains("REDACTED:EMAIL"))
+    );
+    assert_eq!(
+        serde_json::to_value(&streamed[1]).unwrap(),
+        serde_json::to_value(terminal).unwrap()
+    );
+    drop(runtime_tx);
+    forwarder.await.unwrap();
+    assert!(stream_rx.recv().await.is_none());
+    let persisted: Vec<_> = run_store
+        .events(&run.id)
+        .await
+        .into_iter()
+        .map(|record| record.event)
+        .collect();
+    let hooked = hook.events.lock().unwrap().clone();
+    for events in [&streamed, &persisted, &hooked] {
+        assert!(!serde_json::to_string(events)
+            .unwrap()
+            .contains("sensitive@"));
+        assert_eq!(
+            serde_json::to_value(events).unwrap(),
+            serde_json::to_value(&streamed).unwrap()
+        );
+    }
+}
+
+#[tokio::test]
 async fn split_stream_secret_is_sanitized_before_stream_store_and_hooks() {
     let run_store = Arc::new(crate::run::InMemoryRunStore::new());
     let run = run_store.create_run("session-1", "prompt").await;

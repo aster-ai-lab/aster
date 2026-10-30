@@ -43,11 +43,19 @@ async fn explicit_effort_default_clears_override_and_absence_preserves_selection
     let mut launch = tests::test_launch(Some(root.path().join("store")));
     launch.workspace = root.path().into();
     let host = A3sCodeAgent::new(launch);
-    let id = host
+    let created = host
         .new_session(acp::NewSessionRequest::new(root.path()))
         .await
-        .unwrap()
-        .session_id;
+        .unwrap();
+    for model in created.models.unwrap().available_models {
+        let meta = model.meta.unwrap();
+        assert!(meta["reasoningEfforts"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|entry| entry["value"] == "default"));
+    }
+    let id = created.session_id;
     assert_eq!(
         host.effort.lock().await.map(|effort| effort.token),
         Some("high")
@@ -186,7 +194,10 @@ async fn effort_switch_preserves_history_and_exposes_existing_anthropic_none_sem
             } else {
                 "application/json"
             };
-            let response = format!("HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len());
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            );
             socket
                 .get_mut()
                 .write_all(response.as_bytes())

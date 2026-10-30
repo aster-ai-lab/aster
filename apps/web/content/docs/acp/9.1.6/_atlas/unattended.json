@@ -1,0 +1,34 @@
+{
+  "title": "无人值守仍然需要准入与结果",
+  "description": "缺少成功动作证据时，适配器报告失败。无人值守不会默认批准工具。",
+  "steps": [
+    {
+      "title": "启动前固定边界",
+      "body": "宿主选择任务、截止时间和结果文件。",
+      "focus": [
+        "input",
+        "admit"
+      ]
+    },
+    {
+      "title": "沿原路径有界执行",
+      "body": "目标与 Run 使用现有准入和权限。",
+      "focus": [
+        "goal",
+        "run"
+      ]
+    },
+    {
+      "title": "按实际证据写结果",
+      "body": "缺少动作证据或结果写入失败时，流程保留失败。",
+      "focus": [
+        "settle",
+        "report"
+      ],
+      "source": {
+        "path": "crates/code/acp/src/agent/unattended_turn.rs",
+        "match": "pub(super) async fn unattended_prompt("
+      }
+    }
+  ]
+}

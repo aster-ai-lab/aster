@@ -86,7 +86,7 @@ fn projected_context(name: &str, marker: &str) -> Arc<dyn ContextProvider> {
 }
 
 struct BoundContextProvider {
-    binding: crate::cognitive_context::CognitivePackageBindingV1,
+    binding: crate::package_context::PackageBindingV1,
 }
 
 #[async_trait]
@@ -95,9 +95,7 @@ impl ContextProvider for BoundContextProvider {
         "projected-bound-context"
     }
 
-    fn cognitive_package_binding(
-        &self,
-    ) -> Option<&crate::cognitive_context::CognitivePackageBindingV1> {
+    fn package_binding(&self) -> Option<&crate::package_context::PackageBindingV1> {
         Some(&self.binding)
     }
 
@@ -106,10 +104,10 @@ impl ContextProvider for BoundContextProvider {
     }
 }
 
-fn cognitive_binding() -> crate::cognitive_context::CognitivePackageBindingV1 {
+fn package_binding() -> crate::package_context::PackageBindingV1 {
     let generation_digest =
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-    let knowledge = crate::cognitive_context::CognitiveKnowledgeBindingV1::new(
+    let knowledge = crate::package_context::PackageKnowledgeBindingV1::new(
         "domain-knowledge",
         "0.2",
         "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -117,14 +115,14 @@ fn cognitive_binding() -> crate::cognitive_context::CognitivePackageBindingV1 {
         generation_digest,
     )
     .unwrap();
-    crate::cognitive_context::CognitivePackageBindingV1::new(
+    crate::package_context::PackageBindingV1::new(
         "contra-sense/handbook",
         "0.1.0",
         7,
         generation_digest,
         "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
         knowledge,
-        crate::cognitive_context::CognitiveContextLimits::default(),
+        crate::package_context::PackageContextLimits::default(),
     )
     .unwrap()
 }
@@ -269,7 +267,7 @@ async fn projected_context_cannot_shadow_a_session_static_provider() {
 
 #[tokio::test]
 async fn projected_context_cannot_bypass_the_persisted_knowledge_binding() {
-    let session = test_session("projected-context-cognitive-binding").await;
+    let session = test_session("projected-context-package-binding").await;
     let acquired = Arc::new(AtomicUsize::new(0));
     let dropped = Arc::new(AtomicUsize::new(0));
     let upstream = use_generation(1, 'a');
@@ -283,7 +281,7 @@ async fn projected_context_cannot_bypass_the_persisted_knowledge_binding() {
         SessionCapabilityBatch::from_use_projection(set, provider(upstream, &acquired, &dropped))
             .unwrap();
     let provider: Arc<dyn ContextProvider> = Arc::new(BoundContextProvider {
-        binding: cognitive_binding(),
+        binding: package_binding(),
     });
     batch
         .stage_value(

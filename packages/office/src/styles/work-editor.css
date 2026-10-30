@@ -1,3 +1,8 @@
+.work-document-editor {
+  --work-office-accent: #185abd;
+  --work-office-control-accent: var(--work-office-accent);
+}
+
 .work-editor-shell {
   display: flex;
   min-width: 0;
@@ -714,36 +719,36 @@
   display: none;
 }
 
-.work-office-toolbar button {
+:where(.work-office-toolbar) button {
   display: inline-flex;
-  min-width: 29px;
-  height: 29px;
+  min-width: 30px;
+  height: 30px;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: 6px;
   padding: 0 7px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
   color: var(--a3s-muted);
-  font-size: 10px;
+  font-size: 13px;
   cursor: pointer;
 }
 
-.work-office-toolbar button:hover:not(:disabled),
-.work-office-toolbar button.active {
-  background: var(--a3s-panel-soft);
+:where(.work-office-toolbar) button:hover:not(:disabled) {
+  background: var(--spec-hover-row);
   color: var(--a3s-ink);
 }
 
-.work-office-toolbar button.active {
-  color: var(--a3s-blue);
+:where(.work-office-toolbar) button.active {
+  background: var(--a3s-panel-strong);
+  color: var(--a3s-ink);
 }
 
-.work-office-toolbar button:disabled {
+:where(.work-office-toolbar) button:disabled {
   cursor: not-allowed;
-  opacity: 0.35;
+  opacity: 0.4;
 }
 
 .work-color-tool {

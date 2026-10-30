@@ -70,6 +70,7 @@ export function SpreadsheetFormatCellsDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.formatCells.title')}
       description={formatCellsSelectionDescription(source, messages)}
       className="work-spreadsheet-format-cells-dialog"

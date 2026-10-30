@@ -13,6 +13,13 @@ struct Model {
     calls: AtomicUsize,
 }
 
+fn successful_tool_json(text: &str) -> Value {
+    let payload = text
+        .strip_prefix("Tool exit code: 0\n")
+        .expect("successful tool result must expose its zero exit status");
+    serde_json::from_str(payload).expect("tool payload must remain JSON")
+}
+
 #[async_trait]
 impl LlmClient for Model {
     async fn complete(
@@ -133,7 +140,7 @@ async fn live_tool_turn_reads_only_with_read_authority_and_permission() {
             .expect("actual governed tool receipt");
         assert_eq!(ok, read_allowed && permission_allowed, "{content}");
         if ok {
-            let value: Value = serde_json::from_str(&content).unwrap();
+            let value: Value = successful_tool_json(&content);
             assert_eq!(value["kind"], "xlsx");
             assert!(value["entries"]
                 .as_array()

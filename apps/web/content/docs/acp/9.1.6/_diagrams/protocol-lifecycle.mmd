@@ -1,0 +1,14 @@
+sequenceDiagram
+  accTitle: 从建立连接到结束一轮
+  accDescr: 先协商，再建立会话。prompt 响应只描述本轮协议终态。
+  autonumber
+  participant client as 客户端
+  participant agent as ACP 代理
+  participant core as Core 会话
+  client->>agent: initialize
+  client->>agent: session/new 或 load
+  agent->>core: 创建或恢复会话
+  client->>agent: session/prompt
+  core-->>agent: 运行事件
+  agent-->>client: session/update
+  agent-->>client: prompt 响应

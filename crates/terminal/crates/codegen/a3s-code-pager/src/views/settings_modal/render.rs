@@ -140,6 +140,7 @@ pub fn render_settings_modal(
 
     let Some(ModalContentArea {
         content: content_area,
+        footer: footer_area,
         ..
     }) =
         modal_window::render_modal_window(buf, full_area, &mut state.window, &modal_config, &theme)
@@ -158,6 +159,7 @@ pub fn render_settings_modal(
         // Confirmation overlay replaces the search bar; the row list renders dimmed underneath
         // Hit-rects reset so clicks only route to the y/n footer buttons
         render_reset_confirm_overlay(buf, content_area, state, &theme, o);
+        buf.set_style(footer_area, Style::default().remove_modifier(Modifier::DIM));
         return true;
     }
 

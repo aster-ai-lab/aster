@@ -1,0 +1,68 @@
+export const meta = {
+  title: 'Power 分布式推理与缓存',
+  description: 'worker 观测、Prefill/Decode 分离、opaque 状态传输和前缀缓存边界。',
+  label: '分布式推理与缓存',
+  updated: '2026-10-29',
+};
+
+Power 执行模型并报告本地能力。Gateway 选择 worker 并编排请求。Cloud 负责部署代际、放置和快照。
+
+## Worker 观测
+
+`GET /health` 中的 `worker` 对象使用 `a3s.power.worker-observation.v1`。观测包含进程 epoch、观测代际、有效期、阶段就绪、准入计数、缓存压力和状态传输健康。
+
+观测不包含租户、凭据、提示词、缓存键或 KV 字节。Cloud 负责把观测绑定到部署单元。Gateway 只接受完整且未过期的关联快照。
+
+`worker_observation_ttl_seconds` 默认是 120 秒，可接受范围为 1 至 300 秒。该值是新鲜度边界，不是消费者可以延长的租约。
+
+## P/D 分离
+
+默认服务只宣告 `aggregated`。P/D 组合必须同时提供 `StateTransferService` 和 `ServingPhaseExecutor`，并绑定相同的执行配置摘要与本地角色。
+
+只有两个适配器均为 `Injected`，且满足 `ProductionAdapterContract::REQUIRED` 和 Ready 时，worker 才可宣告对应阶段。Empty 占位实现和缺少任一适配器的组合会失败闭合。
+
+Gateway 调用顺序固定为 `decode/prepare`、`prefill/execute`、`decode/execute`。传输完成只证明状态移动。decode 适配器返回响应流后，本次 decode 才成功。
+
+<DocTable caption="P/D 适配器的职责" headers={['职责', '所有者', 'Power 保存的内容']} rows={[
+  ['内存注册与释放', '具体传输适配器', 'opaque 本地句柄和声明字节数'],
+  ['传输认证、加密和驱动', '具体传输适配器', '不保存 KV 载荷'],
+  ['阶段执行与模型状态语义', '具体阶段执行适配器', '模型中立的执行生命周期'],
+  ['准入、期限、取消和清理核对', 'Power', '有界计数和租约状态'],
+]} />
+
+`BufferedHostLoopback` 提供跨进程协议和认证 loopback 证据。该证据不等于高速网络证据，也不证明任意模型的语义等价。
+
+`DirectDeviceMemoryPull` 是高速传输的产品端口。当前健康状态保持 Unavailable，数据路径拒绝工作，也不会宣告 P/D 就绪。
+
+部署具体模型前，必须验证状态布局、执行配置、目标拓扑和清理行为。生产快照与跨产品验收仍需完成。
+
+## KV Cache 亲和与前缀复用
+
+Gateway 的缓存亲和用于选择 worker。Power 的前缀缓存用于在实际后端复用模型状态。路由提示不证明 KV 已驻留。
+
+调用方使用 `prompt_cache_key` 显式启用前缀复用。键长度为 1 至 256 个 UTF-8 字节，且不能包含控制字符或首尾空白。
+
+<DocTable caption="前缀缓存的后端支持" headers={['后端', '文本路径', '请求缓存键时的行为']} rows={[
+  ['llamacpp / llamacpp-cuda', 'chat 和 completion', '复用可精确回滚的最长相同前缀'],
+  ['mistralrs', '未实现', '返回 prompt_cache_unsupported'],
+  ['picolm', '未实现', '返回 prompt_cache_unsupported'],
+  ['proxy', '不保证', '不支持时返回 prompt_cache_unsupported'],
+]} />
+
+Power 按认证身份、端点、模型和调用方键分域。原始键不会直接成为后端 map key，也不会进入执行回执。
+
+缓存命中表示至少复用一个 token。命中本身不证明延迟下降。混合 recurrent 模型的回滚窗口也可能使较早的分叉后缀成为 miss。
+
+## 与推测解码的边界
+
+当前 llama.cpp 适配器不能组合缓存会话和原生 MTP。显式 `spec_mode = "mtp"` 与缓存键同时出现时，请求失败闭合。
+
+`spec_mode = "auto"` 遇到缓存键时选择 target-only。前缀缓存减少重复 prefill，推测解码改变生成路径，两者的指标不能混用。
+
+Gateway 的详细路由条件见[模型路由、P/D 分离与缓存亲和](../../../gateway/1.1.1/model-routing/)。
+
+## 实现依据
+
+- [Worker 观测与状态传输](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/distributed-serving-observation.md)
+- [带键前缀缓存](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/prompt-prefix-cache.md)
+- [Gateway 分布式推理路由](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/distributed-inference-routing.md)

@@ -76,6 +76,59 @@ fn every_manual_document_is_indexed_once_under_one_kind() {
 }
 
 #[test]
+fn current_manuals_only_document_the_local_rust_sdk() {
+    let dir = manual_dir();
+    let retired = [
+        "@a3s-lab/code",
+        "from a3s_code import",
+        "github.com/A3S-Lab/Code/sdk/go",
+        "sdk/node/",
+        "sdk/python/",
+        "sdk/go/",
+        "sdk_api_alignment_check.mjs",
+    ];
+    let mut problems = Vec::new();
+    let mut directories = vec![dir.clone()];
+    while let Some(directory) = directories.pop() {
+        for entry in std::fs::read_dir(directory).expect("manual directory") {
+            let entry = entry.expect("manual entry");
+            let path = entry.path();
+            if entry.file_type().expect("manual file type").is_dir() {
+                directories.push(path);
+                continue;
+            }
+            if path.extension().and_then(|value| value.to_str()) != Some("md") {
+                continue;
+            }
+            let text = std::fs::read_to_string(&path).expect("manual text");
+            for instruction in retired {
+                if text.contains(instruction) {
+                    problems.push(format!("{}: {instruction}", path.display()));
+                }
+            }
+        }
+    }
+    assert!(!dir.join("NPM_TRUSTED_PUBLISHING.md").exists());
+    for retired in [
+        "sdk/node",
+        "sdk/python",
+        "sdk/go",
+        "bindings/node",
+        "bindings/python",
+    ] {
+        assert!(
+            !dir.join("..").join(retired).exists(),
+            "retired SDK: {retired}"
+        );
+    }
+    assert!(
+        problems.is_empty(),
+        "retired SDK instructions:\n{}",
+        problems.join("\n")
+    );
+}
+
+#[test]
 fn the_index_rejects_an_unknown_kind_and_an_unlisted_entry_shape() {
     assert!(index_entries("## Guide\n## Reference\n## Notes\n").is_err());
     assert!(index_entries("- [a](a.md)\n## Guide\n## Reference\n## Release\n").is_err());

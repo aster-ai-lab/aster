@@ -28,12 +28,12 @@ continuations.
   channel/fallback metadata for partial coverage. Ranked source results report
   displayed line ranges separately from full chunk ranges. If the output budget
   is reached, narrow the query or path; do not invent a continuation cursor.
-- `edit`: pass `file_path`, `old_string`, and `new_string`; set `replace_all`
-  only when every occurrence should change. For `replace_all` or any mechanical
-  change whose scope is uncertain, first use `dry_run`, inspect the diff and
-  replacement count, then apply with that count as `expected_replacements` and
-  an appropriate `max_replacements`. On a count mismatch or version conflict,
-  re-read and re-preview instead of weakening the guards.
+- `edit`: pass `file_path`, `old_string`, `new_string`; use `replace_all` only
+  for every occurrence. Batch same-file hunks in ONE `edits` array of
+  `{old_string,new_string,replace_all?}` objects, validated and applied
+  atomically. For uncertain mechanical changes, `dry_run`, inspect diff/count,
+  then apply with `expected_replacements` and `max_replacements`; on mismatch or
+  version conflict, re-read and re-preview without weakening guards.
 - `write`: pass `file_path` and `content`. Treat overwrite as a mutation that
   requires inspected context; use `mode: "append"` only with the exact current
   UTF-8 `expected_offset`.

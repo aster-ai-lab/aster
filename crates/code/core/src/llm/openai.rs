@@ -227,7 +227,7 @@ impl OpenAiClient {
                 .iter()
                 .map(|(key, value)| (key.clone(), value.clone())),
         );
-        headers
+        super::http::invocation_headers(headers)
     }
 
     pub(crate) fn convert_messages(&self, messages: &[Message]) -> Vec<serde_json::Value> {
@@ -395,13 +395,23 @@ impl OpenAiClient {
 
     fn request_reasoning_effort(&self) -> Option<&'static str> {
         let token = self.reasoning_effort.as_deref()?;
-        if self.provider_name == "zhipu" || super::effort::is_glm_model(&self.model) {
+        let url = url::Url::parse(&self.base_url).ok();
+        let host = url.as_ref().and_then(url::Url::host_str);
+        // A model name does not declare which vendor extensions a proxy accepts.
+        if matches!(self.provider_name.as_str(), "glm" | "zhipu" | "bigmodel") {
             return super::effort::glm_reasoning_effort(token);
         }
-        if super::effort::is_deepseek_model(&self.model) {
+        if (self.provider_name == "deepseek" || host == Some("api.deepseek.com"))
+            && super::effort::is_deepseek_model(&self.model)
+        {
             return super::effort::deepseek_reasoning_effort(token);
         }
-        if super::effort::is_openai_reasoning_model(&self.model) {
+        if (matches!(
+            self.provider_name.as_str(),
+            "openai" | "gpt" | "grok" | "xai"
+        ) || host == Some("api.openai.com"))
+            && super::effort::is_openai_reasoning_model(&self.model)
+        {
             return super::effort::openai_reasoning_effort(token);
         }
         None

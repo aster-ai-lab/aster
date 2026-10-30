@@ -313,6 +313,28 @@ pub struct AgentMemory {
     maintenance_claimed: Arc<AtomicBool>,
 }
 
+/// Read-only observations of the original completed-turn extraction FIFO.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum MemoryExtractionStatus {
+    Pending,
+    Running,
+    Completed,
+    Failed,
+    Cancelled,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MemoryExtractionTask {
+    pub id: String,
+    pub session_id: String,
+    pub status: MemoryExtractionStatus,
+    pub created_ms: u64,
+    pub updated_ms: u64,
+    pub completed_ms: Option<u64>,
+    pub summary: Option<String>,
+}
+
 #[derive(Default)]
 struct MemoryExtractionQueue {
     state: std::sync::Mutex<MemoryExtractionQueueState>,
@@ -323,6 +345,7 @@ struct MemoryExtractionQueue {
 #[derive(Default)]
 struct MemoryExtractionQueueState {
     tail: Option<oneshot::Receiver<()>>,
+    tasks: VecDeque<MemoryExtractionTask>,
 }
 
 /// A FIFO ticket for one completed-turn extraction.
@@ -332,6 +355,7 @@ struct MemoryExtractionQueueState {
 /// yet. Chaining each ticket to its predecessor preserves completed-turn order
 /// without blocking streaming callers.
 pub(crate) struct MemoryExtractionTicket {
+    id: String,
     predecessor: Option<oneshot::Receiver<()>>,
     completion: Option<oneshot::Sender<()>>,
     queue: Arc<MemoryExtractionQueue>,
@@ -342,11 +366,56 @@ impl MemoryExtractionTicket {
         if let Some(predecessor) = self.predecessor.take() {
             let _ = predecessor.await;
         }
+        self.update(MemoryExtractionStatus::Running, None);
+    }
+
+    pub(crate) fn finish(&self, status: MemoryExtractionStatus, summary: String) {
+        self.update(status, Some(summary));
+    }
+
+    fn update(&self, status: MemoryExtractionStatus, summary: Option<String>) {
+        let mut state = self
+            .queue
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if let Some(task) = state.tasks.iter_mut().find(|task| task.id == self.id) {
+            if task.completed_ms.is_some() {
+                return;
+            }
+            task.updated_ms = chrono::Utc::now().timestamp_millis().max(0) as u64;
+            if !matches!(
+                status,
+                MemoryExtractionStatus::Pending | MemoryExtractionStatus::Running
+            ) {
+                task.completed_ms = Some(task.updated_ms);
+            }
+            task.status = status;
+            task.summary = summary;
+        }
+        // Keep active tickets and only the most recent 100 terminal observations.
+        while state
+            .tasks
+            .iter()
+            .filter(|task| task.completed_ms.is_some())
+            .count()
+            > 100
+        {
+            let Some(index) = state
+                .tasks
+                .iter()
+                .position(|task| task.completed_ms.is_some())
+            else {
+                break;
+            };
+            state.tasks.remove(index);
+        }
     }
 }
 
 impl Drop for MemoryExtractionTicket {
     fn drop(&mut self) {
+        self.update(MemoryExtractionStatus::Failed, Some("interrupted".into()));
         if let Some(completion) = self.completion.take() {
             let _ = completion.send(());
         }
@@ -753,7 +822,8 @@ impl AgentMemory {
         self.llm_extraction_max_input_chars
     }
 
-    pub(crate) fn enqueue_llm_extraction(&self) -> MemoryExtractionTicket {
+    pub(crate) fn enqueue_llm_extraction(&self, session_id: &str) -> MemoryExtractionTicket {
+        let id = uuid::Uuid::new_v4().to_string();
         let (completion, receiver) = oneshot::channel();
         let predecessor = {
             let mut state = self
@@ -761,14 +831,38 @@ impl AgentMemory {
                 .state
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
+            let now = chrono::Utc::now().timestamp_millis().max(0) as u64;
+            state.tasks.push_back(MemoryExtractionTask {
+                id: id.clone(),
+                session_id: session_id.to_owned(),
+                status: MemoryExtractionStatus::Pending,
+                created_ms: now,
+                updated_ms: now,
+                completed_ms: None,
+                summary: None,
+            });
             state.tail.replace(receiver)
         };
         self.extraction_queue.pending.fetch_add(1, Ordering::AcqRel);
         MemoryExtractionTicket {
+            id,
             predecessor,
             completion: Some(completion),
             queue: Arc::clone(&self.extraction_queue),
         }
+    }
+
+    /// No prompts, model output, credentials, or stored memory contents cross this observation seam.
+    pub fn extraction_tasks(&self, session_id: &str) -> Vec<MemoryExtractionTask> {
+        self.extraction_queue
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .tasks
+            .iter()
+            .filter(|task| task.session_id == session_id)
+            .cloned()
+            .collect()
     }
 
     /// Wait until every extraction registered before this call has settled.

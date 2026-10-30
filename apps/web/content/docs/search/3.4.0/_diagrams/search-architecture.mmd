@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Search 的多源检索与结构边界
+  accDescr: 查询按级联计划访问来源。来源结果经过统一 Engine 边界、URL 去重和排名融合。结构回执不判断网页语义。
+  query["一个 SearchQuery"] --> tiers["级联计划<br/>API → HTTP/RSS → Headless"]
+  tiers --> engines["Engine / ProviderEngine<br/>并发执行与失败保留"]
+  engines --> normalize["URL 规范化与去重"]
+  normalize --> fusion["来源排名融合"]
+  fusion --> results["SearchResults + Cascade Receipt"]
+  host["调用方"] -. 语义评估与事实核验 .-> results

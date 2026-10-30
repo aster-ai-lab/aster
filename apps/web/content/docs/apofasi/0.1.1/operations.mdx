@@ -1,0 +1,70 @@
+export const meta = {
+  title: 'Apofasi 推理与验证',
+  description: 'checkpoint、设备、feature、分组决策、性能证据和验收。',
+  label: '推理与验证',
+  updated: '2026-10-29',
+};
+
+神经推理是可选能力。默认词法路径不需要 checkpoint，也不加载 ML framework。
+
+## Checkpoint 布局
+
+神经运行使用 `APOFASI_CHECKPOINT` 指定目录：
+
+```text
+checkpoint/
+├── rl_agent_config.json
+├── model.safetensors
+├── encoder/config.json
+└── tokenizer/tokenizer.json
+```
+
+`rl_agent_config.json` 保存序列预算、温度与 encoder 信息。`model.safetensors` 保存 encoder、类型嵌入、决策头、scorer 和 act head。加载器检查名称和形状。
+
+一个根目录可以包含 `english/`、`multilingual/` 和 `typed-decisions/` 子目录。`train` feature 提供 `PublishLayout::validate` 校验发布布局。
+
+## Feature 与设备
+
+<DocTable caption="Apofasi 的 feature 与设备选择" headers={['Feature', '作用', '注意事项']} rows={[
+  ['router', '默认启用脚本检测与 checkpoint 路由', '不加载神经模型'],
+  ['infer', '启用 Candle 神经推理', '需要有效 checkpoint'],
+  ['metal', '启用 Candle Metal', '适用于支持的 Apple 设备'],
+  ['mlx', '启用 Apple MLX decision forward', '通过 MLX_ROOT 链接预构建 libmlx'],
+  ['cuda', '启用 Candle CUDA', '需要兼容的 NVIDIA 环境'],
+  ['train', '启用 RLCD 训练与发布布局', '训练数据与校准另由宿主管理'],
+  ['cli', '构建 a3s-apofasi 二进制', '用于 smoke 与 bench'],
+]} />
+
+设备在加载时解析一次。Apple Silicon 优先选择 MLX 或 Candle Metal，NVIDIA 使用 CUDA，其他路径使用 Candle CPU f32。加速器 OOM 会回退到 CPU 并记录结构化警告。
+
+## 决策与延迟边界
+
+一批可以放入预算的问题共享一次 encoder forward。高基数选择需要分组和多次 forward，实际延迟随组数变化。
+
+不要把分组后的延迟写成单 forward 延迟。基准还必须记录问题数、选项数、序列长度、设备和 checkpoint。
+
+## 性能证据的解释
+
+README 中的 Jev 对比使用本地 MLX warm timing 与已发布的 hosted API 数据。Jev 没有在同一台机器上运行，因此这些数字不是同机配对结果。
+
+AG News、DAIR Emotion 和 Banking77 的准确率差异必须同时报告。Banking77 的高基数选择需要分组，不能只报告速度提升。
+
+这些结果不是通用准确率或容量承诺。领域准确率需要独立微调与验证，不能从 zero-shot 结果推断。
+
+## 验收清单
+
+1. 运行 `cargo test --locked`，验证默认词法与路由路径。
+2. 使用有效 checkpoint 验证名称、形状和 tokenizer 加载。
+3. 验证缺失或损坏 checkpoint 不会回退到伪造答案。
+4. 验证 MLX、Metal、CUDA 不可用时按设备策略处理。
+5. 验证高基数选择的分组与胜者比较。
+6. 记录每次 forward 的问题数、选项数、序列长度和设备。
+7. 在独立评测集上检查准确率、Brier、ECE 和人工升级比例。
+
+推理导出入口见 <SourceRef path="crates/apofasi/src/infer/mod.rs" match="pub use registry::CheckpointRegistry;">CheckpointRegistry</SourceRef>。
+
+## 实现依据
+
+- [推理架构与设备策略](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/ARCHITECTURE.md)
+- [checkpoint 发布布局](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/docs/publish-layout.md)
+- [性能数据与限制](https://github.com/aster-ai-lab/aster/blob/main/crates/apofasi/README.md)

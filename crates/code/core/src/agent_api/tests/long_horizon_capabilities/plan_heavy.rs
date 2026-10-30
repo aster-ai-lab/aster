@@ -36,14 +36,22 @@ impl crate::llm::LlmClient for PlanHeavyClient {
         let call = self.calls.fetch_add(1, Ordering::SeqCst);
         let message = if call < 12 {
             let block = if call.is_multiple_of(2) {
+                let mut plan = (0..=call / 2)
+                    .map(|inspection| {
+                        serde_json::json!({
+                            "step": format!("inspect evidence {inspection}"),
+                            "status": "completed",
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                plan.extend([
+                    serde_json::json!({ "step": "fix", "status": "in_progress" }),
+                    serde_json::json!({ "step": "verify", "status": "pending" }),
+                ]);
                 tool_use(
                     &format!("ph-plan-{call}"),
                     "update_plan",
-                    serde_json::json!({ "plan": [
-                        { "step": "inspect", "status": "in_progress" },
-                        { "step": "fix", "status": "pending" },
-                        { "step": "verify", "status": "pending" },
-                    ]}),
+                    serde_json::json!({ "plan": plan }),
                 )
             } else {
                 tool_use(
@@ -153,6 +161,9 @@ pub(super) async fn run_plan_heavy_choreography() {
                 ),
         )
         .unwrap();
+    if !native_bash_qualified(&session) {
+        return;
+    }
 
     let result = session
         .send(
@@ -165,7 +176,8 @@ pub(super) async fn run_plan_heavy_choreography() {
     // refusal cannot conceal the original invalid-edit regression.
     assert_eq!(
         std::fs::read_to_string(root.join("src/impl.mjs")).unwrap(),
-        AFTER
+        AFTER,
+        "plan-heavy result: {result:?}"
     );
     assert_eq!(
         std::fs::read_to_string(root.join("test.mjs")).unwrap(),

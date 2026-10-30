@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, Dialog } from '../../../design-system/primitives';
+import { DialogPresence, Button, Dialog } from '../../../design-system/primitives';
 import type { WorkDocumentBookmarkReferenceTarget } from '../work-document-bookmark-references';
 import { editorDocumentBookmarkReferenceTargets } from '../work-document-bookmarks';
 import { editorDocumentCaptionTargets } from '../work-document-caption-nodes';
@@ -520,199 +520,215 @@ export function useDocumentInsertCommands({
   const dialog = (
     <Fragment>
       {officeDialog.dialog}
-      {insertDialog?.kind === 'field' && (
-        <DocumentFieldDialog
-          editing={insertDialog.editing}
-          draft={insertDialog.draft}
-          preview={documentFieldPreview(insertDialog.draft)}
-          targets={insertDialog.targets}
-          restoreFocusTarget={() => invokerRef.current}
-          onCancel={() => setInsertDialog(null)}
-          onChange={(draft) => setInsertDialog({ ...insertDialog, draft })}
-          onSubmit={submitField}
-        />
-      )}
-      {insertDialog?.kind === 'caption' && (
-        <Dialog
-          title={
-            insertDialog.captionKind === 'figure'
-              ? officeMessage(messages, 'document.insert.captionFigureTitle')
-              : officeMessage(messages, 'document.insert.captionTableTitle')
-          }
-          description={officeMessage(messages, 'document.insert.captionDesc')}
-          className="work-document-insert-dialog"
-          restoreFocusTarget={() => invokerRef.current}
-          onClose={() => setInsertDialog(null)}
-          footer={
-            <>
-              <Button tone="quiet" onClick={() => setInsertDialog(null)}>
-                {officeMessage(messages, 'office.dialog.cancel')}
-              </Button>
-              <Button tone="primary" onClick={submitCaption}>
-                {officeMessage(messages, 'document.insert.captionSubmit')}
-              </Button>
-            </>
-          }
-        >
-          <label
-            className="work-document-dialog-field"
-            htmlFor={captionFieldId}
+      <DialogPresence>
+        {insertDialog?.kind === 'field' && (
+          <DocumentFieldDialog
+            editing={insertDialog.editing}
+            draft={insertDialog.draft}
+            preview={documentFieldPreview(insertDialog.draft)}
+            targets={insertDialog.targets}
+            restoreFocusTarget={() => invokerRef.current}
+            onCancel={() => setInsertDialog(null)}
+            onChange={(draft) => setInsertDialog({ ...insertDialog, draft })}
+            onSubmit={submitField}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'caption' && (
+          <Dialog
+            closeLabel={officeMessage(messages, 'office.dialog.close')}
+            title={
+              insertDialog.captionKind === 'figure'
+                ? officeMessage(messages, 'document.insert.captionFigureTitle')
+                : officeMessage(messages, 'document.insert.captionTableTitle')
+            }
+            description={officeMessage(messages, 'document.insert.captionDesc')}
+            className="work-document-insert-dialog"
+            restoreFocusTarget={() => invokerRef.current}
+            onClose={() => setInsertDialog(null)}
+            footer={
+              <>
+                <Button tone="quiet" onClick={() => setInsertDialog(null)}>
+                  {officeMessage(messages, 'office.dialog.cancel')}
+                </Button>
+                <Button tone="primary" onClick={submitCaption}>
+                  {officeMessage(messages, 'document.insert.captionSubmit')}
+                </Button>
+              </>
+            }
           >
-            <span>{officeMessage(messages, 'document.insert.captionLabel')}</span>
-            <OfficeTextField
-              id={captionFieldId}
-              data-autofocus
-              aria-label={officeMessage(messages, 'document.insert.captionLabel')}
-              value={insertDialog.title}
-              maxLength={240}
-              placeholder={officeMessage(messages, 'document.insert.captionPlaceholder')}
-              onChange={(event) =>
-                setInsertDialog({
-                  ...insertDialog,
-                  title: event.target.value,
-                })
-              }
-              onKeyDown={(event) => {
-                if (event.key !== 'Enter') return;
-                event.preventDefault();
-                submitCaption();
-              }}
-            />
-          </label>
-        </Dialog>
-      )}
-      {insertDialog?.kind === 'crossReference' && (
-        <Dialog
-          title={officeMessage(messages, 'document.insert.crossRefTitle')}
-          description={officeMessage(messages, 'document.insert.crossRefDesc')}
-          className="work-document-reference-dialog"
-          restoreFocusTarget={() => invokerRef.current}
-          onClose={() => setInsertDialog(null)}
-          footer={
-            <>
-              <Button tone="quiet" onClick={() => setInsertDialog(null)}>
-                {officeMessage(messages, 'office.dialog.cancel')}
-              </Button>
-              <Button
-                tone="secondary"
-                disabled={
-                  !insertDialog.selectedKey ||
-                  insertDialog.targets.find(
-                    (candidate) =>
-                      referenceTargetKey(candidate) ===
-                      insertDialog.selectedKey,
-                  )?.type !== 'bookmark'
+            <label
+              className="work-document-dialog-field"
+              htmlFor={captionFieldId}
+            >
+              <span>{officeMessage(messages, 'document.insert.captionLabel')}</span>
+              <OfficeTextField
+                id={captionFieldId}
+                data-autofocus
+                aria-label={officeMessage(messages, 'document.insert.captionLabel')}
+                value={insertDialog.title}
+                maxLength={240}
+                placeholder={officeMessage(messages, 'document.insert.captionPlaceholder')}
+                onChange={(event) =>
+                  setInsertDialog({
+                    ...insertDialog,
+                    title: event.target.value,
+                  })
                 }
-                onClick={submitPageReference}
-              >
-                {officeMessage(messages, 'document.insert.crossRefInsertPage')}
-              </Button>
-              <Button
-                tone="primary"
-                disabled={!insertDialog.selectedKey}
-                onClick={submitCrossReference}
-              >
-                {officeMessage(messages, 'document.insert.crossRefInsert')}
-              </Button>
-            </>
-          }
-        >
-          <div
-            className="work-document-reference-list"
-            role="radiogroup"
-            aria-label={officeMessage(messages, 'document.insert.crossRefTargetsAria')}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter') return;
+                  event.preventDefault();
+                  submitCaption();
+                }}
+              />
+            </label>
+          </Dialog>
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'crossReference' && (
+          <Dialog
+            closeLabel={officeMessage(messages, 'office.dialog.close')}
+            title={officeMessage(messages, 'document.insert.crossRefTitle')}
+            description={officeMessage(messages, 'document.insert.crossRefDesc')}
+            className="work-document-reference-dialog"
+            restoreFocusTarget={() => invokerRef.current}
+            onClose={() => setInsertDialog(null)}
+            footer={
+              <>
+                <Button tone="quiet" onClick={() => setInsertDialog(null)}>
+                  {officeMessage(messages, 'office.dialog.cancel')}
+                </Button>
+                <Button
+                  tone="secondary"
+                  disabled={
+                    !insertDialog.selectedKey ||
+                    insertDialog.targets.find(
+                      (candidate) =>
+                        referenceTargetKey(candidate) ===
+                        insertDialog.selectedKey,
+                    )?.type !== 'bookmark'
+                  }
+                  onClick={submitPageReference}
+                >
+                  {officeMessage(messages, 'document.insert.crossRefInsertPage')}
+                </Button>
+                <Button
+                  tone="primary"
+                  disabled={!insertDialog.selectedKey}
+                  onClick={submitCrossReference}
+                >
+                  {officeMessage(messages, 'document.insert.crossRefInsert')}
+                </Button>
+              </>
+            }
           >
-            {insertDialog.targets.map((target, index) => {
-              const targetKey = referenceTargetKey(target);
-              return (
-                <label key={targetKey} onDoubleClick={submitCrossReference}>
-                  <input
-                    ref={(element) => {
-                      if (element)
-                        referenceInputRefs.current.set(targetKey, element);
-                      else referenceInputRefs.current.delete(targetKey);
-                    }}
-                    type="radio"
-                    name="document-cross-reference"
-                    value={targetKey}
-                    checked={targetKey === insertDialog.selectedKey}
-                    data-autofocus={
-                      targetKey === insertDialog.selectedKey ? '' : undefined
-                    }
-                    tabIndex={targetKey === insertDialog.selectedKey ? 0 : -1}
-                    onChange={() =>
-                      setInsertDialog({
-                        ...insertDialog,
-                        selectedKey: targetKey,
-                      })
-                    }
-                    onKeyDown={(event) => moveReferenceSelection(event, index)}
-                  />
-                  <strong>
-                    {target.type === 'bookmark'
-                      ? officeMessage(messages, 'document.insert.bookmarkLabel', {
-                          name: target.name,
+            <div
+              className="work-document-reference-list"
+              role="radiogroup"
+              aria-label={officeMessage(messages, 'document.insert.crossRefTargetsAria')}
+            >
+              {insertDialog.targets.map((target, index) => {
+                const targetKey = referenceTargetKey(target);
+                return (
+                  <label key={targetKey} onDoubleClick={submitCrossReference}>
+                    <input
+                      ref={(element) => {
+                        if (element)
+                          referenceInputRefs.current.set(targetKey, element);
+                        else referenceInputRefs.current.delete(targetKey);
+                      }}
+                      type="radio"
+                      name="document-cross-reference"
+                      value={targetKey}
+                      checked={targetKey === insertDialog.selectedKey}
+                      data-autofocus={
+                        targetKey === insertDialog.selectedKey ? '' : undefined
+                      }
+                      tabIndex={targetKey === insertDialog.selectedKey ? 0 : -1}
+                      onChange={() =>
+                        setInsertDialog({
+                          ...insertDialog,
+                          selectedKey: targetKey,
                         })
-                      : target.display}
-                  </strong>
-                  <span>
-                    {target.title ||
-                      (target.type === 'bookmark'
-                        ? officeMessage(messages, 'document.insert.emptyBookmark')
-                        : officeMessage(messages, 'document.insert.emptyCaption'))}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-        </Dialog>
-      )}
-      {insertDialog?.kind === 'tableOfContents' && (
-        <DocumentTableOfContentsDialog
-          editing={insertDialog.editing}
-          options={insertDialog.options}
-          restoreFocusTarget={() => invokerRef.current}
-          onCancel={() => setInsertDialog(null)}
-          onOptionsChange={(options) =>
-            setInsertDialog({ ...insertDialog, options })
-          }
-          onSubmit={submitTableOfContents}
-        />
-      )}
-      {insertDialog?.kind === 'indexEntry' && (
-        <DocumentIndexEntryDialog
-          editing={insertDialog.editing}
-          value={insertDialog.value}
-          restoreFocusTarget={() => invokerRef.current}
-          onCancel={() => setInsertDialog(null)}
-          onChange={(value) => setInsertDialog({ ...insertDialog, value })}
-          onSubmit={submitIndexEntry}
-        />
-      )}
-      {insertDialog?.kind === 'index' && (
-        <DocumentIndexDialog
-          editing={insertDialog.editing}
-          options={insertDialog.options}
-          restoreFocusTarget={() => invokerRef.current}
-          onCancel={() => setInsertDialog(null)}
-          onOptionsChange={(options) =>
-            setInsertDialog({ ...insertDialog, options })
-          }
-          onSubmit={submitIndex}
-        />
-      )}
-      {insertDialog?.kind === 'contentControl' && (
-        <DocumentContentControlDialog
-          editing={insertDialog.editing}
-          properties={insertDialog.properties}
-          restoreFocusTarget={() => invokerRef.current}
-          onCancel={() => setInsertDialog(null)}
-          onChange={(properties) =>
-            setInsertDialog({ ...insertDialog, properties })
-          }
-          onSubmit={submitContentControl}
-        />
-      )}
+                      }
+                      onKeyDown={(event) => moveReferenceSelection(event, index)}
+                    />
+                    <strong>
+                      {target.type === 'bookmark'
+                        ? officeMessage(messages, 'document.insert.bookmarkLabel', {
+                            name: target.name,
+                          })
+                        : target.display}
+                    </strong>
+                    <span>
+                      {target.title ||
+                        (target.type === 'bookmark'
+                          ? officeMessage(messages, 'document.insert.emptyBookmark')
+                          : officeMessage(messages, 'document.insert.emptyCaption'))}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </Dialog>
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'tableOfContents' && (
+          <DocumentTableOfContentsDialog
+            editing={insertDialog.editing}
+            options={insertDialog.options}
+            restoreFocusTarget={() => invokerRef.current}
+            onCancel={() => setInsertDialog(null)}
+            onOptionsChange={(options) =>
+              setInsertDialog({ ...insertDialog, options })
+            }
+            onSubmit={submitTableOfContents}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'indexEntry' && (
+          <DocumentIndexEntryDialog
+            editing={insertDialog.editing}
+            value={insertDialog.value}
+            restoreFocusTarget={() => invokerRef.current}
+            onCancel={() => setInsertDialog(null)}
+            onChange={(value) => setInsertDialog({ ...insertDialog, value })}
+            onSubmit={submitIndexEntry}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'index' && (
+          <DocumentIndexDialog
+            editing={insertDialog.editing}
+            options={insertDialog.options}
+            restoreFocusTarget={() => invokerRef.current}
+            onCancel={() => setInsertDialog(null)}
+            onOptionsChange={(options) =>
+              setInsertDialog({ ...insertDialog, options })
+            }
+            onSubmit={submitIndex}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {insertDialog?.kind === 'contentControl' && (
+          <DocumentContentControlDialog
+            editing={insertDialog.editing}
+            properties={insertDialog.properties}
+            restoreFocusTarget={() => invokerRef.current}
+            onCancel={() => setInsertDialog(null)}
+            onChange={(properties) =>
+              setInsertDialog({ ...insertDialog, properties })
+            }
+            onSubmit={submitContentControl}
+          />
+        )}
+      </DialogPresence>
     </Fragment>
   );
 

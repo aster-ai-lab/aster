@@ -13,8 +13,9 @@ use tokio::task::JoinHandle;
 /// append `tool.result` `cancelled` before the worker is aborted.
 pub(crate) const CANCEL_EVENT_DRAIN: Duration = Duration::from_millis(150);
 
-/// Cooperative wait inside `cancel_and_settle` before the inner worker is aborted.
-pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_millis(50);
+/// Let an owned VM finish its bounded shutdown before aborting its fact worker.
+/// Premature abort can retain an unproved admission lease after the VM is gone.
+pub(crate) const CANCEL_SETTLE_GRACE: Duration = Duration::from_secs(35);
 
 /// How long the inner worker may take to drop its lease after abort.
 pub(crate) const CANCEL_ABORT_GRACE: Duration = Duration::from_millis(50);

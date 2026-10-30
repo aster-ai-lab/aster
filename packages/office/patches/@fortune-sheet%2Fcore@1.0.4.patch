@@ -12,7 +12,7 @@ index 978f927ea4b7f5c05acf990c6cb808187fbc5fd3..b67df58acc8dd11236c2f5ef9269d144
  export declare const dataToCelldata: (data: CellMatrix | undefined) => CellWithRowAndCol[];
  export declare const celldataToData: (celldata: CellWithRowAndCol[], rowCount?: number, colCount?: number) => CellMatrix | null;
 diff --git a/dist/index.esm.js b/dist/index.esm.js
-index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a6e1c51a7 100644
+index 5c9820b1a261305d500e69eeaf350821872beaf4..f926015a3654ad19c2ffa6365acb3a78402707e7 100644
 --- a/dist/index.esm.js
 +++ b/dist/index.esm.js
 @@ -131,6 +131,7 @@ function _unsupportedIterableToArray(r, a) {
@@ -97,7 +97,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
  var DEC_31_9999 = 2958465;
  var SSF = {};
  var make_ssf = function make_ssf(SSF) {
-@@ -58277,6 +58285,19 @@ function functionCopy(ctx, txt, mode, step) {
+@@ -58277,20 +58285,35 @@ function functionCopy(ctx, txt, mode, step) {
    return function_str;
  }
  
@@ -117,15 +117,25 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
  function checkCellIsLocked(ctx, r, c, sheetId) {
    var _data$r, _sheetFile$config;
    var sheetFile = getSheetByIndex(ctx, sheetId);
-@@ -58289,6 +58310,8 @@ function checkCellIsLocked(ctx, r, c, sheetId) {
+   if (_.isNil(sheetFile)) {
+     return false;
+   }
++  var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
++  if (_.isNil(aut) || _.isNil(aut.sheet) || aut.sheet === 0) return false;
+   var data = sheetFile.data;
+   var cell = data === null || data === void 0 ? void 0 : (_data$r = data[r]) === null || _data$r === void 0 ? void 0 : _data$r[c];
+   if (!_.isNil(cell === null || cell === void 0 ? void 0 : cell.lo)) {
      return !!(cell === null || cell === void 0 ? void 0 : cell.lo);
    }
-   var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
+-  var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
+-  var sheetInEditable = _.isNil(aut) || _.isNil(aut.sheet) || aut.sheet === 0;
+-  return !sheetInEditable;
 +  var compactState = compactCellProtectionState(aut, r, c);
 +  if (compactState !== undefined) return compactState;
-   var sheetInEditable = _.isNil(aut) || _.isNil(aut.sheet) || aut.sheet === 0;
-   return !sheetInEditable;
++  return true;
  }
+ function checkProtectionSelectLockedOrUnLockedCells(ctx, r, c, sheetId) {
+   var _data$r2;
 @@ -58305,9 +58328,7 @@ function checkProtectionSelectLockedOrUnLockedCells(ctx, r, c, sheetId) {
    if (_.isNil(aut) || _.isNil(aut.sheet) || aut.sheet === 0) {
      return true;
@@ -552,7 +562,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
      return null;
    }
    var value = d[row_index][col_index];
-@@ -60818,22 +61111,33 @@ function cancelNormalSelected(ctx) {
+@@ -60818,20 +61111,31 @@ function cancelNormalSelected(ctx) {
    ctx.formulaCache.rangedrag_column_start = false;
    ctx.formulaCache.rangedrag_row_start = false;
  }
@@ -570,6 +580,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
 -    if (!_.isNil(dvItem) && dvItem.prohibitInput && !validateCellData(ctx, dvItem, inputText)) {
 -      var failureText = getFailureText(ctx, dvItem);
 -      cancelNormalSelected(ctx);
+-      ctx.warnDialog = failureText;
 +  var logicalColumnCount = flowdata[0] ? flowdata[0].length : ctx.defaultcolumnNum;
 +  if (!flowdata[r]) {
 +    flowdata[r] = [];
@@ -589,13 +600,9 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
 +    var validationDecision = (_ctx$hooks = ctx.hooks).beforeDataValidation === null || _ctx$hooks.beforeDataValidation === void 0 ? void 0 : _ctx$hooks.beforeDataValidation.call(_ctx$hooks, r, c, validationValue, dvItem, failureText, ctx.currentSheetId);
 +    if (validationDecision !== true) { cancelNormalSelected(ctx);
 +      if (validationDecision === void 0) ctx.warnDialog = failureText;
--      ctx.warnDialog = failureText;
--      return;
-+      return;
+       return;
      }
    }
-   var curv = flowdata[r][c];
-   var oldValue = _.cloneDeep(curv);
 @@ -61075,7 +61379,7 @@ function getcellFormula(ctx, r, c, i, data) {
    if (_.isNil(data)) {
      cell = getOrigincell(ctx, r, c, i);
@@ -1065,7 +1072,7 @@ index 5c9820b1a261305d500e69eeaf350821872beaf4..a72e00f1436eda565f8a04ce6736650a
 -export { CFSplitRange, Canvas, FormulaCache, MAX_ZOOM_RATIO, MIN_ZOOM_RATIO, addSheet, index as api, applyLocation, attrToCssName, autoSelectionFormula, calcSelectionInfo, cancelActiveImgItem, cancelFunctionrangeSelected, cancelNormalSelected, cancelPaintModel, cellFocus, cfSplitRange, changeSheet, chatatABC, checkCF, checkCellIsLocked, checkProtectionAllSelected, checkProtectionFormatCells, checkProtectionSelectLockedOrUnLockedCells, checkboxChange, clearFilter, clearMeasureTextCache, colHasMerged, colLocation, colLocationByIndex, colors, columnCharToIndex, commentBoxProps, compute, computeRowlenArr, confirmMessage, convertCssToStyleList, convertSpanToShareString, copy, createDropCellRange, createFilter, createFilterOptions, createFormulaRangeSelect, createRangeHightlight, dataRangeSelection, datenum_local, defaultContext, defaultFont, defaultSettings, defaultStyle, delFunctionGroup, deleteCellInSave, deleteComment, deleteRowCol, deleteSelectedCellText, deleteSheet, diff, drawArrow, drawLineInfo, dropCellCache, editComment, editSheetName, ensureSheetIndex, error, escapeHTMLTag, escapeScriptTag, execFunctionGroup, execfunction, expandRowsAndColumns, extractFormulaCellOps, filterPatch, fixColumnStyleOverflowInFreeze, fixPositionOnFrozenCells, fixRowStyleOverflowInFreeze, functionCopy, functionHTMLGenerate, functionStrChange, genarate, generateRandomId, generateRandomSheetName, getAllFunctionGroup, getArrowCanvasSize, getBorderInfoCompute, getBorderInfoComputeRange, getCellHyperlink, getCellRowColumn, getCellTextInfo, getCellTopRightPostion, getCellValue, getColMerge, getColorGradation, getCommentBoxByRC, getCommentBoxPosition, getComputeMap, getCurrentRules, getDataArr, getDataBySelectionNoCopy, getDropdownList, getFailureText, getFilterColumnColors, getFilterColumnValues, getFlattenedRange, getFlowdata, getFontSet, getFontStyleByCell, getFrozenHandleLeft, getFrozenHandleTop, getHintText, getHistoryRules, getInlineStringHTML, getInlineStringNoStyle, getMeasureText, getNowDateTime, getNullData, getOptionValue, getOrigincell, getQKBorder, getRange, getRangeArr, getRangeByTxt, getRangetxt, getRealCellValue, getRegExpStr, getRegStr, getRowMerge, getSearchIndexArr, getSelectRange, getSheetByIndex, getSheetIdByName, getSheetIndex, getStyleByCell, getTypeItemHide, getcellFormula, getcellrange, getdatabyselection, getrangeseleciton, goToLink, groupValuesRefresh, handleArrowKey, handleBold, handleBorder, handleCellAreaDoubleClick, handleCellAreaMouseDown, handleClearFormat, handleColFreezeHandleMouseDown, handleColSizeHandleMouseDown, handleColumnHeaderMouseDown, handleContextMenu, handleCopy, handleCurrencyFormat, handleFormatPainter, handleFormulaInput, handleFreeze, handleGlobalEnter, handleGlobalKeyDown, handleGlobalWheel, handleHorizontalAlign, handleItalic, handleKeydownForZoom, handleLink, handleMerge, handleNumberDecrease, handleNumberIncrease, handleOverlayMouseMove, handleOverlayMouseUp, handleOverlayTouchEnd, handleOverlayTouchMove, handleOverlayTouchStart, handlePaste, handlePasteByClick, handlePercentageFormat, handleRowFreezeHandleMouseDown, handleRowHeaderMouseDown, handleRowSizeHandleMouseDown, handleScreenShot, handleSort, handleStrikeThrough, handleSum, handleTextBackground, handleTextColor, handleTextSize, handleUnderline, handleVerticalAlign, handleWithCtrlOrMetaKey, hasChinaword, hasPartMC, hideCRCount, hideDropCellSelection, hideSelected, imageProps, indexToColumnChar, initFreeze, initSheetIndex, inlineStyleAffectAttribute, inlineStyleAffectCssName, insertImage, insertRowCol, insertUpdateFunctionGroup, inverseRowColOptions, isAllSelectedCellsInStatus, isAllowEdit, isFormula, isFunctionRange, isInlineStringCT, isInlineStringCell, isLinkValid, isRealNull, isRealNum, isShowHidenCR, isSupportBoundingBox, is_date, iscelldata, isdatatype, isdatatypemulti, isdatetime, israngeseleciton, jfrefreshgrid, labelFilterOptionState, locale, luckysheetUpdateCell, mergeBorder, mergeCells, mergeMoveMain, mousePosition, moveHighlightCell, moveHighlightRange, moveToEnd, newComment, normalizeSelection, normalizedAttr, normalizedCellAttr, onCellsMove, onCellsMoveEnd, onCellsMoveStart, onCommentBoxMove, onCommentBoxMoveEnd, onCommentBoxMoveStart, onCommentBoxResize, onCommentBoxResizeEnd, onCommentBoxResizeStart, onDropCellSelect, onDropCellSelectEnd, onFormulaRangeDragEnd, onImageMove, onImageMoveEnd, onImageMoveStart, onImageResize, onImageResizeEnd, onImageResizeStart, onRangeSelectionModalMove, onRangeSelectionModalMoveEnd, onRangeSelectionModalMoveStart, onSearchDialogMove, onSearchDialogMoveEnd, onSearchDialogMoveStart, opToPatch, orderbydata, orderbydatafiler, overShowComment, pasteHandlerOfPaintModel, patchToOp, rangeDrag, rangeDragColumn, rangeDragRow, rangeHightlightselected, rangeSetValue, rangeValueToHtml, removeActiveImage, removeEditingComment, removeHyperlink, replace, replaceAll, replaceHtml, rgbToHex, rowHasMerged, rowLocation, rowLocationByIndex, saveFilter, saveHyperlink, saveImage, scrollToFrozenRowCol, scrollToHighlightCell, searchAll, searchNext, selectAll, selectIsOverlap, selectTextContent, selectTextContentCross, selectTitlesMap, selectTitlesRange, selectionCache, selectionCopyShow, seletedHighlistByindex, setCaretPosition, setCellValue, setConditionRules, setDropcownValue, setEditingComment, setFormulaCellInfoMap, showComments, showDropCellSelection, showHideAllComments, showHideComment, showImgChooser, showLinkCard, showSelected, sortDataRange, sortSelection, storeSheetParamALL, toolbarItemClickHandler, toolbarItemSelectedFunc, update, updateCell, updateContextWithCanvas, updateContextWithSheetData, updateDropCell, updateFormat, updateFormatCell, updateInlineStringFormat, updateInlineStringFormatOutside, updateItem, updateMoreCell, updateSheet, validateCellData, validateIdCard, valueIsError, valueShowEs };
 +export { CFSplitRange, Canvas, FormulaCache, MAX_ZOOM_RATIO, MIN_ZOOM_RATIO, addSheet, index as api, applyLocation, attrToCssName, autoSelectionFormula, calcSelectionInfo, cancelActiveImgItem, cancelFunctionrangeSelected, cancelNormalSelected, cancelPaintModel, cellFocus, cfSplitRange, changeSheet, chatatABC, checkCF, checkCellIsLocked, checkProtectionAllSelected, checkProtectionFormatCells, checkProtectionSelectLockedOrUnLockedCells, checkboxChange, clearFilter, clearMeasureTextCache, colHasMerged, colLocation, colLocationByIndex, colors, columnCharToIndex, commentBoxProps, compute, computeRowlenArr, confirmMessage, convertCssToStyleList, convertSpanToShareString, copy, createDropCellRange, createFilter, createFilterOptions, createFormulaRangeSelect, createRangeHightlight, dataRangeSelection, datenum_local, defaultContext, defaultFont, defaultSettings, defaultStyle, delFunctionGroup, deleteCellInSave, deleteComment, deleteRowCol, deleteSelectedCellText, deleteSheet, diff, drawArrow, drawLineInfo, dropCellCache, editComment, editSheetName, ensureSheetIndex, error, escapeHTMLTag, escapeScriptTag, execFunctionGroup, execfunction, expandRowsAndColumns, extractFormulaCellOps, filterPatch, fixColumnStyleOverflowInFreeze, fixPositionOnFrozenCells, fixRowStyleOverflowInFreeze, functionCopy, functionHTMLGenerate, functionStrChange, genarate, generateRandomId, generateRandomSheetName, getAllFunctionGroup, getArrowCanvasSize, getBorderInfoCompute, getBorderInfoComputeRange, getCellHyperlink, getCellRowColumn, getCellTextInfo, getCellTopRightPostion, getCellValue, getColMerge, getColorGradation, getCommentBoxByRC, getCommentBoxPosition, getComputeMap, getCurrentRules, getDataArr, getDataBySelectionNoCopy, getDataVerificationItem, getDropdownList, getFailureText, getFilterColumnColors, getFilterColumnValues, getFlattenedRange, getFlowdata, getFontSet, getFontStyleByCell, getFrozenHandleLeft, getFrozenHandleTop, getHintText, getHistoryRules, getInlineStringHTML, getInlineStringNoStyle, getMeasureText, getNowDateTime, getNullData, getOptionValue, getOrigincell, getQKBorder, getRange, getRangeArr, getRangeByTxt, getRangetxt, getRealCellValue, getRegExpStr, getRegStr, getRowMerge, getSearchIndexArr, getSelectRange, getSheetByIndex, getSheetIdByName, getSheetIndex, getStyleByCell, getTypeItemHide, getcellFormula, getcellrange, getdatabyselection, getrangeseleciton, goToLink, groupValuesRefresh, handleArrowKey, handleBold, handleBorder, handleCellAreaDoubleClick, handleCellAreaMouseDown, handleClearFormat, handleColFreezeHandleMouseDown, handleColSizeHandleMouseDown, handleColumnHeaderMouseDown, handleContextMenu, handleCopy, handleCurrencyFormat, handleFormatPainter, handleFormulaInput, handleFreeze, handleGlobalEnter, handleGlobalKeyDown, handleGlobalWheel, handleHorizontalAlign, handleItalic, handleKeydownForZoom, handleLink, handleMerge, handleNumberDecrease, handleNumberIncrease, handleOverlayMouseMove, handleOverlayMouseUp, handleOverlayTouchEnd, handleOverlayTouchMove, handleOverlayTouchStart, handlePaste, handlePasteByClick, handlePercentageFormat, handleRowFreezeHandleMouseDown, handleRowHeaderMouseDown, handleRowSizeHandleMouseDown, handleScreenShot, handleSort, handleStrikeThrough, handleSum, handleTextBackground, handleTextColor, handleTextSize, handleUnderline, handleVerticalAlign, handleWithCtrlOrMetaKey, hasChinaword, hasPartMC, hideCRCount, hideDropCellSelection, hideSelected, imageProps, indexToColumnChar, initFreeze, initSheetIndex, inlineStyleAffectAttribute, inlineStyleAffectCssName, insertImage, insertRowCol, insertUpdateFunctionGroup, inverseRowColOptions, isAllSelectedCellsInStatus, isAllowEdit, isFormula, isFunctionRange, isInlineStringCT, isInlineStringCell, isLinkValid, isRealNull, isRealNum, isShowHidenCR, isSupportBoundingBox, is_date, iscelldata, isdatatype, isdatatypemulti, isdatetime, israngeseleciton, jfrefreshgrid, labelFilterOptionState, locale, luckysheetUpdateCell, mergeBorder, mergeCells, mergeMoveMain, mousePosition, moveHighlightCell, moveHighlightRange, moveToEnd, newComment, normalizeSelection, normalizedAttr, normalizedCellAttr, onCellsMove, onCellsMoveEnd, onCellsMoveStart, onCommentBoxMove, onCommentBoxMoveEnd, onCommentBoxMoveStart, onCommentBoxResize, onCommentBoxResizeEnd, onCommentBoxResizeStart, onDropCellSelect, onDropCellSelectEnd, onFormulaRangeDragEnd, onImageMove, onImageMoveEnd, onImageMoveStart, onImageResize, onImageResizeEnd, onImageResizeStart, onRangeSelectionModalMove, onRangeSelectionModalMoveEnd, onRangeSelectionModalMoveStart, onSearchDialogMove, onSearchDialogMoveEnd, onSearchDialogMoveStart, opToPatch, orderbydata, orderbydatafiler, overShowComment, pasteHandlerOfPaintModel, patchToOp, rangeDrag, rangeDragColumn, rangeDragRow, rangeHightlightselected, rangeSetValue, rangeValueToHtml, removeActiveImage, removeEditingComment, removeHyperlink, replace, replaceAll, replaceHtml, rgbToHex, rowHasMerged, rowLocation, rowLocationByIndex, saveFilter, saveHyperlink, saveImage, scrollToFrozenRowCol, scrollToHighlightCell, searchAll, searchNext, selectAll, selectIsOverlap, selectTextContent, selectTextContentCross, selectTitlesMap, selectTitlesRange, selectionCache, selectionCopyShow, seletedHighlistByindex, setCaretPosition, setCellValue, setConditionRules, setDropcownValue, setEditingComment, setFormulaCellInfoMap, showComments, showDropCellSelection, showHideAllComments, showHideComment, showImgChooser, showLinkCard, showSelected, sortDataRange, sortSelection, storeSheetParamALL, toolbarItemClickHandler, toolbarItemSelectedFunc, update, updateCell, updateContextWithCanvas, updateContextWithSheetData, updateDropCell, updateFormat, updateFormatCell, updateInlineStringFormat, updateInlineStringFormatOutside, updateItem, updateMoreCell, updateSheet, validateCellData, validateIdCard, valueIsError, valueShowEs };
 diff --git a/dist/index.js b/dist/index.js
-index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712bac86b3edd 100644
+index 04113a18dee9feee28e9434ee3023626c800e7d3..1aa4fd5a874621b44d940a0461fc2c8bc109c43f 100644
 --- a/dist/index.js
 +++ b/dist/index.js
 @@ -141,6 +141,7 @@ function _unsupportedIterableToArray(r, a) {
@@ -1150,7 +1157,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712ba
  var DEC_31_9999 = 2958465;
  var SSF = {};
  var make_ssf = function make_ssf(SSF) {
-@@ -58287,6 +58295,19 @@ function functionCopy(ctx, txt, mode, step) {
+@@ -58287,20 +58295,35 @@ function functionCopy(ctx, txt, mode, step) {
    return function_str;
  }
  
@@ -1170,15 +1177,25 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712ba
  function checkCellIsLocked(ctx, r, c, sheetId) {
    var _data$r, _sheetFile$config;
    var sheetFile = getSheetByIndex(ctx, sheetId);
-@@ -58299,6 +58320,8 @@ function checkCellIsLocked(ctx, r, c, sheetId) {
+   if (___default['default'].isNil(sheetFile)) {
+     return false;
+   }
++  var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
++  if (___default['default'].isNil(aut) || ___default['default'].isNil(aut.sheet) || aut.sheet === 0) return false;
+   var data = sheetFile.data;
+   var cell = data === null || data === void 0 ? void 0 : (_data$r = data[r]) === null || _data$r === void 0 ? void 0 : _data$r[c];
+   if (!___default['default'].isNil(cell === null || cell === void 0 ? void 0 : cell.lo)) {
      return !!(cell === null || cell === void 0 ? void 0 : cell.lo);
    }
-   var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
+-  var aut = (_sheetFile$config = sheetFile.config) === null || _sheetFile$config === void 0 ? void 0 : _sheetFile$config.authority;
+-  var sheetInEditable = ___default['default'].isNil(aut) || ___default['default'].isNil(aut.sheet) || aut.sheet === 0;
+-  return !sheetInEditable;
 +  var compactState = compactCellProtectionState(aut, r, c);
 +  if (compactState !== undefined) return compactState;
-   var sheetInEditable = ___default['default'].isNil(aut) || ___default['default'].isNil(aut.sheet) || aut.sheet === 0;
-   return !sheetInEditable;
++  return true;
  }
+ function checkProtectionSelectLockedOrUnLockedCells(ctx, r, c, sheetId) {
+   var _data$r2;
 @@ -58315,9 +58338,7 @@ function checkProtectionSelectLockedOrUnLockedCells(ctx, r, c, sheetId) {
    if (___default['default'].isNil(aut) || ___default['default'].isNil(aut.sheet) || aut.sheet === 0) {
      return true;
@@ -1605,7 +1622,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712ba
      return null;
    }
    var value = d[row_index][col_index];
-@@ -60828,22 +61121,33 @@ function cancelNormalSelected(ctx) {
+@@ -60828,20 +61121,31 @@ function cancelNormalSelected(ctx) {
    ctx.formulaCache.rangedrag_column_start = false;
    ctx.formulaCache.rangedrag_row_start = false;
  }
@@ -1623,6 +1640,7 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712ba
 -    if (!___default['default'].isNil(dvItem) && dvItem.prohibitInput && !validateCellData(ctx, dvItem, inputText)) {
 -      var failureText = getFailureText(ctx, dvItem);
 -      cancelNormalSelected(ctx);
+-      ctx.warnDialog = failureText;
 +  var logicalColumnCount = flowdata[0] ? flowdata[0].length : ctx.defaultcolumnNum;
 +  if (!flowdata[r]) {
 +    flowdata[r] = [];
@@ -1642,13 +1660,9 @@ index 04113a18dee9feee28e9434ee3023626c800e7d3..da676e0a4d3deb4e361d5137563712ba
 +    var validationDecision = (_ctx$hooks = ctx.hooks).beforeDataValidation === null || _ctx$hooks.beforeDataValidation === void 0 ? void 0 : _ctx$hooks.beforeDataValidation.call(_ctx$hooks, r, c, validationValue, dvItem, failureText, ctx.currentSheetId);
 +    if (validationDecision !== true) { cancelNormalSelected(ctx);
 +      if (validationDecision === void 0) ctx.warnDialog = failureText;
--      ctx.warnDialog = failureText;
--      return;
-+      return;
+       return;
      }
    }
-   var curv = flowdata[r][c];
-   var oldValue = ___default['default'].cloneDeep(curv);
 @@ -61085,7 +61389,7 @@ function getcellFormula(ctx, r, c, i, data) {
    if (___default['default'].isNil(data)) {
      cell = getOrigincell(ctx, r, c, i);

@@ -70,6 +70,7 @@ import type {
   PresentationEditorProps,
 } from './presentation-editor-types';
 import { PresentationPlayer } from './presentation-player';
+import { PresentationInlinePreview } from './presentation-inline-preview';
 import {
   presentationElementSupportsTextFormatting,
   selectedPresentationElements,
@@ -218,6 +219,9 @@ function PresentationEditorSurface(props: PresentationEditorSurfaceProps) {
   const messages = useOfficeMessages();
   const { content, fileActions, preview } = props;
   if (preview) {
+    if (props.previewMode === 'inline') {
+      return <PresentationInlinePreview content={content} />;
+    }
     return (
       <section className="work-presentation-editor preview">
         <WorkOfficePreviewBar

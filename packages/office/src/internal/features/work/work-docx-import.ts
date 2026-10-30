@@ -403,9 +403,7 @@ async function preparePlainParagraphDocx(
     tableRowMarkers: { rows: [] },
     tableSizingMarkers: { tables: [] },
     bibliography,
-    trackChanges: Boolean(
-      settings && firstDescendant(settings, 'trackRevisions'),
-    ),
+    trackChanges: docxTracksRevisions(settings),
   };
 }
 
@@ -635,14 +633,7 @@ export async function prepareDocxImport(
   const tableCellMarkers = markDocxTableCells(document, theme, tableStyles);
   const tableRowMarkers = markDocxTableRows(document);
   const tableSizingMarkers = markDocxTableSizing(document, tableStyles);
-  const trackChanges =
-    Boolean(settings && firstDescendant(settings, 'trackRevisions')) ||
-    changeMarkers.changes.length > 0 ||
-    paragraphMarkChangeMarkers.paragraphs.length > 0 ||
-    paragraphBreakChangeMarkers.paragraphs.length > 0 ||
-    numberingChangeMarkers.groups.length > 0 ||
-    paragraphFormattingChangeMarkers.paragraphs.length > 0 ||
-    runFormattingMarkers.runs.some((run) => Boolean(run.change));
+  const trackChanges = docxTracksRevisions(settings);
   const sectionElements = effectiveSectionProperties(document);
   if (!sectionElements.length) {
     return {
@@ -821,6 +812,13 @@ export async function prepareDocxImport(
     bibliography,
     trackChanges,
   };
+}
+
+function docxTracksRevisions(settings: Document | null): boolean {
+  const element = settings && firstDescendant(settings, 'trackRevisions');
+  if (!element) return false;
+  const value = attribute(element, 'val');
+  return value === null || value === 'true' || value === '1' || value === 'on';
 }
 
 export function applyDocxSectionsToHtml(

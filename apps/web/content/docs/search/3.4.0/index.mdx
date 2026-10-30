@@ -1,0 +1,51 @@
+export const meta = {
+  title: 'Aster Search 产品概览',
+  description: 'a3s-search 的多源检索、级联计划、类型化结果和结构回执。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-search` 是可嵌入的 Rust 元检索库和 CLI。当前版本为 `3.4.0`。一次查询可以并发访问浏览器、HTTP/RSS 和原生 API 来源，再返回统一的 `SearchResults`。
+
+Search 不维护私有网页索引。它负责检索、URL 规范化、去重、来源排名融合和失败记录。
+
+Search 不负责查询规划、语义判断、事实核验或报告写作。调用方拥有这些决策。级联回执只记录结构执行，不表示内容可信。
+
+<SearchArchitectureDiagram />
+
+## 默认级联计划
+
+<DocTable caption="默认来源顺序" headers={['层级', '来源', '运行方式']} rows={[
+  ['1 · 原生 API', 'AnySearch + Tavily', '默认主层，可选 Bearer 认证'],
+  ['2 · HTTP / RSS', 'Wikipedia + DuckDuckGo + Bing RSS', '上一层未达到结构要求时运行'],
+  ['3 · Headless', 'Brave + Bing 浏览器页面', '通过 Moli 执行最终回退'],
+]} />
+
+每层共享一个截止日期，默认总时限为 20 秒。层内来源并发执行。结构要求达到后，不再构建下一层。
+
+无 Headless 的构建把 Brave HTTP 加入第二层。显式 `--engines` 是完整计划，不会扩展为默认级联。
+
+## 统一输出与失败
+
+<DocTable caption="SearchResults 的主要字段" headers={['字段', '内容', '使用边界']} rows={[
+  ['results', '排名后的 URL、摘要、来源、日期和富字段', '排名不是语义评分'],
+  ['answers / images', '提供方被显式请求后返回的答案或图片', '未请求时不代表提供方支持'],
+  ['reports', '请求 ID、耗时、用量和有界元数据', '依赖提供方实际返回'],
+  ['failures', '类型化错误、临时状态和重试延迟', '保留部分来源失败'],
+  ['outcomes', 'success、empty、failure、timeout、rejected 和 circuit-open', '描述结构结果，不判断网页内容'],
+]} />
+
+需要计费的原生 API 不进入默认计划。环境变量中存在密钥也不会自动选择这些来源，调用方必须显式启用。
+
+## 文档入口
+
+- [检索接入](./integration/)：CLI、Rust 级联、来源选择和 ACL。
+- [排名与运行验证](./operations/)：排名融合、回执、浏览器后端和可靠性控制。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Search 产品合同](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [来源与输出字段](https://github.com/aster-ai-lab/aster/blob/main/crates/search/README.md)
+- [Search crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/search/Cargo.toml)

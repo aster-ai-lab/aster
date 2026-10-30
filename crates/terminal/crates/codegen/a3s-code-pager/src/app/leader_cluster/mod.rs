@@ -72,7 +72,7 @@ fn run_cluster_scenario<Fut: Future<Output = ()>>(scenario: impl FnOnce(AgentKee
         .build()
         .unwrap();
     let local = LocalSet::new();
-    local.block_on(&rt, scenario(Rc::clone(&agent_keepalives)));
+    local.block_on(&rt, Box::pin(scenario(Rc::clone(&agent_keepalives))));
     drop(local);
     drop(agent_keepalives);
 }

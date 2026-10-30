@@ -15,6 +15,166 @@ fn page(title: &str, description: &str, body: &str) -> String {
     format!("---\ntitle: \"{title}\"\ndescription: \"{description}\"\n---\n{body}\n")
 }
 
+#[tokio::test]
+async fn workspace_wiki_search_excludes_history_and_returns_one_passage_per_page() {
+    let root = tempfile::tempdir().unwrap();
+    let source = b"Source evidence.\n";
+    std::fs::write(root.path().join("source.md"), source).unwrap();
+    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        root.path(),
+        "dedup-scope",
+        &format!("sha256:{}", "a".repeat(64)),
+        vec![a3s_okf::WorkspaceKnowledgeSource::text("source.md", source).unwrap()],
+    )
+    .unwrap();
+    a3s_okf::begin_workspace_knowledge_maintenance(&input).unwrap();
+    let wiki = input.output_root();
+    std::fs::create_dir_all(wiki.join("concepts")).unwrap();
+    let body = (0..800)
+        .map(|index| format!("dedupworkspacearticle marker at line {index}.\n"))
+        .collect::<String>();
+    std::fs::write(
+        wiki.join("concepts/current.md"),
+        page("Current", "Current encyclopedia", &body),
+    )
+    .unwrap();
+    for path in [
+        ".wiki-history/old/sources/source.md",
+        ".wiki-staging/old/candidate.md",
+        "_sources/source.md",
+        "index.md",
+        "log.md",
+    ] {
+        let path = wiki.join(path);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(
+            path,
+            page(
+                "Duplicate",
+                "History must stay out",
+                "dedupworkspacearticle HISTORY_SENTINEL",
+            ),
+        )
+        .unwrap();
+    }
+    let index = WikiIndex::open(wiki).unwrap();
+    let admitted = index.reconcile_now(None).await.unwrap();
+    assert_eq!(admitted.read_paths, ["concepts/current.md"]);
+    assert!(index.wait_published(admitted.source_revision).await);
+    let result = index.search("dedupworkspacearticle").unwrap();
+    assert_eq!(result.phase, WikiSearchPhase::Published);
+    assert_eq!(result.hits.len(), 1);
+    assert_eq!(result.hits[0].path, "concepts/current.md");
+    assert!(!result.hits[0].passage.contains("HISTORY_SENTINEL"));
+    assert!(index
+        .content_reads()
+        .iter()
+        .all(|path| path == "concepts/current.md"));
+}
+
+#[tokio::test]
+async fn workspace_wiki_search_deduplicates_identical_pages_and_reconciles_removal() {
+    let root = tempfile::tempdir().unwrap();
+    let text = page(
+        "Same page",
+        "Published copy",
+        "dedupcopytoken Shared facts.",
+    );
+    for path in ["first.md", "second.md"] {
+        std::fs::write(root.path().join(path), &text).unwrap();
+    }
+    let index = WikiIndex::open(root.path()).unwrap();
+    let admitted = index.reconcile_now(None).await.unwrap();
+    assert!(index.wait_published(admitted.source_revision).await);
+    let hits = index.search("dedupcopytoken").unwrap().hits;
+    assert_eq!(hits.len(), 1);
+    assert!(hits[0].passage.contains("Shared facts"));
+    std::fs::remove_file(root.path().join(&hits[0].path)).unwrap();
+    let next = index.reconcile_now(None).await.unwrap();
+    assert!(index.wait_published(next.source_revision).await);
+    let remaining = index.search("dedupcopytoken").unwrap().hits;
+    assert_eq!(remaining.len(), 1);
+    assert_ne!(hits[0].path, remaining[0].path);
+}
+
+#[tokio::test]
+async fn workspace_wiki_index_waits_for_the_original_publication_lock_and_refuses_changed_pages() {
+    let root = tempfile::tempdir().unwrap();
+    let source = b"pub fn example() {}\n";
+    std::fs::write(root.path().join("source.rs"), source).unwrap();
+    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        root.path(),
+        "index-publication",
+        &format!("sha256:{}", "a".repeat(64)),
+        vec![a3s_okf::WorkspaceKnowledgeSource::text("source.rs", source).unwrap()],
+    )
+    .unwrap();
+    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+        .unwrap()
+        .unwrap();
+    let wiki = input.output_root();
+    std::fs::create_dir_all(wiki.join("concepts")).unwrap();
+    let file = wiki.join("concepts/a.md");
+    std::fs::write(
+        &file,
+        page(
+            "Publication",
+            "Published version",
+            "uniquepublicationoldtoken",
+        ),
+    )
+    .unwrap();
+    let index = WikiIndex::open(wiki).unwrap();
+    let admitted = index.reconcile_now(None).await.unwrap();
+    assert!(index.wait_published(admitted.source_revision).await);
+    assert!(!index
+        .search("uniquepublicationoldtoken")
+        .unwrap()
+        .hits
+        .is_empty());
+    let lock = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(wiki.join(".wiki-maintenance.lock"))
+        .unwrap();
+    lock.try_lock().unwrap();
+    assert_eq!(
+        index.search("uniquepublicationoldtoken").unwrap().phase,
+        WikiSearchPhase::NotReady
+    );
+    assert!(index.reconcile_now(None).await.is_err());
+    drop(lock);
+    std::fs::write(
+        &file,
+        page("Publication", "New version", "uniquepublicationnewtoken"),
+    )
+    .unwrap();
+    assert!(index
+        .search("uniquepublicationoldtoken")
+        .unwrap()
+        .hits
+        .is_empty());
+    let next = index
+        .reconcile_now(Some(vec!["concepts/a.md".into()]))
+        .await
+        .unwrap();
+    assert!(index.wait_published(next.source_revision).await);
+    assert!(!index
+        .search("uniquepublicationnewtoken")
+        .unwrap()
+        .hits
+        .is_empty());
+    let relocated = root.path().join("relocated-wiki");
+    std::fs::rename(wiki, &relocated).unwrap();
+    assert_eq!(
+        index.search("uniquepublicationnewtoken").unwrap().phase,
+        WikiSearchPhase::NotReady
+    );
+    std::fs::rename(&relocated, wiki).unwrap();
+    drop(index);
+    a3s_okf::cancel_workspace_knowledge_job(wiki, input.binding_revision(), &job.id).unwrap();
+}
+
 async fn wait_for(index: &WikiIndex, query: &str, needle: &str) -> bool {
     let deadline = tokio::time::Instant::now() + Duration::from_secs(8);
     while tokio::time::Instant::now() < deadline {
@@ -258,6 +418,37 @@ async fn wiki_index_rebuilds_when_a_page_is_saved() {
     .unwrap();
     let saw_new = wait_for(&index, "南城新增句子", "南城新增句子").await;
     assert!(saw_new, "a saved page did not schedule its own build");
+
+    std::fs::write(
+        wiki.join(YI),
+        page("产品手册乙", "更新", "乙页换成全新内容。"),
+    )
+    .unwrap();
+    assert!(wait_for(&index, "全新内容", "乙页换成全新内容").await);
+    let revision = index.search("全新内容").unwrap().source_revision;
+    std::fs::remove_file(wiki.join(YI)).unwrap();
+    tokio::time::timeout(Duration::from_secs(8), async {
+        loop {
+            let result = index.search("全新内容").unwrap();
+            if result.phase == WikiSearchPhase::Published && result.source_revision > revision {
+                assert!(result.hits.is_empty());
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+    })
+    .await
+    .expect("a removed page must disappear without manual reconciliation");
+
+    let (closed, observed) = std::sync::mpsc::channel();
+    let owner = std::thread::spawn(move || {
+        drop(index);
+        closed.send(()).unwrap();
+    });
+    observed
+        .recv_timeout(Duration::from_secs(3))
+        .expect("closing the index must not wait on platform watcher registration");
+    owner.join().unwrap();
 }
 
 #[tokio::test]

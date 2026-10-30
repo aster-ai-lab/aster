@@ -106,6 +106,7 @@ impl crate::agent::TurnEngine {
         let model_generation_admission =
             ModelGenerationAdmission::new(llm_client.model_generation_concurrency());
         tool_context.run_work_policy = config.work_policy.clone();
+        tool_context.apply_execution_policy(config.permission_checker.as_deref());
         Self {
             llm_client,
             model_generation_admission,

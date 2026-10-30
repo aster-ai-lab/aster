@@ -21,6 +21,7 @@ fn reasoning_model_sends_reasoning_effort_and_keeps_output_room() {
 #[test]
 fn deepseek_model_sends_thinking_effort_without_an_output_floor() {
     let client = OpenAiClient::new("k".to_string(), "deepseek-v4-flash".to_string())
+        .with_provider_name("deepseek")
         .with_reasoning_effort("max");
     let req = client.build_chat_request(&[Message::user("fix it")], None, &[], None);
     assert_eq!(req["reasoning_effort"], "max");
@@ -29,6 +30,7 @@ fn deepseek_model_sends_thinking_effort_without_an_output_floor() {
     assert!(req.get("max_tokens").is_none());
 
     let disabled = OpenAiClient::new("k".to_string(), "deepseek-v4-flash".to_string())
+        .with_provider_name("deepseek")
         .with_reasoning_effort("none");
     let off = disabled.build_chat_request(&[Message::user("fix it")], None, &[], None);
     assert_eq!(off["reasoning_effort"], "none");
@@ -53,6 +55,60 @@ fn zhipu_client_sends_glm_reasoning_effort() {
     let req = client.build_chat_request(&[Message::user("hi")], None, &[], None);
     assert_eq!(req["reasoning_effort"], "low");
     assert!(req["max_tokens"].as_u64().unwrap() >= 65_536);
+}
+
+#[test]
+fn custom_openai_providers_do_not_inherit_native_controls_from_model_names() {
+    for provider in ["relay", "company-models"] {
+        for model in ["deepseek-v4-flash", "glm-5.3", "gpt-5.4", "claude-opus-4-6"] {
+            let client = OpenAiClient::new("k".into(), model.into())
+                .with_provider_name(provider)
+                .with_base_url("https://relay.example/v1".into())
+                .with_reasoning_effort("max")
+                .with_max_tokens(123);
+            let request = client.build_chat_request(&[Message::user("hi")], None, &[], None);
+            for field in ["reasoning_effort", "thinking", "top_p"] {
+                assert!(
+                    request.get(field).is_none(),
+                    "{provider}/{model}: {request}"
+                );
+            }
+            assert_eq!(request["max_tokens"], 123);
+        }
+    }
+}
+
+#[test]
+fn deepseek_effort_requires_its_provider_or_exact_official_host() {
+    for (url, native) in [
+        ("https://API.DEEPSEEK.COM/v1/", true),
+        ("https://api.deepseek.com.evil.example/v1", false),
+        ("https://relay.example/api.deepseek.com", false),
+    ] {
+        let client = OpenAiClient::new("k".into(), "deepseek-v4-flash".into())
+            .with_provider_name("relay")
+            .with_base_url(url.into())
+            .with_reasoning_effort("max");
+        let request = client.build_chat_request(&[Message::user("hi")], None, &[], None);
+        assert_eq!(request.get("thinking").is_some(), native, "{request}");
+        assert_eq!(
+            request.get("reasoning_effort").is_some(),
+            native,
+            "{request}"
+        );
+        if native {
+            assert_eq!(request["reasoning_effort"], "max");
+            assert_eq!(request["thinking"]["type"], "enabled");
+            assert_eq!(request["top_p"], 0.95);
+        }
+    }
+    let generic = OpenAiClient::new("k".into(), "deepseek-v4-flash".into())
+        .with_base_url("https://relay.example/v1".into())
+        .with_reasoning_effort("max");
+    assert!(generic
+        .build_chat_request(&[Message::user("hi")], None, &[], None)
+        .get("thinking")
+        .is_none());
 }
 
 // --- streaming reasoning-channel regression -----------------------------
@@ -1312,7 +1368,8 @@ fn retry_client(http: std::sync::Arc<CountingHttp>, max_retries: u32) -> OpenAiC
         })
 }
 
-#[tokio::test]
+// Client construction and host scheduling are outside the retry clock contract.
+#[tokio::test(start_paused = true)]
 async fn nonstreaming_retry_waits_for_retry_after_and_skips_terminal_failures() {
     let hits = std::sync::Arc::new(std::sync::atomic::AtomicUsize::new(0));
     let http = std::sync::Arc::new(CountingHttp {

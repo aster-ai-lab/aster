@@ -1,0 +1,10 @@
+flowchart TB
+  accTitle: ACL 的解析、校验与宿主边界
+  accDescr: 文本先经过资源限制与语法解析，再由 Schema 检查结构。宿主负责取值、权限与激活。规范摘要只描述内容身份。
+  text["ACL 文本"] --> parse["资源限制与语法解析"]
+  parse --> ast["Document / Block / Value"]
+  ast --> schema["Schema 结构校验"]
+  schema --> host["宿主语义、取值与权限检查"]
+  host --> active["接纳并激活"]
+  ast --> canonical["规范字节与 SHA-256 摘要"]
+  canonical -. 内容身份，不代表授权 .-> host

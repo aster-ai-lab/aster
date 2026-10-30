@@ -1,0 +1,110 @@
+export const meta = {
+  title: 'a3s-box 生命周期与隔离',
+  description: 'OCI 镜像、MicroVM 默认隔离、共享内核选项、生命周期和 CLI。',
+  label: 'a3s-box',
+  updated: '2026-10-29',
+};
+
+`a3s-box` 从 OCI 镜像创建 Sandbox，并管理命令、文件、网络、快照和生命周期。CLI 与 Rust SDK 使用同一套 runtime 生命周期实现。
+
+## 隔离方式
+
+<DocTable caption="a3s-box 的隔离选择" headers={['方式', '选择条件', '边界']} rows={[
+  ['MicroVM', '默认', '使用硬件虚拟化运行独立访客内核'],
+  ['共享内核 Sandbox', '显式选择 isolation = sandbox', '仅用于满足要求的 Linux 主机'],
+]} />
+
+MicroVM 后端包括 Linux/KVM、macOS arm64 的 Hypervisor.framework 和 Windows x86_64 的 WHPX。`a3s-box info` 显示当前主机的虚拟化支持。
+
+共享内核 Sandbox 不支持命名桥接网络和端口发布。需要这些网络能力时，必须使用 MicroVM。
+
+Windows/WHPX 的启动后命令执行能力受限。此类工作负载应在创建时通过 `entrypoint` 或 `command` 指定初始进程。
+
+## 生命周期
+
+`LocalExecutionManager` 统一管理执行记录和代际。创建操作先产生 reservation，启动后产生带代际的 lease。后续操作必须匹配执行 ID 与代际。
+
+<DocTable caption="Sandbox 生命周期操作" headers={['操作', '作用']} rows={[
+  ['create / run', '准备镜像与执行记录；run 同时启动 Sandbox'],
+  ['start / stop / restart', '启动、停止或重启原执行'],
+  ['pause / resume', '暂停或恢复当前执行'],
+  ['exec / commands', '在运行中的 Sandbox 内执行命令'],
+  ['logs / stats / events', '读取有界日志、资源统计和代际事件'],
+  ['snapshot / restore', '保存文件系统快照，或恢复到新的执行记录'],
+  ['remove / kill', '删除执行记录；kill 组合停止与删除'],
+]} />
+
+停止与删除是不同操作。`stop` 保留记录，`remove` 删除记录。`kill` 是停止并删除的组合操作。
+
+重启与资源更新需要 `OperationId`。重试时应保留原 ID，以解析同一次操作，避免创建第二条生命周期转换。
+
+## CLI 快速开始
+
+先检查安装与虚拟化支持：
+
+```bash
+a3s-box info
+```
+
+运行一次性 Sandbox：
+
+```bash
+a3s-box run --name sandbox-demo --rm \
+  alpine:3.20 -- echo "hello from box"
+```
+
+`run` 负责拉取或复用镜像、创建记录并启动 Sandbox。`--rm` 在停止后删除记录。本地没有镜像时，拉取需要可用的镜像仓库连接。
+
+启动后台 Sandbox：
+
+```bash
+a3s-box run --name sandbox-demo -d \
+  alpine:3.20 -- sleep 60
+a3s-box ps -a
+a3s-box exec sandbox-demo -- echo "still running"
+a3s-box stop sandbox-demo
+a3s-box rm sandbox-demo
+```
+
+`exec` 要求目标 Sandbox 正在运行。默认超时为 5 秒。需要不同的工作目录时使用 `--workdir`。
+
+## 资源与网络
+
+常用创建参数：
+
+<DocTable caption="a3s-box run 与 create 的常用参数" headers={['参数', '作用']} rows={[
+  ['--cpus', '设置 vCPU 数量，默认 2'],
+  ['--memory', '设置内存，例如 512m 或 2g，默认 512m'],
+  ['--volume', '挂载主机目录或命名卷，可以重复'],
+  ['--env', '设置环境变量，可以重复'],
+  ['--network', '选择命名桥接网络，或使用 none'],
+  ['--publish', '发布 TCP 端口，可以重复，仅 MicroVM'],
+  ['--workdir', '设置访客内工作目录'],
+  ['--isolation sandbox', '显式选择共享内核 Sandbox'],
+]} />
+
+命名卷与命名网络必须先创建，再供 Sandbox 选择。不要把目录存在等同于能力已获准。
+
+## 文件与产物
+
+SDK 的文件接口支持读取、写入、元数据和变更操作。单文件导出使用 `ArtifactExportOptions` 设置上限与目标路径。
+
+单文件导出上限为 8 MiB。后端在读取前检查类型和大小，并拒绝读取期间发生变化的文件。导出结果包含字节数和小写 SHA-256。
+
+目标文件使用独占创建。现有文件不会被覆盖。
+
+## 故障检查
+
+- `a3s-box info` 不支持当前虚拟化后端时，不要启动新的 MicroVM。
+- 共享内核后端不支持所选网络或挂载时，调整配置或改用 MicroVM。
+- 镜像拉取失败时，保留错误并检查仓库连接和凭据范围。
+- 日志或事件流出现代际变化时，停止读取旧代际并重新查询当前执行。
+- 外部操作结果未知时，先核对原执行，不要直接重试写入。
+
+生命周期入口为 <SourceRef path="crates/box/runtime/src/local_execution/mod.rs" match="pub struct LocalExecutionManager {">LocalExecutionManager</SourceRef>。CLI 命令集合见 <SourceRef path="crates/box/cli/src/commands/mod.rs" match="pub enum Command {">Command</SourceRef>。
+
+## 实现依据
+
+- [runtime 架构与网络边界](https://github.com/aster-ai-lab/aster/blob/main/crates/box/runtime/README.md)
+- [CLI 的 run 参数](https://github.com/aster-ai-lab/aster/blob/main/crates/box/cli/src/commands/run.rs)
+- [SDK 的隔离与生命周期说明](https://github.com/aster-ai-lab/aster/blob/main/crates/box/sdk/README.md)

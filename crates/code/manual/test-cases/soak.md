@@ -234,11 +234,11 @@ This is not a live provider soak. Do not soak the Flash account.
 
 ### S-CP-01
 
-- **Capability:** `cognitive_packages`
+- **Capability:** `packages`
 - **Cycles:** 20 bind replacements, generation G then G+1 alternating.
 - **Oracle:** after each bind, prompt assembly contains only the current digest; retained package bytes = one generation.
 - **Fail:** both generations retained.
-- **Home:** `core/src/run/tests/run_cognitive_binding_soak.rs` `soak_alternating_cognitive_binds_keep_one_generation` (`#[ignore]`). A second generation is `RunCognitiveBindingError::Conflict`; the snapshot keeps one digest. Host CAR qualification stays external. Re-proven Windows 2026-09-20 (`--lib --ignored`).
+- **Home:** `core/src/run/tests/run_package_binding_soak.rs` `soak_alternating_package_binds_keep_one_generation` (`#[ignore]`). A second generation is `RunPackageBindingError::Conflict`; the snapshot keeps one digest. Host CAR qualification stays external. Re-proven Windows 2026-09-20 (`--lib --ignored`).
 
 ### S-UR-01
 

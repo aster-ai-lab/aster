@@ -3,6 +3,188 @@
 use super::*;
 use std::future::Future;
 
+#[tokio::test]
+async fn send_now_cancels_before_waiting_for_the_active_turn_permit() {
+    for send_now in [None, Some(false), Some(true)] {
+        let root = tempfile::tempdir().unwrap();
+        let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+        launch.workspace = root.path().to_owned();
+        for provider in &mut launch.config.providers {
+            provider.base_url = Some("http://127.0.0.1:9/v1".into());
+        }
+        let agent = A3sCodeAgent::new(launch);
+        let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+            .await
+            .unwrap();
+        let session_key = opened.session_id.0.to_string();
+        agent
+            .turn_generation
+            .lock()
+            .await
+            .insert(session_key.clone(), 9);
+        let (queue, session) = {
+            let sessions = agent.sessions.lock().await;
+            let live = &sessions[&session_key];
+            (Arc::clone(&live.turn_queue), Arc::clone(&live.session))
+        };
+        let held = queue.acquire_owned().await.unwrap();
+        let mut meta = acp::Meta::new();
+        if let Some(value) = send_now {
+            meta.insert("sendNow".into(), serde_json::json!(value));
+        }
+        let mut prompt = Box::pin(acp::Agent::prompt(
+            &agent,
+            acp::PromptRequest::new(
+                opened.session_id,
+                vec![acp::ContentBlock::Text(acp::TextContent::new(
+                    "queued request",
+                ))],
+            )
+            .meta(Some(meta)),
+        ));
+        assert!(
+            std::future::poll_fn(|cx| std::task::Poll::Ready(
+                prompt.as_mut().poll(cx).is_pending()
+            ))
+            .await
+        );
+        assert_eq!(
+            agent
+                .cancelled_generation
+                .lock()
+                .await
+                .get(&session_key)
+                .copied(),
+            send_now.filter(|value| *value).map(|_| 9)
+        );
+        drop(prompt);
+        drop(held);
+        session.close().await;
+    }
+}
+
+#[tokio::test]
+async fn malformed_send_now_refuses_without_cancelling_or_waiting_for_the_queue() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().to_owned();
+    for provider in &mut launch.config.providers {
+        provider.base_url = Some("http://127.0.0.1:9/v1".into());
+    }
+    let agent = A3sCodeAgent::new(launch);
+    let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap();
+    let session_key = opened.session_id.0.to_string();
+    let (queue, session) = {
+        let sessions = agent.sessions.lock().await;
+        let live = &sessions[&session_key];
+        (Arc::clone(&live.turn_queue), Arc::clone(&live.session))
+    };
+    let _held = queue.acquire_owned().await.unwrap();
+    for value in [
+        serde_json::json!("true"),
+        serde_json::json!(1),
+        serde_json::Value::Null,
+    ] {
+        let mut meta = acp::Meta::new();
+        meta.insert("sendNow".into(), value);
+        let error = tokio::time::timeout(
+            std::time::Duration::from_secs(1),
+            acp::Agent::prompt(
+                &agent,
+                acp::PromptRequest::new(
+                    opened.session_id.clone(),
+                    vec![acp::ContentBlock::Text(acp::TextContent::new(
+                        "must not execute",
+                    ))],
+                )
+                .meta(Some(meta)),
+            ),
+        )
+        .await
+        .expect("invalid metadata must not enter the queue")
+        .unwrap_err();
+        assert_eq!(error.data.unwrap(), "sendNow must be a boolean");
+        assert!(!agent
+            .cancelled_generation
+            .lock()
+            .await
+            .contains_key(&session_key));
+    }
+    session.close().await;
+}
+
+#[tokio::test]
+async fn send_now_announces_the_running_prompt_before_its_text() {
+    use tokio::io::AsyncBufReadExt;
+    use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
+
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let root = tempfile::tempdir().unwrap();
+            let mut launch = tests::test_launch(Some(root.path().join("sessions")));
+            launch.workspace = root.path().to_owned();
+            for provider in &mut launch.config.providers {
+                provider.base_url = Some("http://127.0.0.1:9/v1".into());
+            }
+            let agent = A3sCodeAgent::new(launch);
+            let opened = acp::Agent::new_session(&agent, acp::NewSessionRequest::new(root.path()))
+                .await
+                .unwrap();
+            let session = agent.sessions.lock().await[opened.session_id.0.as_ref()]
+                .session
+                .clone();
+            let (client_end, agent_end) = tokio::io::duplex(64 * 1024);
+            let (read, write) = tokio::io::split(agent_end);
+            let (connection, io) = acp::AgentSideConnection::new(
+                A3sCodeAgent::new(tests::test_launch(None)),
+                write.compat_write(),
+                read.compat(),
+                |future| {
+                    tokio::task::spawn_local(future);
+                },
+            );
+            let transport = tokio::task::spawn_local(io);
+            agent.set_client(Rc::new(connection));
+            let mut meta = acp::Meta::new();
+            meta.insert("sendNow".into(), serde_json::json!(true));
+            meta.insert("promptId".into(), serde_json::json!("send-now-inspection"));
+            let prompt = acp::Agent::prompt(
+                &agent,
+                acp::PromptRequest::new(
+                    opened.session_id.clone(),
+                    vec![acp::ContentBlock::Text(acp::TextContent::new("/tasks"))],
+                )
+                .meta(Some(meta)),
+            );
+            let observe = async {
+                let mut reader = tokio::io::BufReader::new(client_end);
+                let mut line = String::new();
+                assert_ne!(reader.read_line(&mut line).await.unwrap(), 0);
+                let first: serde_json::Value = serde_json::from_str(&line).unwrap();
+                assert_eq!(first["method"], "_a3s/queue/changed");
+                assert_eq!(
+                    first["params"]["sessionId"],
+                    opened.session_id.0.to_string()
+                );
+                assert_eq!(first["params"]["runningPromptId"], "send-now-inspection");
+                assert_eq!(first["params"]["runningText"], "/tasks");
+                assert_eq!(first["params"]["runningKind"], "prompt");
+            };
+            let (response, ()) = tokio::time::timeout(std::time::Duration::from_secs(2), async {
+                tokio::join!(prompt, observe)
+            })
+            .await
+            .expect("the running identity must precede output");
+            assert_eq!(response.unwrap().stop_reason, acp::StopReason::EndTurn);
+            session.close().await;
+            transport.abort();
+            let _ = transport.await;
+        })
+        .await;
+}
+
 async fn drain(events: Vec<AgentEvent>, cancelled: bool) -> acp::Result<acp::PromptResponse> {
     let root = tempfile::tempdir().unwrap();
     let mut launch = tests::test_launch(Some(root.path().join("sessions")));

@@ -1,4 +1,6 @@
-import { type FormEvent, useId, useState } from 'react';
+import { Combobox } from '@a3s-lab/ui/components/primitives/combobox';
+import { type FormEvent, useId, useRef, useState } from 'react';
+import { officeFloatingPortalRoot } from '../../../design-system/primitives/overlay/portal-root';
 import { Button, Dialog } from '../../../design-system/primitives';
 import { officeMessage } from '../../../i18n/office-locale';
 import type { OfficeMessageCatalog } from '../../../i18n/office-messages';
@@ -9,7 +11,6 @@ import type {
 } from './document-proofing-dialog-model';
 import {
   OfficeSelect,
-  OfficeTextField,
   type OfficeSelectOption,
 } from './office-controls';
 import { useOfficeMessages } from './office-messages-context';
@@ -54,7 +55,6 @@ export function DocumentProofingDialog({
     Record<ProofingLanguageDraftKey | 'noProof', boolean>
   >({ latin: false, eastAsia: false, bidi: false, noProof: false });
   const formId = useId();
-  const datalistId = useId();
   const error = proofingDialogError(messages, draft, touched);
   const patch = proofingDialogPatch(source, draft, touched);
   const hasChanges = Object.keys(patch).length > 0;
@@ -77,6 +77,7 @@ export function DocumentProofingDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.proofing.title')}
       description={
         source.selectedCharacters
@@ -123,7 +124,6 @@ export function DocumentProofingDialog({
             languageKey="latin"
             value={draft.latin}
             mixed={source.latin.mixed && !touched.latin}
-            list={datalistId}
             initialFocus
             error={touched.latin && !validLanguageDraft(draft.latin)}
             onChange={(value) => {
@@ -136,7 +136,6 @@ export function DocumentProofingDialog({
             languageKey="eastAsia"
             value={draft.eastAsia}
             mixed={source.eastAsia.mixed && !touched.eastAsia}
-            list={datalistId}
             error={touched.eastAsia && !validLanguageDraft(draft.eastAsia)}
             onChange={(value) => {
               setDraft((current) => ({ ...current, eastAsia: value }));
@@ -148,18 +147,12 @@ export function DocumentProofingDialog({
             languageKey="bidi"
             value={draft.bidi}
             mixed={source.bidi.mixed && !touched.bidi}
-            list={datalistId}
             error={touched.bidi && !validLanguageDraft(draft.bidi)}
             onChange={(value) => {
               setDraft((current) => ({ ...current, bidi: value }));
               setTouched((current) => ({ ...current, bidi: true }));
             }}
           />
-          <datalist id={datalistId}>
-            {proofingLanguageSuggestions.map((language) => (
-              <option key={language} value={language} />
-            ))}
-          </datalist>
         </fieldset>
 
         <div className="work-document-proofing-dialog-state">
@@ -209,7 +202,6 @@ function ProofingLanguageField({
   languageKey,
   value,
   mixed,
-  list,
   initialFocus = false,
   error,
   onChange,
@@ -218,33 +210,57 @@ function ProofingLanguageField({
   languageKey: ProofingLanguageDraftKey;
   value: string;
   mixed: boolean;
-  list: string;
   initialFocus?: boolean;
   error: boolean;
   onChange: (value: string) => void;
 }) {
   const messages = useOfficeMessages();
+  const fieldId = `${useId()}-${languageKey}`;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const openRef = useRef(false);
+  const [open, setOpen] = useState(false);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement>();
+  const options = proofingLanguageSuggestions.map((language) => ({ value: String(language), label: String(language) }));
+  if (value && !options.some((option) => option.value === value)) options.push({ value, label: value });
   return (
-    <div className="work-document-proofing-dialog-language">
-      <label htmlFor={`work-document-proofing-${languageKey}`}>{label}</label>
+    <div ref={rootRef} className="work-document-proofing-dialog-language">
+      <label htmlFor={fieldId}>{label}</label>
       <div>
-        <OfficeTextField
-          id={`work-document-proofing-${languageKey}`}
+        <Combobox
+          id={fieldId}
           aria-label={officeMessage(messages, 'document.proofing.langAria', {
             label,
           })}
-          aria-invalid={error || undefined}
+          error={error}
           data-autofocus={initialFocus ? 'true' : undefined}
-          list={list}
+          searchPlacement="trigger"
+          options={options}
           value={value}
+          open={open}
+          onOpenChange={(next) => {
+            openRef.current = next;
+            if (next) setPortalContainer(officeFloatingPortalRoot(document, rootRef.current));
+            setOpen(next);
+          }}
+          onSearch={(query) => {
+            // Closing resets the search; it must not clear the language draft.
+            if (openRef.current) onChange(query);
+          }}
+          onChange={(next) => { if (typeof next === 'string') onChange(next); }}
+          portalContainer={portalContainer}
+          popoverAlign="start"
+          width="100%"
+          className="ui-search-select__trigger work-office-combobox"
+          popoverClassName="ui-search-select__panel work-office-combobox-panel"
+          itemClassName="ui-search-select__option"
+          emptyClassName="ui-search-select__empty"
+          emptyText={officeMessage(messages, 'office.select.empty')}
           placeholder={officeMessage(
             messages,
             mixed
               ? 'document.proofing.behavior.mixed'
               : 'document.proofing.behavior.inherit',
           )}
-          spellCheck={false}
-          onChange={(event) => onChange(event.currentTarget.value)}
         />
         <Button
           tone="quiet"

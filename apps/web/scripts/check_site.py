@@ -13,9 +13,9 @@ import sys
 from urllib.parse import unquote, urlsplit
 import zlib
 
-from site_contract import DOCS_FILES, DOCS_PAGES, DOCS_ROUTES, DOCS_REFERENCE_URLS, DOWNLOAD_MANIFEST, DOWNLOAD_BRAND_FILES, FONT_FILES, HOME_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
+from site_contract import DOCS_FILES, DOCS_PAGES, DOCS_ROUTES, DOCS_REFERENCE_URLS, DOWNLOAD_MANIFEST, DOWNLOAD_BRAND_FILES, FONT_FILES, HOME_FILES, LEGAL_FILES, PAGE_FILES, PAGES_URL, REPOSITORY_URL, SCREENSHOT_FILES, SITE_FILES
 
-PUBLIC_ROOT = Path(__file__).resolve().parents[1] / "public"
+PUBLIC_ROOT = Path(__file__).resolve().parents[1] / "dist"
 DOWNLOAD_URLS = frozenset(item[4] for item in DOWNLOAD_MANIFEST)
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 
@@ -214,9 +214,10 @@ def check_site(public_root=PUBLIC_ROOT):
             external_link(url)
     home = check_home_page(root)
     docs = check_docs(root)
+    legal = check_legal_pages(root)
     return {"status": "passed", "files": len(SITE_FILES + HOME_FILES + DOCS_FILES), "download_links": len(seen_downloads),
             "named_buttons": sum(node.tag == "button" for node in nodes), "home_tabs": home["tabs"],
-            "docs_pages": docs["pages"],
+            "docs_pages": docs["pages"], "legal_pages": legal["pages"],
             "private_sources_required": False}
 
 
@@ -254,6 +255,8 @@ def check_home_page(root):
         target = ((root / decoded) if decoded else (root / "index.html")).resolve()
         if not target.is_relative_to(root.resolve()):
             raise ValueError(f"homepage asset escapes site: {value}")
+        if target.is_dir():
+            target = target / "index.html"
         name = target.relative_to(root.resolve()).as_posix()
         if name not in allowed:
             raise ValueError(f"unapproved homepage asset: {value}")
@@ -335,6 +338,91 @@ def check_home_page(root):
     return {"status": "passed", "tabs": len(tabs), "download_links": len(seen_downloads)}
 
 
+def check_legal_pages(root):
+    """Validate the standalone legal pages and their closed local-resource links."""
+    root = Path(root).absolute()
+    for name in LEGAL_FILES:
+        regular(root, name)
+    for directory, expected in (("terms", {"terms/index.html"}), ("privacy", {"privacy/index.html"}), ("legal", {"legal/styles.css"})):
+        actual = {path.relative_to(root).as_posix() for path in (root / directory).rglob("*")
+                  if path.is_file() or path.is_symlink()}
+        if actual != expected:
+            raise ValueError(f"unexpected or missing legal-page file: {directory}")
+
+    allowed = set(SITE_FILES + HOME_FILES + DOCS_FILES)
+    pages, identifiers = {}, {}
+    for name in ("terms/index.html", "privacy/index.html"):
+        nodes = list(Page((root / name).read_text(encoding="utf-8")).root.walk())
+        pages[name] = nodes
+        ids = [node.attrs["id"] for node in nodes if node.attrs.get("id")]
+        if len(ids) != len(set(ids)):
+            raise ValueError(f"duplicate legal-page HTML id: {name}")
+        identifiers[name] = set(ids)
+        if sum(node.tag == "h1" and "Aster" in node.text() for node in nodes) != 1:
+            raise ValueError(f"legal page needs one Aster heading: {name}")
+        if not any(node.tag == "main" and node.attrs.get("id") == "content" for node in nodes):
+            raise ValueError(f"legal page needs a main landmark: {name}")
+
+    def local_url(value, origin):
+        parsed = urlsplit(value)
+        if parsed.scheme or parsed.netloc or parsed.query or "\\" in value:
+            raise ValueError(f"nonlocal legal-page asset: {value}")
+        decoded = unquote(parsed.path)
+        if decoded.startswith("/") or (not decoded and not parsed.fragment):
+            raise ValueError(f"invalid legal-page path: {value}")
+        target = ((root / origin).parent / decoded if decoded else root / origin).resolve()
+        if not target.is_relative_to(root.resolve()):
+            raise ValueError(f"legal-page asset escapes site: {value}")
+        if target.is_dir():
+            target = target / "index.html"
+        name = target.relative_to(root.resolve()).as_posix()
+        if name not in allowed:
+            raise ValueError(f"unapproved legal-page asset: {value}")
+        regular(root, name)
+        if parsed.fragment and unquote(parsed.fragment) not in identifiers.get(name, set()):
+            raise ValueError(f"missing legal-page fragment: {value}")
+        return name
+
+    for name, nodes in pages.items():
+        for node in nodes:
+            if node.tag in {"script", "select", "datalist", "style", "iframe", "base", "object", "embed"}:
+                raise ValueError(f"unsupported legal-page element: {node.tag}")
+            if any(key.startswith("on") or key in {"style", "srcset"} for key in node.attrs):
+                raise ValueError(f"inline legal-page behavior/style: {node.tag}")
+            if node.tag == "img" and "alt" not in node.attrs:
+                raise ValueError(f"legal-page image needs alt text: {name}")
+            if node.tag == "a":
+                href = node.attrs.get("href", "")
+                if not href:
+                    raise ValueError("legal-page anchor has no destination")
+                parsed = urlsplit(href)
+                if parsed.scheme or parsed.netloc:
+                    external_link(href)
+                else:
+                    local_url(href, name)
+            if node.tag == "link" and "href" in node.attrs:
+                if node.attrs.get("rel") == "canonical":
+                    route = "terms/" if name.startswith("terms/") else "privacy/"
+                    if node.attrs["href"] != PAGES_URL + route:
+                        raise ValueError(f"unexpected legal-page canonical: {name}")
+                else:
+                    local_url(node.attrs["href"], name)
+            for attr in ("src", "poster"):
+                if attr in node.attrs:
+                    local_url(node.attrs[attr], name)
+            for attr in ("href", "xlink:href"):
+                if attr in node.attrs and node.tag not in {"a", "link"}:
+                    local_url(node.attrs[attr], name)
+
+    name = "legal/styles.css"
+    css = re.sub(r"/\*.*?\*/", "", (root / name).read_text(encoding="utf-8"), flags=re.S)
+    if re.search(r"@import\b", css, flags=re.I):
+        raise ValueError("CSS imports are not part of legal pages")
+    for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", css, flags=re.I):
+        local_url(match.group(2), name)
+    return {"pages": len(pages)}
+
+
 def check_docs(root):
     """Check generated MDX pages without widening the download asset boundary."""
     root = Path(root).absolute()
@@ -378,14 +466,14 @@ def check_docs(root):
         return name
 
     for name, nodes in pages.items():
-        if sum(node.tag == "script" for node in nodes) != 1:
+        if sum(node.tag == "script" for node in nodes) != 2:
             raise ValueError("unsupported documentation script count")
         for node in nodes:
             if node.tag == "script":
                 src = node.attrs.get("src", "")
                 if node.children or set(node.attrs) != {"src", "defer"}:
                     raise ValueError("unsupported documentation script")
-                if local_url(src, name) != "docs/navigation.js":
+                if local_url(src, name) not in {"docs/navigation.js", "docs/search.js"}:
                     raise ValueError("unsupported documentation script")
             if node.tag in {"select", "datalist", "style", "iframe", "base", "object", "embed"}:
                 raise ValueError(f"unsupported documentation element: {node.tag}")

@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Cell } from '@fortune-sheet/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { showToast } from '../../../state/app-state';
@@ -381,23 +382,29 @@ export function useSpreadsheetSort({
   return {
     commandPort,
     dialog:
-      surface?.kind === 'custom' ? (
-        <SpreadsheetSortDialog
-          source={surface.source}
-          restoreFocusTarget={restoreFocusTarget}
-          onApply={apply}
-          onRememberCustomList={rememberCustomList}
-          onUpdateCustomLists={updateCustomLists}
-          onClose={close}
-        />
-      ) : surface?.kind === 'range' ? (
-        <SpreadsheetSortRangeDialog
-          source={surface.source}
-          restoreFocusTarget={restoreFocusTarget}
-          onApply={chooseRange}
-          onClose={close}
-        />
-      ) : null,
+      (
+      <DialogPresence>
+        {surface?.kind === 'custom' ? (
+          <SpreadsheetSortDialog
+            key="custom"
+            source={surface.source}
+            restoreFocusTarget={restoreFocusTarget}
+            onApply={apply}
+            onRememberCustomList={rememberCustomList}
+            onUpdateCustomLists={updateCustomLists}
+            onClose={close}
+          />
+        ) : surface?.kind === 'range' ? (
+          <SpreadsheetSortRangeDialog
+            key="range"
+            source={surface.source}
+            restoreFocusTarget={restoreFocusTarget}
+            onApply={chooseRange}
+            onClose={close}
+          />
+        ) : null}
+      </DialogPresence>
+    ),
   };
 }
 

@@ -23,7 +23,7 @@ fn knowledge_surface(
 }
 
 #[tokio::test]
-async fn multiple_knowledge_surfaces_publish_readiness_without_becoming_cognitive_authority() {
+async fn multiple_knowledge_surfaces_publish_readiness_without_becoming_package_authority() {
     let session = test_session("knowledge-surface-readiness").await;
     let acquired = Arc::new(AtomicUsize::new(0));
     let dropped = Arc::new(AtomicUsize::new(0));

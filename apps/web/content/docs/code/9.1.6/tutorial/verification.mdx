@@ -1,11 +1,11 @@
 export const meta = {
-  title: '05 · 让“修好了”对应一次有效验证',
+  title: '05 · 修改与验证',
   description: '在练习项目修复失败测试，声明验证命令，并把修改摘要和完成状态显示到界面。',
   label: '05 修改与验证',
   updated: '2026-10-26',
 };
 
-## 用一个有明确答案的任务练习
+## 验证练习任务
 
 准备一个小项目：一个函数、一个失败测试、一个固定测试命令。先手动运行一次，记下失败原因。给 Agent 的任务应是“修复这个测试并运行现有检查”，不要同时要求重构整个项目、接新服务和发布版本。
 
@@ -52,7 +52,7 @@ verification_contract "tutorial-tests" {
 
 内置 `DiskContentAttestor` 适合核对磁盘与记录一致，不能证明函数行为正确。本教程的代码修复任务仍应使用项目真实测试。
 
-## 继续查阅
+## 相关文档
 
 - [验证报告与资源清理](../../meta-harness/verification-resources/)
 - [宿主验证契约](https://github.com/aster-ai-lab/aster/blob/main/crates/code/manual/HOST_VERIFICATION_CONTRACT.md)

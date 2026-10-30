@@ -10,6 +10,13 @@ use tokio::sync::Semaphore;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
+fn successful_tool_json(text: &str) -> Value {
+    let payload = text
+        .strip_prefix("Tool exit code: 0\n")
+        .expect("successful tool result must expose its zero exit status");
+    serde_json::from_str(payload).expect("tool payload must remain JSON")
+}
+
 struct State {
     calls: Mutex<Vec<(String, Value)>>,
     context: Mutex<Option<ToolContext>>,
@@ -37,6 +44,44 @@ impl Client for Host {
     ) -> agent_client_protocol::Result<()> {
         Ok(())
     }
+    async fn read_text_file(
+        &self,
+        request: agent_client_protocol::ReadTextFileRequest,
+    ) -> agent_client_protocol::Result<agent_client_protocol::ReadTextFileResponse> {
+        let params = serde_json::to_value(&request).unwrap();
+        assert_eq!(params["sessionId"], "document-session");
+        self.state
+            .calls
+            .lock()
+            .unwrap()
+            .push(("fs/read_text_file".to_owned(), params.clone()));
+        let mut probe = self.state.probe.lock().unwrap();
+        let value = match probe.as_mut() {
+            Some(probe) => {
+                let value = probe.call(json!({"harness":{"operation":"acp_read","params":params}}));
+                if let Some(lease) = probe.editor.take() {
+                    probe.call(json!({"request":{"operation":"close","lease":lease}}));
+                }
+                value
+            }
+            None => {
+                json!({
+                    "content":"clean text",
+                    "_meta":{"a3sDocument":{
+                        "path":self.root.join("note.txt"),
+                        "snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap().to_string(),"version":1,"dirty":false,"diskConflict":false},
+                        "runId":params["_meta"]["a3sDocument"]["runId"],
+                        "released":false
+                    }}
+                })
+            }
+        };
+        drop(probe);
+        let content = value["content"].as_str().unwrap_or_default().to_owned();
+        let meta = value["_meta"].as_object().cloned().unwrap_or_default();
+        Ok(agent_client_protocol::ReadTextFileResponse::new(content).meta(meta))
+    }
+
     async fn ext_method(
         &self,
         request: ExtRequest,
@@ -44,36 +89,20 @@ impl Client for Host {
         let params: Value = serde_json::from_str(request.params.get()).unwrap();
         assert_eq!(params["sessionId"], "document-session");
         let method = request.method.to_string();
+        assert_eq!(method, "a3s/document/release_run");
         self.state
             .calls
             .lock()
             .unwrap()
-            .push((method.clone(), params.clone()));
-        let value = if method == "a3s/document/release_run" {
-            self.state.closing.add_permits(1);
-            self.state.release.acquire().await.unwrap().forget();
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    probe.call(json!({"harness":{"operation":"release_run","params":params}}))
-                }
-                None => json!({"runId":params["runId"],"released":self.state.ack}),
+            .push((method, params.clone()));
+        self.state.closing.add_permits(1);
+        self.state.release.acquire().await.unwrap().forget();
+        let mut probe = self.state.probe.lock().unwrap();
+        let value = match probe.as_mut() {
+            Some(probe) => {
+                probe.call(json!({"harness":{"operation":"release_run","params":params}}))
             }
-        } else {
-            assert_eq!(method, "a3s/document/read");
-            let mut probe = self.state.probe.lock().unwrap();
-            match probe.as_mut() {
-                Some(probe) => {
-                    let value = probe.call(json!({"harness":{"operation":"read","params":params}}));
-                    if let Some(lease) = probe.editor.take() {
-                        probe.call(json!({"request":{"operation":"close","lease":lease}}));
-                    }
-                    value
-                }
-                None => {
-                    json!({"path":self.root.join("note.txt"),"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(self.root.join("note.txt")).unwrap(),"version":1,"text":"clean text","dirty":false,"diskConflict":false},"runId":params["runId"],"released":false})
-                }
-            }
+            None => json!({"runId":params["runId"],"released":self.state.ack}),
         };
         Ok(agent_client_protocol::ExtResponse::new(Arc::from(
             serde_json::value::to_raw_value(&value).unwrap(),
@@ -355,8 +384,14 @@ async fn native_release_acknowledgement_gates_completion_and_keeps_one_actual_ru
             {
                 let calls = f.state.calls.lock().unwrap();
                 assert_eq!(calls.len(), 3);
-                assert_eq!(calls[0].1["runId"], calls[1].1["runId"]);
-                assert_eq!(calls[1].1["runId"], calls[2].1["runId"]);
+                assert_eq!(
+                    calls[0].1["_meta"]["a3sDocument"]["runId"],
+                    calls[1].1["_meta"]["a3sDocument"]["runId"]
+                );
+                assert_eq!(
+                    calls[1].1["_meta"]["a3sDocument"]["runId"],
+                    calls[2].1["runId"]
+                );
                 assert_eq!(calls[2].0, "a3s/document/release_run");
             }
             {
@@ -375,9 +410,13 @@ async fn native_release_acknowledgement_gates_completion_and_keeps_one_actual_ru
                 "done"
             );
             assert!(f.bridge.runs.lock().unwrap().is_empty());
-            assert!(f.model.results.lock().unwrap().iter().all(
-                |text| serde_json::from_str::<Value>(text).unwrap()["retainedForRun"] == true
-            ));
+            assert!(f
+                .model
+                .results
+                .lock()
+                .unwrap()
+                .iter()
+                .all(|text| successful_tool_json(text)["retainedForRun"] == true));
             f.stop().await;
         })
         .await;
@@ -530,10 +569,7 @@ async fn actual_harness_keeps_clean_native_model_across_turns_and_releases_it_be
                 let values = f.model.results.lock().unwrap();
                 assert_eq!(values.len(), 2);
                 for value in values.iter() {
-                    assert_eq!(
-                        serde_json::from_str::<Value>(value).unwrap()["documentId"],
-                        identity
-                    );
+                    assert_eq!(successful_tool_json(value)["documentId"], identity);
                 }
             }
             {
@@ -572,7 +608,10 @@ async fn fresh_actual_runs_do_not_reuse_a_previous_pin_even_when_scope_addresses
             {
                 let calls = f.state.calls.lock().unwrap();
                 assert_eq!(calls.len(), 6);
-                assert_ne!(calls[0].1["runId"], calls[3].1["runId"]);
+                assert_ne!(
+                    calls[0].1["_meta"]["a3sDocument"]["runId"],
+                    calls[3].1["_meta"]["a3sDocument"]["runId"]
+                );
             }
             assert!(f.bridge.runs.lock().unwrap().is_empty());
             f.stop().await;

@@ -50,7 +50,8 @@ type OpenPopoverLayer = {
 const openPopoverLayers: OpenPopoverLayer[] = [];
 
 export function hasOpenOfficePopover(): boolean {
-  return openPopoverLayers.length > 0;
+  return openPopoverLayers.length > 0 ||
+    (typeof document !== 'undefined' && document.querySelector('[data-ui="office.select"].is-open, .work-office-combobox[aria-expanded="true"]') !== null);
 }
 
 function pushOpenPopover(layer: OpenPopoverLayer) {

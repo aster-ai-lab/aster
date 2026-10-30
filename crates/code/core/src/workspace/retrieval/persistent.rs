@@ -550,6 +550,7 @@ impl WorkspacePersistentIndex {
                     current.source_revision = snapshot.source_revision();
                     current.indexed_files = distinct_path_count(&indexed_chunks);
                     current.indexed_chunks = indexed_chunks;
+                    current.from_disk = false;
                     drop(_operation);
                     if let Err(error) = gc_generations(&self.root, &generation) {
                         tracing::warn!(%error, path = %self.root.display(), "persistent workspace generation cleanup failed");
@@ -717,6 +718,38 @@ impl WorkspacePersistentIndex {
                 tracing::warn!(%error, path = %self.root.display(), "persistent workspace generation cleanup failed");
             }
             Ok(())
+        }
+    }
+
+    pub(crate) fn search_current_snapshot(
+        &self,
+        request: &LexicalSearchRequest,
+        snapshot: &ChunkCatalogSnapshot,
+    ) -> WorkspaceIndexResult<Option<super::lexical::LexicalSearchResult>> {
+        #[cfg(feature = "a3s-vec-fts")]
+        {
+            let current = self
+                .state
+                .read()
+                .map_err(|_| WorkspaceIndexError::LockPoisoned)?
+                .as_ref()
+                .is_some_and(|state| {
+                    !state.from_disk
+                        && state.catalog_revision == snapshot.revision()
+                        && state.source_revision == snapshot.source_revision()
+                });
+            if !current {
+                return Ok(None);
+            }
+            let result = self.search(request)?;
+            Ok((result.catalog_revision == snapshot.revision()
+                && result.source_revision == snapshot.source_revision())
+            .then_some(result))
+        }
+        #[cfg(not(feature = "a3s-vec-fts"))]
+        {
+            let _ = (request, snapshot);
+            Ok(None)
         }
     }
 

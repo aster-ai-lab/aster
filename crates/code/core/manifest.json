@@ -1,7 +1,7 @@
 {
   "format_version": 4,
   "collection_name": "workspace_lexical",
-  "schema_digest": "3c35201b",
+  "schema_digest": "fe3c2281",
   "generation": 1,
   "revision": 0,
   "checkpoint_revision": 0,
@@ -9,5 +9,5 @@
   "wal_checkpoint_seq": 0,
   "wal_ops_since_checkpoint": 0,
   "wal_bytes_since_checkpoint": 0,
-  "docs_checksum": 2509568940
+  "docs_checksum": 2608799718
 }

@@ -25,7 +25,7 @@ const UNSAVED: &str = "UNSAVED BUFFER LINE\n";
 /// Tool results the model received, in order.
 type Seen = Arc<Mutex<Vec<String>>>;
 
-fn spawn_mock(seen: Seen) -> SocketAddr {
+fn spawn_mock(seen: Seen, rich: bool) -> SocketAddr {
     let listener = TcpListener::bind("127.0.0.1:0").expect("bind mock");
     let addr = listener.local_addr().expect("mock addr");
     std::thread::spawn(move || {
@@ -35,7 +35,7 @@ fn spawn_mock(seen: Seen) -> SocketAddr {
             std::thread::spawn(move || {
                 let _ = stream.set_read_timeout(Some(Duration::from_secs(20)));
                 if let Some(body) = read_http_body(&mut stream) {
-                    let _ = write_http(&mut stream, &decide(&body, &seen));
+                    let _ = write_http(&mut stream, &decide(&body, &seen, rich));
                 }
             });
         }
@@ -118,7 +118,7 @@ fn message_text(message: &serde_json::Value) -> String {
 }
 
 /// Reads `notes.txt` once, records the tool result, then answers with text.
-fn decide(raw: &str, seen: &Seen) -> String {
+fn decide(raw: &str, seen: &Seen, rich: bool) -> String {
     let parsed: serde_json::Value = serde_json::from_str(raw).unwrap_or(serde_json::Value::Null);
     let streaming = parsed["stream"].as_bool().unwrap_or(false);
     let has_read = parsed["tools"]
@@ -129,6 +129,20 @@ fn decide(raw: &str, seen: &Seen) -> String {
     let messages = parsed["messages"].as_array().cloned().unwrap_or_default();
     if let Some(last) = messages.last().filter(|m| m["role"] == "tool") {
         seen.lock().expect("seen").push(message_text(last));
+        let tool_results = messages.iter().filter(|m| m["role"] == "tool").count();
+        if rich && tool_results == 1 {
+            let args = serde_json::json!({ "file_path": "notes.txt" }).to_string();
+            let call = serde_json::json!({
+                "content": null,
+                "tool_calls": [{
+                    "index": 0,
+                    "id": "call_document_read",
+                    "type": "function",
+                    "function": { "name": "studio_document_read", "arguments": args }
+                }]
+            });
+            return reply(call, "tool_calls", streaming);
+        }
         return reply(serde_json::json!({ "content": "done" }), "stop", streaming);
     }
     if !has_read {
@@ -147,8 +161,20 @@ fn decide(raw: &str, seen: &Seen) -> String {
     reply(call, "tool_calls", streaming)
 }
 
+#[derive(Clone, Copy)]
+enum ReadMode {
+    Buffer,
+    NotFound,
+    Unsupported,
+    Conflict,
+    Timeout,
+    Foreign,
+    Transport,
+}
+
 struct TestClient {
     reads: Rc<RefCell<Vec<PathBuf>>>,
+    mode: ReadMode,
 }
 
 #[async_trait(?Send)]
@@ -169,11 +195,38 @@ impl acp::Client for TestClient {
         args: acp::ReadTextFileRequest,
     ) -> Result<acp::ReadTextFileResponse, acp::Error> {
         self.reads.borrow_mut().push(args.path.clone());
-        if args.path.ends_with("notes.txt") {
-            Ok(acp::ReadTextFileResponse::new(UNSAVED))
-        } else {
-            Err(acp::Error::resource_not_found(None))
+        if !args.path.ends_with("notes.txt") || matches!(self.mode, ReadMode::NotFound) {
+            return Err(acp::Error::resource_not_found(None));
         }
+        if matches!(self.mode, ReadMode::Unsupported) {
+            return Err(acp::Error::method_not_found());
+        }
+        if matches!(self.mode, ReadMode::Transport) {
+            return Err(acp::Error::internal_error().data("host transport failed"));
+        }
+        if matches!(self.mode, ReadMode::Timeout) {
+            tokio::time::sleep(Duration::from_secs(6)).await;
+        }
+        let mut observation = serde_json::json!({
+            "path": args.path,
+            "snapshot": {
+                "documentId": "native-model",
+                "uri": url::Url::from_file_path(&args.path).unwrap().to_string(),
+                "version": 2,
+                "dirty": true,
+                "diskConflict": matches!(self.mode, ReadMode::Conflict)
+            },
+            "released": true
+        });
+        if matches!(self.mode, ReadMode::Foreign) {
+            observation["path"] = serde_json::json!("/foreign/notes.txt");
+        }
+        Ok(
+            acp::ReadTextFileResponse::new(UNSAVED).meta(serde_json::Map::from_iter([(
+                "a3sDocument".to_owned(),
+                observation,
+            )])),
+        )
     }
 
     async fn session_notification(
@@ -234,7 +287,13 @@ default_model = "{MODEL_ID}"
 
 /// Runs one `read notes.txt` turn and returns the client's
 /// `fs/read_text_file` paths.
-async fn read_turn(fixture: &Fixture, client_reads: bool) -> Vec<PathBuf> {
+async fn read_turn(
+    fixture: &Fixture,
+    client_reads: bool,
+    studio_documents: bool,
+    rich: bool,
+    mode: ReadMode,
+) -> Vec<PathBuf> {
     let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
     let mut child = tokio::process::Command::new(bin)
         .arg("--cwd")
@@ -259,6 +318,7 @@ async fn read_turn(fixture: &Fixture, client_reads: bool) -> Vec<PathBuf> {
     let reads = Rc::new(RefCell::new(Vec::new()));
     let client = TestClient {
         reads: Rc::clone(&reads),
+        mode,
     };
     let (conn, io) = acp::ClientSideConnection::new(client, stdin, stdout, |fut| {
         tokio::task::spawn_local(fut);
@@ -274,18 +334,24 @@ async fn read_turn(fixture: &Fixture, client_reads: bool) -> Vec<PathBuf> {
     )
     .await
     .expect("initialize");
-    let session = acp::Agent::new_session(
-        &conn,
-        acp::NewSessionRequest::new(fixture.workspace.clone()),
-    )
-    .await
-    .expect("new session")
-    .session_id;
+    let mut new_session = acp::NewSessionRequest::new(fixture.workspace.clone());
+    if studio_documents {
+        new_session = new_session.meta(serde_json::Map::from_iter([(
+            "a3sStudioDocuments".to_owned(),
+            serde_json::Value::Bool(true),
+        )]));
+    }
+    let session = acp::Agent::new_session(&conn, new_session)
+        .await
+        .expect("new session")
+        .session_id;
     let request = acp::PromptRequest::new(
         session,
-        vec![acp::ContentBlock::Text(acp::TextContent::new(
-            "read notes.txt",
-        ))],
+        vec![acp::ContentBlock::Text(acp::TextContent::new(if rich {
+            "read both notes.txt"
+        } else {
+            "read notes.txt"
+        }))],
     );
     tokio::time::timeout(Duration::from_secs(120), acp::Agent::prompt(&conn, request))
         .await
@@ -301,8 +367,8 @@ async fn declared_client_reads_serve_the_unsaved_buffer() {
     tokio::task::LocalSet::new()
         .run_until(async {
             let seen: Seen = Arc::default();
-            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen)));
-            let reads = read_turn(&fixture, true).await;
+            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen), false));
+            let reads = read_turn(&fixture, true, true, false, ReadMode::Buffer).await;
 
             let expected = fixture.workspace.join("notes.txt");
             assert!(
@@ -323,12 +389,102 @@ async fn declared_client_reads_serve_the_unsaved_buffer() {
 }
 
 #[tokio::test(flavor = "current_thread")]
+async fn plain_and_rich_document_reads_share_one_unsaved_observation() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let seen: Seen = Arc::default();
+            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen), true));
+            let reads = read_turn(&fixture, true, true, true, ReadMode::Buffer).await;
+            let expected = std::fs::canonicalize(fixture.workspace.join("notes.txt")).unwrap();
+            let seen = seen.lock().expect("seen").clone();
+            let matched = reads
+                .iter()
+                .filter(|path| path.ends_with("notes.txt"))
+                .collect::<Vec<_>>();
+            assert_eq!(matched.len(), 2, "reads={reads:?}, seen={seen:?}");
+            assert!(
+                matched
+                    .iter()
+                    .all(|path| std::fs::canonicalize(path).unwrap() == expected),
+                "reads={reads:?}"
+            );
+            assert_eq!(seen.len(), 2, "{seen:?}");
+            assert!(seen[0].contains("UNSAVED BUFFER LINE"), "{seen:?}");
+            assert!(seen[1].contains("UNSAVED BUFFER LINE"), "{seen:?}");
+            assert!(seen[1].contains("\"version\":2"), "{seen:?}");
+            assert!(seen[1].contains("\"dirty\":true"), "{seen:?}");
+            assert!(seen.iter().all(|text| !text.contains(SAVED)), "{seen:?}");
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn declared_client_reads_without_document_bridge_stay_on_the_workspace() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let seen: Seen = Arc::default();
+            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen), false));
+            let reads = read_turn(&fixture, true, false, false, ReadMode::Buffer).await;
+            assert!(reads.is_empty(), "plain session enabled overlay: {reads:?}");
+            let seen = seen.lock().expect("seen").clone();
+            assert_eq!(seen.len(), 1, "{seen:?}");
+            assert!(seen[0].contains("saved on disk"), "{seen:?}");
+        })
+        .await;
+}
+
+async fn exercise_read_mode(mode: ReadMode) -> (Seen, Fixture) {
+    let seen: Seen = Arc::default();
+    let fixture = Fixture::new(spawn_mock(Arc::clone(&seen), false));
+    tokio::task::LocalSet::new()
+        .run_until(read_turn(&fixture, true, true, false, mode))
+        .await;
+    (seen, fixture)
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn failed_client_reads_never_fall_back_to_saved_disk_text() {
+    for (mode, kind) in [
+        (ReadMode::Conflict, "conflict"),
+        (ReadMode::Timeout, "timeout"),
+        (ReadMode::Foreign, "foreign"),
+        (ReadMode::Transport, "transport"),
+    ] {
+        let (seen, fixture) = exercise_read_mode(mode).await;
+        let seen = seen.lock().expect("seen").clone();
+        assert_eq!(seen.len(), 1, "{kind}: {seen:?}");
+        assert!(seen[0].contains(kind), "{kind}: {seen:?}");
+        assert!(!seen[0].contains(SAVED), "{kind}: {seen:?}");
+        assert!(!seen[0].contains(UNSAVED), "{kind}: {seen:?}");
+        assert_eq!(
+            std::fs::read_to_string(fixture.workspace.join("notes.txt")).unwrap(),
+            SAVED
+        );
+    }
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn absent_or_unsupported_client_reads_fall_back_to_saved_disk_text() {
+    for mode in [ReadMode::NotFound, ReadMode::Unsupported] {
+        let (seen, fixture) = exercise_read_mode(mode).await;
+        let seen = seen.lock().expect("seen").clone();
+        assert_eq!(seen.len(), 1, "{seen:?}");
+        assert!(seen[0].contains(SAVED), "{seen:?}");
+        assert!(!seen[0].contains(UNSAVED), "{seen:?}");
+        assert_eq!(
+            std::fs::read_to_string(fixture.workspace.join("notes.txt")).unwrap(),
+            SAVED
+        );
+    }
+}
+
+#[tokio::test(flavor = "current_thread")]
 async fn undeclared_client_reads_stay_on_the_workspace() {
     tokio::task::LocalSet::new()
         .run_until(async {
             let seen: Seen = Arc::default();
-            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen)));
-            let reads = read_turn(&fixture, false).await;
+            let fixture = Fixture::new(spawn_mock(Arc::clone(&seen), false));
+            let reads = read_turn(&fixture, false, true, false, ReadMode::Buffer).await;
 
             assert!(
                 reads.is_empty(),

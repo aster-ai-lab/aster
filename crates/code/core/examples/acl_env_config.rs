@@ -4,6 +4,7 @@ use a3s_acl::{Block, Document, Value};
 use a3s_code_core::config::CodeConfig;
 use anyhow::{anyhow, bail, ensure, Context, Result};
 use std::{
+    collections::BTreeMap,
     ffi::OsString,
     fs::{self, OpenOptions},
     io::{Read, Write},
@@ -42,6 +43,7 @@ struct Prepared {
     document: Document,
     api_key: Option<String>,
     base_url: Option<String>,
+    environment: BTreeMap<String, Option<String>>,
 }
 
 fn nonempty(value: Option<String>) -> Option<String> {
@@ -52,16 +54,100 @@ fn env_attribute(name: &str) -> Value {
     Value::Call("env".to_owned(), vec![Value::String(name.to_owned())])
 }
 
-fn rewrite_credentials(block: &mut Block) {
-    for name in ["apiKey", "api_key", "baseUrl", "base_url"] {
-        block.attributes.remove(name);
+fn rewrite_credentials(block: &mut Block, api_key: Option<&str>, base_url: Option<&str>) {
+    for (name, alias, value) in [
+        ("api_key", "apiKey", api_key),
+        ("base_url", "baseUrl", base_url),
+    ] {
+        if let Some(value) = value {
+            block.attributes.remove(alias);
+            block
+                .attributes
+                .insert(name.to_owned(), Value::String(value.to_owned()));
+        }
     }
-    block
-        .attributes
-        .insert("api_key".to_owned(), env_attribute("A3S_OPENAI_API_KEY"));
-    block
-        .attributes
-        .insert("base_url".to_owned(), env_attribute("A3S_OPENAI_BASE_URL"));
+}
+
+fn bind_environment(
+    document: &mut Document,
+    environment: &mut BTreeMap<String, Option<String>>,
+    lookup: &impl Fn(&str) -> Option<String>,
+) {
+    fn visit(
+        value: &mut Value,
+        lift: bool,
+        vars: &mut BTreeMap<String, Option<String>>,
+        lookup: &impl Fn(&str) -> Option<String>,
+    ) {
+        match value {
+            Value::String(secret) if lift => {
+                let mut index = vars.len();
+                let name = loop {
+                    let name = format!("A3S_ACL_VALUE_{index}");
+                    if !vars.contains_key(&name) {
+                        break name;
+                    }
+                    index += 1;
+                };
+                vars.insert(name.clone(), Some(secret.clone()));
+                *value = env_attribute(&name);
+            }
+            Value::Call(name, args) if name == "env" => {
+                let first_is_name = matches!(args.first(), Some(Value::String(_)));
+                if let Some(Value::String(name)) = args.first() {
+                    vars.entry(name.clone()).or_insert_with(|| lookup(name));
+                }
+                for argument in args.iter_mut().skip(usize::from(first_is_name)) {
+                    visit(argument, lift, vars, lookup);
+                }
+            }
+            Value::List(values) | Value::Call(_, values) => {
+                for value in values {
+                    visit(value, lift, vars, lookup);
+                }
+            }
+            Value::Object(values) => {
+                for (_, value) in values {
+                    visit(value, lift, vars, lookup);
+                }
+            }
+            _ => {}
+        }
+    }
+    fn visit_blocks(
+        blocks: &mut [Block],
+        vars: &mut BTreeMap<String, Option<String>>,
+        lookup: &impl Fn(&str) -> Option<String>,
+        lift: bool,
+    ) {
+        for block in blocks {
+            for (key, value) in &mut block.attributes {
+                let credential = matches!(
+                    key.as_str(),
+                    "api_key"
+                        | "apiKey"
+                        | "base_url"
+                        | "baseUrl"
+                        | "headers"
+                        | "env"
+                        | "client_secret"
+                        | "clientSecret"
+                        | "access_token"
+                        | "accessToken"
+                );
+                visit(
+                    value,
+                    lift && (credential || matches!(block.name.as_str(), "headers" | "env")),
+                    vars,
+                    lookup,
+                );
+            }
+            visit_blocks(&mut block.blocks, vars, lookup, lift);
+        }
+    }
+    // Reserve existing env names before generating names for literal values.
+    visit_blocks(&mut document.blocks, environment, lookup, false);
+    visit_blocks(&mut document.blocks, environment, lookup, true);
 }
 
 fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepared> {
@@ -85,12 +171,10 @@ fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepar
         .collect();
     let api_key = nonempty(env(&format!("A3S_{provider_env}_API_KEY")))
         .or_else(|| nonempty(provider.get_api_key(model).map(str::to_owned)))
-        .or_else(|| nonempty(env("A3S_OPENAI_API_KEY")))
-        .or_else(|| nonempty(env("MINIMAX_API_KEY")));
+        .or_else(|| nonempty(env("A3S_OPENAI_API_KEY")));
     let base_url = nonempty(env(&format!("A3S_{provider_env}_BASE_URL")))
         .or_else(|| nonempty(provider.get_base_url(model).map(str::to_owned)))
-        .or_else(|| nonempty(env("A3S_OPENAI_BASE_URL")))
-        .or_else(|| nonempty(env("MINIMAX_BASE_URL")));
+        .or_else(|| nonempty(env("A3S_OPENAI_BASE_URL")));
     let mut matches = document
         .blocks
         .iter_mut()
@@ -102,17 +186,25 @@ fn prepare(content: &str, env: impl Fn(&str) -> Option<String>) -> Result<Prepar
         matches.next().is_none(),
         "default provider ACL block is ambiguous"
     );
-    rewrite_credentials(block);
-    // Model overrides take precedence in Core and must use the injected env too.
+    // Override only the selected model; siblings must retain their own credentials.
+    let mut selected = 0;
     for child in &mut block.blocks {
         if child.name == "models" && child.labels.first() == Some(&model.id) {
-            rewrite_credentials(child);
+            selected += 1;
+            rewrite_credentials(child, api_key.as_deref(), base_url.as_deref());
         }
     }
+    ensure!(
+        selected == 1,
+        "default model ACL block is missing or ambiguous"
+    );
+    let mut environment = BTreeMap::new();
+    bind_environment(&mut document, &mut environment, &env);
     Ok(Prepared {
         document,
         api_key,
         base_url,
+        environment,
     })
 }
 
@@ -185,11 +277,12 @@ fn run() -> Result<i32> {
             child
                 .args(args)
                 .env("A3S_CONFIG_FILE", temporary.path())
-                .env("A3S_CODE_ACL_ENV_PREPARED", "1");
-            for (name, value) in [
-                ("A3S_OPENAI_API_KEY", prepared.api_key),
-                ("A3S_OPENAI_BASE_URL", prepared.base_url),
-            ] {
+                .env("A3S_CODE_ACL_ENV_PREPARED", "1")
+                .env(
+                    "A3S_CODE_ACL_ENV_NAMES",
+                    serde_json::to_string(&prepared.environment.keys().collect::<Vec<_>>())?,
+                );
+            for (name, value) in prepared.environment {
                 if let Some(value) = value {
                     child.env(name, value);
                 } else {

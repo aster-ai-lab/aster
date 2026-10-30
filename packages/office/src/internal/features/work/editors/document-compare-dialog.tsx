@@ -122,6 +122,7 @@ export function DocumentCompareDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.compare.title')}
       description={officeMessage(messages, 'document.compare.description')}
       className="work-document-compare-dialog"

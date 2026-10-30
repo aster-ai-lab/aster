@@ -1362,7 +1362,7 @@ output_byte_limit = 65536              # max output size (64KB)
 
 [toolset.web_fetch]
 proxy_endpoint = "https://proxy.example.com"   # egress proxy URL (all requests routed through it)
-allowed_domains = ["docs.rs", "x.ai"]           # override the built-in ~84-domain allowlist
+allowed_domains = ["docs.rs", "example.com"]           # override the built-in ~84-domain allowlist
 ```
 
 ### Telemetry
@@ -2403,7 +2403,7 @@ disallowedTools:
 
 Fetch a specific URL and return its content as markdown. **Disabled by default** — enable with `GROK_WEB_FETCH=1`. 
 
-When no custom `allowed_domains` is set, the tool permits a default allowlist of useful documentation sites (A3S Lab, language docs, frameworks, cloud providers, databases, etc.). Domains not on the allowlist prompt the user for approval; `--always-approve` auto-approves all. Domain matching is case-insensitive, strips `www.` prefixes, and supports path-scoped entries (e.g. `x.ai/company`).
+When no custom `allowed_domains` is set, the tool permits a default allowlist of useful documentation sites (A3S Lab, language docs, frameworks, cloud providers, databases, etc.). Domains not on the allowlist prompt the user for approval; `--always-approve` auto-approves all. Domain matching is case-insensitive, strips `www.` prefixes, and supports path-scoped entries (e.g. `a3s/company`).
 
 ---
 

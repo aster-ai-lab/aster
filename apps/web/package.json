@@ -3,15 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev_server.mjs",
-    "build": "node scripts/build_docs.mjs",
-    "check": "node scripts/build_docs.mjs --check",
-    "test": "node --test tests/docs.test.mjs"
+    "dev": "node scripts/prepare_astro.mjs && ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "node scripts/prepare_astro.mjs && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "check": "npm run build && node scripts/prepare_astro.mjs --check && python3 scripts/check_site.py",
+    "test": "npm run check && python3 -m unittest discover -s tests -p 'test_*.py' -v && node --check public/download/app.js && node --check public/download/canvas.js && node --check public/home.js && node --check public/cosmic.js && node --test tests/*.test.cjs tests/*.test.mjs",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
   },
   "devDependencies": {
     "@mdx-js/mdx": "3.1.1",
     "@shikijs/rehype": "4.5.0",
+    "@shikijs/themes": "4.5.0",
     "@shikijs/transformers": "4.5.0",
+    "astro": "^7.4.4",
+    "codehike": "1.1.0",
+    "esbuild": "0.25.12",
     "hast-util-from-html": "2.0.3",
     "hast-util-to-html": "9.0.5",
     "pele": "1.10.0",

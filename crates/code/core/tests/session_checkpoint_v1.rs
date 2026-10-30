@@ -2,11 +2,11 @@ use a3s_code_core::capability::{
     CapabilityCeiling, CapabilityExecutionCeiling, CapabilitySet, GovernanceCapabilityCeiling,
     RunCapabilityBindingV1, WorkspaceCapabilityCeiling,
 };
-use a3s_code_core::cognitive_context::{
-    CognitiveContextLimits, CognitiveKnowledgeBindingV1, CognitivePackageBindingV1,
-};
 use a3s_code_core::loop_checkpoint::{
     LoopCheckpoint, LoopConvergenceState, LOOP_CHECKPOINT_SCHEMA_VERSION,
+};
+use a3s_code_core::package_context::{
+    PackageBindingV1, PackageContextLimits, PackageKnowledgeBindingV1,
 };
 use a3s_code_core::run::{RunRecord, RunSnapshot, RunStatus};
 use a3s_code_core::session_checkpoint::{
@@ -61,7 +61,7 @@ fn session_data() -> SessionData {
         agent_template_id: None,
         correlation_id: None,
         durable_memory_binding: None,
-        cognitive_package_binding: None,
+        package_binding: None,
         immutable_content_adapter_binding: None,
     }
 }
@@ -74,7 +74,7 @@ fn snapshot(with_run: bool) -> SessionSnapshotV1 {
                 session_id: "session-checkpoint-1".into(),
                 status: RunStatus::Executing,
                 prompt: "continue".into(),
-                cognitive_package_binding: None,
+                package_binding: None,
                 capability_binding: None,
                 created_at_ms: 1_700_000_000_000,
                 updated_at_ms: 1_700_000_001_000,
@@ -122,12 +122,12 @@ fn logical_resume() -> LoopCheckpoint {
     }
 }
 
-fn cognitive_binding(generation: u64, digest_byte: char) -> CognitivePackageBindingV1 {
+fn package_binding(generation: u64, digest_byte: char) -> PackageBindingV1 {
     let package_id = "acme/checkpoint-knowledge";
     let package_version = format!("1.0.{generation}");
     let generation_digest = format!("sha256:{}", digest_byte.to_string().repeat(64));
     let content_byte = char::from_u32(u32::from(digest_byte) + 1).unwrap();
-    let knowledge = CognitiveKnowledgeBindingV1::new(
+    let knowledge = PackageKnowledgeBindingV1::new(
         "checkpoint-knowledge",
         "0.2",
         format!("sha256:{}", content_byte.to_string().repeat(64)),
@@ -152,14 +152,14 @@ fn cognitive_binding(generation: u64, digest_byte: char) -> CognitivePackageBind
     hasher.update((encoded.len() as u64).to_be_bytes());
     hasher.update(encoded);
     let capability_snapshot_digest = format!("sha256:{:x}", hasher.finalize());
-    CognitivePackageBindingV1::new(
+    PackageBindingV1::new(
         package_id,
         package_version,
         generation,
         generation_digest,
         capability_snapshot_digest,
         knowledge,
-        CognitiveContextLimits::default(),
+        PackageContextLimits::default(),
     )
     .unwrap()
 }
@@ -284,15 +284,15 @@ fn logical_resume_must_belong_to_a_run_in_the_same_snapshot() {
 }
 
 #[test]
-fn logical_resume_rejects_a_session_bound_to_another_cognitive_generation() {
+fn logical_resume_rejects_a_session_bound_to_another_package_generation() {
     let mut mixed = snapshot(true);
-    mixed.run_records[0].snapshot.cognitive_package_binding = Some(cognitive_binding(1, 'a'));
-    mixed.session.cognitive_package_binding = Some(cognitive_binding(2, 'c'));
+    mixed.run_records[0].snapshot.package_binding = Some(package_binding(1, 'a'));
+    mixed.session.package_binding = Some(package_binding(2, 'c'));
 
     let error = SessionCheckpointExportV1::new(mixed, Some(logical_resume()))
         .unwrap_err()
         .to_string();
-    assert!(error.contains("cognitive"), "{error}");
+    assert!(error.contains("package"), "{error}");
 }
 
 #[test]

@@ -112,6 +112,7 @@ async fn projected_schema_and_governed_execution_accept_the_same_action_fields()
         json!({"action":"percentage_change","pairs":[{"previous":10,"current":8}]}),
         json!({"action":"date_span","start":"2026-01-01","end":"2026-01-03","endpoint_counting":"inclusive"}),
         json!({"action":"sequence_changes","values":[10,8,9]}),
+        json!({"action":"record_provenance","key":"id","source":[{"id":"A","value":1}],"output":[{"id":"A","value":1},{"id":"TOTAL","value":1}],"compare_fields":["value"],"allow_derived_keys":["TOTAL"]}),
     ] {
         let result = session.governed_tool("output_check", args).await.unwrap();
         assert_eq!(result.exit_code, 0, "{}", result.output);

@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Editor, Extensions } from '@tiptap/core';
 import Placeholder from '@tiptap/extension-placeholder';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
@@ -181,6 +182,8 @@ export interface DocumentEditorProps {
   extensions?: Extensions;
   preview: boolean;
   defaultRibbonCollapsed?: boolean;
+  /** Fit each page to the available viewport width, useful for inline read-only messages. */
+  fitToContainerWidth?: boolean;
   saveStatus?: string;
   kernelWasmUrl?: string;
   layoutFonts?: readonly WorkDocumentLayoutFont[];
@@ -364,6 +367,7 @@ function DocumentEditorSurface({
   extensions = EMPTY_DOCUMENT_EXTENSIONS,
   preview: requestedPreview,
   defaultRibbonCollapsed = false,
+  fitToContainerWidth = false,
   saveStatus: saveStatusProp,
   kernelWasmUrl,
   layoutFonts = EMPTY_DOCUMENT_LAYOUT_FONTS,
@@ -1451,6 +1455,40 @@ function DocumentEditorSurface({
     onBeforeEdit: () => requestEditorViewChange(null, true),
     visiblePage: currentPageDescriptor,
   });
+  useEffect(() => {
+    if (!editor || !fitToContainerWidth) return;
+    const viewport = workspaceRef.current?.querySelector<HTMLElement>(
+      '.work-document-scroll',
+    );
+    if (!viewport) return;
+    const fit = () => {
+      const style = getComputedStyle(viewport);
+      setZoom(
+        documentZoomForFit('width', {
+          pageHeight: currentPageDescriptor.page.height,
+          pageWidth: currentPageDescriptor.page.width,
+          viewportHeight: viewport.clientHeight,
+          viewportWidth: viewport.clientWidth,
+          viewportPadding: {
+            top: cssPixelValue(style.paddingTop),
+            right: cssPixelValue(style.paddingRight),
+            bottom: cssPixelValue(style.paddingBottom),
+            left: cssPixelValue(style.paddingLeft),
+          },
+        }),
+      );
+    };
+    fit();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(fit);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, [
+    editor,
+    fitToContainerWidth,
+    currentPageDescriptor.page.width,
+    currentPageDescriptor.page.height,
+  ]);
   useOfficeEditorWheelZoom({
     enabled: Boolean(editor),
     scopeRef: workspaceRef,
@@ -1662,6 +1700,7 @@ function DocumentEditorSurface({
     <section
       className={`work-document-editor${preview ? ' preview' : ''}${!preview && showHiddenText ? ' show-hidden-text' : ''}${!preview && showFieldCodes ? ' show-field-codes' : ''}`}
       data-collaboration-mode={collaboration?.mode}
+      data-fit-to-container-width={fitToContainerWidth ? '' : undefined}
       data-work-pdf-artifact={artifactId}
       data-work-pdf-surface={artifactId ? 'live' : undefined}
     >
@@ -2399,39 +2438,45 @@ function DocumentEditorSurface({
       {canEditDocument && documentInsert.dialog}
       {canEditDocument && documentComparison.dialog}
       {!preview && taskPaneDialog.dialog}
-      {!preview && statisticsOpen && (
-        <DocumentStatisticsDialog
-          pageCount={pageCount}
-          statistics={textStatistics}
-          restoreFocusTarget={() => statisticsInvokerRef.current}
-          onClose={() => setStatisticsOpen(false)}
-        />
-      )}
-      {!preview && mailMergeFilterOpen && mailMergeFilterDraft && (
-        <DocumentMailMergeRecipientFilterDialog
-          source={mailMergeFilterDraft}
-          restoreFocusTarget={() => mailMergeFilterInvokerRef.current}
-          onCancel={closeMailMergeRecipientFilter}
-          onChange={(next) =>
-            setMailMergeFilterDraft(normalizeMailMergeSource(next))
-          }
-          onSubmit={submitMailMergeRecipientFilter}
-        />
-      )}
-      {!preview && mailMergeImportOpen && (
-        <DocumentMailMergeImportDialog
-          restoreFocusTarget={() => mailMergeImportInvokerRef.current}
-          onCancel={() => {
-            setMailMergeImportOpen(false);
-            restoreDocumentBodyFocus();
-          }}
-          onImport={(source) => {
-            commitMailMergeSource(source);
-            setMailMergeImportOpen(false);
-            restoreDocumentBodyFocus();
-          }}
-        />
-      )}
+      <DialogPresence>
+        {!preview && statisticsOpen && (
+          <DocumentStatisticsDialog
+            pageCount={pageCount}
+            statistics={textStatistics}
+            restoreFocusTarget={() => statisticsInvokerRef.current}
+            onClose={() => setStatisticsOpen(false)}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {!preview && mailMergeFilterOpen && mailMergeFilterDraft && (
+          <DocumentMailMergeRecipientFilterDialog
+            source={mailMergeFilterDraft}
+            restoreFocusTarget={() => mailMergeFilterInvokerRef.current}
+            onCancel={closeMailMergeRecipientFilter}
+            onChange={(next) =>
+              setMailMergeFilterDraft(normalizeMailMergeSource(next))
+            }
+            onSubmit={submitMailMergeRecipientFilter}
+          />
+        )}
+      </DialogPresence>
+      <DialogPresence>
+        {!preview && mailMergeImportOpen && (
+          <DocumentMailMergeImportDialog
+            restoreFocusTarget={() => mailMergeImportInvokerRef.current}
+            onCancel={() => {
+              setMailMergeImportOpen(false);
+              restoreDocumentBodyFocus();
+            }}
+            onImport={(source) => {
+              commitMailMergeSource(source);
+              setMailMergeImportOpen(false);
+              restoreDocumentBodyFocus();
+            }}
+          />
+        )}
+      </DialogPresence>
     </section>
   );
 }

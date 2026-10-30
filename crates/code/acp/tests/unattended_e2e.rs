@@ -2,7 +2,7 @@
 //! OpenAI-compatible model. The same task in an interactive launch is the pin:
 //! no host bind, and harness state stays where it always was.
 
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -12,6 +12,12 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use agent_client_protocol as acp;
+#[path = "long_horizon/artifact.rs"]
+mod artifact;
+#[path = "long_horizon/candidate.rs"]
+mod candidate;
+#[path = "unattended_e2e/goal_feedback.rs"]
+mod goal_feedback;
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
@@ -21,6 +27,10 @@ const MODEL_ID: &str = "mock/gpt";
 struct Script {
     bodies: Vec<String>,
     asked: bool,
+    feedback_required: bool,
+    feedback_seen: bool,
+    delivered: bool,
+    rejected_judgments: usize,
     searches: usize,
     written: bool,
     verified: bool,
@@ -28,6 +38,14 @@ struct Script {
     bashed: bool,
     skilled: bool,
     tool_seq: u64,
+    refusal_requests: usize,
+    child_refusal_requests: usize,
+    child_parent_requests: usize,
+    child_delegated: bool,
+    child_failure_returned: bool,
+    state_cycle_requests: usize,
+    external_source: Option<PathBuf>,
+    reuse_source_id: bool,
 }
 
 /// Searches the unattended model makes before writing: the bm25 query rides
@@ -42,6 +60,9 @@ struct AgentProc {
     child: tokio::process::Child,
     conn: Rc<acp::ClientSideConnection>,
     permission_asks: Rc<Cell<u32>>,
+    approve_permissions: Rc<Cell<bool>>,
+    permission_ids: Rc<RefCell<Vec<String>>>,
+    notifications: Rc<RefCell<Vec<serde_json::Value>>>,
 }
 
 impl Drop for AgentProc {
@@ -234,8 +255,18 @@ fn decide(raw: &str, script: &mut Script) -> String {
         .flatten()
         .filter_map(|tool| tool["function"]["name"].as_str())
         .collect();
-    let judgment = serde_json::json!({"achieved": script.written && script.verified && !raw.contains("STALLED-GOAL"),
-        "progress": if script.verified { 1.0 } else { 0.0 }, "remaining_criteria": []});
+    let missing = script.feedback_required && !script.delivered;
+    let judgment = serde_json::json!({"achieved": script.written && script.verified && !missing && !raw.contains("STALLED-GOAL"),
+        "progress": if script.verified { 1.0 } else { 0.0 },
+        "remaining_criteria": if missing { goal_feedback::criteria() } else { vec![] }});
+    let checking = tool_names.contains(&"emit_goal_achievement")
+        || parsed["response_format"]["json_schema"]["name"] == "goal_achievement"
+        || parsed["messages"].as_array().is_some_and(|messages| messages.iter().any(|message| {
+            message["role"] == "system" && message["content"].as_str().is_some_and(|text| text.starts_with("You are an evaluation assistant. Given a goal with success criteria and the current state, evaluate progress."))
+        }));
+    if checking && missing {
+        script.rejected_judgments += 1;
+    }
     if tool_names.contains(&"emit_goal_achievement") {
         script.tool_seq += 1;
         return reply_tool(
@@ -258,6 +289,49 @@ fn decide(raw: &str, script: &mut Script) -> String {
     }) {
         return reply_text(&judgment.to_string(), streaming);
     }
+    if raw.contains("STATE-CYCLE-TASK") && tool_names.contains(&"write") {
+        script.state_cycle_requests += 1;
+        if script.state_cycle_requests == 2 {
+            if let Some(path) = &script.external_source {
+                std::fs::write(path, "external-input").expect("controlled external input");
+            }
+        }
+        script.tool_seq += 1;
+        return reply_tool(
+            "write",
+            serde_json::json!({"file_path":"source.txt", "content":if script.state_cycle_requests % 2 == 1 { "B" } else { "A" }}),
+            if script.reuse_source_id {
+                1
+            } else {
+                script.tool_seq
+            },
+            streaming,
+        );
+    }
+    if raw.contains("CHILD-REFUSAL-TASK") && !tool_names.is_empty() {
+        script.tool_seq += 1;
+        if !tool_names.contains(&"task") && tool_names.contains(&"read") {
+            script.child_refusal_requests += 1;
+            return reply_tool(
+                "read",
+                serde_json::json!({"file_path":"source.txt"}),
+                script.tool_seq,
+                streaming,
+            );
+        }
+        script.child_parent_requests += 1;
+        if !script.child_delegated {
+            script.child_delegated = true;
+            return reply_tool(
+                "task",
+                serde_json::json!({"agent":"explore","description":"Read source","prompt":"CHILD-REFUSAL-TASK read source.txt."}),
+                script.tool_seq,
+                streaming,
+            );
+        }
+        script.child_failure_returned = raw.contains("run.tool_refusal_cycle:");
+        return reply_text("The child stopped after repeated tool refusals.", streaming);
+    }
     if !raw.contains("UNATTENDED-TASK") || tool_names.is_empty() {
         return reply_text("ok", streaming);
     }
@@ -278,6 +352,15 @@ fn decide(raw: &str, script: &mut Script) -> String {
     }
     script.tool_seq += 1;
     let seq = script.tool_seq;
+    if raw.contains("REPEATED-REFUSAL-TASK") {
+        script.refusal_requests += 1;
+        return reply_tool(
+            "read",
+            serde_json::json!({"file_path":"source.txt"}),
+            seq,
+            streaming,
+        );
+    }
     if !script.asked && raw.contains("ASK-FIRST") {
         script.asked = true;
         return reply_tool(
@@ -315,6 +398,22 @@ fn decide(raw: &str, script: &mut Script) -> String {
             streaming,
         );
     }
+    if script.feedback_required
+        && !script.delivered
+        && raw.contains("Previous goal judgment feedback")
+    {
+        script.feedback_seen = goal_feedback::received(&parsed);
+        if script.feedback_seen {
+            script.delivered = true;
+            script.verified = false;
+            return reply_tool(
+                "write",
+                serde_json::json!({"file_path":"mutation.report.json", "content":"{\"verified\":true}\n"}),
+                seq,
+                streaming,
+            );
+        }
+    }
     if !script.written {
         script.written = true;
         return reply_tool(
@@ -330,7 +429,7 @@ fn decide(raw: &str, script: &mut Script) -> String {
         return reply_tool(
             "bash",
             serde_json::json!({
-                "command": "test -f answer.txt && test \"$(cat answer.txt)\" = 42",
+                "command": if script.feedback_required && script.delivered { r#"test -f mutation.report.json && test "$(cat mutation.report.json)" = '{"verified":true}'"# } else { "test -f answer.txt && test \"$(cat answer.txt)\" = 42" },
                 "sandbox_permissions": "require_escalated",
                 "justification": "Verify the private fixture through approved host execution"
             }),
@@ -351,24 +450,41 @@ fn decide(raw: &str, script: &mut Script) -> String {
 
 struct TestClient {
     permission_asks: Rc<Cell<u32>>,
+    approve_permissions: Rc<Cell<bool>>,
+    permission_ids: Rc<RefCell<Vec<String>>>,
+    notifications: Rc<RefCell<Vec<serde_json::Value>>>,
 }
 
 #[async_trait(?Send)]
 impl acp::Client for TestClient {
     async fn request_permission(
         &self,
-        _args: acp::RequestPermissionRequest,
+        args: acp::RequestPermissionRequest,
     ) -> Result<acp::RequestPermissionResponse, acp::Error> {
         self.permission_asks.set(self.permission_asks.get() + 1);
-        Ok(acp::RequestPermissionResponse::new(
-            acp::RequestPermissionOutcome::Cancelled,
-        ))
+        self.permission_ids
+            .borrow_mut()
+            .push(args.tool_call.tool_call_id.to_string());
+        let outcome = if self.approve_permissions.get() {
+            args.options
+                .iter()
+                .find(|option| option.kind == acp::PermissionOptionKind::AllowOnce)
+                .map(|option| {
+                    acp::RequestPermissionOutcome::Selected(acp::SelectedPermissionOutcome::new(
+                        option.option_id.clone(),
+                    ))
+                })
+                .unwrap_or(acp::RequestPermissionOutcome::Cancelled)
+        } else {
+            acp::RequestPermissionOutcome::Cancelled
+        };
+        Ok(acp::RequestPermissionResponse::new(outcome))
     }
 
-    async fn session_notification(
-        &self,
-        _args: acp::SessionNotification,
-    ) -> Result<(), acp::Error> {
+    async fn session_notification(&self, args: acp::SessionNotification) -> Result<(), acp::Error> {
+        self.notifications
+            .borrow_mut()
+            .push(serde_json::to_value(args).expect("notification"));
         Ok(())
     }
 }
@@ -380,7 +496,10 @@ async fn spawn_agent(
     tmp: &Path,
     extra: &[&str],
 ) -> AgentProc {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = candidate::Candidate::acp_binary(
+        env!("CARGO_BIN_EXE_a3s-code-acp"),
+        env!("ASTER_PAIR_BUILD_ID"),
+    );
     let mut child = tokio::process::Command::new(bin)
         .args(extra)
         .arg("--cwd")
@@ -401,8 +520,14 @@ async fn spawn_agent(
     let stdout = child.stdout.take().expect("stdout").compat();
     let stdin = child.stdin.take().expect("stdin").compat_write();
     let permission_asks = Rc::new(Cell::new(0));
+    let approve_permissions = Rc::new(Cell::new(false));
+    let permission_ids = Rc::new(RefCell::new(Vec::new()));
+    let notifications = Rc::new(RefCell::new(Vec::new()));
     let client = TestClient {
         permission_asks: Rc::clone(&permission_asks),
+        approve_permissions: Rc::clone(&approve_permissions),
+        permission_ids: Rc::clone(&permission_ids),
+        notifications: Rc::clone(&notifications),
     };
     let (conn, io) = acp::ClientSideConnection::new(client, stdin, stdout, |fut| {
         tokio::task::spawn_local(fut);
@@ -414,6 +539,9 @@ async fn spawn_agent(
         child,
         conn: Rc::new(conn),
         permission_asks,
+        approve_permissions,
+        permission_ids,
+        notifications,
     }
 }
 
@@ -537,6 +665,137 @@ async fn default_goal_stagnation_writes_a_terminal_result_before_the_deadline() 
         assert!(record["lastError"].as_str().unwrap().contains("needs_input"), "{record}");
         assert!(record["durationMs"].as_u64() < Some(10_000), "{record}");
         eprintln!("STALLED_GOAL_RESULT {record}");
+    }).await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn an_interactive_run_stops_generating_after_repeated_original_refusals() {
+    tokio::task::LocalSet::new().run_until(async {
+        let workspace = isolate("refusal-ws");
+        let outside = isolate("refusal-state");
+        let home = isolate("refusal-home");
+        let tmp = isolate("refusal-tmp");
+        std::fs::write(workspace.join("source.txt"), "unchanged source").unwrap();
+        let (addr, script) = spawn_mock();
+        let config = write_acl(&outside, &format!("http://{addr}/v1"));
+        let agent = spawn_agent(&workspace, &config, &home, &tmp, &[]).await;
+        let session = open(&agent, &workspace).await;
+        let started = std::time::Instant::now();
+        let response = tokio::time::timeout(Duration::from_secs(5), say(
+            &agent, &session, "UNATTENDED-TASK REPEATED-REFUSAL-TASK inspect source.txt",
+        )).await.expect("the original Run must stop before any long execution deadline");
+        let error = response.expect_err("a refused execution loop is not successful completion");
+        assert!(format!("{error:?}").contains("run.tool_refusal_cycle:"), "{error:?}");
+        let calls = script.lock().unwrap().refusal_requests;
+        let facts = private_fixture_facts(&workspace);
+        let succeeded = facts.iter().filter(|fact| fact["type"] == "tool.result" && fact["payload"]["receipt"]["outcome"] == "succeeded").count();
+        let denied = facts.iter().filter(|fact| fact["type"] == "tool.result" && fact["payload"]["receipt"]["outcome"] == "denied").count();
+        assert_eq!(succeeded, 3);
+        assert_eq!(denied, 2);
+        assert_eq!(calls, 5);
+        assert_eq!(std::fs::read_to_string(workspace.join("source.txt")).unwrap(), "unchanged source");
+        eprintln!("ACP_REFUSAL_CYCLE_OBSERVATION {}", serde_json::json!({"workspace":workspace,"modelCalls":calls,"successfulReceipts":succeeded,"deniedReceipts":denied,"promptMs":started.elapsed().as_millis()}));
+    }).await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn a_delegated_child_refusal_returns_to_the_actual_acp_parent() {
+    tokio::task::LocalSet::new().run_until(async {
+        let workspace = isolate("child-refusal-ws");
+        let outside = isolate("child-refusal-state");
+        let home = isolate("child-refusal-home");
+        let tmp = isolate("child-refusal-tmp");
+        std::fs::write(workspace.join("source.txt"), "unchanged source").unwrap();
+        let (addr, script) = spawn_mock();
+        let config = write_acl(&outside, &format!("http://{addr}/v1"));
+        let agent = spawn_agent(&workspace, &config, &home, &tmp, &[]).await;
+        agent.approve_permissions.set(true);
+        let session = open(&agent, &workspace).await;
+        let started = std::time::Instant::now();
+        let response = tokio::time::timeout(Duration::from_secs(5), say(&agent, &session,
+            "UNATTENDED-TASK CHILD-REFUSAL-TASK delegate reading source.txt.",
+        )).await.expect("the actual child and parent must settle promptly");
+        assert!(response.is_ok(), "the parent can report the child's failure: {response:?}");
+        assert!(agent.permission_asks.get() > 0, "the actual parent authorization must be exercised");
+        let script = script.lock().unwrap();
+        assert!(script.child_failure_returned, "the original child failure must reach the parent model");
+        assert_eq!(script.child_refusal_requests, 5);
+        assert_eq!(script.child_parent_requests, 2);
+        let facts = private_fixture_facts(&workspace);
+        let child_receipts: Vec<_> = facts.iter().filter(|fact| fact["type"] == "tool.result" && fact["payload"]["receipt"]["identity"]["admission"].is_null()).collect();
+        let succeeded = child_receipts.iter().filter(|fact| fact["payload"]["receipt"]["outcome"] == "succeeded").count();
+        let denied = child_receipts.iter().filter(|fact| fact["payload"]["receipt"]["outcome"] == "denied").count();
+        assert_eq!((succeeded, denied), (3, 2));
+        assert!(facts.iter().any(|fact| fact["type"] == "tool.result" && fact["payload"]["receipt"]["identity"]["admission"].is_object() && fact["payload"].to_string().contains("run.tool_refusal_cycle:")));
+        assert_eq!(std::fs::read_to_string(workspace.join("source.txt")).unwrap(), "unchanged source");
+        eprintln!("ACP_CHILD_REFUSAL_OBSERVATION {}", serde_json::json!({"workspace":workspace,"childModelCalls":script.child_refusal_requests,"parentModelCalls":script.child_parent_requests,"successfulChildReceipts":succeeded,"deniedChildReceipts":denied,"promptMs":started.elapsed().as_millis()}));
+    }).await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn a_successful_write_cycle_stops_before_another_actual_acp_generation() {
+    actual_write_cycle(false, false).await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn one_external_edit_does_not_disable_later_actual_acp_cycle_detection() {
+    actual_write_cycle(true, false).await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn reused_model_ids_keep_distinct_actual_acp_authorizations_and_rows() {
+    actual_write_cycle(false, true).await;
+}
+
+async fn actual_write_cycle(external: bool, reused: bool) {
+    tokio::task::LocalSet::new().run_until(async {
+        let workspace = isolate("state-cycle-ws");
+        let outside = isolate("state-cycle-state");
+        let home = isolate("state-cycle-home");
+        let tmp = isolate("state-cycle-tmp");
+        std::fs::write(workspace.join("source.txt"), "A").unwrap();
+        let (addr, script) = spawn_mock();
+        script.lock().unwrap().reuse_source_id = reused;
+        if external {
+            script.lock().unwrap().external_source = Some(workspace.join("source.txt"));
+        }
+        let config = write_acl(&outside, &format!("http://{addr}/v1"));
+        let agent = spawn_agent(&workspace, &config, &home, &tmp, &[]).await;
+        agent.approve_permissions.set(true);
+        let session = open(&agent, &workspace).await;
+        let started = std::time::Instant::now();
+        let response = tokio::time::timeout(Duration::from_secs(5), say(&agent, &session,
+            "UNATTENDED-TASK STATE-CYCLE-TASK apply the controlled source updates.",
+        )).await.expect("a state cycle must stop before any long execution deadline");
+        let error = response.expect_err("revisiting old workspace states cannot be successful completion");
+        assert!(format!("{error:?}").contains("run.tool_state_cycle:"), "{error:?}");
+        let calls = script.lock().unwrap().state_cycle_requests;
+        let facts = private_fixture_facts(&workspace);
+        let receipts: Vec<_> = facts.iter().filter(|f| f["type"] == "tool.result").collect();
+        let expected = if external { 9 } else { 8 };
+        assert_eq!(calls, expected);
+        assert_eq!(receipts.len(), expected);
+        assert!(receipts.iter().all(|f| f["payload"]["receipt"]["outcome"] == "succeeded" && f["payload"]["receipt"]["identity"]["admission"].is_object()));
+        assert_eq!(std::fs::read_to_string(workspace.join("source.txt")).unwrap(), if external { "B" } else { "A" });
+        assert!(!facts.iter().any(|f| f["type"] == "a3s.goal.completed"));
+        if reused {
+            let ids = agent.permission_ids.borrow();
+            let unique: std::collections::BTreeSet<_> = ids.iter().collect();
+            assert_eq!(ids.len(), expected);
+            assert_eq!(unique.len(), expected, "each original invocation needs independent host consent");
+            assert!(!ids.iter().any(|id| id == "call_write_1"));
+            let receipt_ids: Vec<_> = receipts.iter().map(|fact|
+                fact["payload"]["receipt"]["identity"]["tool_call_id"].as_str().unwrap().to_string()).collect();
+            assert_eq!(*ids, receipt_ids);
+            let notifications = agent.notifications.borrow();
+            let opened: Vec<_> = notifications.iter().filter_map(|notification| {
+                let update = &notification["update"];
+                (update["sessionUpdate"] == "tool_call").then(|| update["toolCallId"].as_str().unwrap().to_string())
+            }).collect();
+            assert_eq!(opened, receipt_ids, "confirmation and execution must paint one row per original call");
+            eprintln!("ACP_REUSED_ID_OBSERVATION {}", serde_json::json!({"workspace":workspace,"modelCalls":calls,"rawModelId":"call_write_1","uniqueApprovals":unique.len(),"toolRows":opened.len(),"successfulReceipts":receipts.len()}));
+        }
+        eprintln!("ACP_STATE_CYCLE_OBSERVATION {}", serde_json::json!({"workspace":workspace,"externalEdit":external,"modelCalls":calls,"successfulReceipts":receipts.len(),"deniedReceipts":0,"promptMs":started.elapsed().as_millis()}));
     }).await;
 }
 

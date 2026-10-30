@@ -3,6 +3,7 @@
 // ============================================================================
 
 use crate::ast::{Block, Document, Value};
+use crate::lexer::{Lexer, Token};
 use std::collections::{BTreeMap, HashMap};
 
 /// Configuration for the generator
@@ -100,7 +101,7 @@ impl Generator {
 
         for (key, value) in attrs {
             self.write_indent(out, indent + 1);
-            out.push_str(key);
+            self.write_key(key, out);
             out.push_str(" = ");
             self.write_value(value, out);
             out.push('\n');
@@ -114,6 +115,18 @@ impl Generator {
 
         self.write_indent(out, indent);
         out.push('}');
+    }
+
+    fn write_key(&self, key: &str, out: &mut String) {
+        let tokens = Lexer::new(key).tokenize();
+        let bare = matches!(tokens.as_slice(), [first, last]
+            if matches!(&first.token, Token::Ident(value) if value == key)
+                && matches!(&last.token, Token::Eof));
+        if bare {
+            out.push_str(key);
+        } else {
+            self.write_string(key, out);
+        }
     }
 
     fn write_value(&self, value: &Value, out: &mut String) {
@@ -145,7 +158,7 @@ impl Generator {
                     if i > 0 {
                         out.push_str(", ");
                     }
-                    out.push_str(key);
+                    self.write_key(key, out);
                     out.push_str(" = ");
                     self.write_value(value, out);
                 }

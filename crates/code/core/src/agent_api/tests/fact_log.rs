@@ -1054,6 +1054,7 @@ impl LlmClient for ProseExtractionClient {
 
 struct AttachmentSteerClient {
     text: CountingText,
+    hold_first: std::sync::atomic::AtomicBool,
     entered: tokio::sync::Semaphore,
     release: tokio::sync::Semaphore,
     seen: std::sync::Mutex<Vec<Vec<Message>>>,
@@ -1067,7 +1068,7 @@ impl LlmClient for AttachmentSteerClient {
         system: Option<&str>,
         tools: &[ToolDefinition],
     ) -> anyhow::Result<LlmResponse> {
-        if !tools.is_empty() {
+        if self.hold_first.swap(false, Ordering::SeqCst) {
             self.seen.lock().unwrap().push(messages.to_vec());
             self.entered.add_permits(1);
             self.release.acquire().await.unwrap().forget();
@@ -1093,6 +1094,7 @@ async fn fact_log_session_attachments_steer_and_history_stay_on_the_log() {
         text: CountingText {
             calls: calls.clone(),
         },
+        hold_first: std::sync::atomic::AtomicBool::new(true),
         entered: tokio::sync::Semaphore::new(0),
         release: tokio::sync::Semaphore::new(0),
         seen: Default::default(),
@@ -1557,8 +1559,12 @@ async fn context_sections_are_recorded_stable_and_source_tracked() {
         "the context record precedes the model call it describes"
     );
     let first = last_context_sections(&facts);
-    assert_eq!(first.len(), 1, "one provider, one section: {first:?}");
-    assert_eq!(first[0].0, "probe");
+    assert_eq!(
+        first.iter().filter(|(name, _)| name == "probe").count(),
+        1,
+        "one section per registered probe: {first:?}"
+    );
+    let first_probe = first.iter().find(|(name, _)| name == "probe").unwrap();
 
     // Unchanged sources: the next turn assembles the same section bytes,
     // and the recorded digest proves the stability.
@@ -1575,11 +1581,18 @@ async fn context_sections_are_recorded_stable_and_source_tracked() {
     session.send("third turn", None).await.unwrap();
     let facts = read_workspace_facts(workspace.path(), "fact-ctx-sections").unwrap();
     let third = last_context_sections(&facts);
-    assert_eq!(third[0].0, "probe");
+    assert_eq!(third.len(), first.len());
+    let third_probe = third.iter().find(|(name, _)| name == "probe").unwrap();
     assert_ne!(
-        third[0].1, first[0].1,
+        third_probe.1, first_probe.1,
         "a changed source must digest differently"
     );
+    for entry in first.iter().filter(|(name, _)| name != "probe") {
+        assert!(
+            third.contains(entry),
+            "unchanged intrinsic source must remain stable"
+        );
+    }
 }
 
 struct SettlingProbe(AtomicUsize);
@@ -1654,13 +1667,13 @@ async fn fact_log_identical_call_and_result_get_a_non_blocking_host_note() {
         .max_by_key(Vec::len)
         .unwrap();
     assert_eq!(results.len(), 3, "{results:?}");
-    assert!(results[0].starts_with("pending") && !results[0].contains("a3s host"));
+    assert_eq!(results[0], "Tool exit code: 0\npending");
     assert!(
         results[1].contains("byte-identical output for identical arguments 2 times in a row"),
         "{}",
         results[1]
     );
-    assert!(results[2].starts_with("ready") && !results[2].contains("a3s host"));
+    assert_eq!(results[2], "Tool exit code: 0\nready");
 }
 
 #[tokio::test]

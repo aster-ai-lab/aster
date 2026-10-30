@@ -42,7 +42,8 @@ pub(super) fn tool_kind_for(name: &str) -> acp::ToolKind {
         "read" | "office_read" => acp::ToolKind::Read,
         "write" | "edit" | "patch" | "office_file" => acp::ToolKind::Edit,
         "grep" | "glob" | "search" | "semantic" | "hybrid" | "bm25" | "code_symbols"
-        | "code_navigation" | "code_diagnostics" | "web_search" => acp::ToolKind::Search,
+        | "code_navigation" | "code_diagnostics" | "web_search" | "search_wiki"
+        | "search_memory" => acp::ToolKind::Search,
         "web_fetch" | "download" => acp::ToolKind::Fetch,
         _ => acp::ToolKind::Other,
     }
@@ -125,6 +126,21 @@ pub(super) fn edit_diff(name: &str, args: Option<&serde_json::Value>) -> Option<
         .and_then(|v| v.as_str())?;
     match name {
         "edit" | "patch" => {
+            // A batched `edit` carries its hunks in `edits`. The approval card still needs a
+            // preview, so show every removed line against every added line of the batch.
+            if let Some(edits) = args.get("edits").and_then(|value| value.as_array()) {
+                let old_text = edits
+                    .iter()
+                    .filter_map(|edit| edit.get("old_string").and_then(|v| v.as_str()))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                let new_text = edits
+                    .iter()
+                    .filter_map(|edit| edit.get("new_string").and_then(|v| v.as_str()))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                return Some(acp::Diff::new(path, new_text).old_text(old_text));
+            }
             let old_text = args.get("old_string").and_then(|v| v.as_str());
             let new_text = args
                 .get("new_string")
@@ -166,12 +182,18 @@ pub(super) fn streaming_bash_delta(delta: &str) -> serde_json::Value {
     })
 }
 
-/// Publication metadata must survive independently of the bounded text preview.
+/// Structured publications survive the model-facing text budget.
 pub(super) fn tool_publication_output(
     name: &str,
     metadata: Option<&serde_json::Value>,
     exit_code: i32,
 ) -> Option<serde_json::Value> {
+    if name == "search_wiki" && exit_code == 0 {
+        return metadata?
+            .get("wiki_result")
+            .filter(|value| value.is_object())
+            .cloned();
+    }
     if name != "office_file" || exit_code != 0 {
         return None;
     }
@@ -205,6 +227,28 @@ pub(super) fn tool_raw_output(
     output: &str,
     exit_code: i32,
 ) -> Option<serde_json::Value> {
+    // Search cards use rawOutput for their expandable details. Keep the bounded
+    // ACP content preview for other clients, but do not discard the actual result.
+    if exit_code == 0
+        && !output.is_empty()
+        && matches!(
+            name,
+            "grep"
+                | "web_search"
+                | "search_wiki"
+                | "search_memory"
+                | "glob"
+                | "search"
+                | "semantic"
+                | "hybrid"
+                | "bm25"
+                | "code_symbols"
+                | "code_navigation"
+                | "code_diagnostics"
+        )
+    {
+        return Some(serde_json::Value::String(output.to_owned()));
+    }
     if !matches!(name, "bash" | "shell" | "execute") {
         // A failed Skill (and any other non-shell tool) keeps its error text.
         // An empty failure and a successful read stay without a raw payload.
@@ -231,4 +275,42 @@ pub(super) fn tool_raw_output(
         "output_file": "",
         "total_bytes": output.len(),
     }))
+}
+
+#[cfg(test)]
+mod plan_tests {
+    use super::*;
+    use a3s_code_core::planning::{Task, TaskStatus};
+
+    #[test]
+    fn plan_entries_keep_identity_and_all_six_core_statuses() {
+        for status in [
+            TaskStatus::Pending,
+            TaskStatus::InProgress,
+            TaskStatus::Completed,
+            TaskStatus::Failed,
+            TaskStatus::Skipped,
+            TaskStatus::Cancelled,
+        ] {
+            let task = Task::new("step-id", "Step title").with_status(status);
+            let entry = task_to_plan_entry(&task);
+            assert_eq!(entry.content, "Step title");
+            assert_eq!(entry.meta.as_ref().unwrap()["id"], "step-id");
+            let expected_acp = match status {
+                TaskStatus::Pending => acp::PlanEntryStatus::Pending,
+                TaskStatus::InProgress => acp::PlanEntryStatus::InProgress,
+                _ => acp::PlanEntryStatus::Completed,
+            };
+            assert_eq!(entry.status, expected_acp);
+            let terminal = entry.meta.as_ref().unwrap().get("a3sStatus");
+            if matches!(
+                status,
+                TaskStatus::Failed | TaskStatus::Skipped | TaskStatus::Cancelled
+            ) {
+                assert_eq!(terminal.unwrap(), status.to_string().as_str());
+            } else {
+                assert!(terminal.is_none());
+            }
+        }
+    }
 }

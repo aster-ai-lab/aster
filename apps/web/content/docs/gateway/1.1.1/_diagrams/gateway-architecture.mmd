@@ -1,0 +1,8 @@
+flowchart TB
+  accTitle: Gateway 的流量职责与期望状态
+  accDescr: standalone ACL 或 Cloud 快照激活本地 Gateway。Gateway 处理请求准入、路由、健康和流式响应。Box 只提供可选的就绪副本端点。
+  client["客户端请求"] --> gateway["a3s-gateway<br/>准入 / 路由 / 健康 / 流"]
+  gateway --> upstream["模型或 HTTP 后端"]
+  acl["standalone ACL"] -. 完整配置 .-> gateway
+  cloud["Cloud 期望状态"] -. 修订与摘要 .-> gateway
+  box["Box 就绪副本"] -. 可选端点 .-> gateway

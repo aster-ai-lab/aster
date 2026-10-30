@@ -576,6 +576,7 @@ fn render_minimal_status(
         buf,
         area,
         turn_status::TurnStatusArgs {
+            output_language: minimal_api::output_language(agent),
             state: &agent.session.state,
             activity,
             turn_elapsed: agent.turn_elapsed(),

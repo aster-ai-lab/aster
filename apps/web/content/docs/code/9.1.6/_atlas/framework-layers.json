@@ -1,0 +1,31 @@
+{
+  "title": "应用、Harness 与编排各负责什么",
+  "description": "各 Harness 使用各自的编排实现。Aster 使用 a3s-effect。",
+  "steps": [
+    {
+      "title": "应用先定义用户体验",
+      "body": "应用接收任务，显示执行过程，并提供业务信息。",
+      "focus": [
+        "app"
+      ]
+    },
+    {
+      "title": "Harness 组织模型与工具",
+      "body": "Harness 准备上下文，组织调用，并处理运行约束。",
+      "focus": [
+        "harness"
+      ]
+    },
+    {
+      "title": "编排实现维持运行状态",
+      "body": "Aster 使用事实驱动的 a3s-effect。图中的其他实现有各自边界。",
+      "focus": [
+        "orchestration"
+      ],
+      "source": {
+        "path": "crates/code/core/src/fact_control.rs",
+        "match": "pub struct FactRun {"
+      }
+    }
+  ]
+}

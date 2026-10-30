@@ -348,6 +348,15 @@ impl<'a> Parser<'a> {
                     // This shouldn't happen normally
                     self.advance();
                 }
+                Token::String(name) => {
+                    let span = t.span;
+                    let name = name.clone();
+                    self.ensure_collection_capacity(item_count, span)?;
+                    self.advance();
+                    let attr = self.parse_attribute(name)?;
+                    attributes.insert(attr.0, attr.1);
+                    item_count += 1;
+                }
                 Token::Ident(name) => {
                     // Check if this is a nested block or attribute
                     let span = t.span;

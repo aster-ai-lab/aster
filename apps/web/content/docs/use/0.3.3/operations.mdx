@@ -1,0 +1,72 @@
+export const meta = {
+  title: 'Use 运行与恢复',
+  description: '包作用域、启用计划、MCP、Registry、状态备份与恢复。',
+  label: '运行与恢复',
+  updated: '2026-10-29',
+};
+
+Use 把包生命周期分成计划、审查和应用。运行状态还涉及作用域、Registry 信任、MCP 进程和可恢复的安装数据。
+
+## 作用域与生命周期
+
+包可以安装到 `user` 或 `workspace` 作用域。CLI 使用 `--scope-kind` 和 `--scope-id` 明确选择目标，不依赖模糊的当前目录推断。
+
+<DocTable caption="包生命周期命令" headers={['操作', '入口', '应用前检查']} rows={[
+  ['安装 / 升级 / 卸载', 'plugin plan-install、plan-upgrade、plan-uninstall', '包身份、版本、影响表面和计划摘要'],
+  ['启用 / 禁用', 'plugin plan-enable、plan-disable', '目标包、当前状态和授权'],
+  ['应用计划', 'plugin apply-plan', 'Operation ID、Plan Digest、Scope 和 --yes'],
+  ['查看状态', 'plugin list-installed、plugin status', '实际安装与启用状态'],
+]} />
+
+`install`、`upgrade` 和 `uninstall` 别名委托给组件命令。自动化宿主应使用计划接口，以便保留审查边界。
+
+## Registry 与本机工具
+
+`registry source add` 要求 HTTPS URL 或 GitHub Repository，以及显式 `--trust-root`。替换、删除和切换来源还需要 `--expected-revision`，防止旧配置覆盖新状态。
+
+`component` 管理宿主已经命名的本机工具。工具获取与 AIX 包安装是不同的能力边界，不应混用凭据或安装目录。
+
+`a3s-use capabilities --json` 列出当前外部表面。`doctor --json` 用于检查运行条件和失败诊断。
+
+## MCP 宿主
+
+Use 可以按域或包 ID 启动 MCP 服务：
+
+```bash
+./target/debug/a3s-use mcp serve office-native
+```
+
+MCP 工具使用类型化输入和输出。宿主负责进程生命周期、授权和调用方身份，不要把包 Manifest 当作调用方授权。
+
+包被禁用或未安装时，Use 不会把对应路由伪装为可用。需要启用包时，先生成并应用审查后的启用计划。
+
+## 状态备份与恢复
+
+`state backup` 创建安装状态备份，`state verify-backup` 校验备份。保留策略通过独立的计划和 Digest 应用。
+
+<DocTable caption="状态恢复边界" headers={['步骤或要求', '合同']} rows={[
+  ['plan-restore', '生成恢复计划并核对当前安装影响'],
+  ['rollback-backup', '把回滚备份放在 Use 管理目录之外'],
+  ['restore', '提供准确 Plan Digest 和显式 --yes'],
+  ['环境绑定', '恢复要求匹配的 Use 版本、OS 和架构'],
+  ['restore-status', '检查恢复是否到达终态'],
+]} />
+
+恢复不是普通文件复制。未经审查的恢复计划或缺少回滚备份时，不要执行恢复。
+
+## 验收清单
+
+1. 核对当前用户或工作区作用域。
+2. 审查 Manifest、Actions、文件清单和工具入口。
+3. 验证 Registry 信任根和包摘要。
+4. 核对计划 Operation ID 与 Plan Digest。
+5. 检查安装后的启用状态和 MCP 路由。
+6. 验证禁用后表面不再发布。
+7. 在隔离环境验证备份、恢复和回滚。
+8. 确认日志和诊断不包含秘密。
+
+## 实现依据
+
+- [CLI 生命周期与状态命令](https://github.com/aster-ai-lab/aster/blob/main/crates/use/src/cli.rs)
+- [状态恢复合同](https://github.com/aster-ai-lab/aster/blob/main/crates/use/src/state_restore.rs)
+- [扩展与 MCP 路由](https://github.com/aster-ai-lab/aster/blob/main/crates/use/src/extension_cli.rs)

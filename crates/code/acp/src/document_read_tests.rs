@@ -11,6 +11,35 @@ use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
 #[test]
+fn acp_errors_use_structured_kinds_and_never_parse_error_text() {
+    for (wire, expected) in [
+        ("not_found", WorkspaceReadOverlayErrorKind::NotFound),
+        ("unsupported", WorkspaceReadOverlayErrorKind::Unsupported),
+        ("conflict", WorkspaceReadOverlayErrorKind::Conflict),
+        ("timeout", WorkspaceReadOverlayErrorKind::Timeout),
+        ("foreign", WorkspaceReadOverlayErrorKind::Foreign),
+        ("transport", WorkspaceReadOverlayErrorKind::Transport),
+    ] {
+        let error = agent_client_protocol::Error::invalid_params()
+            .data(json!({"a3sDocument":{"kind":wire}}));
+        assert_eq!(map_acp_read_error(error).kind(), expected);
+    }
+    let misleading = agent_client_protocol::Error::internal_error().data("not_found");
+    assert_eq!(
+        map_acp_read_error(misleading).kind(),
+        WorkspaceReadOverlayErrorKind::Transport
+    );
+    assert_eq!(
+        map_acp_read_error(agent_client_protocol::Error::resource_not_found(None)).kind(),
+        WorkspaceReadOverlayErrorKind::NotFound
+    );
+    assert_eq!(
+        map_acp_read_error(agent_client_protocol::Error::method_not_found()).kind(),
+        WorkspaceReadOverlayErrorKind::Unsupported
+    );
+}
+
+#[test]
 fn document_read_contract_distinguishes_text_paths_from_binary_documents() {
     let root = tempfile::tempdir().unwrap();
     let tool = DocumentBridge::new().tool(root.path(), "contract").unwrap();
@@ -127,32 +156,51 @@ impl agent_client_protocol::Client for Host {
     ) -> agent_client_protocol::Result<()> {
         Ok(())
     }
-    async fn ext_method(
+    async fn read_text_file(
         &self,
-        args: ExtRequest,
-    ) -> agent_client_protocol::Result<agent_client_protocol::ExtResponse> {
-        assert_eq!(&*args.method, "a3s/document/read");
-        let params: Value = serde_json::from_str(args.params.get()).unwrap();
+        args: agent_client_protocol::ReadTextFileRequest,
+    ) -> agent_client_protocol::Result<agent_client_protocol::ReadTextFileResponse> {
+        let params = serde_json::to_value(&args).unwrap();
         assert_eq!(params["sessionId"], "document-session");
         self.seen.add_permits(1);
         if let Some(release) = &self.release {
             release.acquire().await.unwrap().forget();
         }
-        let value = if let Some(probe) = &self.probe {
-            probe
+        if let Some(probe) = &self.probe {
+            let value = probe
                 .lock()
                 .unwrap()
-                .call(json!({"harness":{"operation":"read","params":params}}))
-        } else {
-            self.value.clone()
-        };
-        Ok(agent_client_protocol::ExtResponse::new(Arc::from(
-            serde_json::value::to_raw_value(&value).unwrap(),
-        )))
+                .call(json!({"harness":{"operation":"acp_read","params":params}}));
+            return Ok(acp_response(value));
+        }
+        let mut observation = self.value.clone();
+        let content = observation["snapshot"]["text"]
+            .as_str()
+            .unwrap_or_default()
+            .to_owned();
+        observation["snapshot"]
+            .as_object_mut()
+            .unwrap()
+            .remove("text");
+        Ok(
+            agent_client_protocol::ReadTextFileResponse::new(content).meta(
+                serde_json::Map::from_iter([("a3sDocument".to_owned(), observation)]),
+            ),
+        )
     }
 }
+fn acp_response(mut value: Value) -> agent_client_protocol::ReadTextFileResponse {
+    let content = value["content"].as_str().unwrap_or_default().to_owned();
+    let meta = value
+        .get_mut("_meta")
+        .and_then(Value::as_object_mut)
+        .cloned()
+        .unwrap_or_default();
+    agent_client_protocol::ReadTextFileResponse::new(content).meta(meta)
+}
+
 fn observation(root: &Path) -> Value {
-    json!({"path":root.join("note.txt"),"released":true,"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(root.join("note.txt")).unwrap(),"version":2,"text":"unsaved text","dirty":true,"diskConflict":false}})
+    json!({"path":root.join("note.txt"),"released":true,"snapshot":{"documentId":"native-model","uri":url::Url::from_file_path(root.join("note.txt")).unwrap().to_string(),"version":2,"text":"unsaved text","dirty":true,"diskConflict":false}})
 }
 fn connect(bridge: &DocumentBridge, host: Rc<Host>) -> Vec<tokio::task::JoinHandle<()>> {
     let (left, right) = tokio::io::duplex(1024 * 1024);
@@ -242,6 +290,13 @@ async fn session(
         .unwrap();
     (session, model)
 }
+fn successful_tool_json(text: &str) -> Value {
+    let payload = text
+        .strip_prefix("Tool exit code: 0\n")
+        .expect("successful tool result must expose its zero exit status");
+    serde_json::from_str(payload).expect("tool payload must remain JSON")
+}
+
 async fn run(host: Rc<Host>, root: &Path, read: bool) -> String {
     let bridge = DocumentBridge::new();
     let io = connect(&bridge, host);
@@ -273,10 +328,7 @@ async fn actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_obse
                 probe: None,
             });
             let text = run(host, &root, true).await;
-            assert_eq!(
-                serde_json::from_str::<Value>(&text).unwrap()["text"],
-                "unsaved text"
-            );
+            assert_eq!(successful_tool_json(&text)["text"], "unsaved text");
             assert_eq!(
                 std::fs::read_to_string(root.join("note.txt")).unwrap(),
                 "disk text"
@@ -285,6 +337,7 @@ async fn actual_harness_reads_through_bidirectional_acp_and_refuses_invalid_obse
                 json!({"released":false}),
                 json!({"path":"/foreign/note.txt"}),
                 json!({"snapshot":{"version":0}}),
+                json!({"snapshot":{"diskConflict":true}}),
                 json!({"snapshot":{"uri":"file:///foreign/note.txt"}}),
                 json!({"snapshot":{"text":"x".repeat(TEXT_LIMIT + 1)}}),
             ] {
@@ -374,6 +427,28 @@ async fn cancelled_actual_turn_cannot_accept_late_document_reply() {
         })
         .await;
 }
+#[tokio::test]
+async fn document_read_timeout_fails_without_accepting_late_host_text() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = tempfile::tempdir().unwrap();
+            let root = std::fs::canonicalize(workspace.path()).unwrap();
+            std::fs::write(root.join("note.txt"), "disk").unwrap();
+            let host = Rc::new(Host {
+                value: observation(&root),
+                seen: Semaphore::new(0),
+                release: Some(Arc::new(Semaphore::new(0))),
+                probe: None,
+            });
+            let text = tokio::time::timeout(Duration::from_secs(8), run(host, &root, true))
+                .await
+                .unwrap();
+            assert!(text.contains("timeout"), "{text}");
+            assert!(!text.contains("unsaved text"), "{text}");
+        })
+        .await;
+}
+
 #[tokio::test]
 async fn plain_tool_context_cannot_use_bridge() {
     let workspace = tempfile::tempdir().unwrap();
@@ -578,7 +653,7 @@ async fn actual_harness_acp_reads_native_unsaved_document_across_process_boundar
         probe.call(json!({"harness":{"operation":"bind","root":root,"session":"document-session"}}));
         let host = Rc::new(Host { value:Value::Null, seen:Semaphore::new(0), release:None, probe:Some(Mutex::new(probe)) });
         let text = run(host, &root, true).await;
-        let value: Value = serde_json::from_str(&text).unwrap();
+        let value: Value = successful_tool_json(&text);
         assert_eq!(value["text"], "native unsaved editor text");
         assert_eq!(value["documentId"], opened["snapshot"]["documentId"]);
         assert_eq!(value["version"], 2);
@@ -604,7 +679,7 @@ async fn actual_harness_accepts_bound_advisory_diagnostics_and_refuses_forged_pu
         response["diagnostics"] = json!([publication]);
         let host = |value| Rc::new(Host { value, seen:Semaphore::new(0), release:None, probe:None });
         let accepted = run(host(response.clone()), &root, true).await;
-        let accepted: Value = serde_json::from_str(&accepted).unwrap();
+        let accepted: Value = successful_tool_json(&accepted);
         assert_eq!(accepted["diagnostics"][0]["items"][0]["message"], "bounded finding");
         assert_eq!(accepted["diagnosticsComplete"], false);
         let mut invalid = Vec::new();

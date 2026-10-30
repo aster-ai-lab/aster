@@ -1,6 +1,7 @@
 export { Button, type ButtonSize, type ButtonTone } from './button/button';
 export { IconButton } from './button/icon-button';
 export { Dialog } from './dialog/dialog';
+export { AnimatePresence as DialogPresence } from 'motion/react';
 export { CollectionState } from './feedback/collection-state';
 export { InlineNotice } from './feedback/inline-notice';
 export { StateView } from './feedback/state-view';

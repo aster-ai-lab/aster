@@ -1,5 +1,5 @@
 .work-spreadsheet-editor {
-  --work-spreadsheet-accent: #159469;
+  --work-office-accent: var(--work-spreadsheet-accent);
   --work-office-control-accent: var(--work-spreadsheet-accent);
   --work-spreadsheet-control-height: 32px;
   --work-spreadsheet-footer-height: 30px;
@@ -547,9 +547,11 @@
 }
 
 .work-spreadsheet-sheet-tab > button[role="tab"] {
-  display: block;
+  display: flex;
   min-width: 0;
   flex: 1;
+  align-items: center;
+  justify-content: center;
   padding: 1px 6px 0 10px;
   overflow: hidden;
   border: 0;
@@ -558,7 +560,7 @@
   color: inherit;
   cursor: pointer;
   font: 500 11px / 1 var(--a3s-ui-font);
-  text-align: left;
+  text-align: center;
 }
 
 .work-spreadsheet-sheet-tab > button[role="tab"]:focus-visible {
@@ -667,7 +669,7 @@
 
 .work-spreadsheet-context-menu,
 .work-spreadsheet-sheet-popover {
-  --work-spreadsheet-menu-accent: #159469;
+  --work-spreadsheet-menu-accent: var(--a3s-ink);
   --work-office-menu-accent: var(--work-spreadsheet-menu-accent);
 }
 
@@ -736,7 +738,7 @@
 }
 
 .work-spreadsheet-ribbon-menu {
-  --work-office-menu-accent: var(--work-office-control-accent, #159469);
+  --work-office-menu-accent: var(--work-office-control-accent, var(--a3s-ink));
 
   width: min(264px, calc(100vw - 32px));
 }
@@ -921,7 +923,7 @@
 .work-spreadsheet-cell-style-grid > button:focus-visible {
   border-color: color-mix(
     in srgb,
-    var(--work-office-control-accent, #159469) 38%,
+    var(--work-office-control-accent, var(--a3s-ink)) 38%,
     var(--a3s-line)
   );
   background: var(--a3s-panel-soft);
@@ -931,7 +933,7 @@
   box-shadow: 0 0 0 2px
     color-mix(
       in srgb,
-      var(--work-office-control-accent, #159469) 18%,
+      var(--work-office-control-accent, var(--a3s-ink)) 18%,
       transparent
     );
 }
@@ -939,12 +941,12 @@
 .work-spreadsheet-cell-style-grid > button[aria-checked="true"] {
   border-color: color-mix(
     in srgb,
-    var(--work-office-control-accent, #159469) 58%,
+    var(--work-office-control-accent, var(--a3s-ink)) 58%,
     var(--a3s-line)
   );
   background: color-mix(
     in srgb,
-    var(--work-office-control-accent, #159469) 7%,
+    var(--work-office-control-accent, var(--a3s-ink)) 7%,
     var(--a3s-panel)
   );
 }
@@ -1150,7 +1152,7 @@
 }
 
 .work-spreadsheet-border-panel {
-  --work-office-menu-accent: var(--work-office-control-accent, #159469);
+  --work-office-menu-accent: var(--work-office-control-accent, var(--a3s-ink));
 
   width: min(360px, calc(100vw - 32px));
   padding: 8px;

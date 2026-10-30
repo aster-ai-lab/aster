@@ -500,6 +500,7 @@ export function DocumentFontDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'document.font.dialog.title')}
       description={fontDialogDescription(messages, source)}
       className="work-document-font-dialog"

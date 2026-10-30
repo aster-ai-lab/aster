@@ -150,8 +150,7 @@ impl From<ResearchContractError> for ResearchProtocolError {
 /// A strict, versioned envelope carrying one research contract value.
 ///
 /// The envelope uses a JSON `Value` for the payload so the same transport can
-/// cross Node, Python, and Go without requiring those SDKs to instantiate Rust
-/// types. [`Self::validate`] immediately decodes the value into the closed
+/// cross a host process boundary without serializing live Rust objects. [`Self::validate`] immediately decodes the value into the closed
 /// payload type selected by `kind`, preserving Rust-side validation and
 /// rejecting unknown payload fields.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

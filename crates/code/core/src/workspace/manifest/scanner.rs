@@ -23,6 +23,64 @@ pub fn scan_workspace_files(root: &Path) -> Vec<LocalWorkspaceFile> {
     scan_workspace_files_cancellable(root, &cancelled).unwrap_or_default()
 }
 
+/// Bound the original ignore walker without Git processes or following source-file symlinks.
+pub fn scan_workspace_source_files(
+    root: &Path,
+    max_entries: usize,
+    deadline: Instant,
+    cancellation: &tokio_util::sync::CancellationToken,
+) -> std::io::Result<Vec<LocalWorkspaceFile>> {
+    scan_workspace_source_files_excluding(root, max_entries, deadline, cancellation, &[])
+}
+
+/// Prune host-owned state and generated output before discovery consumes its budget.
+pub fn scan_workspace_source_files_excluding(
+    root: &Path,
+    max_entries: usize,
+    deadline: Instant,
+    cancellation: &tokio_util::sync::CancellationToken,
+    excluded: &[crate::workspace::WorkspacePath],
+) -> std::io::Result<Vec<LocalWorkspaceFile>> {
+    use std::cell::Cell;
+    use std::io::{Error, ErrorKind};
+
+    if !root.is_absolute() || !(1..=100_000).contains(&max_entries) || excluded.len() > 512 {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "workspace_source.invalid_scan",
+        ));
+    }
+    let root = root.canonicalize()?;
+    if root.parent().is_none() || !root.is_dir() {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "workspace_source.invalid_root",
+        ));
+    }
+    let visited = Cell::new(0usize);
+    let stopped = || {
+        let count = visited.get();
+        visited.set(count.saturating_add(1));
+        cancellation.is_cancelled() || Instant::now() >= deadline || count >= max_entries
+    };
+    let files = scan_with_ignore(&root, &stopped, true, excluded)?;
+    if cancellation.is_cancelled() {
+        return Err(Error::new(
+            ErrorKind::Interrupted,
+            "workspace_source.cancelled",
+        ));
+    }
+    if Instant::now() >= deadline {
+        return Err(Error::new(
+            ErrorKind::TimedOut,
+            "workspace_source.scan_expired",
+        ));
+    }
+    files
+        .map(sorted_dedup)
+        .ok_or_else(|| Error::new(ErrorKind::InvalidData, "workspace_source.scan_limit"))
+}
+
 pub(super) fn scan_workspace_files_cancellable(
     root: &Path,
     cancelled: &AtomicBool,
@@ -38,7 +96,7 @@ fn scan_workspace_files_with(
         return None;
     }
     let root = root.canonicalize().unwrap_or_else(|_| root.to_path_buf());
-    let mut files = scan_with_ignore(&root, &is_cancelled)?;
+    let mut files = scan_with_ignore(&root, &is_cancelled, false, &[]).ok()??;
     if is_cancelled() {
         return None;
     }
@@ -204,8 +262,11 @@ fn preferred_status(
 fn scan_with_ignore(
     root: &Path,
     is_cancelled: &impl Fn() -> bool,
-) -> Option<Vec<LocalWorkspaceFile>> {
+    sources_only: bool,
+    excluded: &[crate::workspace::WorkspacePath],
+) -> std::io::Result<Option<Vec<LocalWorkspaceFile>>> {
     let filter_root = root.to_path_buf();
+    let excluded = excluded.to_vec();
     let walker = WalkBuilder::new(root)
         .hidden(false)
         .parents(true)
@@ -217,18 +278,41 @@ fn scan_with_ignore(
             entry
                 .path()
                 .strip_prefix(&filter_root)
-                .map(|relative| !path_has_noise_component(relative))
+                .map(|relative| {
+                    !path_has_noise_component(relative)
+                        && !excluded
+                            .iter()
+                            .any(|prefix| relative.starts_with(prefix.as_str()))
+                })
                 .unwrap_or(true)
         })
         .build();
     let mut files = Vec::new();
     for entry in walker {
         if is_cancelled() {
-            return None;
+            return Ok(None);
         }
-        let Ok(entry) = entry else {
-            continue;
+        let entry = match entry {
+            Ok(entry) => entry,
+            Err(error) if sources_only => {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("workspace_source.discovery_failed: {error}"),
+                ))
+            }
+            Err(_) => continue,
         };
+        if sources_only {
+            if let Some(error) = entry.error() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("workspace_source.discovery_failed: {error}"),
+                ));
+            }
+        }
+        if sources_only && entry.file_type().is_none_or(|kind| kind.is_symlink()) {
+            continue;
+        }
         let path = entry.path();
         if path == root {
             continue;
@@ -240,8 +324,12 @@ fn scan_with_ignore(
             files.push(file);
         }
     }
-    append_personal_kb_files(root, &mut files, is_cancelled)?;
-    Some(files)
+    if !sources_only {
+        if append_personal_kb_files(root, &mut files, is_cancelled).is_none() {
+            return Ok(None);
+        }
+    }
+    Ok(Some(files))
 }
 
 /// Workspace `.gitignore` often lists `.a3s/`, which would hide the personal
@@ -349,6 +437,9 @@ fn sorted_dedup(files: Vec<LocalWorkspaceFile>) -> Vec<LocalWorkspaceFile> {
     files
 }
 pub(super) fn path_has_noise_component(path: &Path) -> bool {
+    if crate::workspace::source_egress::session_locator_path(path) {
+        return true;
+    }
     if is_personal_kb_path(path) {
         return false;
     }
@@ -366,6 +457,7 @@ pub(super) fn path_has_noise_component(path: &Path) -> bool {
             ".git"
                 | ".a3s"
                 | ".a3s-code"
+                | ".a3s-agent-retrievals"
                 | "node_modules"
                 | "target"
                 | ".next"
@@ -409,6 +501,9 @@ mod cancellation_tests {
     fn control_plane_and_package_dirs_are_noise() {
         for path in [
             ".a3s-code/index/CURRENT",
+            ".a3s-agent-retrievals",
+            "meta/a3s-session.json",
+            "child-task/meta/a3s-session.json",
             ".a3s/os-auth.json",
             "node_modules/pkg/index.js",
             "target/debug/build.rs",

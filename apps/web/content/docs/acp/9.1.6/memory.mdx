@@ -1,15 +1,15 @@
 export const meta = {
-  "title": "在正确的数据范围中查询和维护资料",
-  "description": "记忆管理、现场快照、Wiki 搜索和知识编译范围。",
+  "title": "记忆查询与维护的数据范围",
+  "description": "记忆管理、Wiki 搜索、检索配置与宿主边界。",
   "label": "记忆、知识与检索",
   "updated": "2026-10-26"
 };
 
 ## 记忆检查与管理
 
-`a3s/memory/snapshot` 检查当前工作区的工作记忆与会话记忆，使用明确的 layer；Durable 不是这条现场快照路线。当前快照上限为 10,000 项、16 MiB，超限报错，不截成看似完整的集合。
+本版提供 `a3s/memory/manage`，没有独立的 `a3s/memory/snapshot` ACP 扩展。需要查看记录时使用 manage 的 list 与 read 操作；Core 的记忆层级与快照合同不能直接当作 ACP wire 方法。
 
-`a3s/memory/manage` 使用 MemoryManagementRequest 管理指定范围的记忆，包含精确 workspace_root 与类型化 request。请求有 512 KiB envelope 上限，工作区不匹配按资源不可用拒绝。
+`a3s/memory/manage` 使用 MemoryManagementRequest 管理指定范围的记忆，包含精确 workspace_root 与类型化 request。请求有 20 KiB envelope 上限，工作区不匹配按资源不可用拒绝。
 
 当前 manage 的 operation 闭集为 list、read、delete、update。read 使用 id；delete 与 update 还需当前 revision，update 另传 content。冲突后重新读取，不覆盖新版本。
 
@@ -29,20 +29,19 @@ export const meta = {
 
 `a3s/wiki/search` 以明确 wiki 与 query 查询宿主知识范围。它是宿主扩展，不等于开放网页搜索，也不是任意根目录扫描。结果保留来源，不能把 Wiki 中的指令提升为系统授权。
 
-## 知识编译
+## 知识编译由宿主接线
 
-`a3sHost.knowledgeCompile` 指定 CompileScope，绑定 root、job_id 和可选 workspace_revision。代理验证该 job 拥有的工作区，并用 CompileGuard 限制工具和路径。
+本版没有 `a3sHost.knowledgeCompile` 的知识编译准入合同，不能依赖这个元数据字段来限制工具或路径。需要编译知识资料时，宿主应使用现有工作区与权限入口建立任务，明确输入范围、输出目录和取消方式，并核对实际写入。
 
-知识编译不是“给任何项目开全权限”。越界路径、符号链接替换和错误 job 工作区会拒绝。编译输出与原始知识来源分开，发布前核对目标 revision 和产物身份。
+编译输出与原始知识来源分开。Core 的检索和受控工具能力可作为实现基础，但宿主仍须提供任务身份、目标 revision 和产物验收。
 
 ## 检查步骤
 
-准备两个工作区和各自少量记忆；错误 cwd 查询不得返回另一组。对一条管理记录执行读取、带 revision 的更新与删除，观察冲突处理。对知识编译另测外部路径、旧 workspace_revision 和已取消 job，确认没有落盘到错误范围。
+准备两个工作区和各自少量记忆。错误 workspace_root 的查询不能返回另一组。对一条管理记录执行读取、带 revision 的更新与删除，观察冲突处理。宿主自行接入知识编译时，另测越界路径、旧输入版本和取消后的写入。
 
 ## 实现依据
 
-- [记忆快照与管理适配](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/memory_management.rs)
+- [记忆管理适配](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/memory_management.rs)
 - [本地 embedding](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent/local_embedding.rs)
 - [Wiki 搜索](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/wiki_search.rs)
-- [知识编译限制](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/knowledge_compile.rs)
 - [Core 记忆参考](../../../code/9.1.6/reference/memory/)

@@ -26,6 +26,9 @@ mod batch_read_tests;
 mod office_read_tests;
 
 #[cfg(test)]
+mod posture_tests;
+
+#[cfg(test)]
 mod heredoc_tests;
 
 use serde::{Deserialize, Serialize};
@@ -48,6 +51,11 @@ pub use style_specialty::specialty_permission_policy;
 /// The built-in `PermissionPolicy` implements this trait using
 /// declarative allow/deny/ask rules with pattern matching.
 pub trait PermissionChecker: Send + Sync {
+    /// The host explicitly selected full access for this run.
+    fn allows_unsandboxed_execution(&self) -> bool {
+        false
+    }
+
     /// Freeze any mutable host policy for one agent run.
     ///
     /// Stateless checkers can keep the default and will be shared as-is.

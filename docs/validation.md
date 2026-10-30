@@ -70,8 +70,12 @@ The imported Core deliberately refuses native shell commands on macOS with
 `native_process_lifetime_unqualified`. Two shell-dependent PTY success
 tests are skipped only on macOS, while the native refusal test verifies
 that the boundary remains intact. File tools and local mock-provider chat
-are exercised separately. Native process qualification is required before
-shell-dependent coding workflows can pass on macOS.
+are exercised separately. The macOS ARM64 Studio build now stages the OCI
+Host, signed shim, matching guest Agent/system image, and pinned Bash rootfs
+beside ACP. Its default deny-network command path uses that utility VM
+without a manual asset-directory override. The native refusal remains intact;
+missing companions or an unsupported network posture still refuse execution.
+See [Studio build prerequisites](../apps/studio/README.md).
 
 The legacy ACP `v912_remember_before_stream_close` test expects raw user
 input to be stored even when the model returns an empty extraction. Current

@@ -1,7 +1,7 @@
 //! Finalizing a turn from a terminal turn signal.
 //!
 //! The pager learns a turn reached its terminal outcome from two rails.
-//! One is the fire-and-forget `x.ai/session/prompt_complete` broadcast, kept for one release so leaders that have not yet upgraded still work.
+//! One is the fire-and-forget `a3s/session/prompt_complete` broadcast, kept for one release so leaders that have not yet upgraded still work.
 //! The other is the durable `A3sSessionUpdate::TurnCompleted`, which is persisted and replayed.
 //! Both converge on [`finalize_turn_from_terminal`] so the turn-finalize behavior lives in one place.
 //! A viewer that re-attaches mid-turn can then finalize the turn from replay instead of staying stuck on "Waiting…".
@@ -137,7 +137,7 @@ impl ForcedStopWire {
     }
 }
 
-/// One `x.ai/turn/outcome` notification, parsed. The agent emits it before
+/// One `a3s/turn/outcome` notification, parsed. The agent emits it before
 /// the prompt response resolves, so it can render beside the turn marker.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TurnOutcomeInfo {
@@ -150,7 +150,7 @@ pub(crate) struct TurnOutcomeInfo {
     pub(crate) forced: Option<ForcedStopWire>,
 }
 
-/// Parse the `x.ai/turn/outcome` notification params
+/// Parse the `a3s/turn/outcome` notification params
 /// (`{"sessionId":..., "outcome":{terminal,status,requiredChecks,failedChecks}}`).
 /// Unknown terminal/status values drop with a warn naming the expected set
 /// (fail-closed rendering, no guessing); malformed JSON drops with a warn.
@@ -173,14 +173,14 @@ pub(crate) fn parse_turn_outcome(params: &str) -> Option<TurnOutcomeInfo> {
         forced: Option<String>,
     }
     let payload = serde_json::from_str::<Payload>(params)
-        .map_err(|error| tracing::warn!(%error, "failed to parse x.ai/turn/outcome"))
+        .map_err(|error| tracing::warn!(%error, "failed to parse a3s/turn/outcome"))
         .ok()?;
     let terminal = TurnTerminal::parse(&payload.outcome.terminal)
-        .map_err(|error| tracing::warn!(%error, "x.ai/turn/outcome carries an unknown terminal; dropping"))
+        .map_err(|error| tracing::warn!(%error, "a3s/turn/outcome carries an unknown terminal; dropping"))
         .ok()?;
     let verification = TurnVerification::parse(&payload.outcome.status)
         .map_err(
-            |error| tracing::warn!(%error, "x.ai/turn/outcome carries an unknown status; dropping"),
+            |error| tracing::warn!(%error, "a3s/turn/outcome carries an unknown status; dropping"),
         )
         .ok()?;
     let forced = payload
@@ -190,7 +190,7 @@ pub(crate) fn parse_turn_outcome(params: &str) -> Option<TurnOutcomeInfo> {
         .map(ForcedStopWire::parse)
         .transpose()
         .map_err(
-            |error| tracing::warn!(%error, "x.ai/turn/outcome carries an unknown forced stop; dropping"),
+            |error| tracing::warn!(%error, "a3s/turn/outcome carries an unknown forced stop; dropping"),
         )
         .ok()?;
     Some(TurnOutcomeInfo {

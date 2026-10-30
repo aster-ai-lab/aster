@@ -5,7 +5,7 @@ use super::super::{
     collaboration_error, NativeOfficeCollaborationDocumentTextFindResult,
     NativeOfficeCollaborationDocumentTextMatch, NativeOfficeCollaborationManifest,
 };
-use super::{is_utf16_boundary, utf16_len};
+use super::{is_utf16_boundary, utf16_len, utf16_slice};
 
 const MAX_MARKDOWN_TEXT_REPLACEMENTS: u32 = 4_096;
 
@@ -339,30 +339,6 @@ fn minimal_text_replacement(current: &str, replacement: &str) -> (u32, u32, Stri
     let delete_utf16 = current_middle.encode_utf16().count() as u32;
     let insert = replacement_middle.to_owned();
     (index_utf16, delete_utf16, insert)
-}
-
-fn utf16_slice(value: &str, start: u32, end: u32) -> Option<&str> {
-    let mut cursor = 0_u32;
-    let mut start_byte = if start == 0 { Some(0) } else { None };
-    let mut end_byte = if end == 0 { Some(0) } else { None };
-    for (byte_index, character) in value.char_indices() {
-        cursor = cursor.checked_add(character.len_utf16() as u32)?;
-        let next_byte = byte_index + character.len_utf8();
-        if cursor == start {
-            start_byte = Some(next_byte);
-        }
-        if cursor == end {
-            end_byte = Some(next_byte);
-            break;
-        }
-        if cursor > end {
-            return None;
-        }
-    }
-    if cursor < end {
-        return None;
-    }
-    Some(&value[start_byte?..end_byte?])
 }
 
 fn invalid_markdown_range(

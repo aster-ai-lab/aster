@@ -28,7 +28,7 @@ async fn setup(root: &std::path::Path) -> (A3sCodeAgent, acp::SessionId) {
 
 async fn deny_write(agent: &A3sCodeAgent, id: &acp::SessionId) {
     let request = acp::ExtRequest::new(
-        "x.ai/permission_posture",
+        "a3s/permission_posture",
         serde_json::value::to_raw_value(&json!({
             "sessionId":id, "posture":"yolo", "deny":["write"]
         }))

@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Selection } from '@fortune-sheet/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { showToast } from '../../../state/app-state';
@@ -126,67 +127,71 @@ export function useSpreadsheetHyperlink({
   return {
     commandPort,
     selectionForChange,
-    dialog: source ? (
-      <SpreadsheetHyperlinkDialog
-        source={source}
-        restoreFocusTarget={() =>
-          invokerRef.current?.isConnected
-            ? invokerRef.current
-            : getGridFocusTarget()
-        }
-        onApply={(value) => {
-          applyingRef.current = true;
-          let handled = false;
-          try {
-            handled =
-              commandsRef.current?.applyHyperlink({
-                sheetId: source.sheetId,
-                row: source.row,
-                column: source.column,
-                ...value,
-              }) ?? false;
-          } finally {
-            applyingRef.current = false;
-          }
-          if (!handled) {
-            showToast(
-              spreadsheetHyperlinkFailureMessage(
+    dialog: (
+      <DialogPresence>
+        {source ? (
+          <SpreadsheetHyperlinkDialog
+            source={source}
+            restoreFocusTarget={() =>
+              invokerRef.current?.isConnected
+                ? invokerRef.current
+                : getGridFocusTarget()
+            }
+            onApply={(value) => {
+              applyingRef.current = true;
+              let handled = false;
+              try {
+                handled =
+                  commandsRef.current?.applyHyperlink({
+                    sheetId: source.sheetId,
+                    row: source.row,
+                    column: source.column,
+                    ...value,
+                  }) ?? false;
+              } finally {
+                applyingRef.current = false;
+              }
+              if (!handled) {
+                showToast(
+                  spreadsheetHyperlinkFailureMessage(
+                    contentRef.current,
+                    source,
+                    value,
+                    officeMessage(messages, 'spreadsheet.hyperlink.applyFailed'),
+                  ),
+                  'error',
+                );
+              }
+              return handled;
+            }}
+            onClose={close}
+            onRemove={() => {
+              applyingRef.current = true;
+              let handled = false;
+              try {
+                handled =
+                  commandsRef.current?.removeHyperlink({
+                    sheetId: source.sheetId,
+                    row: source.row,
+                    column: source.column,
+                  }) ?? false;
+              } finally {
+                applyingRef.current = false;
+              }
+              if (!handled) showToast(officeMessage(messages, 'spreadsheet.hyperlink.removeFailed'), 'error');
+              return handled;
+            }}
+            onValidate={(value) =>
+              spreadsheetHyperlinkValidationMessage(
                 contentRef.current,
                 source,
                 value,
-                officeMessage(messages, 'spreadsheet.hyperlink.applyFailed'),
-              ),
-              'error',
-            );
-          }
-          return handled;
-        }}
-        onClose={close}
-        onRemove={() => {
-          applyingRef.current = true;
-          let handled = false;
-          try {
-            handled =
-              commandsRef.current?.removeHyperlink({
-                sheetId: source.sheetId,
-                row: source.row,
-                column: source.column,
-              }) ?? false;
-          } finally {
-            applyingRef.current = false;
-          }
-          if (!handled) showToast(officeMessage(messages, 'spreadsheet.hyperlink.removeFailed'), 'error');
-          return handled;
-        }}
-        onValidate={(value) =>
-          spreadsheetHyperlinkValidationMessage(
-            contentRef.current,
-            source,
-            value,
-          )
-        }
-      />
-    ) : null,
+              )
+            }
+          />
+        ) : null}
+      </DialogPresence>
+    ),
   };
 }
 

@@ -505,20 +505,30 @@ fn assert_screen_has_no_secret(screen: &str) {
 fn assert_workspace_untouched(fixture: &Fixture) {
     let sentinel = std::fs::read(fixture.workspace.join("sentinel.txt")).expect("sentinel");
     assert_eq!(sentinel, SENTINEL_BYTES);
-    // `prepare_session_home` creates `<workspace>/.a3s/sessions` when the
-    // TUI opens a session, before the model turn. That directory is the
-    // product record. Anything else at the root is a turn write.
+    // Session records and the retrieval index are created before the model turn.
     let mut names: Vec<_> = std::fs::read_dir(&fixture.workspace)
         .unwrap()
         .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned())
         .collect();
     names.sort();
-    names.retain(|name| name != ".a3s");
+    names.retain(|name| name != ".a3s" && name != ".a3s-code");
     assert_eq!(
         names,
         vec!["sentinel.txt".to_string()],
         "the turn wrote a file at the workspace root"
     );
+    let index = fixture.workspace.join(".a3s-code");
+    if index.is_dir() {
+        let names: Vec<_> = std::fs::read_dir(index)
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name())
+            .collect();
+        assert_eq!(
+            names,
+            [std::ffi::OsString::from("index")],
+            "unexpected workspace index namespace"
+        );
+    }
     let product = fixture.workspace.join(".a3s");
     if product.is_dir() {
         let mut children: Vec<_> = std::fs::read_dir(&product)
@@ -576,6 +586,24 @@ fn tree_contains_secret(root: &Path) -> bool {
         }
     }
     false
+}
+
+#[test]
+fn workspace_guard_accepts_the_index_and_rejects_artifacts_and_credentials() {
+    for (path, contents) in [
+        ("unexpected.txt", "unexpected"),
+        (".a3s-code/unexpected.txt", "unexpected"),
+        (".a3s-code/index/credential.txt", BEARER),
+    ] {
+        let fixture = prepare(Login::Absent, None);
+        std::fs::create_dir_all(fixture.workspace.join(".a3s-code/index")).unwrap();
+        assert_workspace_untouched(&fixture);
+        std::fs::write(fixture.workspace.join(path), contents).unwrap();
+        assert!(
+            std::panic::catch_unwind(|| assert_workspace_untouched(&fixture)).is_err(),
+            "workspace guard accepted {path}"
+        );
+    }
 }
 
 fn assert_cursor_run(stub: &Stub) {

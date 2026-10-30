@@ -543,10 +543,7 @@ export async function createDocxBlob(
       : undefined,
     evenAndOddHeaderAndFooters: usesOddEvenPageChrome,
     features: {
-      trackRevisions: Boolean(
-        normalizedContent.trackChanges ||
-          documentHasTrackedChanges(normalizedContent.html),
-      ),
+      trackRevisions: Boolean(normalizedContent.trackChanges),
       updateFields: true,
     },
   });
@@ -2015,15 +2012,6 @@ function docxRevisionIdForKey(
     context.changeIds.set(key, id);
   }
   return id;
-}
-
-function documentHasTrackedChanges(html: string): boolean {
-  const document = new DOMParser().parseFromString(html, 'text/html');
-  return Boolean(
-    document.body.querySelector(
-      'ins[data-document-change], del[data-document-change], span[data-document-change][data-change-kind="formatting"], [data-document-change][data-change-kind="paragraph-formatting"], [data-document-change][data-change-kind="numbering"], [data-document-change][data-change-kind="table-formatting"], [data-document-change][data-change-kind="row-formatting"], [data-document-change][data-change-kind="cell-formatting"], [data-document-change][data-change-kind="section-formatting"], [data-document-change][data-change-kind="move"], [data-document-block-change="true"], [data-paragraph-break-change="true"]',
-    ),
-  );
 }
 
 function anchoredDocumentComments(

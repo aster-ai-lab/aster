@@ -658,7 +658,7 @@ async fn test_session_close_waits_for_accepted_memory_extraction_to_persist() {
             .unwrap(),
     );
     let memory = Arc::clone(session.memory().expect("session memory"));
-    let mut ticket = memory.enqueue_llm_extraction();
+    let mut ticket = memory.enqueue_llm_extraction("fixture-session");
     let started = Arc::new(tokio::sync::Notify::new());
     let release = Arc::new(tokio::sync::Notify::new());
     let extraction = tokio::spawn({

@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use super::super::WorkspaceServices;
+use super::super::{WorkspaceRef, WorkspaceServices, WorkspaceServicesBuilder};
 use super::*;
 
 struct Buffers;
@@ -94,6 +94,137 @@ async fn overlay_reads_win_and_other_operations_use_the_backend() {
         .map(|entry| entry.name)
         .collect::<Vec<_>>();
     assert!(names.contains(&"closed.txt".to_string()));
+}
+
+struct CountingFs {
+    reads: Arc<std::sync::atomic::AtomicUsize>,
+}
+
+#[async_trait]
+impl WorkspaceFileSystem for CountingFs {
+    async fn read_text(&self, _path: &WorkspacePath) -> WorkspaceResult<String> {
+        self.reads.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        Ok("stale disk bytes".into())
+    }
+
+    async fn write_text(
+        &self,
+        _path: &WorkspacePath,
+        _content: &str,
+    ) -> WorkspaceResult<WorkspaceWriteOutcome> {
+        Err(WorkspaceError::Unsupported("test write".into()))
+    }
+
+    async fn list_dir(&self, _path: &WorkspacePath) -> WorkspaceResult<Vec<WorkspaceDirEntry>> {
+        Ok(Vec::new())
+    }
+}
+
+struct FailingOverlay(WorkspaceReadOverlayErrorKind);
+
+#[async_trait]
+impl WorkspaceReadOverlay for FailingOverlay {
+    async fn read_text(&self, _path: &WorkspacePath) -> Option<String> {
+        None
+    }
+
+    async fn read_text_result(
+        &self,
+        _path: &WorkspacePath,
+    ) -> Result<Option<String>, WorkspaceReadOverlayError> {
+        Err(WorkspaceReadOverlayError::new(self.0, "host read failed"))
+    }
+}
+
+fn failing_services(
+    kind: WorkspaceReadOverlayErrorKind,
+) -> (Arc<WorkspaceServices>, Arc<std::sync::atomic::AtomicUsize>) {
+    let reads = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let fs: Arc<dyn WorkspaceFileSystem> = Arc::new(CountingFs {
+        reads: Arc::clone(&reads),
+    });
+    let services = WorkspaceServicesBuilder::new(WorkspaceRef::new("test", "test"), fs)
+        .build()
+        .with_read_overlay(Arc::new(FailingOverlay(kind)));
+    (services, reads)
+}
+
+fn assert_overlay_kind(error: WorkspaceError, expected: WorkspaceReadOverlayErrorKind) {
+    let WorkspaceError::Backend(error) = error else {
+        panic!("expected overlay backend error")
+    };
+    let error = error
+        .downcast_ref::<WorkspaceReadOverlayError>()
+        .expect("typed overlay error must survive the workspace boundary");
+    assert_eq!(error.kind(), expected);
+}
+
+#[tokio::test]
+async fn overlay_failures_never_fall_back_to_stale_disk_bytes() {
+    for kind in [
+        WorkspaceReadOverlayErrorKind::Conflict,
+        WorkspaceReadOverlayErrorKind::Timeout,
+        WorkspaceReadOverlayErrorKind::Foreign,
+        WorkspaceReadOverlayErrorKind::Transport,
+        WorkspaceReadOverlayErrorKind::Invalid,
+    ] {
+        let (services, reads) = failing_services(kind);
+        let path = WorkspacePath::from_normalized("note.txt");
+        assert_overlay_kind(services.fs().read_text(&path).await.unwrap_err(), kind);
+        assert_overlay_kind(
+            services
+                .text_reader()
+                .unwrap()
+                .read_text_range(&path, 0, 10)
+                .await
+                .unwrap_err(),
+            kind,
+        );
+        assert_eq!(reads.load(std::sync::atomic::Ordering::SeqCst), 0, "{kind}");
+    }
+}
+
+#[tokio::test]
+async fn only_not_found_and_unsupported_overlay_errors_use_the_backend() {
+    for kind in [
+        WorkspaceReadOverlayErrorKind::NotFound,
+        WorkspaceReadOverlayErrorKind::Unsupported,
+    ] {
+        let (services, reads) = failing_services(kind);
+        let path = WorkspacePath::from_normalized("note.txt");
+        assert_eq!(
+            services.fs().read_text(&path).await.unwrap(),
+            "stale disk bytes"
+        );
+        let range = services
+            .text_reader()
+            .unwrap()
+            .read_text_range(&path, 0, 10)
+            .await
+            .unwrap();
+        assert_eq!(range.lines, vec!["stale disk bytes"]);
+        assert_eq!(reads.load(std::sync::atomic::Ordering::SeqCst), 2, "{kind}");
+    }
+}
+
+#[test]
+fn overlay_error_kind_is_a_closed_stable_wire_contract() {
+    for kind in [
+        WorkspaceReadOverlayErrorKind::NotFound,
+        WorkspaceReadOverlayErrorKind::Unsupported,
+        WorkspaceReadOverlayErrorKind::Conflict,
+        WorkspaceReadOverlayErrorKind::Timeout,
+        WorkspaceReadOverlayErrorKind::Foreign,
+        WorkspaceReadOverlayErrorKind::Transport,
+        WorkspaceReadOverlayErrorKind::Invalid,
+    ] {
+        assert_eq!(kind.as_str().parse(), Ok(kind));
+        assert_eq!(serde_json::to_value(kind).unwrap(), kind.as_str());
+    }
+    assert!("conflicted"
+        .parse::<WorkspaceReadOverlayErrorKind>()
+        .is_err());
+    assert!("".parse::<WorkspaceReadOverlayErrorKind>().is_err());
 }
 
 #[test]

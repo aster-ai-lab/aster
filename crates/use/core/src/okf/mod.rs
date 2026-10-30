@@ -227,6 +227,28 @@ pub struct OkfConceptSummary {
     pub link_count: u64,
 }
 
+/// An explicitly written Markdown or frontmatter reference; external URIs have no bundle path.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OkfDocumentReference {
+    pub target: String,
+    pub resolved_path: Option<String>,
+}
+
+/// Reads bounded references with the same parser as bundle inspection, without accessing files.
+/// This extracts declared references; it does not establish whole-document or bundle conformance.
+pub fn okf_document_references(
+    path: &str,
+    content: &[u8],
+    limits: OkfBundleLimits,
+) -> UseResult<Vec<OkfDocumentReference>> {
+    limits.validate()?;
+    let path = path::normalize_bundle_file_path(path)?;
+    if content.len() as u64 > limits.max_document_bytes {
+        return Err(limit_error());
+    }
+    document::document_references(&path, content, limits.max_links_per_document)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum OkfDiagnosticCode {

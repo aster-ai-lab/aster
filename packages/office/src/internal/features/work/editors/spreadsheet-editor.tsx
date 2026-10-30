@@ -1,3 +1,4 @@
+import { DialogPresence } from '../../../design-system/primitives';
 import type { Hooks, Op, Selection } from '@fortune-sheet/core';
 import { Workbook, type WorkbookInstance } from '@fortune-sheet/react';
 import { Cloud, Grid3X3 } from 'lucide-react';
@@ -219,6 +220,7 @@ export interface SpreadsheetEditorProps {
   sortCustomListStore?: SpreadsheetSortCustomListStore;
   fileActions?: readonly WorkOfficeFileAction[];
   onChange: (content: WorkSpreadsheetContent) => void;
+  onDerivedChange?: (content: WorkSpreadsheetContent) => void;
   onAgentRequest?: (request: WorkEditorAgentRequest) => void | Promise<void>;
 /**
  * Opt-in A3S virtual grid for Spreadsheet (`virtualGrid` / playground
@@ -302,7 +304,6 @@ interface SpreadsheetEditorSurfaceProps extends SpreadsheetEditorProps {
   collaborationHistory?: SpreadsheetCollaborationHistory;
   collaborationView?: SpreadsheetCollaborationViewController;
   collaborationWrittenCell?: SpreadsheetFrameCell | null;
-  onDerivedChange?: (content: WorkSpreadsheetContent) => void;
 }
 
 function SpreadsheetEditorSurface({
@@ -1236,7 +1237,7 @@ function SpreadsheetEditorSurface({
       contentRef.current = next;
       acceptWorkbookContent(next);
       calculation.synchronizeWorkbook(next, operations);
-      if (matchesRenderedWorkbook && onDerivedChange) onDerivedChange(next);
+      if (matchesRenderedWorkbook) (onDerivedChange ?? onChange)(next);
       else if (!isHistoryNoop) {
         spreadsheetCommandsRef.current?.setSpreadsheetContent(next);
       }
@@ -1245,6 +1246,7 @@ function SpreadsheetEditorSurface({
       acceptWorkbookContent,
       calculation,
       ignoreChangeDuringExternalSync,
+      onChange,
       onDerivedChange,
       takeWorkbookOperations,
     ],
@@ -2572,54 +2574,58 @@ function SpreadsheetEditorSurface({
           }
         />
       )}
-      {formatCellsDialog && (
-        <SpreadsheetFormatCellsDialog
-          source={formatCellsDialog.source}
-          openIntent={formatCellsDialog.intent}
-          restoreFocusTarget={() =>
-            formatCellsInvokerRef.current?.isConnected
-              ? formatCellsInvokerRef.current
-              : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current)
-          }
-          onApply={(patch) => {
-            formatCellsApplyingRef.current = true;
-            let handled = false;
-            try {
-              handled = spreadsheetCommands.applyCellFormat({
-                sheetId: formatCellsDialog.source.sheetId,
-                range: formatCellsDialog.source.range,
-                patch,
-              });
-            } finally {
-              formatCellsApplyingRef.current = false;
+      <DialogPresence>
+        {formatCellsDialog && (
+          <SpreadsheetFormatCellsDialog
+            source={formatCellsDialog.source}
+            openIntent={formatCellsDialog.intent}
+            restoreFocusTarget={() =>
+              formatCellsInvokerRef.current?.isConnected
+                ? formatCellsInvokerRef.current
+                : spreadsheetGridFocusTarget(spreadsheetCanvasRef.current)
             }
-            if (!handled)
-              showToast(
-                officeMessage(
-                  resolveOfficeMessages(),
-                  'spreadsheet.editor.formatFailed',
-                ),
-                'error',
-              );
-            return handled;
-          }}
-          onClose={closeSpreadsheetFormatCells}
-        />
-      )}
+            onApply={(patch) => {
+              formatCellsApplyingRef.current = true;
+              let handled = false;
+              try {
+                handled = spreadsheetCommands.applyCellFormat({
+                  sheetId: formatCellsDialog.source.sheetId,
+                  range: formatCellsDialog.source.range,
+                  patch,
+                });
+              } finally {
+                formatCellsApplyingRef.current = false;
+              }
+              if (!handled)
+                showToast(
+                  officeMessage(
+                    resolveOfficeMessages(),
+                    'spreadsheet.editor.formatFailed',
+                  ),
+                  'error',
+                );
+              return handled;
+            }}
+            onClose={closeSpreadsheetFormatCells}
+          />
+        )}
+      </DialogPresence>
       {spreadsheetDataValidation.dialog}
       {autoFilterDialog}
       {spreadsheetSort.dialog}
       {spreadsheetHyperlink.dialog}
       {spreadsheetTable.dialog}
-      {spreadsheetClipboard.dialogSource && (
-        <SpreadsheetPasteSpecialDialog
-          source={spreadsheetClipboard.dialogSource}
-          restoreFocusTarget={spreadsheetClipboard.restoreDialogFocusTarget}
-          onApply={spreadsheetClipboard.applyDialog}
-          onClose={spreadsheetClipboard.closeDialog}
-          onValidate={spreadsheetClipboard.validateDialog}
-        />
-      )}
+      <DialogPresence>
+        {spreadsheetClipboard.dialogSource && (
+          <SpreadsheetPasteSpecialDialog
+            source={spreadsheetClipboard.dialogSource}
+            restoreFocusTarget={spreadsheetClipboard.restoreDialogFocusTarget}
+            onApply={spreadsheetClipboard.applyDialog}
+            onClose={spreadsheetClipboard.closeDialog}
+            onValidate={spreadsheetClipboard.validateDialog}
+          />
+        )}
+      </DialogPresence>
       {officeDialog.dialog}
     </section>
   );

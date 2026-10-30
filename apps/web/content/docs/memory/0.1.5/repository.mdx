@@ -1,0 +1,73 @@
+export const meta = {
+  title: 'Memory 存储与 Repository',
+  description: 'MemoryItem、V2 证据生命周期、命名空间、修订和本地持久化。',
+  label: '存储与 Repository',
+  updated: '2026-10-29',
+};
+
+`MemoryStore` 提供轻量存储接口。`repository` 提供证据化、可审计的 V2 完整性内核。调用方可以逐步迁移，原有 `MemoryItem` API 仍然可用。
+
+## 保存 MemoryItem
+
+```rust
+use a3s_memory::{InMemoryStore, MemoryItem, MemoryStore, MemoryType};
+use std::sync::Arc;
+
+let store = Arc::new(InMemoryStore::new());
+let item = MemoryItem::new("Prefer write_all over write for file I/O")
+    .with_importance(0.8)
+    .with_tag("rust")
+    .with_type(MemoryType::Semantic);
+
+store.store(item).await?;
+let results = store.search("file I/O", 5).await?;
+```
+
+`InMemoryStore` 用于测试和易失场景。`FileMemoryStore` 使用原子写入和内存索引，目录包含 `index.json` 与每项一个的 `items/{id}.json`。
+
+自定义后端实现 `MemoryStore`。后端替换不会改变 `MemoryItem`、`MemoryType` 和 `RelevanceConfig` 的核心模型。
+
+## 去重与清理
+
+默认 Store 在大小写和空白规范化后合并精确重复。标点仍然有意义。首个记忆 ID 保持为规范 ID。
+
+后续重复会提高 Importance，合并标签与关系元数据，并记录 `duplicate_count`。需要规范项时使用 `store_and_return()`。
+
+`PrunePolicy` 可以删除低价值旧项并限制数量。Pinned、Protected、频繁访问和携带冲突关系的记忆受到保护。
+
+关键词重叠不会被推断为语义等价。语义合并由拥有上下文的宿主或模型决定。
+
+## V2 命名空间与证据
+
+`MemoryNamespace` 是 V2 的精确隔离边界。每个节点、关系、查询、ChangeSet 和使用记录都属于一个命名空间。Repository 不会推断或扩大命名空间。
+
+`EvidenceRef` 包含来源 URI、内容摘要、证据类型和发生时间。Repository 校验形状和边界，但不会解析 URI 或验证来源摘要。授权宿主负责这些核验。
+
+<DocTable caption="V2 生命周期与操作" headers={['对象或操作', '合同']} rows={[
+  ['Candidate', '保存尚未激活的候选内容'],
+  ['Active', '具有决策证据的可服务修订'],
+  ['Superseded / Conflicted / Tombstoned', '保留历史并改变默认读取视图'],
+  ['activate', '携带新的 Manual 或 Verification 决策证据'],
+  ['refine / correct / corroborate', '以新证据创建新修订'],
+  ['purge', '单独的合规删除操作，不属于 Consolidation'],
+]} />
+
+## 原子 ChangeSet 与纯读取
+
+每个 Mutation 携带预期节点修订。过期修订会拒绝整个 ChangeSet。多节点修改原子发布，替换节点与被替换节点不会分开可见。
+
+`get`、`query` 和 `snapshot_namespace` 是纯读取，不更新访问计数或保留状态。`record_admission` 和 `record_use` 是显式事件，并记录实际观察的节点修订。
+
+命名空间 Snapshot 在节点数和规范字节上限内返回完整视图。超限时返回错误，不会静默截断。调用方可以按原请求重新计算视图摘要。
+
+## 本地持久化
+
+`InMemoryRepository` 是参考实现。`FileMemoryRepository` 追加并同步校验过的 WAL 操作后才发布状态。
+
+文件后端在重启后确定性重放，并使用单写者目录锁。可选 Namespace Change Token 只用于避免重复 Snapshot，不替代首次完整 Snapshot、锁或后端身份。
+
+## 实现依据
+
+- [MemoryStore 与持久化](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/README.md)
+- [V2 不变量](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/docs/MEMORY_KERNEL_V2.md)
+- [V2 核心模型](https://github.com/aster-ai-lab/aster/blob/main/crates/memory/docs/MEMORY_KERNEL_V2.md)

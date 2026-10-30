@@ -77,17 +77,19 @@ impl Tool for HybridSearchTool {
 
         match ctx
             .workspace_services
-            .hybrid_search(request, ctx.cancellation_token())
+            .hybrid_search_with_engine(request, ctx.cancellation_token())
             .await
         {
-            Ok(result) => {
+            Ok((result, persistent_engine)) => {
                 let mut output = render_result(result, query);
-                if let (Some(catalog), Some(metadata)) = (
-                    ctx.workspace_services.chunk_catalog(),
-                    output.metadata.as_mut(),
-                ) {
-                    metadata["lexical_engine"] =
-                        serde_json::json!(catalog.build_engine().stable_id());
+                if let Some(metadata) = output.metadata.as_mut() {
+                    if let Some(engine) = persistent_engine {
+                        metadata["index_kind"] = serde_json::json!("persistent_a3s_vec_fts");
+                        metadata["lexical_engine"] = serde_json::json!(engine.stable_id());
+                    } else if let Some(catalog) = ctx.workspace_services.chunk_catalog() {
+                        metadata["lexical_engine"] =
+                            serde_json::json!(catalog.build_engine().stable_id());
+                    }
                 }
                 Ok(output)
             }
@@ -213,6 +215,8 @@ fn result_metadata(
                 "exact_identifier": hit.exact_identifier,
                 "channels": &hit.channels,
                 "digest_verified": true,
+                "content_digest": hit.chunk.content_digest.as_ref(),
+                "text": snippet.text,
             })
         })
         .collect::<Vec<_>>();

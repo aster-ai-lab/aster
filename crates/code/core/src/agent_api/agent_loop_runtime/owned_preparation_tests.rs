@@ -628,7 +628,10 @@ async fn close_winning_actual_admission_retains_original_guard_and_clean_result(
     // boundary. There is no canonical Run/inbox in this construction-only
     // fixture, so a mutable control-slot lock is not an original close barrier.
     // This ticket is not an execution lease and no extraction is performed.
-    let memory_boundary = session.memory().unwrap().enqueue_llm_extraction();
+    let memory_boundary = session
+        .memory()
+        .unwrap()
+        .enqueue_llm_extraction("fixture-session");
     let closing = session.close();
     tokio::pin!(closing);
     tokio::select! {
@@ -893,7 +896,7 @@ async fn constructor_store_scenario(
     )
     .await;
     let owned = capture(&session, false);
-    assert!(owned.cognitive_binding.is_none());
+    assert!(owned.package_binding.is_none());
     let run_id = "owned-checkpoint-run";
     assert!(matches!(
         session

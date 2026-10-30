@@ -5,8 +5,12 @@ use std::path::{Component, Path, PathBuf};
 /// This is shared by manifest admission and the read-time source boundary so
 /// a symlink or rename cannot cross into a path category that the manifest
 /// would have rejected.
-pub(crate) fn path_is_denied(path: &Path) -> bool {
-    has_sensitive_component(path) || has_sensitive_file_name(path)
+pub fn path_is_denied(path: &Path) -> bool {
+    has_sensitive_component(path) || has_sensitive_file_name(path) || session_locator_path(path)
+}
+
+pub(super) fn session_locator_path(path: &Path) -> bool {
+    path.ends_with("meta/a3s-session.json")
 }
 
 /// Personal knowledge vault under `.a3s/kb/` is shared agent/human substrate.
@@ -59,6 +63,7 @@ fn has_sensitive_dir_name(path: &Path) -> bool {
             ".git"
                 | ".a3s"
                 | ".a3s-code"
+                | ".a3s-agent-retrievals"
                 | ".ssh"
                 | ".aws"
                 | ".azure"
@@ -139,6 +144,9 @@ mod tests {
             ".git-credentials",
             ".a3s/config.acl",
             ".a3s-code/index/CURRENT",
+            ".a3s-agent-retrievals",
+            "meta/a3s-session.json",
+            "child-task/meta/a3s-session.json",
             ".git/config",
             "target/generated.rs",
             "node_modules/pkg/index.js",
@@ -153,6 +161,8 @@ mod tests {
         for path in [
             "src/env.rs",
             "src/config.rs",
+            "meta/design.md",
+            "child-task/meta/design.md",
             ".env.example",
             "fixtures/credentials.sample",
             ".a3s/kb/sources/note.md",

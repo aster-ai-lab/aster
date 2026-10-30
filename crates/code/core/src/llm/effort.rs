@@ -148,18 +148,19 @@ pub fn model_sends_native_effort(model_id: &str) -> bool {
         Some((provider, name)) => (provider, name),
         None => ("", id.as_str()),
     };
-    // Cursor model ids already encode effort and fast variants. Do not send
-    // an a3s effort parameter to that account.
-    if provider == "cursor" {
-        return false;
+    match provider {
+        "anthropic" | "claude" | "cc-switch" | "glm" | "zhipu" | "bigmodel" | "deepseek" => true,
+        "openai" | "gpt" | "grok" | "xai" | "codex" => is_openai_reasoning_model(name),
+        // Bare SDK model names retain their catalog behavior. A qualified
+        // custom provider declares no vendor-specific wire capabilities.
+        "" => {
+            is_glm_model(name)
+                || is_deepseek_model(name)
+                || name.starts_with("claude")
+                || is_openai_reasoning_model(name)
+        }
+        _ => false,
     }
-    matches!(
-        provider,
-        "anthropic" | "claude" | "cc-switch" | "glm" | "zhipu" | "bigmodel" | "deepseek"
-    ) || is_glm_model(name)
-        || is_deepseek_model(name)
-        || name.starts_with("claude")
-        || is_openai_reasoning_model(name)
 }
 
 #[cfg(test)]
@@ -209,6 +210,7 @@ mod tests {
     fn native_effort_follows_the_model() {
         assert!(model_sends_native_effort("anthropic/claude-opus-4-6"));
         assert!(model_sends_native_effort("openai/gpt-5.4"));
+        assert!(model_sends_native_effort("codex/gpt-5.4"));
         assert!(model_sends_native_effort("zhipu/glm-5.3"));
         assert!(!model_sends_native_effort("ollama/llama3"));
         assert!(!model_sends_native_effort("openai/gpt-4o"));
@@ -226,5 +228,16 @@ mod tests {
         assert_eq!(native_effort_menu("zhipu/glm-5"), ["low", "high", "max"]);
         assert!(native_effort_menu("ollama/llama3").is_empty());
         assert!(native_effort_menu("openai/gpt-4o").is_empty());
+    }
+
+    #[test]
+    fn custom_providers_do_not_declare_native_effort_by_model_name() {
+        for provider in ["relay", "company-models"] {
+            for model in ["deepseek-v4-flash", "glm-5.3", "gpt-5.4", "claude-opus-4-6"] {
+                let id = format!("{provider}/{model}");
+                assert!(!model_sends_native_effort(&id), "{id}");
+                assert!(native_effort_menu(&id).is_empty(), "{id}");
+            }
+        }
     }
 }

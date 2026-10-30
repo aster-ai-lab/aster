@@ -1,6 +1,8 @@
 .work-presentation-editor {
-  --work-office-control-accent: #db663b;
+  --work-office-accent: #c43e1c;
+  --work-office-control-accent: var(--work-office-accent);
 
+  container: office-presentation / inline-size;
   position: relative;
   display: flex;
   min-width: 0;
@@ -66,7 +68,7 @@
 }
 
 .work-presentation-sorter-grid > button.active {
-  border-color: color-mix(in srgb, #db663b 68%, transparent);
+  border-color: color-mix(in srgb, var(--a3s-ink) 68%, transparent);
   background: var(--a3s-panel);
 }
 
@@ -271,7 +273,7 @@
 
 .work-presentation-design-editing {
   border-top: 1px solid color-mix(in srgb, var(--a3s-line) 68%, transparent);
-  background: color-mix(in srgb, #db663b 3%, var(--a3s-panel));
+  background: color-mix(in srgb, var(--a3s-ink) 3%, var(--a3s-panel));
 }
 
 .work-presentation-design-editing input:not([type="checkbox"], [type="color"]) {
@@ -422,8 +424,8 @@
 }
 
 .work-presentation-chart-panel button:hover:not(:disabled) {
-  border-color: color-mix(in srgb, #db663b 45%, var(--a3s-line));
-  color: #b44e31;
+  border-color: color-mix(in srgb, var(--a3s-ink) 45%, var(--a3s-line));
+  color: var(--a3s-ink);
 }
 
 .work-presentation-chart-panel button:disabled {

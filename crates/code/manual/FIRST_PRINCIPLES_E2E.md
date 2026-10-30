@@ -15,7 +15,7 @@ S3 / telemetry / headless / Harbor / prod memory are explicit opt-in gates.
 | A1 | Thin default tree | `cargo check -p a3s-code-core` + tree free of evaluation/research/chromiumoxide/s3 |
 | A2 | local-code CI matrix | `cargo check/test --no-default-features --features local-code --lib` |
 | A3 | Dual-path removal | `parallel_task` unregistered; Active-only memory (`candidate_write_stays_inactive`) |
-| A4 | SDK alignment | `node scripts/sdk_api_alignment_check.mjs` |
+| A4 | SDK alignment | `cargo test --locked -p a3s-code-core --lib sdk_capabilities` |
 | A5 | Agent protocol / checkpoint / run control | `agent_protocol_*`, `*_checkpoint_*`, `run_control_runtime` integration tests |
 | A6 | Tools + permissions | lib tests for builtin tools, style specialty overlays, `update_plan` |
 | A7 | Events / evidence digests | `event_protocol_v1`, `content_digest`, durable-memory product eval hermetic |
@@ -171,7 +171,7 @@ lowered gate, or a prompt rewrite after a red run.
 | CX-5 | Typed decision then one generation | `typed_decisions` | Default `GatePolicy` unchanged; escalate still calls the pinned model; the label is not the oracle | existing `typed_decision_layer_c` |
 | CX-6 | Question parked | `conversation`, fact log | No `question.answered` fact until the host answers. Not a live prompt that begs the model to ask | existing hermetic `fact_log_question_stays_parked_until_the_answer_fact` |
 
-`priority_scheduling`, `code_intelligence`, `cognitive_packages`,
+`priority_scheduling`, `code_intelligence`, `packages`,
 `use_runtime_tasks`, `s3_workspace`, `opentelemetry`, and `moli_runtime`
 stay on the hermetic or host gate in `FULL_FEATURE_TEST_PLAN.md`. A model
 suite is not added for them.

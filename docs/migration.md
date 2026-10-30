@@ -1,5 +1,24 @@
 # Harness migration
 
+## Scrawl evidence internalization, 2026-10-30
+
+The `scrawl` evidence engine is internalized at
+`7b184c67767a1aee6c1d44640d94d8446cd5fed1` under `crates/capture`, with its
+MIT notice and upstream Rust, Swift helper and ScrawlKit tests. This is a
+source integration in the existing repository and root Cargo workspace, not a
+new checkout, second lockfile or separate Scrawl.app installation. Exact
+provenance and the archive hash live in `docs/provenance/scrawl.md` and
+`docs/source-manifest.json`.
+
+The existing voice module now shares `cpal 0.18.2` to avoid conflicting ALSA
+link versions. The official `swift-testing` package at
+`48d727cc1cf4eda667c858c501495f1018f69d21` supplies the missing test-only
+framework under Command Line Tools; upstream test assertions are unchanged.
+These integration changes do not establish native recording, packaged
+permissions, release certification or support on another operating system.
+The bounded implementation and acceptance contract is
+`specs/027-scrawl-evidence/`.
+
 ## Native Power integration, 2026-10-22
 
 The existing `crates/power` submodule is integrated into the root Cargo
@@ -551,3 +570,13 @@ XQ 的 FP32、epsilon 与归一化轴顺序；通过显式构建 feature 作为�
 
 
 2026-10-24 按用户要求增补原版 Xolotl 单 H200 试跑，与 Rust 原生执行分开。外部源码仅在隔离部署工件中构建，未导入产品；MIT 通知、上游/ggml 提交、Aster 默认关闭的有界图元数据与保留读回 fence 的异步实验补丁及实机对照均已留证。当前用户门槛改为单 H200 单请求至少 500 token/s，尚未完成；没有凭据或用户会话导入。
+
+2026-10-30：Office 的 EmbedPDF 2.14.3 文本焦点修复从上游
+`embedpdf/embed-pdf-viewer` 的 `v2.14.3`、提交
+`c91236dab54ec1998fa2b13cf5cc43f60567ac4b` 重建。保留原 MIT 许可、版本和
+公开声明，仅修复 FreeText / CalloutFreeText 的重复编辑、原生光标和空撤销记录。
+原始源码补丁、生成后的 snippet 补丁及重建输入均留证；根 Bun 和 Studio pnpm
+均注册并验证实际补丁文件，没有手改生成运行时，也没有导入用户状态或凭据。
+后续资料库 UI 修正保留 Word 蓝、Excel 绿和 PowerPoint 橙，以文件标签页负责
+切换与关闭，删除编辑区重复返回栏；菜单改为非模态，并修复共享选择器圆角变量。
+验收范围及未完成项见 `docs/evidence/office/2026-10-30-library-chrome/OUTCOME.md`。

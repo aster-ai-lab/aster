@@ -59,6 +59,14 @@ impl Cardinality {
         Self { min, max: None }
     }
 
+    /// Accept zero through `max` values.
+    pub const fn at_most(max: usize) -> Self {
+        Self {
+            min: 0,
+            max: Some(max),
+        }
+    }
+
     /// Minimum accepted value count.
     pub const fn min(self) -> usize {
         self.min

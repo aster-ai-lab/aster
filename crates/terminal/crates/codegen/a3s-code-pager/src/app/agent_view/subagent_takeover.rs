@@ -192,7 +192,12 @@ impl AgentView {
         let activity_label: Option<String> = if is_running {
             self.subagent_views.get(child_sid).and_then(|cv| {
                 cv.resolve_turn_activity()
-                    .map(|a| crate::app::subagent::format_activity_label(&a))
+                    .map(|a| {
+                        crate::app::subagent::format_activity_label(
+                            &a,
+                            cv.session.tracker.output_language.as_deref(),
+                        )
+                    })
                     .or_else(|| cv.session.state.is_busy().then(|| "Waiting".to_string()))
             })
         } else {

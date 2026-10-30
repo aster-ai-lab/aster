@@ -1,15 +1,15 @@
 export const meta = {
-  "title": "把 Aster 接进自己的客户端",
+  "title": "ACP 客户端接入",
   "description": "先理解进程与协议边界，再接入模型、会话和宿主扩展。",
   "label": "ACP 概览",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## ACP 负责哪一层
 
 `a3s-code-acp` 是运行在独立进程中的 Agent Client Protocol 代理。客户端负责界面、启动进程、请求权限和接收更新；代理把协议请求接到 Core，执行模型调用、受控工具与会话持久化。
 
-<PeleDiagram name="architecture" label="FIG.09 / ACP 客户端与运行时" description="客户端通过 stdio 请求 ACP，ACP 调用 Core，Core 访问受控工作区和宿主服务；权限与表单回到客户端。" />
+<PeleAtlasDiagram name="architecture" label="FIG.09 / ACP 客户端与运行时" description="客户端通过 stdio 请求 ACP，ACP 调用 Core，Core 访问受控工作区和宿主服务；权限与表单回到客户端。" />
 
 Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust 宿主可以注入 trait 实现和组件树；ACP 客户端只能选择代理明确提供的协议与宿主扩展。提交一个组件名称不会让代理动态加载任意 Rust 代码。
 
@@ -18,16 +18,31 @@ Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust
 1. 配置可信 ACL，构建并启动配套的终端与 ACP。
 2. 完成 initialize、session/new、一次只读 session/prompt 和 session/cancel。
 3. 接入流式文本、工具状态、权限请求和业务问题，检查取消后的终态。
-4. 接入会话保存与加载、模型选择和工具目录。
+4. 接入会话保存与加载、模型选择和工具状态展示。
 5. 按产品需要启用插件、Office、长期目标或无人值守；逐项验收。
 
 下面的章节介绍这一步步怎样做。JSON 示例都是线上协议消息或工具参数，不是配置文件。源码中的闭集字段和 schema 才是消息兼容性的依据。
 
 ## 版本与交付
 
-本组文档对应当前仓库 9.1.6 源码。`aster` 与 `a3s-code-acp` 必须配套构建、分发；不要把任意上游发行包覆盖到 Aster 安装中。源码引用当前指向 main，工作树未提交的改动不一定已经出现在远程。
+本组文档对应仓库 9.1.6 源码。`aster` 与 `a3s-code-acp` 必须配套构建、分发；不要把任意上游发行包覆盖到 Aster 安装中。源码引用固定到本版注册的 Git 提交，不包含工作树未提交的改动。
 
-## 按任务查阅
+## 客户端与运行时怎样连接
+
+<PeleAtlasDiagram name="acp-boundary" label="客户端、ACP 与 Core" description="ACP 把进程间请求适配到 Core。Rust 宿主也可直接嵌入 Core，两条入口的公开能力不能混为一谈。" />
+
+协议实现从 <SourceRef path="crates/code/acp/src/agent.rs" match="pub struct A3sCodeAgent {">A3sCodeAgent</SourceRef> 开始；会话装配见 <SourceRef path="crates/code/acp/src/agent/session_open.rs" match="pub(super) async fn open_core_session(">open_core_session</SourceRef>，工具与模型运行则交给 Core。
+
+| 想追踪的路径 | 实现入口 | 配套章节 |
+| --- | --- | --- |
+| 协商协议与创建会话 | <SourceRef path="crates/code/acp/src/agent.rs" match="async fn initialize(">initialize</SourceRef>、<SourceRef path="crates/code/acp/src/agent.rs" match="async fn new_session(">new_session</SourceRef> | [协议生命周期](./protocol/) |
+| 提交任务与接收事件 | <SourceRef path="crates/code/acp/src/agent/turn.rs" match="pub(super) async fn stream_turn(">stream_turn</SourceRef> | [流式展示](./events/) |
+| 让用户确认一次调用 | <SourceRef path="crates/code/acp/src/agent/permission_ask.rs" match="pub(super) async fn request_tool_permission(">request_tool_permission</SourceRef> | [权限与提问](./permissions/) |
+| 恢复已有会话 | <SourceRef path="crates/code/acp/src/agent.rs" match="async fn load_session(">load_session</SourceRef> | [历史与会话目录](./sessions/) |
+
+正文引用直接定位到本版 Git 快照的行号，“本页源码”汇总当前页面的实现入口。
+
+## 任务索引
 
 <ChapterCards />
 
@@ -36,3 +51,8 @@ Core 和 ACP 使用相同的运行时，并不具有完全相同的接口。Rust
 - [ACP 进程入口](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/bin/a3s-code-acp.rs)
 - [协议处理](https://github.com/aster-ai-lab/aster/blob/main/crates/code/acp/src/agent.rs)
 - [Core 9.1.6 文档](../../code/9.1.6/)
+
+## 沿请求进入源码
+
+[协议原理漫游](./internals/)串起文本入口、工具行、确认和无人值守结果。
+图示支持分步聚焦，源码片段支持逐站对照。

@@ -129,6 +129,15 @@ fn rust_matches_shared_schema_admission_fixture() {
 }
 
 #[test]
+fn cardinality_at_most_preserves_the_exact_upper_bound() {
+    for max in [0, 1, usize::MAX] {
+        let cardinality = Cardinality::at_most(max);
+        assert_eq!(cardinality.min(), 0);
+        assert_eq!(cardinality.max(), Some(max));
+    }
+}
+
+#[test]
 fn schema_builders_reject_invalid_ranges_and_empty_unions() {
     assert!(Cardinality::new(2, Some(1)).is_err());
     assert!(ValueSchema::one_of(Vec::new()).is_err());

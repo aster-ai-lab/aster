@@ -1,4 +1,4 @@
-import type { Cell, CellMatrix } from '@fortune-sheet/core';
+import type { Cell, CellMatrix, Sheet } from '@fortune-sheet/core';
 import { sameSpreadsheetHistoryValue } from './spreadsheet-history-value';
 import { sparseArrayIndexes } from './spreadsheet-sparse';
 import { XLSX_GRADIENT_FILL_CELL_KEY } from './work-xlsx-gradient-fill';
@@ -78,6 +78,30 @@ export function freezeImportedSpreadsheetCell(cell: Cell): Cell {
   freezeObject(cell.hl);
   freezeObject(cell.spl);
   return Object.freeze(cell);
+}
+
+export function materializeSpreadsheetMergeCells(
+  data: CellMatrix,
+  merges: NonNullable<Sheet['config']>['merge'],
+): { rowCount: number; columnCount: number; addedCells: number } {
+  let rowCount = data.length;
+  let columnCount = 0;
+  let addedCells = 0;
+  for (const merge of Object.values(merges ?? {})) {
+    rowCount = Math.max(rowCount, merge.r + merge.rs);
+    columnCount = Math.max(columnCount, merge.c + merge.cs);
+    for (let r = merge.r; r < merge.r + merge.rs; r++) {
+      const row = (data[r] ??= []);
+      for (let c = merge.c; c < merge.c + merge.cs; c++) {
+        if (row[c] == null) addedCells++;
+        row[c] = freezeImportedSpreadsheetCell({
+          ...row[c],
+          mc: r === merge.r && c === merge.c ? { ...merge } : { r: merge.r, c: merge.c },
+        });
+      }
+    }
+  }
+  return { rowCount, columnCount, addedCells };
 }
 
 /**

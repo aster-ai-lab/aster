@@ -91,6 +91,12 @@
     animation: a3s-dialog-out 200ms cubic-bezier(0.4, 0, 1, 1) both;
   }
 
+  /* WebKit can suspend background animations before Radix receives animationend. */
+  :root:not(:focus-within) [data-slot='dialog-overlay'],
+  :root:not(:focus-within) [data-slot='dialog-content'] {
+    animation: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-slot='dialog-overlay'][data-state='open'],
     [data-slot='dialog-overlay'][data-state='closed'],
@@ -98,8 +104,10 @@
     [data-slot='dialog-content'][data-state='closed'],
     .ui-dialog-backdrop,
     .ui-dialog-panel,
-    .a3s-dialog-scrim,
-    .a3s-dialog-surface {
+    .a3s-dialog-scrim:not([data-state='closed']),
+    .a3s-dialog-scrim[data-state='closed'],
+    .a3s-dialog-surface:not([data-state='closed']),
+    .a3s-dialog-surface[data-state='closed'] {
       animation: none;
     }
   }

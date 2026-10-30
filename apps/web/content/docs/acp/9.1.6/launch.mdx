@@ -1,5 +1,5 @@
 export const meta = {
-  "title": "启动 ACP，并核对它获得的授权",
+  "title": "ACP 启动与授权检查",
   "description": "构建、参数、ACL 层、账号导入和工作区 MCP 信任。",
   "label": "启动与配置",
   "updated": "2026-10-26"
@@ -41,13 +41,13 @@ cargo build --locked -p aster -p a3s-code-acp --features a3s-code-acp/headless-s
 | `--studio-documents` | 旧启动器兼容参数，新宿主用会话元数据声明 |
 | `--version` / `-V`、`--help` / `-h` | 查看包版本和用法 |
 
-参数缺值、未知参数和无效枚举会报错。不要用忽略参数的包装脚本掩盖客户端与代理版本不匹配。
+参数缺值、未知参数和无效枚举会返回错误。不要用忽略参数的包装脚本掩盖客户端与代理版本不匹配。
 
 ## 配置分层和凭据
 
-启动器显式配置、用户配置与工作区发现配置具有不同信任。`--config` / `A3S_CONFIG` 是宿主选择，用户默认 ACL 位于 `~/.a3s/config.acl`；工作区文件不能授权额外凭据、主机执行、外发源码或可选服务。
+启动器显式配置、用户配置与工作区发现配置具有不同信任。`--config` / `A3S_CONFIG` 是宿主选择，用户默认 ACL 位于 `~/.a3s/config.acl`。工作区文件不能授权额外凭据、主机执行、外发源码或可选服务。
 
-首次启动可创建最小用户 ACL，initialize 元数据的 `openModelConfig` 提示宿主打开配置界面。实际模型、密钥与端点由可信配置提供；Aster 没有独立账户体系。账号适配器是对用户明确选择的本机现有来源进行读取，不应复制凭据到仓库、日志或示例。
+首次启动可创建最小用户 ACL。initialize 元数据的 `openModelConfig` 提示宿主打开配置界面。实际模型、密钥与端点由可信配置提供，Aster 没有独立账户体系。账号适配器只读取用户明确选择的本机现有来源，不应复制凭据到仓库、日志或示例。
 
 `A3S_DEFAULT_MODEL` 需要明确的 provider/model。宿主传递 `--model` 前先使用实际模型目录，不能根据显示名称猜 ID。
 

@@ -24,6 +24,8 @@ mod services;
 mod source_egress;
 pub mod source_snapshot;
 
+pub use source_egress::path_is_denied as workspace_source_path_is_excluded;
+
 pub use error::{WorkspaceError, WorkspaceResult};
 pub use grep_candidates::{
     GrepCandidateIndex, GrepCandidateSelection, SharedGrepCandidateIndex,
@@ -46,7 +48,8 @@ pub(crate) trait DirectFileGuard: Send + Sync {
 }
 pub use local_access::LocalWorkspaceAccessPolicy;
 pub use manifest::{
-    scan_workspace_files, LocalWorkspaceFile, LocalWorkspaceFileStatus, LocalWorkspaceManifest,
+    scan_workspace_files, scan_workspace_source_files, scan_workspace_source_files_excluding,
+    LocalWorkspaceFile, LocalWorkspaceFileStatus, LocalWorkspaceManifest,
     LocalWorkspaceManifestSnapshot, ManifestWorkspaceBackend, RecentWorkspaceFile,
     WorkspaceFileChange, WorkspaceFileChangeKind,
 };
@@ -55,8 +58,16 @@ use path::{
     default_path_input, has_windows_path_prefix, normalize_relative_path, pathbuf_to_workspace_path,
 };
 pub(crate) use path::{escape_control_chars_for_display, validate_relative_pattern};
-pub use read_overlay::{WorkspaceReadOverlay, WorkspaceReadOverlaySnapshot};
+pub use read_overlay::{
+    WorkspaceReadOverlay, WorkspaceReadOverlayError, WorkspaceReadOverlayErrorKind,
+    WorkspaceReadOverlaySnapshot,
+};
 pub use remote_git::{RemoteGitBackend, RemoteGitBackendConfig, RemoteGitConflict};
+pub use retrieval::{
+    capture_workspace_wiki_sources, WorkspaceWikiSourceCoverage, WorkspaceWikiSourceFile,
+    WorkspaceWikiSourceFormat, WorkspaceWikiSourceLimits, WorkspaceWikiSourceSkip,
+    WorkspaceWikiSourceSkipReason, WorkspaceWikiSources,
+};
 pub use retrieval::{
     ChunkCatalogLimits, ChunkCatalogSnapshot, ChunkingConfig, CustomWorkspaceChunkingStrategy,
     FixedWindowChunkingOptions, LexicalSearchHit, LexicalSearchRequest, LexicalSearchResult,

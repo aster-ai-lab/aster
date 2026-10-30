@@ -34,8 +34,6 @@ export function documentZoomForFit(
       metrics.viewportPadding.right,
   );
   const widthZoom = (availableWidth / Math.max(1, metrics.pageWidth)) * 100;
-  if (fit === 'width') return clampDocumentZoom(widthZoom);
-
   const availableHeight = Math.max(
     1,
     metrics.viewportHeight -
@@ -43,5 +41,9 @@ export function documentZoomForFit(
       metrics.viewportPadding.bottom,
   );
   const heightZoom = (availableHeight / Math.max(1, metrics.pageHeight)) * 100;
-  return clampDocumentZoom(Math.min(widthZoom, heightZoom));
+  const fittedZoom = fit === 'width' ? widthZoom : Math.min(widthZoom, heightZoom);
+  // Fit is a containment guarantee, not a readability preference. The manual 50%
+  // floor must not force a page wider than its viewport, and rounding up would
+  // reintroduce the same overflow by a few pixels.
+  return Math.min(MAX_DOCUMENT_ZOOM, Math.max(1, Math.floor(fittedZoom)));
 }

@@ -174,6 +174,16 @@ pub async fn run(args: SessionsArgs, agent_config: &AgentConfig) -> Result<()> {
             println!("\nTotal: {}", resp.results.len() + remote_shown);
         }
         SessionsCommand::Delete { id } => {
+            let recorded = a3s_code_shell::session::persistence::list_summaries(None)
+                .await?
+                .into_iter()
+                .find(|summary| summary.info.id.0.as_ref() == id);
+            delete_companion_session(
+                agent_config,
+                &id,
+                recorded.as_ref().map(|summary| summary.info.cwd.as_str()),
+            )
+            .await?;
             // Always attempt the remote delete when authenticated and not ZDR; `list` and `search` likewise query remote
             // unconditionally. Gating on storage mode is impossible here: the CLI builds config without remote settings. ZDR
             // teams never upload, so there is nothing remote to delete.
@@ -191,7 +201,7 @@ pub async fn run(args: SessionsArgs, agent_config: &AgentConfig) -> Result<()> {
             )
             .await?;
 
-            if deletion.any_removed() {
+            if recorded.is_some() || deletion.any_removed() {
                 println!("Deleted session {id}");
             } else {
                 println!("No session found with id {id}.");
@@ -199,6 +209,45 @@ pub async fn run(args: SessionsArgs, agent_config: &AgentConfig) -> Result<()> {
         }
     }
 
+    Ok(())
+}
+
+async fn delete_companion_session(
+    agent_config: &AgentConfig,
+    session_id: &str,
+    cwd: Option<&str>,
+) -> Result<()> {
+    use a3s_acp_lib::acp_send;
+    use agent_client_protocol as acp;
+    use tokio_util::sync::CancellationToken;
+
+    let cancel = CancellationToken::new();
+    let spawned = crate::acp::a3s_spawn::spawn_required_sidecar(
+        agent_config,
+        &cancel,
+        None,
+        agent_config.models.default.as_deref(),
+    )
+    .await?;
+    let _guard = crate::acp::spawn::AgentShutdownGuard::new(cancel, Some(spawned.thread_handle));
+    let _: acp::InitializeResponse = acp_send(
+        acp::InitializeRequest::new(acp::ProtocolVersion::V1),
+        &spawned.channel.tx,
+    )
+    .await?;
+    let params = serde_json::value::to_raw_value(&serde_json::json!({
+        "sessionId": session_id, "cwd": cwd,
+    }))?;
+    let response: acp::ExtResponse = acp_send(
+        acp::ExtRequest::new("a3s/session/delete", params.into()),
+        &spawned.channel.tx,
+    )
+    .await?;
+    let result: serde_json::Value = serde_json::from_str(response.0.get())?;
+    anyhow::ensure!(
+        result["success"] == true,
+        "companion did not confirm session deletion"
+    );
     Ok(())
 }
 

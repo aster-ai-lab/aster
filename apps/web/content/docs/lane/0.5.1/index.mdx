@@ -1,0 +1,56 @@
+export const meta = {
+  title: 'Aster Lane 产品概览',
+  description: 'a3s-lane 的优先级 Lane、类型化队列、Job Backend 和可靠性边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-lane` 是异步任务的优先级队列与调度库。当前版本为 `0.5.1`。它支持命名 Lane、每 Lane 并发限制、重试、超时、DLQ、事件和指标。
+
+Priority 决定下一个获准执行的等待项，不会中断已经运行的 Future。活动工作需要显式取消和结算合同。
+
+<LaneArchitectureDiagram />
+
+## 默认 Lane
+
+<DocTable caption="默认 Lane 的优先级与并发" headers={['Lane', 'Priority', '最大并发', '典型用途']} rows={[
+  ['system', '0 · 最高', '5', '系统级操作'],
+  ['control', '1', '3', '暂停与取消'],
+  ['query', '2', '10', '只读查询'],
+  ['session', '3', '5', '会话管理'],
+  ['skill', '4', '3', '工具执行'],
+  ['prompt', '5 · 最低', '2', '模型生成'],
+]} />
+
+相同 Priority 的任务保持 FIFO。自定义 Lane 可以替换或扩展默认配置。Rate Limit 在 Dequeue 时执行，不是在 Submit 时执行。
+
+## 两种队列入口
+
+<DocTable caption="Lane 的队列使用方式" headers={['入口', '适用场景', '所有权']} rows={[
+  ['QueueManager + Command', '需要 Scheduler 自动接纳和执行任务', 'Manager 调度 Command 并返回 Oneshot 结果'],
+  ['PriorityQueue<T>', '宿主事件循环决定何时执行', '宿主保留类型化值与执行时机'],
+  ['JobQueueBackend', '通用 JSON Job、Worker 和持久后端', 'Backend 管理 Job 状态、租约和结果'],
+]} />
+
+`PriorityQueue<T>` 的 `restore()` 可以恢复准入失败的原始 FIFO 位置。`ordered()` 只提供队列视图，不修改顺序。
+
+## Feature 与演进状态
+
+默认 feature 是 `metrics`、`monitoring`、`telemetry` 和 `distributed`。关闭默认 feature 可以只使用核心队列。`redis-backend` 是可选的多进程 Job Backend。
+
+Lane Scheduler 已提供完整的优先级和并发控制。通用 Job Runtime、Job 管理 API、Worker、Flow 和 Repeat 仍在持续演进，不能把所有后端能力视为同一发布承诺。
+
+PostgreSQL 与 NATS Job Backend 仍在计划中。
+
+## 文档入口
+
+- [队列与调度接入](./integration/)：Command、PriorityQueue、LaneConfig 和生命周期。
+- [可靠性与运行验证](./operations/)：持久化、Worker 租约、DLQ、指标和故障检查。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Lane 调度与队列模型](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [通用 Job Runtime 状态](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/README.md)
+- [Lane crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/lane/Cargo.toml)

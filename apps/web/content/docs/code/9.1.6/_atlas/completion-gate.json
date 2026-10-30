@@ -1,0 +1,38 @@
+{
+  "title": "结束前必须逐项核对",
+  "description": "这是门禁的判定顺序。任一前置条件未满足，运行保留缺口。",
+  "steps": [
+    {
+      "title": "先处理结果不明的操作",
+      "body": "副作用、外部观察和子任务分别检查。最终答复不会消除未决事项。",
+      "focus": [
+        "effects",
+        "external",
+        "children"
+      ],
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "pub(crate) fn decide_with_contracts("
+      }
+    },
+    {
+      "title": "确认观察覆盖全部修改",
+      "body": "部分文件列表不能代表完整的修改摘要。",
+      "focus": [
+        "complete"
+      ]
+    },
+    {
+      "title": "再绑定验证依据",
+      "body": "有修改时，报告或豁免必须匹配当前摘要。无修改也要先通过前置检查。",
+      "focus": [
+        "proof",
+        "terminal"
+      ],
+      "source": {
+        "path": "crates/code/core/src/harness_loop.rs",
+        "match": "pub(crate) fn decide_with_contracts("
+      }
+    }
+  ]
+}

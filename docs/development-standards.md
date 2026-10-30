@@ -333,3 +333,9 @@ They are implementation identifiers.
 `packages/ui/src/components/primitives/__tests__/dialog.test.tsx`
 and `popup-motion.test.tsx` lock the in-place dialog and popup
 motion.
+
+Transient menus and popovers also follow `DESIGN.md` §6 "Transient popups": outside
+presses dismiss without consuming the clicked action or stealing its focus. The shared UI
+primitives own this behavior, including nested portals and application focus changes.
+`packages/ui/src/components/primitives/__tests__/popup-dismissal.test.tsx` checks it.
+Boolean controls reuse the shared neutral `Switch` instead of page-specific implementations.

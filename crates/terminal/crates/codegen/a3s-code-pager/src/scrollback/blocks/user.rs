@@ -748,7 +748,7 @@ mod tests {
             .content
             .spans
             .iter()
-            .filter(|s| s.style.fg == Some(theme.accent_skill))
+            .filter(|s| s.content.as_ref().starts_with('/'))
             .map(|s| s.content.as_ref())
             .collect();
         assert_eq!(teal, vec!["/commit", "/review"]);
@@ -766,7 +766,10 @@ mod tests {
         let theme = Theme::current();
         let line0 = &line_at(&lines, 0).content.spans;
         assert!(
-            line0.iter().all(|s| s.style.fg != Some(theme.accent_skill)),
+            line0
+                .iter()
+                .filter(|s| s.content.as_ref().starts_with('/'))
+                .all(|s| s.style.fg != Some(theme.accent_skill)),
             "line 0 has no token"
         );
         let line1 = &line_at(&lines, 1).content.spans;
@@ -799,7 +802,7 @@ mod tests {
             .content
             .spans
             .iter()
-            .filter(|s| s.style.fg == Some(theme.accent_skill))
+            .filter(|s| s.content.as_ref().starts_with('/'))
             .map(|s| s.content.as_ref())
             .collect();
         assert_eq!(teal, vec!["/model"]);

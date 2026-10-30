@@ -14,7 +14,11 @@ use super::attributes::{
     MOUNT_ATTR_NOEXEC, MOUNT_ATTR_NOSUID, MOUNT_ATTR_NOSYMFOLLOW, MOUNT_ATTR_RDONLY,
     MOUNT_ATTR_STRICTATIME,
 };
-use super::{path_cstring, BindSourceResolver, MountPlan, MountTargetKind, ResolvedBindSource};
+use super::{
+    path_cstring, BindSourceResolver, MountPlan, MountTargetKind, ResolvedBindSource,
+    FSCONFIG_CMD_CREATE, FSCONFIG_SET_FLAG, FSCONFIG_SET_STRING, FSMOUNT_CLOEXEC, FSOPEN_CLOEXEC,
+    MOVE_MOUNT_F_EMPTY_PATH, MOVE_MOUNT_T_EMPTY_PATH,
+};
 use crate::executor::namespace::IdmapNamespaceHandles;
 
 #[derive(Debug, Default)]
@@ -393,13 +397,8 @@ fn create_filesystem_mount(plan: &MountPlan) -> Result<OwnedFd> {
     })?;
     // SAFETY: filesystem_type is NUL-terminated and fsopen does not retain
     // the pointer.
-    let context = unsafe {
-        libc::syscall(
-            libc::SYS_fsopen,
-            filesystem_type.as_ptr(),
-            libc::FSOPEN_CLOEXEC,
-        )
-    };
+    let context =
+        unsafe { libc::syscall(libc::SYS_fsopen, filesystem_type.as_ptr(), FSOPEN_CLOEXEC) };
     let context = owned_syscall_fd(plan.index, "open filesystem context with fsopen", context)?;
 
     if let Some(source) = plan.source.as_deref() {
@@ -421,7 +420,7 @@ fn create_filesystem_mount(plan: &MountPlan) -> Result<OwnedFd> {
             configure_filesystem(
                 plan.index,
                 &context,
-                libc::FSCONFIG_SET_STRING,
+                FSCONFIG_SET_STRING,
                 Some("source"),
                 Some(source),
             )?;
@@ -432,17 +431,13 @@ fn create_filesystem_mount(plan: &MountPlan) -> Result<OwnedFd> {
             Some((key, value)) if !key.is_empty() => configure_filesystem(
                 plan.index,
                 &context,
-                libc::FSCONFIG_SET_STRING,
+                FSCONFIG_SET_STRING,
                 Some(key),
                 Some(value),
             )?,
-            None => configure_filesystem(
-                plan.index,
-                &context,
-                libc::FSCONFIG_SET_FLAG,
-                Some(option),
-                None,
-            )?,
+            None => {
+                configure_filesystem(plan.index, &context, FSCONFIG_SET_FLAG, Some(option), None)?
+            }
             Some(_) => {
                 return Err(apply_error(
                     ErrorCode::InvalidArgument,
@@ -452,7 +447,7 @@ fn create_filesystem_mount(plan: &MountPlan) -> Result<OwnedFd> {
             }
         }
     }
-    configure_filesystem(plan.index, &context, libc::FSCONFIG_CMD_CREATE, None, None)?;
+    configure_filesystem(plan.index, &context, FSCONFIG_CMD_CREATE, None, None)?;
     let mount_attributes = filesystem_mount_attributes(plan.index, plan.flags)?;
     // SAFETY: context is a live fsopen descriptor. fsmount creates and returns
     // a detached mount descriptor.
@@ -460,7 +455,7 @@ fn create_filesystem_mount(plan: &MountPlan) -> Result<OwnedFd> {
         libc::syscall(
             libc::SYS_fsmount,
             context.as_raw_fd(),
-            libc::FSMOUNT_CLOEXEC,
+            FSMOUNT_CLOEXEC,
             mount_attributes,
         )
     };
@@ -653,7 +648,7 @@ fn open_tree_flag(index: usize, flag: libc::c_int, name: &str) -> Result<u32> {
 
 fn move_mount(index: usize, source: &OwnedFd, destination: &OwnedFd) -> Result<()> {
     let empty_path = c"";
-    let flags = libc::MOVE_MOUNT_F_EMPTY_PATH | libc::MOVE_MOUNT_T_EMPTY_PATH;
+    let flags = MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH;
     // SAFETY: both descriptors are live, both paths are empty NUL-terminated
     // strings selected by the EMPTY_PATH flags, and move_mount retains none.
     let moved = unsafe {

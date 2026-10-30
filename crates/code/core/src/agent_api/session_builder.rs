@@ -23,6 +23,13 @@ use super::session_sandbox::install_default_local_sandbox;
 
 pub(super) fn prepare_session_options(agent: &Agent, opts: SessionOptions) -> SessionOptions {
     let mut opts = opts;
+    if opts.isolated_context {
+        opts.memory_store = Some(Arc::new(a3s_memory::InMemoryStore::new()));
+        opts.file_memory_dir = None;
+        opts.durable_memory = None;
+        opts.memory_observers.clear();
+        opts.memory_maintenance = Default::default();
+    }
     if let Some(binding) = &opts.durable_memory {
         if opts.tenant_id.is_none() {
             opts.tenant_id = Some(binding.namespace().tenant_id().to_owned());
@@ -501,7 +508,7 @@ fn finish_agent_session(
             .tool_result_transform_policy
             .clone()
             .unwrap_or_default(),
-        cognitive_context: opts.cognitive_context.clone(),
+        package_context: opts.package_context.clone(),
         host_context_provider_names,
         workspace: canonical,
         session_id,

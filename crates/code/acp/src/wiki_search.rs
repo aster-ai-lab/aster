@@ -1,41 +1,76 @@
 //! Retrieval over the session's saved wiki pages.
 //!
-//! Search reads the published a3s-vec generation, then keeps a hit only when that page's parser generation is current.
+//! Search reads the current workspace publication through its original a3s-vec index and owner read lock.
 //! It does not wait for an in-flight build, and it does not change the permission policy.
 
 use std::sync::{Arc, Mutex};
 
-use a3s_code_core::capability::{WorkspaceOperation, WorkspaceOperationAccess};
-use a3s_code_core::tools::{Tool, ToolContext, ToolOutput};
-use a3s_code_core::workspace::{WikiIndex, WikiSearchHit, WikiSearchPhase, WikiSearchResult};
+use a3s_code_core::tools::{Tool, ToolCapabilities, ToolContext, ToolOutput};
+use a3s_code_core::workspace::{WikiIndex, WikiSearchPhase, WikiSearchResult};
 use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::document_read::DocumentBridge;
-
 const TOOL_NAME: &str = "search_wiki";
-const HOST_METHOD: &str = "a3s/encyclopedia/search";
 
 pub struct SearchWikiTool {
     index: Option<Arc<WikiIndex>>,
-    bridge: Option<Arc<DocumentBridge>>,
     denies: Arc<Mutex<Vec<String>>>,
+    host: Option<HostSearch>,
+}
+
+struct HostSearch {
+    bridge: Arc<crate::document_read::DocumentBridge>,
+    session: String,
+    workspace: crate::plugin_workspace::WorkspaceBinding,
+}
+
+#[derive(Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+enum Scope {
+    Current,
+    All,
+}
+impl Scope {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Current => "current",
+            Self::All => "all",
+        }
+    }
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SearchInput {
+    query: String,
+    scope: Option<Scope>,
+    cursor: Option<String>,
 }
 
 impl SearchWikiTool {
-    pub fn new(
-        index: Option<Arc<WikiIndex>>,
-        bridge: Option<Arc<DocumentBridge>>,
-        denies: Arc<Mutex<Vec<String>>>,
-    ) -> Self {
+    pub fn new(index: Option<Arc<WikiIndex>>, denies: Arc<Mutex<Vec<String>>>) -> Self {
         if let Some(index) = &index {
             publish_index(index);
         }
         Self {
             index,
-            bridge,
             denies,
+            host: None,
         }
+    }
+
+    pub(crate) fn with_host(
+        mut self,
+        bridge: Arc<crate::document_read::DocumentBridge>,
+        session: &str,
+        workspace: &std::path::Path,
+    ) -> anyhow::Result<Self> {
+        self.host = Some(HostSearch {
+            bridge,
+            session: session.into(),
+            workspace: crate::plugin_workspace::WorkspaceBinding::new(workspace)?,
+        });
+        Ok(self)
     }
 }
 
@@ -57,44 +92,81 @@ pub fn publish_index(index: &Arc<WikiIndex>) {
     guard.push((path, Arc::downgrade(index)));
 }
 
+fn registered(wiki: &std::path::Path) -> Option<Arc<WikiIndex>> {
+    indexes()
+        .lock()
+        .unwrap_or_else(|p| p.into_inner())
+        .iter()
+        .find_map(|(path, index)| (path == wiki).then(|| index.upgrade()).flatten())
+}
+
+pub(crate) fn shared_index(root: &std::path::Path) -> anyhow::Result<Arc<WikiIndex>> {
+    let root = std::fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf());
+    let mut indexes = indexes().lock().unwrap_or_else(|p| p.into_inner());
+    if let Some(index) = indexes
+        .iter()
+        .find_map(|(path, index)| (path == &root).then(|| index.upgrade()).flatten())
+    {
+        return Ok(index);
+    }
+    let index = Arc::new(WikiIndex::start(root.clone())?);
+    indexes.retain(|(_, index)| index.upgrade().is_some());
+    indexes.push((root, Arc::downgrade(&index)));
+    Ok(index)
+}
+
+/// The trusted Studio broker admits cold saved publications; the model supplies no filesystem roots.
+pub(crate) async fn search_admitted_body(wiki: &std::path::Path, query: &str) -> Value {
+    if !matches!(a3s_okf::try_workspace_knowledge_read(wiki), Ok(Some(_))) {
+        return json!({"phase":"not-ready","hits":[]});
+    }
+    let Ok(index) = shared_index(wiki) else {
+        return json!({"phase":"not-ready","hits":[]});
+    };
+    // shortcut: retain at most 32 cold collections per ACP process; revisit for profiles needing a larger hot set.
+    static COLD: std::sync::OnceLock<Mutex<std::collections::VecDeque<Arc<WikiIndex>>>> =
+        std::sync::OnceLock::new();
+    {
+        let mut cold = COLD
+            .get_or_init(Default::default)
+            .lock()
+            .unwrap_or_else(|p| p.into_inner());
+        cold.retain(|entry| entry.root() != index.root());
+        cold.push_back(Arc::clone(&index));
+        while cold.len() > 32 {
+            cold.pop_front();
+        }
+    }
+    if let Ok(Ok(report)) = tokio::time::timeout(
+        std::time::Duration::from_millis(500),
+        index.reconcile_now(None),
+    )
+    .await
+    {
+        let _ = tokio::time::timeout(
+            std::time::Duration::from_millis(500),
+            index.wait_published(report.source_revision),
+        )
+        .await;
+    }
+    search_published_body(wiki, query)
+}
+
 /// Search the index registered for `wiki`. Missing and in-flight generations are not-ready.
 pub fn search_published(wiki: &std::path::Path, query: &str) -> WikiSearchResult {
+    let Ok(Some(_guard)) = a3s_okf::try_workspace_knowledge_read(wiki) else {
+        return idle_search();
+    };
     let query = query.trim();
     if query.is_empty() || query.contains('\0') || query.chars().count() > 2_000 {
         return idle_search();
     }
     let wanted = std::fs::canonicalize(wiki).unwrap_or_else(|_| wiki.to_path_buf());
-    let index = {
-        let guard = indexes()
-            .lock()
-            .unwrap_or_else(|poison| poison.into_inner());
-        guard.iter().find_map(|(path, weak)| {
-            let registered = std::fs::canonicalize(path).unwrap_or_else(|_| path.clone());
-            (registered == wanted).then(|| weak.upgrade()).flatten()
-        })
-    };
+    let index = registered(&wanted);
     match index {
-        Some(index) => {
-            let mut result = index.search(query).unwrap_or_else(|_| idle_search());
-            if result.phase == WikiSearchPhase::Published {
-                result.hits.retain(|hit| concept_is_current(wiki, hit));
-            }
-            result
-        }
+        Some(index) => bound_hits(index.search(query).unwrap_or_else(|_| idle_search())),
         None => idle_search(),
     }
-}
-
-fn concept_is_current(wiki: &std::path::Path, hit: &WikiSearchHit) -> bool {
-    let candidate = std::path::PathBuf::from(&hit.path);
-    let path = if candidate.is_absolute() {
-        candidate
-    } else {
-        wiki.join(&hit.path)
-    };
-    let text =
-        std::fs::read_to_string(&path).or_else(|_| std::fs::read_to_string(wiki.join(&hit.name)));
-    text.is_ok_and(|body| a3s_okf::published_parser(&body) == Some(a3s_okf::PARSER_GENERATION))
 }
 
 pub fn search_published_body(wiki: &std::path::Path, query: &str) -> Value {
@@ -109,7 +181,7 @@ pub fn search_published_body(wiki: &std::path::Path, query: &str) -> Value {
         result
             .hits
             .iter()
-            .map(|hit| json!({ "name": hit.name, "passage": hit.passage }))
+            .map(|hit| json!({ "name": hit.name, "path": hit.path, "passage": hit.passage }))
             .collect()
     };
     json!({
@@ -136,235 +208,215 @@ impl Tool for SearchWikiTool {
     }
 
     fn description(&self) -> &str {
-        "Search one wiki source. scope=agent with agent set reads that agent's encyclopedia under wiki/agents/{agent}. scope=local reads personal notes and skips agent encyclopedias. scope=team reads the organization encyclopedia. Omit scope to search personal notes and the team encyclopedia together. Answer from the passages when they match. no-match means that source has nothing. not-ready means the local index is still building. This does not grant another capability."
+        if self.host.is_some() {
+            "Decide whether saved evidence is useful for the current task; retrieval is optional, not required for every answer. Search published OKF encyclopedia pages across this Studio profile's task/project workspaces and personal materials library (default scope=all), or scope=current for this task only. The host resolves saved bindings; callers cannot supply roots. Results identify their task, project or personal library and page. Follow nextCursor with cursor for further collections. Pending collections are not a no-match: report incomplete coverage and continue with available evidence, marking unsupported facts as unconfirmed. Compilation runs separately; do not sleep, busy-wait or repeatedly poll for publication within this task. Legacy personal wiki/local, raw source packets, history and unpublished candidates are excluded. Results describe saved knowledge; check original files for current facts."
+        } else {
+            "Search the current workspace's published OKF encyclopedia. Personal wiki/local, other workspaces, source packets, history and unpublished candidates are excluded. Use returned page paths and passages as evidence. not-ready means no readable generation is available; no-match means this workspace has no relevant page."
+        }
     }
 
     fn parameters(&self) -> Value {
-        json!({
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Plain-text relevance query for the saved wiki."
-                },
-                "scope": {
-                    "type": "string",
-                    "enum": ["agent", "local", "team"],
-                    "description": "Which wiki to search. Omit it to search personal notes and the team encyclopedia."
-                },
-                "agent": {
-                    "type": "string",
-                    "description": "Agent folder id. Required when scope is agent."
-                }
-            },
-            "required": ["query"],
-            "additionalProperties": false
-        })
+        json!({"type":"object","properties":{"query":{"type":"string","minLength":1,"maxLength":2000,"description":"Relevance query over published workspace encyclopedia pages."},"scope":{"type":"string","enum":["current","all"],"default":if self.host.is_some(){"all"}else{"current"}},"cursor":{"type":"string","maxLength":256,"description":"Exact nextCursor returned by the previous cross-workspace search."}},"required":["query"],"additionalProperties":false})
+    }
+
+    fn capabilities(&self, _: &Value) -> ToolCapabilities {
+        ToolCapabilities {
+            read_only: true,
+            idempotent: true,
+            ..ToolCapabilities::conservative()
+        }
     }
 
     async fn execute(&self, args: &Value, ctx: &ToolContext) -> anyhow::Result<ToolOutput> {
+        if !ctx.workspace_services.capabilities().read {
+            return Ok(ToolOutput::error("denied"));
+        }
         let denies = self
             .denies
             .lock()
-            .map(|guard| guard.clone())
-            .unwrap_or_else(|poison| poison.into_inner().clone());
+            .unwrap_or_else(|poison| poison.into_inner())
+            .clone();
         if wiki_read_denied(&denies) {
             return Ok(ToolOutput::error("denied"));
         }
-        let query = args
-            .get("query")
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .trim();
-        if query.is_empty() {
-            return Ok(ToolOutput::error("missing query"));
-        }
-        if query.contains('\0') || query.chars().count() > 2_000 {
+        let Ok(input) = serde_json::from_value::<SearchInput>(args.clone()) else {
+            return Ok(ToolOutput::error("invalid query"));
+        };
+        let query = input.query.trim();
+        if query.is_empty() || query.contains('\0') || query.chars().count() > 2000 {
             return Ok(ToolOutput::error("invalid query"));
         }
-        let scope = args
-            .get("scope")
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .trim();
-        let agent = args
-            .get("agent")
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .trim();
-        if !scope.is_empty() && scope != "agent" && scope != "local" && scope != "team" {
-            return Ok(ToolOutput::error("invalid scope"));
+        let scope = input.scope.unwrap_or(if self.host.is_some() {
+            Scope::All
+        } else {
+            Scope::Current
+        });
+        if input.cursor.as_ref().is_some_and(|cursor| {
+            cursor.is_empty() || cursor.len() > 256 || cursor.chars().any(char::is_control)
+        }) || (scope == Scope::Current && input.cursor.is_some())
+        {
+            return Ok(ToolOutput::error("invalid Wiki cursor"));
         }
-        if scope == "agent" && !agent_folder_ok(agent) {
-            return Ok(ToolOutput::error("invalid agent"));
+        if let Some(host) = &self.host {
+            host.workspace.validate(&ctx.workspace)?;
+            let value = host
+                .bridge
+                .search_workspace_wikis(
+                    ctx.workspace_operation(a3s_code_core::capability::WorkspaceOperation::Read)?,
+                    &host.session,
+                    query,
+                    scope.as_str(),
+                    input.cursor.as_deref(),
+                )
+                .await?;
+            host.workspace.validate(&ctx.workspace)?;
+            if wiki_read_denied(
+                &self
+                    .denies
+                    .lock()
+                    .unwrap_or_else(|poison| poison.into_inner()),
+            ) {
+                return Ok(ToolOutput::error("denied"));
+            }
+            validate_host_reply(&value, &host.session, scope, query)?;
+            return Ok(ToolOutput::success(value.to_string()).with_metadata(json!({"phase":value["phase"],"scope":scope.as_str(),"nextCursor":value["nextCursor"],"pending":value["pending"],"lexical_engine":"a3s_vec_fts_v1","wiki_result":value})));
         }
+        if scope == Scope::All {
+            return Ok(ToolOutput::error(
+                "Cross-workspace Wiki search requires an admitted Studio host",
+            ));
+        }
+        let Some(index) = &self.index else {
+            return Ok(render(idle_search()));
+        };
+        let root = index.root();
+        let workspace = ctx.workspace.canonicalize().ok();
+        if root
+            .parent()
+            .and_then(std::path::Path::parent)
+            .and_then(std::path::Path::parent)
+            != workspace.as_deref()
+        {
+            return Ok(ToolOutput::error(
+                "workspace encyclopedia is not bound to this workspace",
+            ));
+        }
+        let index = Arc::clone(index);
+        let record_root = root.clone();
         let query = query.to_owned();
-        let local = if scope == "team" {
-            None
-        } else if let Some(index) = &self.index {
-            // The native a3s-vec FTS query runs synchronously under a std RwLock;
-            // keep it off the async runtime's worker threads exactly like the
-            // durable BM25 path does.
-            let root = index.root().to_path_buf();
-            let index = Arc::clone(index);
-            let searched = query.clone();
-            let result = tokio::task::spawn_blocking(move || index.search(searched))
-                .await
-                .map_err(|error| anyhow::anyhow!("wiki search task failed: {error}"))?;
-            match result {
-                Ok(mut result) => {
-                    if scope == "local" || scope == "agent" {
-                        result
-                            .hits
-                            .retain(|hit| hit_in_scope(&hit.path, scope, agent));
-                    }
-                    let result = bound_hits(result);
-                    note_retrieved_pages(&root, &result);
-                    Some(render(result))
-                }
-                Err(error) => return Ok(ToolOutput::error(error.to_string())),
-            }
-        } else {
-            None
-        };
-        let host = if scope == "local" || scope == "agent" {
-            Ok(Vec::new())
-        } else {
-            self.host_passages(ctx, &query).await
-        };
-        Ok(merge(local, host))
-    }
-}
-
-struct HostHit {
-    name: String,
-    place: String,
-    body: String,
-}
-
-async fn host_passages_of(
-    bridge: &DocumentBridge,
-    access: WorkspaceOperationAccess,
-    query: &str,
-) -> Result<Vec<HostHit>, String> {
-    let value = bridge
-        .ask(access, HOST_METHOD, json!({ "query": query }))
+        let result = tokio::task::spawn_blocking(move || {
+            let Ok(Some(_guard)) = a3s_okf::try_workspace_knowledge_read(&root) else {
+                return Ok(idle_search());
+            };
+            index.search(query)
+        })
         .await
-        .map_err(|error| error.to_string())?;
-    let Some(rows) = value.get("passages").and_then(Value::as_array) else {
-        return Err("encyclopedia search response has no passages".into());
-    };
-    Ok(rows.iter().filter_map(host_hit).collect())
-}
-
-fn host_hit(row: &Value) -> Option<HostHit> {
-    let body = row.get("body").and_then(Value::as_str)?.trim();
-    if body.is_empty() {
-        return None;
-    }
-    let name = row.get("name").and_then(Value::as_str).unwrap_or("").trim();
-    let place = row
-        .get("place")
-        .and_then(Value::as_str)
-        .unwrap_or("")
-        .trim();
-    Some(HostHit {
-        name: if name.is_empty() {
-            "encyclopedia".into()
-        } else {
-            name.to_owned()
-        },
-        place: place.to_owned(),
-        body: body.to_owned(),
-    })
-}
-
-fn render_hits(hits: &[HostHit]) -> String {
-    hits.iter()
-        .map(|hit| format!("{}\n{}\n{}", hit.name, hit.place, hit.body))
-        .collect::<Vec<_>>()
-        .join("\n\n")
-}
-
-impl SearchWikiTool {
-    async fn host_passages(&self, ctx: &ToolContext, query: &str) -> Result<Vec<HostHit>, String> {
-        let Some(bridge) = &self.bridge else {
-            return Ok(Vec::new());
-        };
-        let access = ctx
-            .workspace_operation(WorkspaceOperation::Read)
-            .map_err(|error| error.to_string())?;
-        host_passages_of(bridge, access, query).await
-    }
-}
-
-fn merge(local: Option<ToolOutput>, host: Result<Vec<HostHit>, String>) -> ToolOutput {
-    let failure = |local: Option<&str>, error: String| {
-        let reason = error.chars().take(1024).collect::<String>();
-        let note = format!("organization encyclopedia search failed: {reason}");
-        let content = match local {
-            None | Some("no-match") => note,
-            Some("not-ready") => format!("not-ready\n{note}"),
-            Some(text) => format!("{text}\n\n{note}"),
-        };
-        ToolOutput::error(content)
-    };
-    match (local, host) {
-        (None, Err(error)) => failure(None, error),
-        (None, Ok(hits)) if hits.is_empty() => ToolOutput::success("no-match"),
-        (None, Ok(hits)) => ToolOutput::success(render_hits(&hits)),
-        (Some(output), Err(error)) => failure(Some(output.content.as_str()), error),
-        (Some(output), Ok(hits)) if hits.is_empty() => output,
-        (Some(mut output), Ok(hits)) => {
-            let extra = render_hits(&hits);
-            if output.content == "no-match" || output.content == "not-ready" {
-                output.content = extra;
-            } else {
-                output.content.push_str("\n\n");
-                output.content.push_str(&extra);
+        .map_err(|error| anyhow::anyhow!("wiki search task failed: {error}"))?;
+        match result {
+            Ok(result) => {
+                let result = bound_hits(result);
+                note_retrieved_pages(&record_root, &result);
+                Ok(render(result))
             }
-            output
+            Err(error) => Ok(ToolOutput::error(error.to_string())),
         }
     }
+}
+
+fn validate_host_reply(
+    value: &Value,
+    session: &str,
+    scope: Scope,
+    query: &str,
+) -> anyhow::Result<()> {
+    anyhow::ensure!(
+        value["sessionId"] == session
+            && value["scope"] == scope.as_str()
+            && value["query"] == query,
+        "workspace Wiki response binding mismatch"
+    );
+    anyhow::ensure!(
+        matches!(value["phase"].as_str(), Some("published" | "not-ready")),
+        "invalid Wiki response phase"
+    );
+    for key in ["searched", "pending"] {
+        anyhow::ensure!(
+            value[key].as_u64().is_some_and(|n| n <= 32),
+            "invalid Wiki coverage"
+        );
+    }
+    anyhow::ensure!(
+        value["complete"].is_boolean(),
+        "missing Wiki coverage state"
+    );
+    anyhow::ensure!(
+        value["nextCursor"].is_null()
+            || value["nextCursor"].as_str().is_some_and(|s| !s.is_empty()
+                && s.len() <= 256
+                && !s.chars().any(char::is_control)),
+        "invalid Wiki continuation"
+    );
+    let hits = value["hits"]
+        .as_array()
+        .filter(|hits| hits.len() <= 12)
+        .ok_or_else(|| anyhow::anyhow!("invalid Wiki hits"))?;
+    anyhow::ensure!(
+        value["phase"] != "not-ready" || hits.is_empty(),
+        "unpublished Wiki hits refused"
+    );
+    for hit in hits {
+        for key in ["sourceRoot", "outputRoot", "path", "name", "passage"] {
+            anyhow::ensure!(
+                hit[key]
+                    .as_str()
+                    .is_some_and(|s| !s.is_empty() && s.len() <= 8192 && !s.contains('\0')),
+                "invalid Wiki attribution or evidence"
+            );
+        }
+        if hit["ownerKind"] == "library" {
+            anyhow::ensure!(
+                hit["libraryId"]
+                    .as_str()
+                    .is_some_and(|id| !id.is_empty() && id.len() <= 256 && !id.contains('\0'))
+                    && hit["ownerId"] == hit["libraryId"],
+                "invalid personal library attribution"
+            );
+        } else {
+            anyhow::ensure!(
+                hit["ownerKind"].is_null()
+                    || matches!(hit["ownerKind"].as_str(), Some("task" | "project")),
+                "unknown Wiki owner kind"
+            );
+            for key in ["taskId", "taskName", "workspaceId", "workspaceName"] {
+                anyhow::ensure!(
+                    hit[key].as_str().is_some_and(|value| !value.is_empty()
+                        && value.len() <= 8192
+                        && !value.contains('\0')),
+                    "invalid workspace Wiki attribution"
+                );
+            }
+        }
+        let path = hit["path"]
+            .as_str()
+            .ok_or_else(|| anyhow::anyhow!("invalid Wiki path"))?;
+        anyhow::ensure!(
+            path.starts_with("concepts/")
+                && path.ends_with(".md")
+                && !path.contains(['\\', ':'])
+                && path
+                    .split('/')
+                    .all(|part| !part.is_empty() && part != ".." && part != "."),
+            "non-page Wiki result refused"
+        );
+    }
+    Ok(())
 }
 
 #[cfg(test)]
 mod tests;
 
-fn agent_folder_ok(agent: &str) -> bool {
-    let mut chars = agent.chars();
-    let Some(first) = chars.next() else {
-        return false;
-    };
-    if !first.is_ascii_alphanumeric() {
-        return false;
-    }
-    let mut count = 1usize;
-    for character in chars {
-        count += 1;
-        if count > 64
-            || !(character.is_ascii_alphanumeric() || character == '-' || character == '_')
-        {
-            return false;
-        }
-    }
-    true
-}
-
-fn hit_in_scope(path: &str, scope: &str, agent: &str) -> bool {
-    let text = path.replace('\\', "/");
-    let parts: Vec<&str> = text.split('/').filter(|part| !part.is_empty()).collect();
-    let owned = parts
-        .windows(2)
-        .find(|pair| pair[0] == "agents")
-        .map(|pair| pair[1]);
-    match scope {
-        "local" => owned.is_none(),
-        "agent" => owned == Some(agent),
-        _ => false,
-    }
-}
+#[cfg(test)]
+mod host_tests;
 
 fn wiki_read_denied(denies: &[String]) -> bool {
     denies.iter().any(|rule| {
@@ -396,16 +448,8 @@ fn note_retrieved_pages(wiki_root: &std::path::Path, result: &WikiSearchResult) 
     if !matches!(result.phase, WikiSearchPhase::Published) {
         return;
     }
-    let workspace = match (
-        wiki_root.file_name().and_then(|name| name.to_str()),
-        wiki_root.parent(),
-    ) {
-        (Some("local"), Some(wiki))
-            if wiki.file_name().and_then(|name| name.to_str()) == Some("wiki") =>
-        {
-            wiki.parent().unwrap_or(wiki_root)
-        }
-        _ => wiki_root,
+    let Some(workspace) = wiki_root.ancestors().nth(3) else {
+        return;
     };
     let mut seen = std::collections::HashSet::new();
     let mut lines = String::new();
@@ -442,15 +486,16 @@ fn render(result: WikiSearchResult) -> ToolOutput {
         WikiSearchPhase::NotReady => "not-ready",
         WikiSearchPhase::Published => "published",
     };
-    let content = match result.phase {
-        WikiSearchPhase::NotReady => "not-ready".to_owned(),
-        WikiSearchPhase::Published if result.hits.is_empty() => "no-match".to_owned(),
-        WikiSearchPhase::Published => result
-            .hits
-            .iter()
-            .map(|hit| format!("{}\n{}\n{}", hit.name, hit.path, hit.passage))
-            .collect::<Vec<_>>()
-            .join("\n\n"),
+    let structured =
+        (result.phase == WikiSearchPhase::Published && !result.hits.is_empty()).then(|| {
+            json!({"hits": result.hits.iter().map(|hit|
+        json!({"name":hit.name,"path":hit.path,"passage":hit.passage})
+    ).collect::<Vec<_>>()})
+        });
+    let content = match (result.phase, structured.as_ref()) {
+        (WikiSearchPhase::NotReady, _) => "not-ready".to_owned(),
+        (WikiSearchPhase::Published, None) => "no-match".to_owned(),
+        (WikiSearchPhase::Published, Some(structured)) => structured.to_string(),
     };
     ToolOutput::success(content).with_metadata(json!({
         "phase": phase,
@@ -458,5 +503,6 @@ fn render(result: WikiSearchResult) -> ToolOutput {
         "source_revision": result.source_revision,
         "catalog_revision": result.catalog_revision,
         "names": names,
+        "wiki_result": structured,
     }))
 }

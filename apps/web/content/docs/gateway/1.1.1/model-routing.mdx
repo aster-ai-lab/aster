@@ -1,0 +1,112 @@
+export const meta = {
+  title: '模型路由、P/D 分离与缓存亲和',
+  description: '模型目标选择、请求准入、Prefill/Decode 分离和 KV Cache 亲和的实现边界。',
+  label: '模型路由与 P/D',
+  updated: '2026-10-29',
+};
+
+Gateway 根据已授权的模型别名选择目标。聚合路径把请求交给一个 Power worker。P/D 路径使用两个 worker 分别执行 prefill 和 decode。
+
+<ModelRoutingDiagram />
+
+## 请求准入与目标选择
+
+Gateway 先认证调用方，再检查端点和模型授权。请求体通过 OpenAI 兼容校验后，模型池使用公平信号量控制准入。
+
+<DocTable caption="模型池的准入边界" headers={['配置', '作用', '满载或超时行为']} rows={[
+  ['max_concurrent_requests', '限制活动请求数', '后续请求进入有界队列'],
+  ['max_queued_requests', '限制排队请求数', '队列已满时拒绝请求'],
+  ['queue_timeout_ms', '限制排队等待时间', '超过期限时拒绝请求'],
+]} />
+
+调用方取消请求后，Gateway 释放对应的排队或活动名额。流式响应期间取消也会释放活动名额。
+
+准入后，Gateway 按以下顺序选择执行目标：
+
+1. 使用目标 `priority` 和 `weight` 选择一个目标。
+2. 排除身份不匹配或观测已过期的 worker。
+3. 排除不健康、角色未就绪或达到活动上限的 worker。
+4. 在 P/D 路径中排除缺少状态传输能力的 worker。
+5. 排除缺少执行配置摘要绑定的 worker。
+
+P/D 的 decode 使用负载和 deterministic rendezvous 排名。prefill 在负载带内应用缓存亲和，并优先选择共享前缀更长的 worker。
+
+## 聚合与 P/D 分离
+
+聚合模式使用 `phase = "aggregated"`，并且不配置 `distributed_serving`。一个 worker 完成整个推理请求。
+
+P/D 模式使用 `phase = "decode"` 和 `distributed_serving`。Gateway 为同一次请求选择不同的 prefill 与 decode worker。两个 worker 必须属于目标允许的部署代际，并具有匹配的执行配置。
+
+Gateway 按固定顺序调用 Power 内部协议：
+
+1. 调用 `decode/prepare`，预留 decode 目标状态。
+2. 调用 `prefill/execute`，执行 prefill 并发布源状态。
+3. 调用 `decode/execute`，消费状态并返回 decode 事件流。
+
+目标和源状态是 opaque JSON capability。Gateway 只转发这些值，不解析、保存或记录 KV 内容。
+
+响应前的可重试故障会排除当前 worker 对。当前目标的 worker 对耗尽后，Gateway 才进入目标优先级回退。SSE 响应开始后禁止重放请求。
+
+## 缓存亲和不是驻留保证
+
+Gateway 有两类缓存亲和配置。它们作用于不同的选择层。
+
+<DocTable caption="两类缓存亲和配置" headers={['配置', '作用域', '行为']} rows={[
+  ['prefix_affinity', '普通推理目标选择', '当前仅用于 /v1/chat/completions'],
+  ['prompt_cache_affinity', '托管 P/D worker 选择', '只在 prefill 的负载带内影响选择'],
+]} />
+
+`prefix_affinity` 根据规范化消息字段、工具上下文和显式缓存键计算前缀提示。提示按 route、environment、凭据签发代际、模型和端点分域。
+
+有效匹配必须覆盖扫描请求的至少一半。候选目标的负载最多比最低负载高一个操作。相同前缀长度下，Gateway 再比较负载和最近使用时间。
+
+每次请求最多哈希 256 KiB 的规范化 JSON。每次请求最多记录 128 个 checkpoint。checkpoint 位于 4 KiB 和消息边界，最小前缀为 1 KiB。
+
+进程内索引存活 5 分钟，最多保存 4096 个 fingerprint/target 项。索引不保存提示词或调用方缓存键。
+
+上游报告完整缓存 miss 时，Gateway 删除对应的旧提示。进程重启、缓存驱逐或其他代理也可能使提示失效。实际复用由模型后端决定。
+
+`prefix_matched_bytes` 是用于路由的规范化前缀长度。该值不是已缓存 token 数。`prefix_estimated_ms` 也不是实测 TTFT 或服务等级承诺。
+
+P/D 请求使用 `prompt_cache_key` 时，Gateway 不转发原始值。Gateway 按身份、模型、端点和调用方键分域，只转发 `a3s-gw-pcache-v1:` 开头的 opaque 值。
+
+## 配置片段
+
+以下片段只展示托管模型的调度部分。目标 ID 是示意值，必须替换为实际快照中的值。完整配置还需要实际的 worker 观测、执行摘要和部署代际。
+
+```acl
+models "chat-model" {
+  model_id = "55555555-5555-4555-8555-555555555555"
+  targets "66666666-6666-4666-8666-666666666666" {
+    service = "model-service"
+    upstream_model = "internal/model-v1"
+    priority = 0
+    weight = 100
+  }
+  scheduling {
+    phase = "decode"
+    max_concurrent_requests = 32
+    max_queued_requests = 64
+    queue_timeout_ms = 500
+    prompt_cache_affinity = true
+    distributed_serving {
+      api_key_env = "A3S_POWER_DISTRIBUTED_API_KEY"
+      execution_timeout_ms = 30000
+    }
+  }
+}
+```
+
+`api_key_env` 指定进程环境变量的名称。ACL 和 Cloud 快照不接受密钥原文。激活配置时，Gateway 会检查所有引用的凭据。
+
+## 当前证据边界
+
+Gateway 本地测试覆盖聚合与 P/D 快照替换、协议编排和同目标回退。Cloud 发布、跨产品混合版本验收和多副本验收仍需完成。
+
+Power 的 loopback 证据不等于高速网络证据。具体模型的状态布局、语义等价和目标拓扑性能仍需独立验证。
+
+## 实现依据
+
+- [分布式推理路由](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/distributed-inference-routing.md)
+- [目标前缀亲和](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/prefix-affinity.md)
+- [Power 分布式执行观测](https://github.com/aster-ai-lab/aster/blob/main/crates/power/docs/distributed-serving-observation.md)

@@ -1,0 +1,277 @@
+suite "office-pdf-worker-journeys" {
+    version = 1
+
+    scenario "navigation-save-reopen" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "next-page" { target = role("button", "Next page") }
+        expect "page-two" { target = role("textbox", "Page number") value = "2" }
+        click "save" { target = role("button", "Save") }
+        wait "saved-source-rotations" { text = "0,90,180" }
+        expect "source-widths" { target = css("output[aria-label='Saved widths']") rendered_text = "420,421,422" }
+        click "reopen" { target = role("button", "Reopen saved PDF") }
+        wait "reopened-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        expect "loaded-twice" { target = css("output[aria-label='Source loads']") rendered_text = "2" }
+        expect "all-pages" { visible = role("button", "Page 3") }
+        screenshot "pdf-reopened" { path = "screenshots/pdf-reopened.png" }
+    }
+
+    scenario "rotation-undo-redo-file-fidelity" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "rotate-first-page" { target = role("button", "Rotate selected pages right") }
+        wait "rotated-file" { text = "90,90,180" }
+        wait "mutated-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "undo" { target = role("button", "Undo") }
+        wait "original-file-restored" { text = "0,90,180" }
+        wait "undo-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "redo" { target = role("button", "Redo") }
+        wait "rotated-file-restored" { text = "90,90,180" }
+        expect "page-order-and-sizes" { target = css("output[aria-label='Saved widths']") rendered_text = "420,421,422" }
+        expect "three-real-saves" { target = css("output[aria-label='Save calls']") rendered_text = "3" }
+    }
+
+    scenario "source-failure-retry" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/?load=once" }
+        wait "failure-shown" { text = "Synthetic source failure" }
+        expect "retry-available" { visible = role("button", "Retry") }
+        click "retry" { target = role("button", "Retry") }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        expect "all-pages" { visible = role("button", "Page 3") }
+        expect "retried-source" { target = css("output[aria-label='Source loads']") rendered_text = "2" }
+        click "save-recovered-source" { target = role("button", "Save") }
+        wait "correct-recovered-file" { text = "0,90,180" }
+    }
+
+    scenario "read-only-pdf" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/?readonly=1" }
+        wait "ready" { visible = role("button", "Page 3") }
+        expect "no-save-action" { hidden = role("button", "Save") }
+        expect "no-organizer" { hidden = role("button", "Organize PDF pages") }
+        expect "no-annotation-tool" { hidden = role("button", "Free Text") }
+        click "next-page" { target = role("button", "Next page") }
+        expect "navigation-allowed" { target = role("textbox", "Page number") value = "2" }
+        expect "no-host-write" { target = css("output[aria-label='Save calls']") rendered_text = "0" }
+    }
+
+    scenario "rotation-save-refused-recovery" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/?save=false" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "rotate" { target = role("button", "Rotate selected pages right") }
+        wait "host-refused" { text = "refused" }
+        expect "failure-visible" { target = css("output[aria-label='PDF save status']") rendered_text = "Save failed" }
+        expect "last-saved-file-retained" { disabled = role("button", "Reopen saved PDF") }
+        click "recover-host" { target = role("button", "Accept saves") }
+        wait "viewer-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "save-again" { target = role("button", "Save") }
+        wait "edited-file-preserved" { text = "90,90,180" }
+        expect "saved-status" { target = css("output[aria-label='PDF save status']") rendered_text = "Saved" }
+    }
+
+    scenario "rotation-save-rejection-recovery" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/?save=reject" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "rotate" { target = role("button", "Rotate selected pages right") }
+        wait "host-rejected" { text = "rejected" }
+        expect "failure-visible" { target = css("output[aria-label='PDF save status']") rendered_text = "Save failed" }
+        expect "last-saved-file-retained" { disabled = role("button", "Reopen saved PDF") }
+        expect "undo-available" { enabled = role("button", "Undo") }
+        click "recover-host" { target = role("button", "Accept saves") }
+        wait "viewer-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "save-again" { target = role("button", "Save") }
+        wait "physical-file-rotations" { text = "90,90,180" }
+        expect "correct-pages" { target = css("output[aria-label='Saved widths']") rendered_text = "420,421,422" }
+        expect "saved-status" { target = css("output[aria-label='PDF save status']") rendered_text = "Saved" }
+        click "reopen" { target = role("button", "Reopen saved PDF") }
+        wait "reopened-ready" { visible = role("button", "Page 3") }
+        expect "source-loaded-twice" { target = css("output[aria-label='Source loads']") rendered_text = "2" }
+        screenshot "pdf-recovered" { path = "screenshots/pdf-recovered.png" }
+    }
+
+    scenario "search-navigation-and-clear" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        fill "query" { target = css("input[type='search'][aria-label='Search in PDF']") value = "Alpha" }
+        press "search" { key = "Enter" }
+        wait "three-real-matches" { text = "1 / 3" }
+        click "next-result" { target = role("button", "Next search result") }
+        wait "second-result" { text = "2 / 3" }
+        expect "second-page" { target = role("textbox", "Page number") value = "2" }
+        click "previous-result" { target = role("button", "Previous search result") }
+        wait "first-result" { text = "1 / 3" }
+        expect "first-page" { target = role("textbox", "Page number") value = "1" }
+        click "previous-wraps" { target = role("button", "Previous search result") }
+        wait "last-result" { text = "3 / 3" }
+        expect "last-page" { target = role("textbox", "Page number") value = "3" }
+        click "clear" { target = role("button", "Clear search") }
+        expect "query-cleared" { target = css("input[type='search'][aria-label='Search in PDF']") value = "" }
+        expect "search-focus-returned" { focused = css("input[type='search'][aria-label='Search in PDF']") }
+        expect "results-disabled" { disabled = role("button", "Next search result") }
+        expect "no-write" { target = css("output[aria-label='Save calls']") rendered_text = "0" }
+    }
+
+    scenario "page-reorder-file-fidelity" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "move-first-page-later" { target = role("button", "Move selected pages later") }
+        wait "physical-page-order" { text = "421,420,422" }
+        expect "rotations-follow-pages" { target = css("output[aria-label='Saved rotations']") rendered_text = "90,0,180" }
+        click "reopen" { target = role("button", "Reopen saved PDF") }
+        wait "reopened-worker" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "save-reopened" { target = role("button", "Save") }
+        expect "two-saves" { target = css("output[aria-label='Accepted saves']") rendered_text = "2" }
+        expect "order-survives-pdfium-reopen" { target = css("output[aria-label='Saved widths']") rendered_text = "421,420,422" }
+    }
+
+    scenario "blank-page-insertion-and-undo" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "insert" { target = role("button", "Insert blank page") }
+        wait "a4-page-inserted-after-selection" { text = "420,595.28,421,422" }
+        expect "rotations-preserved" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,0,90,180" }
+        wait "mutated-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        expect "four-pages" { visible = role("button", "Page 4") }
+        click "undo-insertion" { target = role("button", "Undo") }
+        wait "original-pages" { text = "420,421,422" }
+        expect "original-rotations" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,90,180" }
+    }
+
+    scenario "page-deletion-and-undo" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "select-second-page" { target = role("button", "Select page 2") }
+        click "delete" { target = role("button", "Delete selected pages") }
+        wait "only-selected-page-removed" { text = "420,422" }
+        expect "surviving-rotations" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,180" }
+        wait "mutated-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "undo-deletion" { target = role("button", "Undo") }
+        wait "all-pages-restored" { text = "420,421,422" }
+        expect "all-rotations-restored" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,90,180" }
+    }
+
+    scenario "page-extraction-file-fidelity" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "extract" { target = role("button", "Extract selected pages") }
+        click "done" { target = role("button", "Done") }
+        wait "dialog-left" { hidden = role("dialog", "Organize PDF Pages") }
+        expect "physical-extracted-page" { target = role("textbox", "Exported PDF structure") value = "[{\"name\":\"quality-extracted.pdf\",\"pages\":[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[]}]}]" }
+        expect "original-source-untouched" { target = css("output[aria-label='Save calls']") rendered_text = "0" }
+        expect "all-original-pages" { visible = role("button", "Page 3") }
+    }
+
+    scenario "page-splitting-file-fidelity" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        click "split" { target = role("button", "Split after selected pages") }
+        click "done" { target = role("button", "Done") }
+        wait "dialog-left" { hidden = role("dialog", "Organize PDF Pages") }
+        expect "both-physical-output-files" { target = role("textbox", "Exported PDF structure") value = "[{\"name\":\"quality-part-1.pdf\",\"pages\":[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[]}]},{\"name\":\"quality-part-2.pdf\",\"pages\":[{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]}]" }
+        expect "source-untouched" { target = css("output[aria-label='Save calls']") rendered_text = "0" }
+    }
+
+    scenario "merge-file-upload-and-undo" {
+        surface = "web"
+        timeout_ms = 60000
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "organize" { target = role("button", "Organize PDF pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        upload "merge-real-pdf" { target = css("input[type='file'][aria-label='Choose a PDF to merge']") paths = ["packages/office/tests/e2e/public/merge.pdf"] }
+        wait "merged-file-order" { text = "420,777,421,422" }
+        expect "merged-page-rotation-preserved" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,270,90,180" }
+        wait "merged-worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "undo-merge" { target = role("button", "Undo") }
+        wait "original-file-restored" { text = "420,421,422" }
+        expect "original-rotations" { target = css("output[aria-label='Saved rotations']") rendered_text = "0,90,180" }
+    }
+
+    scenario "new-text-annotation-save-reopen" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "desktop" { width = 1280 height = 900 }
+        navigate "open" { url = "http://127.0.0.1:58130/" }
+        wait "worker-ready" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "text-tool" { target = role("button", "Free Text") }
+        click "place-annotation" { target = role("application", "PDF page canvas") }
+        insert_text "write-text" { value = "Reviewed" }
+        expect "real-input-observed" { target = role("textbox", "Annotation input") value = "Reviewed" }
+        click "save" { target = role("button", "Save") }
+        wait "file-saved" { text = "accepted" }
+        expect "actual-annotation-contents" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+        click "reopen" { target = role("button", "Reopen saved PDF") }
+        wait "reopened-worker" { visible = css("[data-pdf-page-organizer-trigger]:not(:disabled)") }
+        click "save-reopened" { target = role("button", "Save") }
+        expect "second-save" { target = css("output[aria-label='Accepted saves']") rendered_text = "2" }
+        expect "text-survives-reopen" { target = role("textbox", "Saved PDF structure") value = "[{\"width\":420,\"height\":595,\"rotation\":0,\"annotations\":[{\"subtype\":\"FreeText\",\"contents\":\"Reviewed\"}]},{\"width\":421,\"height\":595,\"rotation\":90,\"annotations\":[]},{\"width\":422,\"height\":595,\"rotation\":180,\"annotations\":[]}]" }
+        screenshot "pdf-annotation-reopened" { path = "screenshots/pdf-annotation-reopened.png" }
+    }
+
+    scenario "narrow-search-and-save-failure-feedback" {
+        surface = "web"
+        timeout_ms = 60000
+        viewport "phone" { width = 375 height = 812 }
+        navigate "open" { url = "http://127.0.0.1:58130/?save=reject" }
+        wait "worker-ready" { visible = css(".work-pdf-save button:not(:disabled)") }
+        fill "query" { target = css("input[type='search'][aria-label='Search in PDF']") value = "Alpha" }
+        press "search" { key = "Enter" }
+        wait "visible-search-result-count" { text = "1 / 3" }
+        expect "search-result-inside-toolbar" { target = css(".work-pdf-search-state") relative_to = role("toolbar", "PDF toolbar") layout = "inside" }
+        expect "search-result-in-viewport" { target = css(".work-pdf-search-state") viewport_coverage_at_least = 100 }
+        screenshot "narrow-search" { path = "screenshots/pdf-narrow-search.png" }
+        click "save" { target = role("button", "Save") }
+        wait "host-rejected" { text = "rejected" }
+        expect "failure-visible" { target = css("output[aria-label='PDF save status']") rendered_text = "Save failed" }
+        expect "failure-inside-toolbar" { target = css("output[aria-label='PDF save status']") relative_to = role("toolbar", "PDF toolbar") layout = "inside" }
+        expect "failure-in-viewport" { target = css("output[aria-label='PDF save status']") viewport_coverage_at_least = 100 }
+        click "more" { target = role("button", "More PDF tools") }
+        click "organize" { target = role("menuitem", "Organize Pages") }
+        wait "dialog-entered" { visible = role("dialog", "Organize PDF Pages") }
+        expect "toolbar-inside-dialog" { target = role("toolbar", "PDF page organization commands") relative_to = role("dialog", "Organize PDF Pages") layout = "inside" }
+        click "rotate" { target = role("button", "Rotate selected pages right") }
+        wait "automatic-save-rejected" { text = "rejected" }
+        wait "dialog-left" { hidden = role("dialog", "Organize PDF Pages") }
+        expect "automatic-failure-visible" { target = css("output[aria-label='PDF save status']") rendered_text = "Save failed" }
+        screenshot "narrow-failure" { path = "screenshots/pdf-narrow-failure.png" }
+    }
+}

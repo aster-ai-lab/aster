@@ -117,3 +117,23 @@ fn the_slice_accumulator_folds_turns_and_resets_on_take() {
     // Taking again yields a fresh (zero) slice.
     assert_eq!(ledger.take_slice_delta(), Default::default());
 }
+
+#[test]
+fn slice_progress_includes_its_unsettled_last_turn_exactly_once() {
+    let mut ledger = MutationLedger::default();
+    ledger.settle_prior_turns(1).unwrap();
+    ledger.note_assistant_output();
+    assert_eq!(ledger.take_slice_delta().plan_delta, 1);
+    assert_eq!(ledger.take_slice_delta(), Default::default());
+}
+
+#[test]
+fn slice_uncertainty_is_net_reduction_since_the_slice_started() {
+    let mut ledger = ledger_with_unresolved(&["one"]);
+    ledger.settle_prior_turns(1).unwrap();
+    assert_eq!(ledger.take_slice_delta().uncertainty_delta, -1);
+    ledger.recorded_uncertainties.clear();
+    ledger.settle_prior_turns(2).unwrap();
+    assert_eq!(ledger.take_slice_delta().uncertainty_delta, 1);
+    assert_eq!(ledger.take_slice_delta(), Default::default());
+}

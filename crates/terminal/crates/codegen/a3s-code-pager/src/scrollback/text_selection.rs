@@ -2981,7 +2981,7 @@ mod tests {
             semantic(&urls, 0, 6),
             SemanticSelection {
                 anchor: ep(0, 4),
-                head: ep(0, 15),
+                head: ep(0, 33),
                 text: "https://github.com/A3S-Lab/a3s".to_string(),
             }
         );

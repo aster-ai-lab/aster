@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useEffect,
   useId,
   useLayoutEffect,
@@ -6,6 +7,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type CSSProperties,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -36,6 +38,10 @@ export type SearchSelectOption = {
   keywords?: string;
   /** Optional leading mark (logo / avatar) shown in trigger and list. */
   icon?: ReactNode;
+  disabled?: boolean;
+  group?: string;
+  meta?: string;
+  previewStyle?: CSSProperties;
 };
 
 export type SearchSelectSize = 'sm' | 'md';
@@ -46,6 +52,8 @@ type SearchSelectBaseProps = {
   searchPlaceholder?: string;
   emptyText?: string;
   className?: string;
+  panelClassName?: string;
+  portalContainer?: HTMLElement | ((trigger: HTMLElement) => HTMLElement);
   disabled?: boolean;
   /** sm = compact toolbar / card header filters */
   size?: SearchSelectSize;
@@ -64,6 +72,10 @@ type SearchSelectBaseProps = {
   'aria-label'?: string;
   'aria-invalid'?: boolean | 'true' | 'false';
   'aria-describedby'?: string;
+  'aria-required'?: boolean;
+  'aria-keyshortcuts'?: string;
+  'data-autofocus'?: 'true';
+  role?: 'combobox';
 };
 
 export type SearchSelectProps = SearchSelectBaseProps & {
@@ -87,13 +99,15 @@ export type MultiSearchSelectProps = SearchSelectBaseProps & {
 export function SearchSelect(props: SearchSelectProps): ReactElement;
 export function SearchSelect(props: MultiSearchSelectProps): ReactElement;
 export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) {
-  const portalContainer = usePortalContainer();
+  const inheritedPortalContainer = usePortalContainer();
   const {
     options,
     placeholder = 'Select…',
     searchPlaceholder = 'Search…',
     emptyText = 'No results',
     className = '',
+    panelClassName,
+    portalContainer: portalTarget,
     disabled = false,
     size = 'md',
     searchable = true,
@@ -104,6 +118,10 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     'aria-label': ariaLabel,
     'aria-invalid': ariaInvalid,
     'aria-describedby': ariaDescribedBy,
+    'aria-required': ariaRequired,
+    'aria-keyshortcuts': ariaKeyShortcuts,
+    'data-autofocus': autofocus,
+    role,
   } = props;
   const multiple = props.multiple === true;
   const clearValue = props.multiple ? '' : (props.clearValue ?? '');
@@ -125,7 +143,11 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     top: number;
     left: number;
     width: number;
+    maxHeight: number;
   } | null>(null);
+  const portalContainer = typeof portalTarget === 'function'
+    ? open && triggerRef.current ? portalTarget(triggerRef.current) : inheritedPortalContainer
+    : portalTarget ?? inheritedPortalContainer;
 
   const invalid = ariaInvalid === true || ariaInvalid === 'true';
   const summary = selectedOptions.map((option) => option.label).join('、');
@@ -167,6 +189,18 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     });
   }, [options, effectiveQuery, searchable]);
 
+  function enabledIndex(from: number, direction: -1 | 1): number {
+    for (let i = from; i >= 0 && i < filtered.length; i += direction) {
+      if (!filtered[i].disabled) return i;
+    }
+    return -1;
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    setActive((current) => filtered[current] && !filtered[current].disabled ? current : enabledIndex(0, 1));
+  }, [open, filtered]);
+
   function updatePosition() {
     const el = rootRef.current;
     if (!el) return;
@@ -174,20 +208,19 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     const panelWidth = Math.min(Math.max(rect.width, size === 'sm' ? 10 * 16 : 12 * 16), window.innerWidth - 16);
     let left = rect.left;
     left = Math.max(8, Math.min(left, window.innerWidth - panelWidth - 8));
-    let top = rect.bottom + 6;
-    const estimatedHeight = 240;
-    if (
-      top + estimatedHeight > window.innerHeight - 8 &&
-      rect.top > estimatedHeight
-    ) {
-      top = Math.max(8, rect.top - estimatedHeight - 6);
-    }
+    const panelHeight = panelRef.current?.offsetHeight ?? 0;
+    const below = Math.max(0, window.innerHeight - rect.bottom - 6 - 8);
+    const above = Math.max(0, rect.top - 6 - 8);
+    const openAbove = panelHeight > below && above > below;
+    const maxHeight = openAbove ? above : below;
+    const top = openAbove ? rect.top - Math.min(panelHeight, maxHeight) - 6 : rect.bottom + 6;
     // A dialog's transformed content is the containing block for its nested panel.
     const parent = portalContainer?.getBoundingClientRect();
     setCoords({
       top: top - (parent?.top ?? 0) + (portalContainer?.scrollTop ?? 0),
       left: left - (parent?.left ?? 0) + (portalContainer?.scrollLeft ?? 0),
       width: panelWidth,
+      maxHeight,
     });
   }
 
@@ -204,9 +237,12 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     };
     window.addEventListener('resize', onScroll);
     window.addEventListener('scroll', onScroll, true);
+    const observer = new ResizeObserver(updatePosition);
+    if (panelRef.current) observer.observe(panelRef.current);
     return () => {
       window.removeEventListener('resize', onScroll);
       window.removeEventListener('scroll', onScroll, true);
+      observer.disconnect();
     };
   }, [open, size, filtered.length, portalContainer]);
 
@@ -235,9 +271,6 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
 
   useEffect(() => {
     if (!open) return;
-    setQuery('');
-    setDebouncedQuery('');
-    setActive(Math.max(0, options.findIndex((option) => isChosen(option.value))));
     if (!searchable) return;
     const t = window.setTimeout(() => inputRef.current?.focus(), 0);
     return () => window.clearTimeout(t);
@@ -251,14 +284,9 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       if (panelRef.current?.contains(target)) return;
       setOpen(false);
     };
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
     document.addEventListener('mousedown', onDoc);
-    document.addEventListener('keydown', onKey);
     return () => {
       document.removeEventListener('mousedown', onDoc);
-      document.removeEventListener('keydown', onKey);
     };
   }, [open]);
 
@@ -267,6 +295,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
   }
 
   function pick(next: string) {
+    if (!options.some((option) => option.value === next && !option.disabled)) return;
     if (props.multiple) {
       const current = props.value;
       props.onChange(
@@ -284,39 +313,69 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
     else props.onChange(clearValue);
   }
 
+  function openMenu(initialIndex?: number) {
+    setQuery('');
+    setDebouncedQuery('');
+    const selected = options.findIndex((option) => !option.disabled && isChosen(option.value));
+    setActive(initialIndex ?? (selected >= 0 ? selected : options.findIndex((option) => !option.disabled)));
+    setOpen(true);
+  }
+
   function onKeyDown(e: KeyboardEvent) {
+    if (e.nativeEvent.isComposing) return;
+    if (e.key.length === 1 && e.key.trim() && !e.altKey && !e.ctrlKey && !e.metaKey &&
+        (!open || e.currentTarget === triggerRef.current)) {
+      const items = open ? filtered : options;
+      const start = open ? active : items.findIndex((option) => isChosen(option.value));
+      for (let offset = 1; offset <= items.length; offset += 1) {
+        const index = (start + offset + items.length) % items.length;
+        const option = items[index];
+        if (!option.disabled && `${option.label} ${option.keywords ?? ''}`.toLocaleLowerCase()
+          .split(/\s+/).some((word) => word.startsWith(e.key.toLocaleLowerCase()))) {
+          e.preventDefault();
+          if (open) setActive(index);
+          else openMenu(index);
+          return;
+        }
+      }
+    }
     if (!open) {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        setOpen(true);
+        openMenu();
       }
       return;
     }
     if (e.key === 'Escape') {
       e.preventDefault();
+      e.stopPropagation();
       setOpen(false);
+      triggerRef.current?.focus();
       return;
     }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActive((i) => Math.min(i + 1, Math.max(filtered.length - 1, 0)));
+      const next = enabledIndex(active + 1, 1);
+      if (next >= 0) setActive(next);
       return;
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActive((i) => Math.max(i - 1, 0));
+      const next = enabledIndex(active - 1, -1);
+      if (next >= 0) setActive(next);
       return;
     }
     if (e.key === 'Home' || e.key === 'End') {
       e.preventDefault();
-      setActive(e.key === 'Home' ? 0 : Math.max(filtered.length - 1, 0));
+      setActive(e.key === 'Home' ? enabledIndex(0, 1) : enabledIndex(filtered.length - 1, -1));
       return;
     }
     if (e.key === 'Tab') {
       setOpen(false);
+      triggerRef.current?.focus();
       return;
     }
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || (e.key === ' ' && e.currentTarget === triggerRef.current)) {
       e.preventDefault();
       const opt = filtered[active];
       if (opt) pick(opt.value);
@@ -337,11 +396,17 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
       data-size={size}
       data-disabled={disabled ? 'true' : undefined}
       data-invalid={invalid ? 'true' : undefined}
+      onBlur={(event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && (rootRef.current?.contains(next) || panelRef.current?.contains(next))) return;
+        setOpen(false);
+      }}
     >
       <button
         ref={triggerRef}
         type="button"
         id={id}
+        role={role}
         className={cn(
           'ui-search-select__trigger',
           'flex w-full cursor-pointer items-center justify-between gap-1.5 border border-transparent bg-[var(--color-control-fill)] text-left text-[13px] font-normal leading-none text-[var(--color-ink)] outline-none transition-colors',
@@ -357,8 +422,13 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
         aria-label={ariaLabel}
         aria-invalid={invalid || undefined}
         aria-describedby={ariaDescribedBy}
+        aria-required={ariaRequired}
+        aria-keyshortcuts={ariaKeyShortcuts}
+        aria-activedescendant={!searchable && open && filtered[active] ? `${listId}-${active}` : undefined}
+        data-autofocus={autofocus}
+        data-selected-value={multiple ? undefined : props.value}
         disabled={disabled}
-        onClick={() => !disabled && setOpen((v) => !v)}
+        onClick={() => { if (!disabled) { if (open) setOpen(false); else openMenu(); } }}
         onKeyDown={onKeyDown}
       >
         <span className="ui-search-select__value inline-flex min-w-0 items-center gap-1.5 overflow-hidden">
@@ -370,6 +440,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
           <span
             className={cn('truncate', isPlaceholder && 'is-placeholder text-[var(--color-ink-faint)]')}
             title={isPlaceholder ? undefined : summary}
+            style={multiple ? undefined : selectedOptions[0]?.previewStyle}
           >
             {isPlaceholder ? placeholder : summary}
           </span>
@@ -428,6 +499,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                 'grid gap-1 p-1.5',
                 coords && 'ui-search-select__panel--shown',
                 size === 'sm' && 'ui-search-select__panel--sm',
+                panelClassName,
               )}
               role="presentation"
               style={
@@ -439,6 +511,9 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                       width: coords.width,
                       minWidth: coords.width,
                       maxWidth: Math.min(coords.width, window.innerWidth - 16),
+                      maxHeight: coords.maxHeight,
+                      overflow: 'hidden',
+                      gridTemplateRows: searchable ? 'auto minmax(0, 1fr)' : 'minmax(0, 1fr)',
                       zIndex: 240,
                       animation: instantMotion ? 'none' : undefined,
                     }
@@ -475,6 +550,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                   size === 'sm' ? 'max-h-40' : 'max-h-48',
                 )}
                 role="listbox"
+                aria-label={ariaLabel}
                 aria-multiselectable={multiple || undefined}
               >
                 {filtered.length === 0 ? (
@@ -485,18 +561,24 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                   filtered.map((opt, i) => {
                     const chosen = isChosen(opt.value);
                     return (
-                    // The option owns the click: its children are presentational, so
-                    // assistive tech activates the <li>, never the inner button.
+                    <Fragment key={opt.value}>
+                    {opt.group && filtered[i - 1]?.group !== opt.group ? (
+                      <li className="ui-search-select__group" role="presentation">{opt.group}</li>
+                    ) : null}
+                    {/* The option owns activation, including assistive technology clicks. */}
                     <li
-                      key={opt.value}
                       id={`${listId}-${i}`}
                       role="option"
+                      aria-label={opt.label}
                       aria-selected={chosen}
+                      aria-disabled={opt.disabled || undefined}
+                      onMouseDown={(event) => event.preventDefault()}
                       onClick={() => pick(opt.value)}
                     >
                       <button
                         type="button"
                         tabIndex={-1}
+                        disabled={opt.disabled}
                         className={cn(
                           'ui-search-select__option',
                           'flex w-full cursor-pointer items-center border-0 bg-transparent text-left',
@@ -507,7 +589,7 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                           i === active && !chosen && 'bg-[var(--color-surface-2)] text-[var(--color-ink)]',
                           chosen && menuRowSelectedClass,
                         )}
-                        onMouseEnter={() => setActive(i)}
+                        onMouseEnter={() => { if (!opt.disabled) setActive(i); }}
                       >
                         {multiple ? (
                           <span
@@ -537,11 +619,13 @@ export function SearchSelect(props: SearchSelectProps | MultiSearchSelectProps) 
                             {opt.icon}
                           </span>
                         ) : null}
-                        <span className="ui-search-select__option-label min-w-0 truncate">
+                        <span className="ui-search-select__option-label min-w-0 truncate" style={opt.previewStyle}>
                           {opt.label}
                         </span>
+                        {opt.meta ? <small className="ui-search-select__meta">{opt.meta}</small> : null}
                       </button>
                     </li>
+                    </Fragment>
                     );
                   })
                 )}

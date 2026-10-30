@@ -11,7 +11,7 @@ use super::super::{parse_suggestion_identity, suggestion_identity, DocumentSugge
 use crate::collaboration::document::is_document_change_attribute;
 use crate::collaboration::{collaboration_error, NativeOfficeCollaborationDocumentSuggestionKind};
 
-use super::super::super::super::{is_utf16_boundary, utf16_len};
+use super::super::super::super::{is_utf16_boundary, utf16_len, utf16_slice};
 
 pub(super) const MAX_DOCUMENT_SUGGESTION_TEXT_UTF16: u32 = 1_048_576;
 pub(super) const MAX_DOCUMENT_SUGGESTION_DECISIONS: usize = 4_096;
@@ -327,27 +327,4 @@ fn range_conflict(start: u32, end: u32, length: u32) -> a3s_use_core::UseError {
     .with_detail("startUtf16", start as u64)
     .with_detail("endUtf16", end as u64)
     .with_detail("lengthUtf16", length as u64)
-}
-
-fn utf16_slice(value: &str, start_utf16: u32, end_utf16: u32) -> Option<&str> {
-    let start = utf16_byte_index(value, start_utf16)?;
-    let end = utf16_byte_index(value, end_utf16)?;
-    value.get(start..end)
-}
-
-fn utf16_byte_index(value: &str, offset: u32) -> Option<usize> {
-    if offset == 0 {
-        return Some(0);
-    }
-    let mut cursor = 0_u32;
-    for (byte_index, character) in value.char_indices() {
-        cursor = cursor.checked_add(character.len_utf16() as u32)?;
-        if cursor == offset {
-            return Some(byte_index + character.len_utf8());
-        }
-        if cursor > offset {
-            return None;
-        }
-    }
-    (cursor == offset).then_some(value.len())
 }

@@ -278,7 +278,7 @@ async fn deep_e2e_live_receipts() {
         case_web_search(&commit).await;
         case_web_fetch(&commit).await;
         case_code_intelligence(&commit).await;
-        case_cognitive_packages(&commit).await;
+        case_packages(&commit).await;
         case_use_runtime_tasks(&commit).await;
         case_program(&commit).await;
         case_programmable_workflows(&commit).await;
@@ -1198,8 +1198,8 @@ async fn case_code_intelligence(commit: &str) {
     row(commit, "code_intelligence", &model, "status-not-published");
 }
 
-fn cognitive_binding(content_digest: &str) -> crate::CognitivePackageBindingV1 {
-    crate::cognitive_context::package_binding_for_generation(
+fn package_binding(content_digest: &str) -> crate::PackageBindingV1 {
+    crate::package_context::package_binding_for_generation(
         "0.1.0",
         7,
         "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20",
@@ -1207,46 +1207,39 @@ fn cognitive_binding(content_digest: &str) -> crate::CognitivePackageBindingV1 {
     )
 }
 
-async fn case_cognitive_packages(commit: &str) {
-    let model = pinned_completion("cognitive_packages").await;
+async fn case_packages(commit: &str) {
+    let model = pinned_completion("packages").await;
     let store = crate::InMemoryRunStore::new();
     let run = store.create_run("session-1", "bind").await;
-    let binding = cognitive_binding(
-        "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
-    );
+    let binding =
+        package_binding("sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90");
     let admitted = store
-        .bind_cognitive_package(&run.id, binding.clone())
+        .bind_package(&run.id, binding.clone())
         .await
         .expect("admit");
     assert_eq!(admitted.event_count, 0);
     assert!(matches!(admitted.status, crate::RunStatus::Created));
     let replayed = store
-        .bind_cognitive_package(&run.id, binding.clone())
+        .bind_package(&run.id, binding.clone())
         .await
         .expect("replay");
-    assert_eq!(
-        replayed.cognitive_package_binding,
-        admitted.cognitive_package_binding
-    );
+    assert_eq!(replayed.package_binding, admitted.package_binding);
     let conflict = store
-        .bind_cognitive_package(
+        .bind_package(
             &run.id,
-            cognitive_binding(
+            package_binding(
                 "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a91",
             ),
         )
         .await;
     assert!(matches!(
         conflict,
-        Err(crate::run::RunCognitiveBindingError::Conflict)
+        Err(crate::run::RunPackageBindingError::Conflict)
     ));
     let stored = store.snapshot(&run.id).await.expect("snapshot");
-    assert_eq!(
-        stored.cognitive_package_binding,
-        admitted.cognitive_package_binding
-    );
+    assert_eq!(stored.package_binding, admitted.package_binding);
     assert_eq!(stored.event_count, 0);
-    row(commit, "cognitive_packages", &model, "Conflict");
+    row(commit, "packages", &model, "Conflict");
 }
 
 fn use_projection() -> crate::UseRuntimeTaskProjectionV1 {

@@ -142,6 +142,7 @@ impl crate::agent::TurnEngine {
         &self,
         prompt: &str,
         response: &str,
+        session_id: &str,
         cancel: &CancellationToken,
     ) -> Option<crate::memory::MemoryExtractionTicket> {
         if cancel.is_cancelled() {
@@ -160,7 +161,7 @@ impl crate::agent::TurnEngine {
             authority::trace_not_admitted(MemoryRetentionRefusalV1::EmptyTurn);
             return None;
         }
-        Some(memory.enqueue_llm_extraction())
+        Some(memory.enqueue_llm_extraction(session_id))
     }
 
     /// Extract durable memory after a fact-log turn.
@@ -175,7 +176,8 @@ impl crate::agent::TurnEngine {
         session_id: &str,
         cancel: &CancellationToken,
     ) {
-        let Some(ticket) = self.admit_fact_memory_extraction(prompt, response, cancel) else {
+        let Some(ticket) = self.admit_fact_memory_extraction(prompt, response, session_id, cancel)
+        else {
             return;
         };
         self.finish_admitted_fact_extraction(prompt, response, session_id, cancel, ticket)
@@ -231,7 +233,7 @@ impl crate::agent::TurnEngine {
         if !should_attempt_llm_memory_extraction(&snapshot, prompt, response) {
             return;
         }
-        let ticket = memory.enqueue_llm_extraction();
+        let ticket = memory.enqueue_llm_extraction(session_id);
 
         if event_tx.is_some() {
             let agent = self.clone();

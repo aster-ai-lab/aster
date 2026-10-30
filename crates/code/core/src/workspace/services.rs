@@ -375,11 +375,8 @@ impl WorkspaceServices {
         if let Some(index) = &self.persistent_index {
             return Some(Arc::clone(index));
         }
-        // Demand-driven durable FTS must open before the lazy catalog starts.
-        // `chunk_catalog()` wires the coordinator only when a persistent handle
-        // already exists; opening afterward leaves an orphan generation that
-        // never becomes ready (BM25 would stick on the portable catalog). Grep
-        // never opens this path.
+        // A late durable open joins the original catalog coordinator too.
+        // Grep never opens this path.
         if let Some(index) = self
             .lazy_lexical_backend
             .as_ref()
@@ -483,9 +480,22 @@ impl WorkspaceServices {
     /// catalog revision, fuse channel ranks, and verify returned source text.
     pub async fn hybrid_search(
         &self,
-        mut request: super::WorkspaceHybridSearchRequest,
+        request: super::WorkspaceHybridSearchRequest,
         cancellation: tokio_util::sync::CancellationToken,
     ) -> super::WorkspaceRetrievalResult<super::WorkspaceHybridSearchResult> {
+        self.hybrid_search_with_engine(request, cancellation)
+            .await
+            .map(|(result, _)| result)
+    }
+
+    pub(crate) async fn hybrid_search_with_engine(
+        &self,
+        mut request: super::WorkspaceHybridSearchRequest,
+        cancellation: tokio_util::sync::CancellationToken,
+    ) -> super::WorkspaceRetrievalResult<(
+        super::WorkspaceHybridSearchResult,
+        Option<super::WorkspaceLexicalEngine>,
+    )> {
         if !self.capabilities.read {
             return Err(super::WorkspaceRetrievalError::Unavailable);
         }
@@ -509,6 +519,7 @@ impl WorkspaceServices {
         super::retrieval::hybrid_search(
             catalog,
             self.workspace_retrieval.as_deref(),
+            self.persistent_index(),
             request,
             Arc::clone(&self.file_system),
             self.code_intelligence.clone(),

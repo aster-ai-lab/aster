@@ -416,6 +416,7 @@ impl Gateway {
             self.middleware_registry.as_ref(),
             None,
             usage_spool,
+            self.embedded_supplier_keys.as_ref(),
         )
         .await
         {

@@ -1,13 +1,13 @@
 export const meta = {
-  title: '09 · 注册自己的工具和目录脚本',
+  title: '09 · 自定义工具与目录脚本',
   description: '先接入一个没有副作用的 Rust 工具，再用 Agent 目录组织受控 JavaScript 脚本。',
   label: '09 工具与脚本',
   updated: '2026-10-26',
 };
 
-## 先做一个容易验收的 Rust 工具
+## 无副作用的 Rust 工具
 
-我们先增加 `project_label`，只返回宿主给定的练习项目标识，不读取文件或调用网络。这样可以单独验证注册、参数校验、权限和结果显示。
+`project_label` 只返回宿主给定的练习项目标识，不读取文件或调用网络。这个工具用于单独验证注册、参数校验、权限和结果显示。
 
 在练习包依赖中增加工作区的 `async-trait` 和 `serde_json`。创建 `src/project_label.rs`：
 
@@ -101,11 +101,11 @@ async function run(ctx) {
 
 有定时声明时，宿主查询 UTC 的 `due(now)`，按时间槽去重，再通过原会话提交提示。目录不会启动后台计时器，重复查询也不会自动消耗本分钟的任务。
 
-## 本章验收
+## 验收
 
 对自定义工具传一个多余参数，应被拒绝。移除它的权限规则，确认注册仍在但调用不能通过。目录脚本读取失败时，外层也应失败；不能只返回包含 `exitCode: 1` 的对象，却让 `program` 看起来执行成功。
 
-## 继续查阅
+## 相关文档
 
 - [Agent 目录与定时提示](../../meta-harness/agent-directory/)
 - [工具接口与返回值](https://github.com/aster-ai-lab/aster/blob/main/crates/code/core/src/tools/types.rs)

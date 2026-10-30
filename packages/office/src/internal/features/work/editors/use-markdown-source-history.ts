@@ -1,4 +1,6 @@
-import { useCallback, useRef, useState } from 'react';
+import type { Mark, Node } from '@tiptap/pm/model';
+import type { Selection } from '@tiptap/pm/state';
+import { useCallback, useState } from 'react';
 import type {
   MarkdownSourceEdit,
   MarkdownSourceSelection,
@@ -7,7 +9,15 @@ import type {
 const MARKDOWN_SOURCE_HISTORY_LIMIT = 100;
 const MARKDOWN_TYPING_COALESCE_MS = 1_000;
 
-interface MarkdownSourceHistorySnapshot extends MarkdownSourceEdit {}
+export interface MarkdownVisualHistorySnapshot {
+  doc: Node;
+  selection: Selection;
+  storedMarks: readonly Mark[] | null;
+}
+
+export interface MarkdownHistoryEdit extends MarkdownSourceEdit {
+  visual?: MarkdownVisualHistorySnapshot;
+}
 
 interface MarkdownSourceTypingGroup {
   at: number;
@@ -15,28 +25,47 @@ interface MarkdownSourceTypingGroup {
 }
 
 interface MarkdownSourceHistoryState {
-  past: MarkdownSourceHistorySnapshot[];
-  present: MarkdownSourceHistorySnapshot;
-  future: MarkdownSourceHistorySnapshot[];
+  past: MarkdownHistoryEdit[];
+  present: MarkdownHistoryEdit;
+  future: MarkdownHistoryEdit[];
   typing: MarkdownSourceTypingGroup | null;
 }
 
-export function useMarkdownSourceHistory(initialMarkdown: string) {
-  const historyRef = useRef<MarkdownSourceHistoryState>({
-    past: [],
-    present: {
-      markdown: initialMarkdown,
-      selection: collapsedSelection(0),
-    },
-    future: [],
-    typing: null,
+const documentHistories = new WeakMap<
+  object,
+  { current: MarkdownSourceHistoryState }
+>();
+
+export function useMarkdownSourceHistory(
+  initialMarkdown: string,
+  historyKey?: object,
+) {
+  const [historyRef] = useState(() => {
+    const retained = historyKey && documentHistories.get(historyKey);
+    const ref: { current: MarkdownSourceHistoryState } = {
+      current:
+        retained && retained.current.present.markdown === initialMarkdown
+          ? retained.current
+          : {
+              past: [],
+              present: {
+                markdown: initialMarkdown,
+                selection: collapsedSelection(0),
+              },
+              future: [],
+              typing: null,
+            },
+    };
+    ref.current.typing = null;
+    if (historyKey) documentHistories.set(historyKey, ref);
+    return ref;
   });
   const [, setVersion] = useState(0);
   const refresh = useCallback(() => setVersion((value) => value + 1), []);
 
   const record = useCallback(
     (
-      edit: MarkdownSourceEdit,
+      edit: MarkdownHistoryEdit,
       options: { typing?: boolean; inputType?: string } = {},
     ): boolean => {
       const history = historyRef.current;
@@ -101,7 +130,18 @@ export function useMarkdownSourceHistory(initialMarkdown: string) {
     [refresh],
   );
 
-  const undo = useCallback((): MarkdownSourceHistorySnapshot | null => {
+  const updateVisual = useCallback((visual: MarkdownVisualHistorySnapshot) => {
+    const history = historyRef.current;
+    const previous = history.present.visual;
+    // Selection updates can arrive before the matching document update.
+    if (previous && !previous.doc.eq(visual.doc)) return;
+    if (previous && !previous.selection.eq(visual.selection)) {
+      history.typing = null;
+    }
+    history.present = { ...history.present, visual };
+  }, []);
+
+  const undo = useCallback((): MarkdownHistoryEdit | null => {
     const history = historyRef.current;
     const previous = history.past.at(-1);
     if (!previous) return null;
@@ -116,7 +156,7 @@ export function useMarkdownSourceHistory(initialMarkdown: string) {
     return previous;
   }, [refresh]);
 
-  const redo = useCallback((): MarkdownSourceHistorySnapshot | null => {
+  const redo = useCallback((): MarkdownHistoryEdit | null => {
     const history = historyRef.current;
     const next = history.future.at(-1);
     if (!next) return null;
@@ -139,12 +179,13 @@ export function useMarkdownSourceHistory(initialMarkdown: string) {
     reset,
     undo,
     updateSelection,
+    updateVisual,
   };
 }
 
 function canCoalesceTyping(
   history: MarkdownSourceHistoryState,
-  next: MarkdownSourceHistorySnapshot,
+  next: MarkdownHistoryEdit,
   inputType: string | undefined,
   now: number,
 ): boolean {
@@ -173,12 +214,11 @@ function isContinuousTypingInput(inputType: string | undefined): boolean {
   );
 }
 
-function normalizeSnapshot(
-  snapshot: MarkdownSourceHistorySnapshot,
-): MarkdownSourceHistorySnapshot {
+function normalizeSnapshot(snapshot: MarkdownHistoryEdit): MarkdownHistoryEdit {
   return {
     markdown: snapshot.markdown,
     selection: normalizeSelection(snapshot.selection, snapshot.markdown.length),
+    visual: snapshot.visual,
   };
 }
 

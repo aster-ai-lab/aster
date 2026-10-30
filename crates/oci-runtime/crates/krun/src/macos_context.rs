@@ -77,8 +77,18 @@ impl MacosKrunApi {
             .map_err(|error| error.for_operation("load-macos-libkrunfw"))?;
         let krun_file = PinnedFile::open(&krun_path, "macOS libkrun")
             .map_err(|error| error.for_operation("load-macos-libkrun"))?;
-        verify_pinned_runtime_file(&firmware_file, LIBKRUNFW_SIZE, LIBKRUNFW_SHA256)?;
-        verify_pinned_runtime_file(&krun_file, LIBKRUN_SIZE, LIBKRUN_SHA256)?;
+        verify_pinned_runtime_file(
+            &firmware_file,
+            LIBKRUNFW_SIZE,
+            LIBKRUNFW_SHA256,
+            "a661ecaaa8310276968d029a3f518cbde32de9bd2fdea0d366d57b63958cc5d8",
+        )?;
+        verify_pinned_runtime_file(
+            &krun_file,
+            LIBKRUN_SIZE,
+            LIBKRUN_SHA256,
+            "e2664058cb5282fc99475ec33ae68404c401392b28812864abeba7c5164e93ed",
+        )?;
         let firmware_loader_path = firmware_file.loader_path();
         let krun_loader_path = krun_file.loader_path();
 
@@ -694,7 +704,19 @@ fn verify_runtime_dir(runtime_dir: &Path) -> Result<PathBuf> {
     })
 }
 
-fn verify_pinned_runtime_file(file: &PinnedFile, expected_size: u64, expected: &str) -> Result<()> {
+fn verify_pinned_runtime_file(
+    file: &PinnedFile,
+    expected_size: u64,
+    expected: &str,
+    code: &str,
+) -> Result<()> {
+    if file.size() == expected_size && file.sha256() == expected {
+        return Ok(());
+    }
+    let mut bytes = file.read_bounded(expected_size + 65536)?;
+    if signing_neutral_sha256(&mut bytes).as_deref() == Some(code) {
+        return Ok(());
+    }
     if file.size() != expected_size {
         return Err(runtime_error(
             "verify-macos-libkrun-runtime",
@@ -716,6 +738,68 @@ fn verify_pinned_runtime_file(file: &PinnedFile, expected_size: u64, expected: &
         ));
     }
     Ok(())
+}
+
+// Codesign changes only the signature and __LINKEDIT sizes in these pinned arm64 libraries.
+fn signing_neutral_sha256(bytes: &mut [u8]) -> Option<String> {
+    if bytes.get(..4)? != b"\xcf\xfa\xed\xfe" {
+        return None;
+    }
+    let commands = u32::from_le_bytes(bytes.get(16..20)?.try_into().ok()?);
+    let end =
+        32usize.checked_add(u32::from_le_bytes(bytes.get(20..24)?.try_into().ok()?) as usize)?;
+    if end > bytes.len() {
+        return None;
+    }
+    let (mut signature, mut linkedit) = (None, None);
+    let mut offset = 32usize;
+    for _ in 0..commands {
+        let header = bytes.get(offset..offset.checked_add(8)?)?;
+        let command = u32::from_le_bytes(header[..4].try_into().ok()?);
+        let size = u32::from_le_bytes(header[4..].try_into().ok()?) as usize;
+        let next = offset.checked_add(size)?;
+        if size < 8 || next > end {
+            return None;
+        }
+        if command == 0x1d {
+            if size != 16 || signature.replace(offset).is_some() {
+                return None;
+            }
+        } else if command == 0x19
+            && size >= 72
+            && bytes.get(offset + 8..offset + 24)? == b"__LINKEDIT\0\0\0\0\0\0"
+        {
+            if linkedit.replace(offset).is_some() {
+                return None;
+            }
+        }
+        offset = next;
+    }
+    if offset != end {
+        return None;
+    }
+    let (signature, linkedit) = (signature?, linkedit?);
+    let start =
+        u32::from_le_bytes(bytes.get(signature + 8..signature + 12)?.try_into().ok()?) as usize;
+    let size =
+        u32::from_le_bytes(bytes.get(signature + 12..signature + 16)?.try_into().ok()?) as usize;
+    if start < end || start.checked_add(size)? != bytes.len() {
+        return None;
+    }
+    let file_offset = u64::from_le_bytes(bytes.get(linkedit + 40..linkedit + 48)?.try_into().ok()?);
+    let file_size = u64::from_le_bytes(bytes.get(linkedit + 48..linkedit + 56)?.try_into().ok()?);
+    let vm_size = u64::from_le_bytes(bytes.get(linkedit + 32..linkedit + 40)?.try_into().ok()?);
+    if file_offset < end as u64
+        || file_offset.checked_add(file_size)? != bytes.len() as u64
+        || vm_size != file_size.checked_add(16383)? & !16383
+    {
+        return None;
+    }
+    let payload_size = (start as u64).checked_sub(file_offset)?.to_le_bytes();
+    bytes[signature + 8..signature + 16].fill(0);
+    bytes[linkedit + 32..linkedit + 40].copy_from_slice(&payload_size);
+    bytes[linkedit + 48..linkedit + 56].copy_from_slice(&payload_size);
+    Some(format!("{:x}", Sha256::digest(&bytes[..start])))
 }
 
 fn verify_exported_kernel(get_kernel: KrunfwGetKernel) -> Result<MacosRuntimeProvenance> {
@@ -827,9 +911,13 @@ mod tests {
 
         let pinned = super::PinnedFile::open(&path, "test runtime asset")
             .expect("test runtime asset must be pinnable");
-        let error = verify_pinned_runtime_file(&pinned, 16, &"0".repeat(64))
+        let error = verify_pinned_runtime_file(&pinned, 16, &"0".repeat(64), &"0".repeat(64))
             .expect_err("a modified runtime file must be rejected");
         fs::remove_file(&path).expect("test file must be removed");
         assert!(error.to_string().contains("SHA-256 mismatch"));
     }
 }
+
+#[cfg(test)]
+#[path = "macos_context_signing_tests.rs"]
+mod signing_tests;

@@ -4,6 +4,231 @@ use super::{A3sCodeAgent, SessionSetup};
 use a3s_code_core::{sandbox::SandboxNetworkMode, CodeConfig};
 use agent_client_protocol::{self as acp, Agent as _};
 
+#[tokio::test]
+async fn knowledge_compile_modes_keep_the_candidate_only_ceiling() {
+    use serde_json::json;
+    let directory = tempfile::tempdir().unwrap();
+    let root = directory.path().join("wiki/local");
+    std::fs::create_dir_all(&root).unwrap();
+    let root = root.canonicalize().unwrap();
+    std::fs::write(root.join("source.md"), "Frozen evidence.").unwrap();
+    let job =
+        a3s_okf::begin_knowledge_maintenance(&root, &[], a3s_okf::MaintenanceOperation::Ingest)
+            .unwrap();
+    assert_compile_ceiling(
+        directory.path(),
+        &job,
+        json!({"root":root,"jobId":job.id}),
+        "source.md",
+        || {
+            a3s_okf::cancel_knowledge_maintenance(&root, &job.id).unwrap();
+        },
+    )
+    .await;
+    assert_eq!(
+        std::fs::read_to_string(root.join("source.md")).unwrap(),
+        "Frozen evidence."
+    );
+}
+
+#[tokio::test]
+async fn workspace_wiki_compile_modes_keep_the_candidate_only_ceiling() {
+    use serde_json::json;
+    let directory = tempfile::tempdir().unwrap();
+    let source = b"pub fn answer() -> u8 { 42 }\n";
+    std::fs::create_dir(directory.path().join("src")).unwrap();
+    std::fs::write(directory.path().join("src/lib.rs"), source).unwrap();
+    let input = a3s_okf::WorkspaceKnowledgeInput::new(
+        &directory.path().canonicalize().unwrap(),
+        "tenant:permission:binding",
+        &format!("sha256:{}", "a".repeat(64)),
+        vec![a3s_okf::WorkspaceKnowledgeSource::text("src/lib.rs", source).unwrap()],
+    )
+    .unwrap();
+    let job = a3s_okf::begin_workspace_knowledge_maintenance(&input)
+        .unwrap()
+        .unwrap();
+    assert_compile_ceiling(
+        directory.path(),
+        &job,
+        json!({"root":input.output_root(),"jobId":job.id,"workspaceRevision":input.binding_revision()}),
+        &job.sources[0],
+        || { a3s_okf::cancel_workspace_knowledge_maintenance(&input, &job.id).unwrap(); },
+    )
+    .await;
+    assert_eq!(
+        std::fs::read(directory.path().join("src/lib.rs")).unwrap(),
+        source
+    );
+    assert!(!input.output_root().join("concepts/a.md").exists());
+}
+
+async fn assert_compile_ceiling(
+    directory: &std::path::Path,
+    job: &a3s_okf::KnowledgeJob,
+    scope: serde_json::Value,
+    source: &str,
+    stop: impl FnOnce(),
+) {
+    use serde_json::json;
+    let frozen = std::fs::read(std::path::Path::new(&job.staging).join(source)).unwrap();
+    let mut launch = super::tests::test_launch(Some(directory.join("sessions")));
+    launch.workspace = job.staging.clone().into();
+    let ambient_memory = directory.join("ambient-memory");
+    launch.config.memory_dir = Some(ambient_memory.clone());
+    let agent = A3sCodeAgent::new(launch);
+    let setup = SessionSetup {
+        workspace: job.staging.clone().into(),
+        model_id: "fixture/model",
+        effort: None,
+        host: crate::host_context::StudioHost {
+            knowledge_compile: Some(serde_json::from_value(scope.clone()).unwrap()),
+            ..Default::default()
+        },
+        components: &[],
+        mcp_servers: Vec::new(),
+    };
+    let options = agent
+        .session_options_for("compile-attestation", &setup, &directory.join("sessions"))
+        .await
+        .unwrap();
+    let attestor = options
+        .completion_attestor
+        .expect("candidate completion needs host byte verification");
+    let candidate = std::path::Path::new(&job.staging).join("concepts/attested.md");
+    std::fs::write(&candidate, b"Candidate evidence.").unwrap();
+    let records = [a3s_code_core::completion_attestor::MutatedPathRecord {
+        path: "concepts/attested.md".into(),
+        content_digest: a3s_okf::content_generation(b"Candidate evidence."),
+    }];
+    let report = attestor.attest("fixture-effect-digest", &records).unwrap();
+    assert_eq!(
+        report.effect_digest.as_deref(),
+        Some("fixture-effect-digest")
+    );
+    assert!(report
+        .checks
+        .iter()
+        .all(|check| check.status == a3s_code_core::verification::VerificationStatus::Passed));
+    std::fs::write(&candidate, b"Changed after the effect receipt.").unwrap();
+    assert!(attestor.attest("fixture-effect-digest", &records).is_none());
+    let opened = agent
+        .new_session(
+            acp::NewSessionRequest::new(&job.staging).meta(Some(
+                [("a3sHost".into(), json!({"knowledgeCompile":scope}))]
+                    .into_iter()
+                    .collect(),
+            )),
+        )
+        .await
+        .unwrap();
+    let session = agent
+        .sessions
+        .lock()
+        .await
+        .get(opened.session_id.0.as_ref())
+        .unwrap()
+        .session
+        .clone();
+    assert!(session
+        .memory()
+        .unwrap()
+        .recall_similar("ambient sentinel", 5)
+        .await
+        .unwrap()
+        .is_empty());
+    assert!(!ambient_memory.exists());
+    for mode in ["default", "plan", "auto", "yolo"] {
+        agent
+            .set_session_mode(acp::SetSessionModeRequest::new(
+                opened.session_id.clone(),
+                mode,
+            ))
+            .await
+            .unwrap();
+        let read = session
+            .governed_tool("read", json!({"file_path":source}))
+            .await
+            .unwrap();
+        assert_eq!(read.exit_code, 0, "{mode}: {read:?}");
+        let output = session
+            .governed_tool(
+                "write",
+                json!({"file_path":"concepts/a.md","content":"Candidate evidence."}),
+            )
+            .await
+            .unwrap();
+        assert_eq!(output.exit_code, 0, "{mode}: {output:?}");
+        for (tool, args) in [
+            ("write", json!({"file_path":source,"content":"Changed"})),
+            ("bash", json!({"command":"true"})),
+        ] {
+            let refused = session.governed_tool(tool, args).await.unwrap();
+            assert_ne!(refused.exit_code, 0, "{mode}: {refused:?}");
+        }
+        assert_eq!(
+            std::fs::read(std::path::Path::new(&job.staging).join(source)).unwrap(),
+            frozen
+        );
+    }
+    let written = session
+        .governed_tool(
+            "batch",
+            json!({"invocations":[
+                {"tool":"write","args":{"file_path":"concepts/b.md","content":"Batch candidate."}},
+                {"tool":"write","args":{"file_path":".wiki-changes.json","content":"{}"}}
+            ]}),
+        )
+        .await
+        .unwrap();
+    assert_eq!(written.exit_code, 0, "{written:?}");
+    let aliased = session.governed_tool("batch", json!({"invocations":[
+        {"tool":"functions.write","args":{"file_path":"concepts/alias.md","content":"Aliased candidate"}},
+        {"tool":"functions.write","args":{"file_path":".wiki-changes.json","content":"{}"}}
+    ]})).await.unwrap();
+    assert_eq!(aliased.exit_code, 0, "{aliased:?}");
+    assert_eq!(
+        std::fs::read_to_string(std::path::Path::new(&job.staging).join("concepts/alias.md"))
+            .unwrap(),
+        "Aliased candidate"
+    );
+    for member in [
+        json!({"tool":"functions.write","args":{"file_path":source,"content":"Changed"}}),
+        json!({"tool":"functions.bash","args":{"command":"true"}}),
+        json!({"tool":"functions.batch","args":{"invocations":[{"tool":"write","args":{"file_path":"concepts/nested.md","content":"Nested"}}]}}),
+    ] {
+        let refused = session.governed_tool("batch", json!({"invocations":[
+            {"tool":"functions.write","args":{"file_path":"concepts/alias-must-not-exist.md","content":"Changed"}},
+            member
+        ]})).await.unwrap();
+        assert_ne!(refused.exit_code, 0, "{refused:?}");
+        assert!(!std::path::Path::new(&job.staging)
+            .join("concepts/alias-must-not-exist.md")
+            .exists());
+    }
+    let refused = session.governed_tool("batch", json!({"invocations":[
+        {"tool":"write","args":{"file_path":"concepts/should-not-exist.md","content":"Candidate"}},
+        {"tool":"write","args":{"file_path":source,"content":"Changed"}}
+    ]})).await.unwrap();
+    assert_ne!(refused.exit_code, 0, "{refused:?}");
+    assert!(!std::path::Path::new(&job.staging)
+        .join("concepts/should-not-exist.md")
+        .exists());
+    stop();
+    let refused = session
+        .governed_tool(
+            "write",
+            json!({"file_path":"concepts/after-stop.md","content":"Late candidate"}),
+        )
+        .await
+        .unwrap();
+    assert_ne!(refused.exit_code, 0, "{refused:?}");
+    assert!(!std::path::Path::new(&job.staging)
+        .join("concepts/after-stop.md")
+        .exists());
+    session.close().await;
+}
+
 #[test]
 fn empty_launch_model_is_omitted_and_named() {
     let empty = A3sCodeAgent::core_session_options("session", "  ", None);
@@ -130,6 +355,8 @@ async fn initialize_rules_append_without_replacing_host_or_unattended_contracts(
             options.permission_policy.is_some(),
             "review restrictions stay installed"
         );
+        assert!(options.isolated_context);
+        assert!(options.hook_executor.is_none());
         let prompt = options.prompt_slots.unwrap().build();
         assert_eq!(prompt.matches("APPEND_RULE_42").count(), 1);
         assert!(prompt.contains("保留原文"));
@@ -444,11 +671,21 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
     .unwrap();
     let mut launch = super::test_launch(Some(root.path().join("sessions")));
     launch.workspace = root.path().into();
+    let ambient_memory = root.path().join("ambient-memory");
+    launch.config.memory_dir = Some(ambient_memory.clone());
+    let ambient_wiki = root.path().join("ambient-wiki");
+    std::fs::create_dir(&ambient_wiki).unwrap();
+    std::fs::write(
+        ambient_wiki.join("private.md"),
+        "Private personal evidence.",
+    )
+    .unwrap();
     let host = A3sCodeAgent::new(launch);
-    let meta = json!({"a3sHost":{"sourceReview":true}})
-        .as_object()
-        .unwrap()
-        .clone();
+    let meta =
+        json!({"a3sHost":{"sourceReview":true,"officeTools":true,"workspaceWikiSearch":true,"workspaceMemorySearch":true,"assets":{"wiki":ambient_wiki}}})
+            .as_object()
+            .unwrap()
+            .clone();
     let id = host
         .new_session(acp::NewSessionRequest::new(root.path()).meta(meta))
         .await
@@ -467,6 +704,20 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
         .presented_tool_definitions("Review the supplied text.")
         .unwrap()
         .is_empty());
+    assert!(!ambient_memory.exists());
+    assert!(session
+        .memory()
+        .unwrap()
+        .recall_similar("Private personal evidence", 5)
+        .await
+        .unwrap()
+        .is_empty());
+    for name in ["open_local_asset", "search_wiki", "search_memory"] {
+        assert!(!session
+            .tool_definitions()
+            .iter()
+            .any(|tool| tool.name == name));
+    }
     host.set_session_mode(acp::SetSessionModeRequest::new(id.clone(), "yolo"))
         .await
         .unwrap();
@@ -505,13 +756,75 @@ async fn source_review_has_no_tools_even_after_a_yolo_mode_change() {
         .presented_tool_definitions("Read private.txt.")
         .unwrap()
         .is_empty());
-    for name in ["office_read", "office_file", "output_check"] {
-        assert!(ordinary
+    for name in ["office_read", "office_file"] {
+        assert!(!ordinary
             .tool_definitions()
             .iter()
             .any(|tool| tool.name == name));
     }
+    assert!(ordinary
+        .tool_definitions()
+        .iter()
+        .any(|tool| tool.name == "output_check"));
     ordinary.close().await;
+}
+
+#[tokio::test]
+async fn office_tools_follow_only_the_explicit_host_capability() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = super::test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().into();
+    let agent = A3sCodeAgent::new(launch);
+    for (metadata, enabled) in [
+        (serde_json::json!({}), false),
+        (serde_json::json!({"a3sHost":{"officeTools":false}}), false),
+        (serde_json::json!({"a3sHost":{"officeTools":true}}), true),
+    ] {
+        let opened = agent
+            .new_session(
+                acp::NewSessionRequest::new(root.path())
+                    .meta(metadata.as_object().unwrap().clone()),
+            )
+            .await
+            .unwrap();
+        let session = agent
+            .sessions
+            .lock()
+            .await
+            .get(opened.session_id.0.as_ref())
+            .unwrap()
+            .session
+            .clone();
+        let tools = session
+            .presented_tool_definitions("Create an Office workbook.")
+            .unwrap();
+        for name in ["office_read", "office_file"] {
+            assert_eq!(
+                tools.iter().any(|tool| tool.name == name),
+                enabled,
+                "{name}"
+            );
+        }
+        assert!(tools.iter().any(|tool| tool.name == "output_check"));
+        session.close().await;
+    }
+}
+
+#[tokio::test]
+async fn malformed_office_capability_refuses_before_session_admission() {
+    let root = tempfile::tempdir().unwrap();
+    let mut launch = super::test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().into();
+    let agent = A3sCodeAgent::new(launch);
+    let metadata = serde_json::json!({"a3sHost":{"officeTools":"true"}});
+    let error = agent
+        .new_session(
+            acp::NewSessionRequest::new(root.path()).meta(metadata.as_object().unwrap().clone()),
+        )
+        .await
+        .unwrap_err();
+    assert!(format!("{error:?}").contains("officeTools must be a boolean"));
+    assert!(agent.sessions.lock().await.is_empty());
 }
 
 #[tokio::test]

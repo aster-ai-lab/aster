@@ -645,12 +645,15 @@ async fn configured_compatibility_server_name_blocks_projection_before_publicati
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn cancellation_rolls_back_a_prepared_stdio_connection_without_publication() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
+    eprintln!("MCP-CANCEL acquired test resource permit");
     let fixture_dir = tempfile::tempdir().unwrap();
     let server = fixture_dir.path().join("mcp-fake-server");
     let log_path = fixture_dir.path().join("mcp-fake-server.log");
     compile_fake_server(&server);
+    eprintln!("MCP-CANCEL compiled stdio fixture");
 
     let session = Arc::new(test_session("capability-mcp-cancelled-prepare").await);
+    eprintln!("MCP-CANCEL created session");
     let before = session.capability_catalog_stamp();
     let acquired = Arc::new(AtomicUsize::new(0));
     let dropped = Arc::new(AtomicUsize::new(0));
@@ -698,12 +701,16 @@ async fn cancellation_rolls_back_a_prepared_stdio_connection_without_publication
         .unwrap();
 
     let cancellation = CancellationToken::new();
-    let apply = tokio::spawn({
+    let mut apply = tokio::spawn({
         let session = Arc::clone(&session);
         let cancellation = cancellation.clone();
         async move { session.apply_capability_batch(batch, cancellation).await }
     });
-    entered.acquire().await.unwrap().forget();
+    tokio::select! {
+        permit = entered.acquire() => permit.unwrap().forget(),
+        result = &mut apply => panic!("MCP preparation exited before the cancellation adapter: {result:?}"),
+    }
+    eprintln!("MCP-CANCEL prepared initial MCP connection");
     let log = std::fs::read_to_string(&log_path).unwrap();
     let pids = fixture_started_pids(&log);
     assert_eq!(pids.len(), 1, "unexpected fixture log: {log}");

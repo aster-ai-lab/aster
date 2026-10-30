@@ -14,6 +14,9 @@
 //! command before the ask, so the launch points the guest backend at a stub
 //! shim: it passes the pre-spawn availability probe and runs nothing.
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 use std::cell::RefCell;
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
@@ -320,8 +323,13 @@ impl Drop for AgentProc {
 }
 
 async fn spawn_agent(fixture: &Fixture) -> AgentProc {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_a3s-code-acp"));
+    let bin = PathBuf::from(binaries::acp_binary());
     let mut command = tokio::process::Command::new(bin);
+    let sandbox = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../../target/qualification/acp-sandbox-bootstrap/assets");
+    if sandbox.is_dir() {
+        command.env("ASTER_SANDBOX_DIR", sandbox);
+    }
     if cfg!(target_os = "macos") {
         let image = fixture.tmp.join("guest-image.json");
         let shim = fixture.tmp.join("guest-shim");

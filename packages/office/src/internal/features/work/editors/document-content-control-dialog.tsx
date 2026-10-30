@@ -95,6 +95,7 @@ export function DocumentContentControlDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(
         messages,
         editing

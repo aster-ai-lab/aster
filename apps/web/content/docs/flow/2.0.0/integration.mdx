@@ -1,0 +1,102 @@
+export const meta = {
+  title: 'Flow Rust 接入与确定性步骤',
+  description: '本地依赖、FlowRuntime、持久步骤身份、创建运行与读取结果。',
+  label: 'Rust 接入',
+  updated: '2026-10-30',
+};
+
+先用 Rust Runtime 和内存 Store 验证流程，再按部署需要替换持久 Store。内存示例不证明进程重启后可以恢复。
+
+## 在工作区接入
+
+下例适用于 `apps/<宿主>/` 下已有的工作区 crate，路径相对于其 `Cargo.toml`：
+
+```toml
+[dependencies]
+a3s-flow = { path = "../../crates/flow", default-features = false }
+async-trait = "0.1"
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt"] }
+```
+
+这里关闭默认的 `native-ts`，只使用 Rust Runtime。不需要增加另一套工作区、锁文件或 SDK。
+
+## 最小 Runtime
+
+下面的完整示例使用固定步骤 ID `format`。决策函数先读取已提交结果；只有结果尚不存在时才调度步骤。步骤接收输入并返回 JSON，没有外部服务依赖。
+
+```rust
+use a3s_flow::{
+    FlowEngine, FlowError, FlowRuntime, RuntimeCommand, StepInvocation,
+    WorkflowInvocation, WorkflowSpec,
+};
+use async_trait::async_trait;
+use serde_json::{json, Value};
+use std::sync::Arc;
+
+struct GreetingRuntime;
+
+#[async_trait]
+impl FlowRuntime for GreetingRuntime {
+    async fn run_workflow(
+        &self,
+        invocation: WorkflowInvocation,
+    ) -> a3s_flow::Result<RuntimeCommand> {
+        let ctx = invocation.context();
+        if let Some(output) = ctx.step_output("format") {
+            return Ok(ctx.complete(output.clone()));
+        }
+        Ok(ctx.schedule_step("format", "format", ctx.input().clone()))
+    }
+
+    async fn run_step(&self, invocation: StepInvocation) -> a3s_flow::Result<Value> {
+        if invocation.step_name != "format" {
+            return Err(FlowError::Runtime("unknown step".into()));
+        }
+        let name = invocation.input.get("name").and_then(Value::as_str)
+            .ok_or_else(|| FlowError::Runtime("name must be a string".into()))?;
+        Ok(json!({ "message": format!("hello {name}") }))
+    }
+}
+
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> a3s_flow::Result<()> {
+    let engine = FlowEngine::in_memory(Arc::new(GreetingRuntime));
+    let spec = WorkflowSpec::rust_embedded("docs.greeting", "0.1.0", "docs", "main");
+    let run_id = engine.start_with_id("greeting-1", spec, json!({ "name": "Aster" })).await?;
+    let snapshot = engine.snapshot(&run_id).await?;
+    assert_eq!(snapshot.output, Some(json!({ "message": "hello Aster" })));
+    println!("status={:?}", snapshot.status);
+    Ok(())
+}
+```
+
+运行创建会推进到完成或持久等待；返回运行 ID 不等于任务已完成，应读取 `snapshot.status` 和输出。内存 Store 的构造见 <SourceRef path="crates/flow/src/engine/mod.rs" match="pub fn in_memory(runtime: Arc<dyn FlowRuntime>)">内存引擎入口</SourceRef>。
+
+## 步骤身份与确定性
+
+步骤 ID 标识这次工作流中的逻辑操作，步骤名选择宿主实现。恢复时应继续给同一操作使用同一 ID、输入与策略，不能在决策函数里生成随机 ID 或读取未记录的外部时间来改变分支。
+
+`schedule_step` 只返回命令，由引擎校验并执行；它不是立即调用工具。见 <SourceRef path="crates/flow/src/context.rs" match="pub fn schedule_step(">步骤命令构造</SourceRef>。类型化宿主也可以使用 `input_as`、`step_output_as` 和输出访问方法。
+
+外部操作应使用稳定的幂等键。不要仅凭 `run_step` 被调用一次，就承诺重启后也只会产生一次外部效果。
+
+## 等待、审批与子工作流
+
+定时器、Signal 与 Hook 将等待写入历史。业务审批可映射为宿主验证过的 Hook 回答，再交给引擎恢复；回调 token 不代替审批人的授权。
+
+子工作流的身份和策略同样进入历史。批量执行时应设置并发与资源上限，保留失败兄弟步骤的取消和未明结果，不把父运行退出等同于所有外部操作已回滚。
+
+更完整的类型化示例来自仓库现有文件：
+
+```sh
+cargo run --locked -p a3s-flow --no-default-features --example sequential_steps
+```
+
+该示例在内存中生成模拟账单和授权结果，不调用真实支付服务。
+
+## 实现依据
+
+- [类型化顺序步骤示例](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/examples/sequential_steps.rs)
+- [工作流上下文与命令](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/src/context.rs)
+- [运行时调用对象](https://github.com/aster-ai-lab/aster/blob/main/crates/flow/src/runtime/invocation.rs)

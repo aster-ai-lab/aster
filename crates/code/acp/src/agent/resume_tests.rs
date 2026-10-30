@@ -16,6 +16,51 @@ fn agent_without_model(workspace: &std::path::Path) -> A3sCodeAgent {
 }
 
 #[tokio::test]
+async fn registered_secondary_workspace_resume_is_bound_to_its_original_core_root() {
+    let root = tempfile::tempdir().unwrap();
+    let secondary = tempfile::tempdir().unwrap();
+    let mut launch = test_launch(Some(root.path().join("sessions")));
+    launch.workspace = root.path().canonicalize().unwrap();
+    let agent = A3sCodeAgent::new(launch);
+    let opened = agent
+        .new_session(acp::NewSessionRequest::new(secondary.path()))
+        .await
+        .unwrap();
+    let sid = opened.session_id.0.as_ref();
+    assert_eq!(
+        agent.admit_resume(sid, secondary.path()).await.unwrap(),
+        secondary.path().canonicalize().unwrap()
+    );
+    assert!(agent.admit_resume(sid, root.path()).await.is_err());
+    assert!(agent
+        .admit_resume("unregistered", secondary.path())
+        .await
+        .is_err());
+    #[cfg(unix)]
+    {
+        let original = secondary.path().with_extension("original");
+        std::fs::rename(secondary.path(), &original).unwrap();
+        std::os::unix::fs::symlink(root.path(), secondary.path()).unwrap();
+        let refused = agent.admit_resume(sid, secondary.path()).await.is_err();
+        std::fs::remove_file(secondary.path()).unwrap();
+        std::fs::rename(&original, secondary.path()).unwrap();
+        assert!(
+            refused,
+            "a retargeted workspace must not rebind a live session"
+        );
+    }
+    agent
+        .sessions
+        .lock()
+        .await
+        .get(sid)
+        .unwrap()
+        .session
+        .close()
+        .await;
+}
+
+#[tokio::test]
 async fn unknown_resume_refuses_before_any_session_or_model_initialization() {
     let root = tempfile::tempdir().expect("workspace");
     let agent = agent_without_model(root.path());
@@ -102,7 +147,7 @@ async fn existing_fact_record_is_admitted_without_activating_any_surface() {
 }
 
 #[tokio::test]
-async fn a_valid_record_reaches_ordinary_model_validation_instead_of_blanket_refusal() {
+async fn a_legacy_record_without_a_snapshot_refuses_instead_of_creating_an_empty_session() {
     let root = tempfile::tempdir().expect("workspace");
     let path = record(root.path(), "existing");
     let before = std::fs::read(&path).expect("before");
@@ -113,14 +158,13 @@ async fn a_valid_record_reaches_ordinary_model_validation_instead_of_blanket_ref
             root.path().to_owned(),
         ))
         .await
-        .expect_err("the fixture deliberately has no model");
+        .expect_err("restore requires an existing snapshot");
     let error = serde_json::to_value(error).expect("error");
     assert_eq!(error["code"], -32603);
     assert!(error["data"]
         .as_str()
-        .expect("model validation")
-        .contains("Invalid session configuration for 'model'"));
-    assert!(agent.core_agent.lock().await.is_some());
+        .expect("snapshot recovery reason")
+        .contains("snapshot store is missing"));
     assert_eq!(std::fs::read(path).expect("after"), before);
     assert!(!root.path().join(".a3s/sessions").exists());
     assert!(!root.path().join("must-not-create-store").exists());
@@ -164,6 +208,57 @@ async fn refused_resume_does_not_admit_an_opted_in_document_surface() {
     assert!(agent.documents.borrow().is_none());
     assert!(agent.core_agent.lock().await.is_none());
     assert!(!root.path().join(".a3s").exists());
+}
+
+#[tokio::test]
+async fn an_empty_new_session_can_resume_without_a_turn() {
+    use a3s_code_core::store::{FileSessionStore, SessionStore};
+
+    let root = tempfile::tempdir().unwrap();
+    let directory = root.path().join("sessions");
+    let mut launch = test_launch(Some(directory.clone()));
+    launch.workspace = root.path().to_owned();
+    let expected_model = launch.model_id.clone();
+    let host = A3sCodeAgent::new(launch.clone());
+    let id = host
+        .new_session(acp::NewSessionRequest::new(root.path()))
+        .await
+        .unwrap()
+        .session_id;
+    let store = FileSessionStore::new(&directory).await.unwrap();
+    let snapshot = store.load_snapshot(id.0.as_ref()).await.unwrap();
+    assert!(
+        snapshot.is_some(),
+        "new session must be durable before its response"
+    );
+    assert!(snapshot.unwrap().session.messages.is_empty());
+    host.sessions
+        .lock()
+        .await
+        .get(id.0.as_ref())
+        .unwrap()
+        .session
+        .close()
+        .await;
+    drop(host);
+
+    let host = A3sCodeAgent::new(launch);
+    let restored = host
+        .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
+        .await
+        .unwrap();
+    assert_eq!(
+        restored.models.unwrap().current_model_id.0.as_ref(),
+        expected_model
+    );
+    host.sessions
+        .lock()
+        .await
+        .get(id.0.as_ref())
+        .unwrap()
+        .session
+        .close()
+        .await;
 }
 
 #[tokio::test]
@@ -235,7 +330,11 @@ async fn snapshot_resume_keeps_usage_and_refuses_foreign_or_corrupt_snapshot() {
         .load_session(acp::LoadSessionRequest::new(id.clone(), root.path()))
         .await
         .unwrap_err();
-    assert_eq!(serde_json::to_value(error).unwrap()["code"], -32002);
+    let error = serde_json::to_value(error).unwrap();
+    assert_eq!(error["code"], -32602);
+    assert!(error["data"]
+        .as_str()
+        .is_some_and(|reason| reason.contains("foreign workspace")));
     assert!(host.sessions.lock().await.is_empty());
     assert!(!foreign.path().join(".a3s").exists());
 

@@ -1,8 +1,12 @@
-flowchart TB
-accTitle: ACP client and runtime
-accDescr: The client talks to ACP on stdio. Core governs workspace tools and host capabilities. Permission and form requests return to the client.
-client[客户端 / TUI / Desktop] -->|stdio ACP|acp[ACP 会话与协议适配]
-acp --> core[Core Run 与受控执行]
-core --> workspace[工作区 / 沙箱 / 工具]
-core --> services[模型 / MCP / 宿主能力]
-acp -->|权限 / 问题 / 表单|client
+flowchart LR
+  accTitle: ACP 怎样连接界面与执行内核
+  accDescr: ACP 负责转接和宿主集成。任务状态仍由 Core 的事实驱动。
+  client["界面客户端<br/>CLI / IDE / Studio"]
+  wire["协议连接<br/>ACP stdio"]
+  adapter["ACP 适配器<br/>会话与消息"]
+  core["Core 会话<br/>执行与治理"]
+  project["模型与工作区<br/>受控调用"]
+  client --> wire
+  wire --> adapter
+  adapter --> core
+  core --> project

@@ -176,7 +176,9 @@ async fn owned_fact_confirmation_uses_the_original_run_snapshot_after_session_mo
     );
     let decision = facts
         .iter()
-        .find(|fact| fact.kind == "model.turn" && fact.payload["call"]["id"] == "snapshot-probe")
+        .find(|fact| {
+            fact.kind == "model.turn" && fact.payload["call"]["name"] == "confirmation_probe"
+        })
         .unwrap();
     assert_eq!(
         decision.payload["call"]["needs_confirmation"], true,

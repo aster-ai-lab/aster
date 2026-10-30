@@ -258,7 +258,7 @@ async fn dialogue(
     let info: serde_json::Value = serde_json::from_str(
         acp::Agent::ext_method(
             conn,
-            acp::ExtRequest::new("x.ai/session/info", std::sync::Arc::from(params)),
+            acp::ExtRequest::new("a3s/session/info", std::sync::Arc::from(params)),
         )
         .await
         .map_err(|error| format!("session info: {error}"))?

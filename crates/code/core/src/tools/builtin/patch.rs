@@ -339,7 +339,9 @@ impl Tool for PatchTool {
         "Apply a unified diff patch to one file (file_path + diff), or several files in ONE \
          all-or-nothing call (patches: [{file_path, diff}, ...] — every diff is validated \
          in memory before any write, so a bad hunk anywhere changes nothing). Prefer the \
-         patches form when editing two or more files in the same step."
+         patches form when editing two or more files in the same step, and one diff with \
+         several hunks when several regions of one file change together. String-based \
+         `edit` with an `edits` array is easier when exact line numbers are unknown."
     }
 
     fn parameters(&self) -> serde_json::Value {

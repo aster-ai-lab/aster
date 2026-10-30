@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import '@testing-library/jest-dom/vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { SearchSelect } from '../SearchSelect'
@@ -11,6 +12,82 @@ const options = [
   { value: 'beta', label: 'Beta' },
   { value: 'gamma', label: 'Gamma' }
 ]
+
+describe('SearchSelect editor choices', () => {
+  it('skips disabled options for keyboard activation and refuses their pointer activation', () => {
+    const change = vi.fn()
+    render(<SearchSelect searchable={false} allowClear={false} options={[
+      { value: 'alpha', label: 'Alpha' },
+      { value: 'beta', label: 'Beta', disabled: true },
+      { value: 'gamma', label: 'Gamma' }
+    ]} value="alpha" onChange={change} />)
+    const trigger = screen.getByRole('button', { name: 'Alpha' })
+    fireEvent.click(trigger)
+    fireEvent.click(screen.getByRole('option', { name: 'Beta' }))
+    expect(change).not.toHaveBeenCalled()
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' })
+    fireEvent.keyDown(trigger, { key: 'Enter' })
+    expect(change).toHaveBeenCalledExactlyOnceWith('gamma')
+  })
+
+  it('keeps a select-only trigger focused with its active option identified', () => {
+    render(<SearchSelect searchable={false} allowClear={false} options={options} value="beta" onChange={vi.fn()} />)
+    const trigger = screen.getByRole('button', { name: 'Beta' })
+    trigger.focus()
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' })
+    expect(trigger).toHaveFocus()
+    expect(trigger).toHaveAttribute('aria-activedescendant', screen.getByRole('option', { name: 'Beta' }).id)
+    fireEvent.keyDown(trigger, { key: 'Escape' })
+    expect(trigger).toHaveFocus()
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  })
+
+  it('shows grouped font previews and option metadata', () => {
+    render(<SearchSelect searchable={false} allowClear={false} options={[
+      { value: 'serif', label: 'Serif', group: 'Fonts', meta: 'Installed', previewStyle: { fontFamily: 'serif' } }
+    ]} value="serif" onChange={vi.fn()} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Serif' }))
+    expect(screen.getByText('Fonts')).toBeInTheDocument()
+    expect(screen.getByText('Installed')).toBeInTheDocument()
+    expect(screen.getByRole('option').querySelector('.ui-search-select__option-label')).toHaveStyle({ fontFamily: 'serif' })
+  })
+})
+
+describe('SearchSelect popup anchoring', () => {
+  it.each([
+    { viewport: 600, top: 550, bottom: 580, expectedTop: 404, maxHeight: 536 },
+    { viewport: 600, top: 390, bottom: 420, expectedTop: 426, maxHeight: 166 },
+    { viewport: 200, top: 70, bottom: 100, expectedTop: 106, maxHeight: 86 }
+  ])('anchors the menu at trigger top $top in viewport $viewport', ({ viewport, top, bottom, expectedTop, maxHeight }) => {
+    vi.stubGlobal('innerHeight', viewport)
+    const height = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.getAttribute('role') === 'presentation' ? 140 : 0
+    })
+    try {
+      render(
+        <SearchSelect
+          size="sm"
+          searchable={false}
+          aria-label="Rows per page"
+          options={[10, 20, 50, 100].map(value => ({ value: String(value), label: `${value} / page` }))}
+          value="20"
+          onChange={vi.fn()}
+        />
+      )
+      const trigger = screen.getByRole('button', { name: 'Rows per page' })
+      vi.spyOn(trigger.parentElement!, 'getBoundingClientRect').mockReturnValue({
+        left: 340, top, bottom, width: 120
+      } as DOMRect)
+      fireEvent.click(trigger)
+      const panel = screen.getByRole('presentation')
+      expect(panel).toHaveStyle({ top: `${expectedTop}px`, left: '340px', maxHeight: `${maxHeight}px` })
+      expect(screen.getByRole('option', { name: '100 / page' })).toBeInTheDocument()
+    } finally {
+      height.mockRestore()
+      vi.unstubAllGlobals()
+    }
+  })
+})
 
 afterEach(() => {
   cleanup()
@@ -172,6 +249,18 @@ describe('SearchSelect menu card', () => {
 })
 
 describe('SearchSelect option activation', () => {
+  it('keeps pointer focus until the option itself has committed its choice', async () => {
+    const onChange = vi.fn()
+    const user = userEvent.setup()
+    render(<SearchSelect searchable={false} allowClear={false} options={options} value="alpha" onChange={onChange} />)
+    const trigger = screen.getByRole('button', { name: 'Alpha' })
+    await user.click(trigger)
+    await user.click(screen.getByRole('option', { name: 'Beta' }))
+    expect(onChange).toHaveBeenCalledExactlyOnceWith('beta')
+    expect(trigger).toHaveFocus()
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  })
+
   it('picks when assistive tech activates the option element itself', () => {
     const onChange = vi.fn()
     render(<SearchSelect options={options} value="" onChange={onChange} />)

@@ -1,5 +1,9 @@
 # 9.1.3 candidate release disposition
 
+> Historical upstream record. Foreign-language SDK results and external publishing
+> references do not describe this repository's Rust/ACP delivery or qualify its current release.
+
+
 This is an unpublished candidate. The release decision is **hold** until the
 remaining gates below pass against one committed source revision. Local
 qualification and its exact limits are retained in
@@ -82,11 +86,10 @@ current full inventory. Selected local passes do not satisfy the release gates.
 | Gate | Required evidence before tagging |
 | --- | --- |
 | Regression qualification | Repair and requalify original execution cleanup, cancellation continuation, exact/portable checkpoint recovery and unresolved tool receipts. Retain initial failures and SOLO results; then execute the complete unchanged Layer C inventory. Selected SDK/TUI passes do not discharge these failures. |
-| Dependency delivery | Deliver and pin the exact Effect, Memory, Search, Use core/reconcile and OKF implementations used by the qualified local build; verify all three SDK dependency graphs after removing local patches. The public Effect pin does not contain the local fact-log changes. Registry existence alone does not prove source parity; the current OKF and Use reconcile versions are absent from crates.io. |
+| Dependency delivery | Deliver and pin the exact Effect, Memory, Search, Use core/reconcile and OKF implementations used by the qualified local build; verify the local Rust and ACP dependency graphs. The public Effect pin does not contain the local fact-log changes. Registry existence alone does not prove source parity; the current OKF and Use reconcile versions are absent from crates.io. |
 | Standalone build | Resolve `a3s-okf`'s unversioned sibling paths (Core dev dependency and ACP dependency) and verify the ACP reconcile dependency. Run setup, relock, strict checks and packaging from the actual standalone Code checkout. A manifest transformation is not a build certificate. |
 | Shared source closure | Review a content-filtered candidate patch, retain evidence and a ROADMAP row in the same landing, and make whole-workspace formatting pass. The shared worktree currently contains unrelated unfinished edits. |
 | Hosted qualification | Run the complete release chain at the committed candidate revision, including platform builds, memory/retrieval soaks, hermetic integrations, performance, SDK runtimes and the shipped pager checks. Local macOS debug artifacts do not certify other targets. |
-| npm delivery | Verify all nine Trusted Publisher package bindings for `A3S-Lab/Code` and the calling `.github/workflows/release.yml`, as specified in [the npm publishing contract](NPM_TRUSTED_PUBLISHING.md), then retain the actual registry delivery result. The reusable `publish-node.yml` is not the publisher binding. A prepared workflow does not prove registry registration. |
 
 ## Issue disposition
 

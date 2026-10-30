@@ -1,0 +1,85 @@
+export const meta = {
+  title: '流量与快照',
+  description: '协议、流边界、健康选择、Cloud 快照、Box 和托管 Runtime Service。',
+  label: '流量与快照',
+  updated: '2026-10-29',
+};
+
+Gateway 的请求路径为 `Entrypoint → Router → Middleware → Service → Backend`。每一层负责不同的流量决定。
+
+## 协议与流边界
+
+<DocTable caption="Gateway 的协议与边界" headers={['协议', '当前能力', '注意事项']} rows={[
+  ['HTTP/1.1 与 HTTP/2', '代理、请求体背压、响应中间件和有界排空', '响应开始后不重放'],
+  ['SSE 与 OpenAI 流', 'token 保真、独立空闲与总时限、取消和终端检查', '缺失或乱序的 token 不能视为成功'],
+  ['WebSocket', '升级、双向转发和连接生命周期', '旧代际连接在排空后释放'],
+  ['gRPC over h2c', '原生转发、响应中间件和有界排空', '不把它当作 HTTP/1.1 请求'],
+  ['TCP、UDP 与 TLS', '传输转发、SNI 匹配和超时控制', 'HTTP 规则不会自动应用到所有传输'],
+]} />
+
+`request_timeout`、流空闲期限和流总期限是不同约束。长流需要同时检查首响应、持续活动和结束状态。
+
+## 健康与故障转移
+
+<DocTable caption="Service 层的流量机制" headers={['机制', '作用']} rows={[
+  ['主动与被动健康', '移除不健康目标，并观察恢复状态'],
+  ['熔断与故障转移', '故障时选择其他符合条件的后端'],
+  ['四种均衡策略', '按配置分配请求，包括加权与最少连接'],
+  ['粘性会话', '将相关请求绑定到指定后端'],
+  ['镜像', '复制流量到观察目标，不改变原请求结果'],
+  ['响应前回退', '只在响应尚未开始时尝试其他后端'],
+]} />
+
+健康探针的 URL 也必须通过校验。操作员提供的上游地址仍属于高权限输入，不应直接接受模型生成的 URL。
+
+## 快照生命周期
+
+<DocTable caption="standalone 与 cloud-managed 的快照边界" headers={['阶段', 'standalone', 'cloud-managed']} rows={[
+  ['来源', '本地 ACL 文件', 'Cloud 发布的完整快照'],
+  ['身份', '本地配置与修订', '身份、修订、摘要、CAS 和过期'],
+  ['校验', '结构、激活和外部条件', '完整快照及授权条件'],
+  ['激活', '原子替换当前运行时', '原子替换当前运行时'],
+  ['拒绝', '保留先前有效配置', '保留先前有效配置'],
+]} />
+
+Node API 提供健康、就绪、指标、版本、托管快照应用和本地用量假脱机状态。它不是公开的人工运维界面。
+
+## Gateway 与 Box
+
+standalone 模式可以选择 Box 执行器。Box 提供就绪副本端点，Gateway 再原子替换实时后端池，并放行有界等待请求。
+
+Box 排空并终止工作负载前，Gateway 先撤回对应端点。该自动扩缩能力仍是实验性，真实 MicroVM 工作负载符合性尚未完成。
+
+`cloud-managed` 流量不调用 Box。Cloud 决定期望副本，Gateway 只执行收到的快照。
+
+## 托管 Runtime Service
+
+嵌入式 A3S 宿主可以使用 `Gateway::with_managed_service_state` 或 `Gateway::with_middlewares_and_managed_service_state` 绑定私有 Runtime 路由。
+
+该路由只支持明文 loopback HTTP 入口和 loopback Runtime 上游。宿主负责 Runtime 配置与包授权，Gateway 负责私有路由、健康检查、准入关闭、排空和删除。
+
+<DocTable caption="托管 Runtime Service 的生命周期" headers={['操作', '作用']} rows={[
+  ['bind_managed_service', '保存绑定并验证通过 Gateway 的健康路径'],
+  ['managed_service_status', '读取原收据身份与当前阶段'],
+  ['drain_managed_service', '关闭新准入，隐藏路由并等待已接受流结束'],
+  ['remove_managed_service', '仅删除已排空的收据'],
+]} />
+
+托管路由作为独立 overlay 保存。普通 reload 和托管快照 reload 不会删除该 overlay。它不是公共控制平面，也不是 ACL 修改接口。
+
+## 验收
+
+1. 用慢响应与长流分别验证首响应和空闲期限。
+2. 停止一个后端，确认健康选择不会放行失败目标。
+3. 在响应开始后停止后端，确认不会通过重放改变响应。
+4. 应用无效快照，确认先前运行时继续服务。
+5. 托管 Runtime Service 排空时，确认 Gateway 拒绝新请求并等待旧流结束。
+6. 重启后，确认原执行代际和收据身份保持一致。
+
+生命周期管理见 <SourceRef path="apps/gateway/src/managed_service/model.rs" match="pub struct ManagedServiceBinding {">ManagedServiceBinding</SourceRef>。
+
+## 实现依据
+
+- [部署模式与 Box 边界](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/README.md)
+- [托管 Runtime Service 生命周期](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/managed-runtime-services.md)
+- [Cloud 托管符合性](https://github.com/aster-ai-lab/aster/blob/main/apps/gateway/docs/cloud-managed-e0-conformance.md)

@@ -4,10 +4,10 @@ use std::sync::{Arc, Mutex};
 
 use tokio::time::Instant;
 
-use crate::cognitive_context::CognitiveContextSession;
 use crate::commands::SlashCommand;
 use crate::context::ContextProvider;
 use crate::hooks::HookBinding;
+use crate::package_context::PackageContextSession;
 use crate::skills::Skill;
 use crate::subagent::AgentDefinition;
 use crate::tools::Tool;
@@ -211,7 +211,7 @@ impl CapabilityProjection {
         }
     }
 
-    pub fn knowledge(&self, id: &CapabilityId) -> Option<&CognitiveContextSession> {
+    pub fn knowledge(&self, id: &CapabilityId) -> Option<&PackageContextSession> {
         match self.values.get(id) {
             Some(CapabilityValue::Knowledge(value)) => Some(value.as_ref()),
             _ => None,
@@ -599,8 +599,8 @@ impl CapabilityCleanupReport {
 mod tests {
     use super::*;
     use crate::capability::{CapabilitySource, Sha256Digest};
-    use crate::cognitive_context::CognitiveContextProvider;
     use crate::hooks::HookHandler;
+    use crate::package_context::PackageContextProvider;
     use crate::skills::{Skill, SkillKind};
 
     fn digest(byte: char) -> Sha256Digest {
@@ -821,18 +821,18 @@ mod tests {
     struct CoverageKnowledgeProvider;
 
     #[async_trait::async_trait]
-    impl crate::cognitive_context::CognitiveContextProvider for CoverageKnowledgeProvider {
+    impl crate::package_context::PackageContextProvider for CoverageKnowledgeProvider {
         fn name(&self) -> &str {
             "coverage-knowledge"
         }
 
         async fn query(
             &self,
-            _request: &crate::cognitive_context::CognitiveContextRequestV1,
-        ) -> crate::cognitive_context::CognitiveContextResult<
-            crate::cognitive_context::CognitiveContextResponseV1,
+            _request: &crate::package_context::PackageContextRequestV1,
+        ) -> crate::package_context::PackageContextResult<
+            crate::package_context::PackageContextResponseV1,
         > {
-            Err(crate::cognitive_context::CognitiveContextError::Provider(
+            Err(crate::package_context::PackageContextError::Provider(
                 "coverage provider is query-less".into(),
             ))
         }
@@ -841,7 +841,7 @@ mod tests {
     fn sample_knowledge_value() -> CapabilityValue {
         let generation_digest =
             "sha256:aa0beeb62f1b7b21bf70f21e6f0e858a1e4b720d313f0907209b5b9dad2eeb20";
-        let knowledge = crate::cognitive_context::CognitiveKnowledgeBindingV1::new(
+        let knowledge = crate::package_context::PackageKnowledgeBindingV1::new(
             "domain-knowledge",
             "0.2",
             "sha256:1def786da6d190b7b3ce0176e71d99ff1cac3f8c8cc7c0f8b76a893c544e7a90",
@@ -849,18 +849,18 @@ mod tests {
             generation_digest,
         )
         .unwrap();
-        let binding = crate::cognitive_context::CognitivePackageBindingV1::new(
+        let binding = crate::package_context::PackageBindingV1::new(
             "contra-sense/handbook",
             "0.1.0",
             7,
             generation_digest,
             "sha256:1e0f0a0162f5b290887ade8886af69fbba4548c863df026178e3550c77813455",
             knowledge,
-            crate::cognitive_context::CognitiveContextLimits::default(),
+            crate::package_context::PackageContextLimits::default(),
         )
         .unwrap();
         CapabilityValue::Knowledge(Arc::new(
-            crate::cognitive_context::CognitiveContextSession::new(
+            crate::package_context::PackageContextSession::new(
                 binding,
                 Arc::new(CoverageKnowledgeProvider),
             )
@@ -991,11 +991,11 @@ mod tests {
         );
         let knowledge_provider = CoverageKnowledgeProvider;
         assert_eq!(
-            crate::cognitive_context::CognitiveContextProvider::name(&knowledge_provider),
+            crate::package_context::PackageContextProvider::name(&knowledge_provider),
             "coverage-knowledge"
         );
         let knowledge_binding = projection.knowledge(&ids[4]).unwrap().binding().clone();
-        let knowledge_request = crate::cognitive_context::CognitiveContextRequestV1::new(
+        let knowledge_request = crate::package_context::PackageContextRequestV1::new(
             "coverage-session",
             "coverage query",
             knowledge_binding,
@@ -1007,7 +1007,7 @@ mod tests {
             .expect_err("coverage provider stays query-less");
         assert!(matches!(
             knowledge_err,
-            crate::cognitive_context::CognitiveContextError::Provider(_)
+            crate::package_context::PackageContextError::Provider(_)
         ));
         assert!(projection.context(&ids[5]).is_some());
         assert_eq!(

@@ -2184,6 +2184,57 @@ fn apply_a3s_code_slash_gate_hides_unsupported_builtins() {
     crate::app::A3S_CODE_ACTIVE.store(false, std::sync::atomic::Ordering::Release);
 }
 #[test]
+fn a3s_catalog_can_replace_incompatible_local_command_handlers() {
+    for catalog_first in [false, true] {
+        let mut app = test_app();
+        let catalog = [
+            agent_client_protocol::AvailableCommand::new("history", "Conversation statistics"),
+            agent_client_protocol::AvailableCommand::new("cost", "Session token usage"),
+            agent_client_protocol::AvailableCommand::new("memory", "Stored memories"),
+            agent_client_protocol::AvailableCommand::new("tasks", "Background tasks"),
+        ];
+        if catalog_first {
+            app.welcome_prompt
+                .slash_controller
+                .registry_mut()
+                .set_acp_commands(&catalog);
+        }
+        app.apply_a3s_code_slash_gate();
+        if !catalog_first {
+            app.welcome_prompt
+                .slash_controller
+                .registry_mut()
+                .set_acp_commands(&catalog);
+        }
+        let reg = app.welcome_prompt.slash_controller.registry();
+        for (name, description) in [
+            ("history", "Conversation statistics"),
+            ("cost", "Session token usage"),
+            ("memory", "Stored memories"),
+            ("tasks", "Background tasks"),
+        ] {
+            assert_eq!(
+                reg.get_for_dispatch(name).unwrap().description(),
+                description
+            );
+            assert!(!reg.is_builtin(name));
+            assert!(!reg.is_backend_unavailable(name));
+        }
+        assert!(reg.get_for_dispatch("usage").is_none());
+        app.welcome_prompt
+            .slash_controller
+            .registry_mut()
+            .set_acp_commands(&[]);
+        let reg = app.welcome_prompt.slash_controller.registry();
+        for name in ["history", "cost", "memory", "tasks", "usage"] {
+            assert!(reg.get_for_dispatch(name).is_none());
+            assert!(reg.is_backend_unavailable(name));
+        }
+        crate::app::A3S_CODE_ACTIVE.store(false, std::sync::atomic::Ordering::Release);
+    }
+}
+
+#[test]
 fn apply_auth_meta_disables_billing_surface_for_team_users() {
     let mut app = test_app();
     assert!(app.usage_visible);

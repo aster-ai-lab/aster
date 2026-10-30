@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, ListPlus, Save, Trash2 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { officeMessage } from '../../../i18n/office-locale';
 import { Button, Dialog } from '../../../design-system/primitives';
 import {
@@ -55,24 +55,37 @@ export function SpreadsheetSortCustomListManagerDialog({
     }));
   const initialUserLists = initialUserListsRef.current;
   const nextIdRef = useRef(initialUserLists.length);
-  const listRef = useRef<HTMLSelectElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
   const [userLists, setUserLists] = useState<
     readonly ManagedSpreadsheetSortCustomList[]
   >(() => initialUserLists.map(cloneManagedCustomList));
   const [selection, setSelection] = useState('built-in:0');
   const [text, setText] = useState(builtInLists[0]?.entries.join('\n') ?? '');
   const [error, setError] = useState<string | null>(null);
-  const userListLabels = useMemo(
-    () =>
-      new Map(
-        userLists.map((list) => [
-          list.id,
-          managedCustomListLabel(list.entries),
-        ]),
-      ),
-    [userLists],
-  );
+  const groups = [
+    {
+      label: officeMessage(messages, 'spreadsheet.sort.listManager.groupBuiltin'),
+      options: builtInLists.map((list, index) => ({
+        value: `built-in:${index}`,
+        label: list.label,
+      })),
+    },
+    {
+      label: officeMessage(messages, 'spreadsheet.sort.listManager.groupUser'),
+      options: userLists.map((list) => ({
+        value: `user:${list.id}`,
+        label: managedCustomListLabel(list.entries),
+      })),
+    },
+  ];
+  const options = groups.flatMap((group) => group.options);
   useEffect(() => listRef.current?.focus(), []);
+  useEffect(() => {
+    listRef.current
+      ?.querySelector('[aria-selected="true"]')
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [selection]);
   const selectedUserIndex = managedUserListIndex(selection, userLists);
   const selectedUser = userLists[selectedUserIndex];
   const selectedBuiltIn = managedBuiltInList(selection, builtInLists);
@@ -213,6 +226,7 @@ export function SpreadsheetSortCustomListManagerDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(messages, 'spreadsheet.sort.listManager.title')}
       description={officeMessage(messages, 'spreadsheet.sort.listManager.desc')}
       className="work-spreadsheet-sort-custom-list-manager"
@@ -231,33 +245,55 @@ export function SpreadsheetSortCustomListManagerDialog({
     >
       <div className="work-spreadsheet-sort-custom-list-manager-layout">
         <section aria-label={officeMessage(messages, 'spreadsheet.sort.listManager.availableAria')}>
-          <label>
-            <span>{officeMessage(messages, 'spreadsheet.sort.listManager.listLabel')}</span>
-            <select
+          <div className="work-spreadsheet-sort-custom-list-picker">
+            <span id={listId}>{officeMessage(messages, 'spreadsheet.sort.listManager.listLabel')}</span>
+            <div
               ref={listRef}
+              className="work-spreadsheet-sort-list"
+              role="listbox"
+              tabIndex={0}
               aria-label={officeMessage(messages, 'spreadsheet.sort.listManager.listAria')}
-              size={10}
-              value={selection}
-              onChange={(event) => select(event.currentTarget.value)}
+              aria-describedby={listId}
+              aria-activedescendant={
+                options.some((option) => option.value === selection)
+                  ? `${listId}-${selection}`
+                  : undefined
+              }
+              onKeyDown={(event) => {
+                if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+                event.preventDefault();
+                let next = options.findIndex((option) => option.value === selection);
+                switch (event.key) {
+                  case 'Home': next = 0; break;
+                  case 'End': next = options.length - 1; break;
+                  case 'ArrowDown': next = Math.min(next + 1, options.length - 1); break;
+                  case 'ArrowUp': next = Math.max(next - 1, 0); break;
+                }
+                const option = options[next];
+                if (option) select(option.value);
+              }}
             >
-              <optgroup label={officeMessage(messages, 'spreadsheet.sort.listManager.groupBuiltin')}>
-                {builtInLists.map((list, index) => (
-                  <option key={`built-in:${index}`} value={`built-in:${index}`}>
-                    {list.label}
-                  </option>
-                ))}
-              </optgroup>
-              {userLists.length ? (
-                <optgroup label={officeMessage(messages, 'spreadsheet.sort.listManager.groupUser')}>
-                  {userLists.map((list) => (
-                    <option key={list.id} value={`user:${list.id}`}>
-                      {userListLabels.get(list.id)}
-                    </option>
+              {groups.filter((group) => group.options.length > 0).map((group) => (
+                <div key={group.label} role="group" aria-label={group.label}>
+                  <div className="work-spreadsheet-sort-list-group" aria-hidden="true">{group.label}</div>
+                  {group.options.map((option) => (
+                    <div
+                      key={option.value}
+                      id={`${listId}-${option.value}`}
+                      role="option"
+                      aria-selected={selection === option.value}
+                      onClick={() => {
+                        select(option.value);
+                        listRef.current?.focus();
+                      }}
+                    >
+                      {option.label}
+                    </div>
                   ))}
-                </optgroup>
-              ) : null}
-            </select>
-          </label>
+                </div>
+              ))}
+            </div>
+          </div>
           <Button
             tone="quiet"
             type="button"

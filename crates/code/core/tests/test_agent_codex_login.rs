@@ -52,6 +52,97 @@ async fn agent() -> Agent {
 
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "requires local Codex login and network access"]
+async fn codex_login_auto_compaction_retains_the_goal_and_continues() {
+    use a3s_code_core::fact_control::{read_workspace_facts, thread_for_session};
+    use a3s_code_core::AgentEvent;
+
+    let workspace = tempfile::tempdir().expect("isolated workspace");
+    let session_id = "codex-context-compaction";
+    let agent = agent().await;
+    let session = agent
+        .session_async(
+            workspace.path().display().to_string(),
+            Some(
+                SessionOptions::new()
+                    .with_session_id(session_id)
+                    .with_llm_client(codex_client(session_id))
+                    .with_memory(Arc::new(a3s_memory::InMemoryStore::new()))
+                    .with_permission_policy(PermissionPolicy::new())
+                    .with_read_only_session(true)
+                    .with_planning_mode(PlanningMode::Disabled)
+                    .with_auto_delegation_enabled(false)
+                    .with_manual_delegation_enabled(false)
+                    .with_continuation(false)
+                    .with_max_tool_rounds(2)
+                    .with_auto_compact(true)
+                    .with_auto_compact_threshold(0.05)
+                    .with_max_context_tokens(32_768),
+            ),
+        )
+        .await
+        .expect("session");
+    let token = "CONTEXT-CODEX-RETAIN-42";
+    let seed = format!(
+        "Remember the verification token {token} for my next request. No tools. Reply only OK. Synthetic filler: {}",
+        "note ".repeat(10_000)
+    );
+    tokio::time::timeout(CALL_TIMEOUT, session.send(&seed, None))
+        .await
+        .expect("seed timeout")
+        .expect("seed turn");
+    let (mut events, join) = session
+        .stream(
+            "Return the verification token from my previous message. No tools.",
+            None,
+        )
+        .await
+        .expect("continuation stream");
+    let (mut started, mut completed, mut text) = (false, false, String::new());
+    tokio::time::timeout(CALL_TIMEOUT, async {
+        while let Some(event) = events.recv().await {
+            match event {
+                AgentEvent::AutoCompact { phase, .. } => {
+                    started |= phase == "started";
+                    completed |= phase == "completed";
+                }
+                AgentEvent::End { text: answer, .. } => text = answer,
+                AgentEvent::Error { message } => panic!("continuation failed: {message}"),
+                _ => {}
+            }
+        }
+        join.await.expect("continuation join");
+    })
+    .await
+    .expect("continuation timeout");
+    assert!(
+        started && completed,
+        "actual automatic compaction must complete"
+    );
+    assert!(text.contains(token), "continuation lost the token: {text}");
+    let facts = read_workspace_facts(workspace.path(), &thread_for_session(session_id)).unwrap();
+    let folds = facts
+        .iter()
+        .filter(|fact| fact.kind == "compaction.done")
+        .collect::<Vec<_>>();
+    assert!(
+        !folds.is_empty(),
+        "the fact log must contain an actual fold"
+    );
+    assert!(folds.iter().any(|fact| {
+        fact.payload["summary"]
+            .as_str()
+            .is_some_and(|summary| summary.contains(token))
+    }));
+    eprintln!(
+        "context-compaction evidence: started={started} completed={completed} folds={} retained=true",
+        folds.len()
+    );
+    session.close().await;
+    agent.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "requires local Codex login and network access"]
 async fn codex_login_agent_reads_workspace_and_converges() {
     let workspace = tempfile::tempdir().expect("workspace");
     std::fs::write(

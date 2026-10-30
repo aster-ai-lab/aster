@@ -40,6 +40,14 @@ for (const key of [
   'MouseEvent',
   'KeyboardEvent',
   'FocusEvent',
+  'ResizeObserver',
+  'NodeFilter',
+  'HTMLSelectElement',
+  'HTMLTextAreaElement',
+  'HTMLDialogElement',
+  'PointerEvent',
+  'DOMParser',
+  'XMLSerializer',
 ] as const) {
   const value = (happy as unknown as Record<string, unknown>)[key];
   if (value) assign(key, value);

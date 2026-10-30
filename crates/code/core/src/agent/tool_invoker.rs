@@ -315,7 +315,8 @@ impl ScopedToolInvoker {
             return denied;
         }
 
-        debug_assert!(lifecycle.transition(ToolInvocationState::Running).is_ok());
+        let transition = lifecycle.transition(ToolInvocationState::Running);
+        debug_assert!(transition.is_ok());
 
         if let Some(tx) = self.events() {
             tx.send(AgentEvent::ToolExecutionStart {
@@ -590,7 +591,8 @@ impl ToolInvoker for ScopedToolInvoker {
         if nested_artifacts {
             invocation_ctx = invocation_ctx.with_native_artifact_verifications();
         }
-        debug_assert!(lifecycle.transition(ToolInvocationState::Admitted).is_ok());
+        let transition = lifecycle.transition(ToolInvocationState::Admitted);
+        debug_assert!(transition.is_ok());
         let cancellation = invocation_ctx.cancellation_token();
         if ctx.verifier_read_only() {
             let declared_read_only = self
@@ -637,9 +639,8 @@ impl ToolInvoker for ScopedToolInvoker {
             self.emit_nested_tool_end(&invocation, &result).await;
             return result;
         }
-        debug_assert!(lifecycle
-            .transition(ToolInvocationState::GatePending)
-            .is_ok());
+        let transition = lifecycle.transition(ToolInvocationState::GatePending);
+        debug_assert!(transition.is_ok());
         let read_only = self
             .agent
             .tool_executor

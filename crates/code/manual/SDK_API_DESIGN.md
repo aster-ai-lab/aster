@@ -20,46 +20,35 @@ implementations continue to evolve.
 
 ## API Layers
 
-### 0. Capability Discovery (all official SDKs)
+### 0. Rust capability discovery
 
-Every release exposes the Core product inventory before an application creates
-an Agent. Use `sdk_capabilities()` and `sdk_capabilities_schema()` in Rust,
-`sdkCapabilities()` / `sdkCapabilitiesSchema()` in Node.js,
-`sdk_capabilities()` / `sdk_capabilities_schema()` in Python, or
-`SDKCapabilities(ctx)` / `SDKCapabilitiesSchema()` in Go. The inventory is
-generated once by Core and projected verbatim; it is the authoritative list of
-product capabilities, event/protocol contracts, and host-owned boundaries.
+`sdk_capabilities()` and `sdk_capabilities_schema()` expose the Core contract
+inventory before an Agent is created. The inventory includes optional features;
+it does not assert that a resource or tool is active in the current session.
+Session tool definitions, resource status and typed refusals describe availability.
 
-The inventory is deliberately separate from the low-level Rust trait-object
-surface. A Rust host may inject an in-process `LlmClient`, `MemoryStore`,
-`BashSandbox`, or `Tool`; those are extension points with process-local
-lifetime and cannot be represented safely as portable SDK values. The
-corresponding product capabilities remain available through typed options,
-callbacks, MCP, filesystem AgentDirs, or the built-in providers. Bindings must
-return a typed configuration/unavailable error when a requested host resource
-is not supplied; they must never silently discard it.
+A Rust host may inject an in-process `LlmClient`, `MemoryStore`, `BashSandbox`
+or `Tool`. The host owns the resource lifetime, credentials and authorization.
+Required missing resources must produce a named error rather than silently
+substituting a different backend. This repository has no additional language SDK
+or cross-language binding release surface.
 
 ### 1. Agent Factory
 
 `Agent` owns configuration and creates sessions.
 
-Stable calls:
+Operation names below describe contracts; exact Rust signatures are in
+[Agent](../core/src/agent_api/agent_facade.rs) and
+[AgentSession](../core/src/agent_api/session_facade.rs).
 
 ```text
-Agent.create(config_source)
-
-Rust:
-Agent.session_builder(workspace).options(options).build().await
-Agent.session_async(workspace, options?)
-Agent.resume_session_async(session_id, options)
-Agent.session_for_agent_async(workspace, definition, options?)
-Agent.session_for_worker_async(workspace, worker_spec, options?)
-
-Node / Python facades:
-Agent.session(workspace, options?)
-Agent.resume_session(session_id, options)
-Agent.session_for_agent(workspace, agent_name, agent_dirs?, options?)
-Agent.session_for_worker(workspace, worker_spec, options?)
+Agent::new(config_path).await
+Agent::from_config(config).await
+Agent::session_builder(workspace).options(options).build().await
+Agent::session_async(workspace, options).await
+Agent::resume_session_async(session_id, options).await
+Agent::session_for_agent_async(workspace, definition, options).await
+Agent::session_for_worker_async(workspace, worker_spec, options).await
 ```
 
 Rules:
@@ -74,8 +63,6 @@ Rules:
   initialization. A manager supplied through `SessionOptions::with_mcp` always
   requires the async path for capability discovery; only already-cached
   agent-global MCP tools can be inherited synchronously.
-- Node and Python keep their established factory names and delegate to the async
-  core construction path inside their native bindings.
 - Worker/subagent setup is data-driven with `WorkerAgentSpec`; callers should not
   create temporary agent files for ephemeral workers.
 - Model, memory, session store, security, queue, MCP, and worker choices are
@@ -83,14 +70,13 @@ Rules:
 
 ### 2. Session Conversation
 
-`AgentSession` / `Session` is the primary runtime handle.
+`AgentSession` is the primary runtime handle.
 
 Stable calls:
 
 ```text
-send(prompt | { prompt, history?, attachments? }, history?)
-run(prompt | { prompt, history?, attachments? }, history?)
-stream(prompt | { prompt, history?, attachments? }, history?)
+send(prompt, history).await
+stream(prompt, history).await
 history()
 steer(input, options?)
 interrupt(options?)
@@ -103,9 +89,8 @@ Rules:
 - `send` and `stream` remain prompt-first because prompt is the dominant input.
 - Any future optional argument must be added through the request object, not a
   new positional parameter.
-- `send_request`, `stream_request`, and attachment-specific methods remain
-  compatibility helpers; new examples should use `send({ ... })` and
-  `stream({ ... })`.
+- Existing prompt-first Rust methods retain their signatures. Use the typed
+  request and attachment methods when those additional fields are needed.
 - Supplying explicit history keeps the operation isolated from session history.
 - Conversation operations are fail-fast single-flight per session. `send`,
   `stream`, attachment variants, slash commands, and run resumption return
@@ -163,8 +148,7 @@ Rules:
   model-facing permission/HITL decisions but still pass through pre/post hooks,
   budget, queue/timeout handling, cancellation, recursion protection, and
   output sanitization. The embedding application owns end-user authorization.
-- `governed_tool(name, args)` (`governedTool` in Node and
-  `GovernedTool` in Go) is the explicit alternative for host-coordinated
+- `governed_tool(name, args)` is the explicit alternative for host-coordinated
   calls that have not already been authorized. It retains the direct
   no-transcript path while reapplying session permission and HITL gates.
 - When output sanitization is enabled, delta events are sanitized over the
@@ -217,10 +201,11 @@ confirm_tool_use(tool_id, approved, reason?)
 Rules:
 
 - Run snapshots and event records are durable data contracts.
-- SDK stream events use `EventEnvelopeV1 { version, type, payload, metadata }`.
+- Rust streams expose typed `AgentEvent` values. Hosts using the wire projection
+  use `EventEnvelopeV1 { version, type, payload, metadata }`.
   `type` is an open string, and unknown future events must retain their complete
   payload and metadata. SDK convenience fields are derived from one core
-  projection rather than independent language-specific event matches.
+  projection rather than independent host-specific event matches.
 - Active tool snapshots are live state for UX only; run events remain the audit
   source of truth.
 - Cursor pages report `retention_gap` when the requested sequence predates the
@@ -263,15 +248,10 @@ Rules:
   `task`/`parallel_task` tool definitions. Registration, replacement, and
   removal are reflected on the next run; hidden workers remain callable only
   when the caller already knows their name.
-- Dynamic workflow registration exposes the Rust core's A3S Flow-backed
-  `dynamic_workflow` tool without requiring SDK callers to construct Rust trait
-  objects. Arbitrary host-native dynamic tools remain Rust-only unless a typed
-  SDK-safe provider shape is added. For the same reason, the Rust-only
-  `workflow_with_token_budget_and_tools` facade is an intentional SDK omission:
-  it accepts exact in-process `Arc<dyn Tool>` values that cannot cross an FFI
-  boundary without such a provider shape.
-- Runtime budget guards can be installed after session creation because JS/Python
-  callbacks cannot always live inside value-typed `SessionOptions`.
+- Dynamic workflows remain an explicit advanced feature. Rust hosts inject
+  their typed runtime and exact `Arc<dyn Tool>` values through the existing
+  public facade; no second language bridge or execution engine is introduced.
+- Runtime budget guards can be installed through the existing host facade.
 - Hooks supervise the existing agent loop; they do not create a second in-core
   advisor runtime.
 
@@ -307,9 +287,6 @@ Rules:
 ## Naming Rules
 
 - Rust: snake_case methods and Rust structs.
-- Python: snake_case methods, Python dictionaries for extension payloads, typed
-  classes for durable option providers.
-- Node.js: camelCase methods and typed option objects.
 - Event `type` values stay snake_case because they are serialized runtime data.
 - Public methods should be as short as clarity allows. If the receiver already
   names the domain, avoid repeating it (`session.git(...)`, not
@@ -326,29 +303,26 @@ Rules:
 - Do not add model-visible shortcuts that bypass `task`, `parallel_task`,
   `program`, permissions, confirmations, or trace recording.
 
-## Recommended API Direction
+## Recommended API direction
 
-Prefer this shape for new public calls:
+Use typed Rust options for growing contracts and preserve existing public
+signatures. Ordinary conversation remains prompt-first:
 
-```typescript
-await session.send({ prompt: 'Explain auth', history, attachments })
-await session.git({ command: 'worktree', subcommand: 'list' })
-await session.addMcp({
-  name: 'github',
-  transport: { type: 'stdio', command: 'npx', args: ['-y', '@modelcontextprotocol/server-github'] },
-  timeoutMs: 30000,
-})
-await session.program({ source, inputs, allowedTools, limits })
-await session.task({ agent: 'explore', description: 'Find auth', prompt: 'Summarize auth files.' })
+```rust,no_run
+use a3s_code_core::{Agent, SessionOptions};
+
+async fn example() -> anyhow::Result<()> {
+    let agent = Agent::new("agent.acl").await?;
+    let session = agent.session_builder("/repo")
+        .options(SessionOptions::new())
+        .build().await?;
+    let result = session.send("Explain authentication", None).await?;
+    println!("{}", result.text);
+    session.close().await;
+    Ok(())
+}
 ```
 
-Avoid this shape for new calls:
-
-```typescript
-await session.sendWithAttachments('Explain auth', attachments, history)
-await session.git('worktree', 'list', null, null, true, null, false, null, null, false)
-await session.addMcpServer('github', 'stdio', 'npx', ['-y', '@modelcontextprotocol/server-github'])
-```
-
-The positional forms may remain for compatibility, but new SDK examples should
-use object-shaped methods.
+Use [the local integration guide](USER_GUIDE.md) and the actual Rust signatures
+in [Core](../core/src/lib.rs). ACP is the process integration boundary;
+transport metadata does not replace host authentication or tool permissions.

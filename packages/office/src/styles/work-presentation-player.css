@@ -1,3 +1,63 @@
+.work-presentation-inline-preview {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  background: var(--spec-page, #fff);
+}
+
+.work-presentation-inline-preview > .work-slide-canvas {
+  width: 100%;
+  box-shadow: none;
+}
+
+.work-presentation-inline-preview > footer {
+  display: flex;
+  box-sizing: border-box;
+  height: 36px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 4px 8px;
+  border-top: 1px solid var(--spec-hairline, #efefef);
+  color: var(--spec-muted, #8a8a8a);
+  font-family: var(--font-family, sans-serif);
+  font-size: 12px;
+}
+
+.work-presentation-inline-preview > footer > span {
+  min-width: 44px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.work-presentation-inline-preview > footer > button {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--spec-body, #3f3f3f);
+  cursor: pointer;
+}
+
+.work-presentation-inline-preview > footer > button:hover:not(:disabled) {
+  background: var(--spec-selected-row, #f2f3f5);
+  color: var(--spec-ink, #171717);
+}
+
+.work-presentation-inline-preview > footer > button:focus-visible {
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: -2px;
+}
+
+.work-presentation-inline-preview > footer > button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .work-presentation-player {
   position: relative;
   display: flex;

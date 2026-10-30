@@ -17,6 +17,8 @@ pub use effort::{
 mod error;
 pub mod factory;
 pub mod http;
+pub mod local_policy;
+pub mod metering;
 pub mod openai;
 pub mod structured;
 #[cfg(test)]

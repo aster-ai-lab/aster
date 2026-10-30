@@ -199,6 +199,30 @@ async fn test_confirmation_manager_policy_update() {
 // ========================================================================
 
 #[tokio::test]
+async fn an_abandoned_receiver_cannot_accept_or_publish_a_late_approval() {
+    let (events, mut observed) = broadcast::channel(8);
+    let manager = ConfirmationManager::new(ConfirmationPolicy::enabled(), events);
+    let receiver = manager
+        .request_confirmation("abandoned", "write", &serde_json::json!({}))
+        .await;
+    assert!(matches!(
+        observed.recv().await.unwrap(),
+        AgentEvent::ConfirmationRequired { .. }
+    ));
+    drop(receiver);
+    let accepted = manager.confirm("abandoned", true, None).await.unwrap();
+    assert_eq!(manager.pending_count().await, 0);
+    assert!(
+        !accepted,
+        "a dropped original receiver owns no live consent"
+    );
+    assert!(
+        observed.try_recv().is_err(),
+        "an undelivered reply cannot publish approval"
+    );
+}
+
+#[tokio::test]
 async fn test_confirmation_flow_approve() {
     let (event_tx, mut event_rx) = broadcast::channel(100);
     let manager = ConfirmationManager::new(ConfirmationPolicy::enabled(), event_tx);

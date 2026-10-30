@@ -105,6 +105,7 @@ export function DocumentFieldDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(
         messages,
         editing ? 'document.field.title.edit' : 'document.field.title.insert',

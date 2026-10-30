@@ -3,8 +3,10 @@
 use super::*;
 
 mod continuation;
+mod mutation_progress;
 pub(super) use continuation::ContinuationUsage;
 pub(crate) use continuation::{ContinuationSource, ProgressBasis};
+pub(crate) use mutation_progress::MutationProgress;
 
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -14,7 +16,7 @@ pub(super) struct RunBody {
     expected_goal_sequence: u64,
     plan_fact_sequence: u64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    continuation: Option<ContinuationSource>,
+    pub(super) continuation: Option<ContinuationSource>,
 }
 
 pub(super) type RunFact = GoalFact<RunBody>;

@@ -18,7 +18,7 @@ Run owner/writer stay in charge. Evidence:
 | Surface | Selection |
 | --- | --- |
 | Rust | `SessionOptions::with_work_policy(WorkPolicyV1::new(id, version, body)?)` |
-| Node / Python / Go | the same field on the original session options |
+| Rust / ACP | the same field on the original session options |
 | ACP | session `_meta.a3sEngineering = { "policy": "engineering-v1" }` (closed set; the body is `acp/prompts/engineering.md`) |
 
 ACP and Code TUI new sessions select `engineering-v1` by default. A client can
@@ -138,7 +138,7 @@ are still explicit host calls; no driver runs in the background.
 | Hermetic | `cargo test -p a3s-code-core --lib goal` and `--lib durable_engineering` (four modes and combined counterexamples) |
 | Real model (mandatory) | Layer C `test_engineering_discipline_real_llm`, `test_durable_goal_real_llm` |
 | Real model (measurement) | Layer C `test_durable_engineering_paired_real_llm` (preregistered; never a release gate) |
-| SDK | `node scripts/sdk_api_alignment_check.mjs`, Node/Python/Go suites |
+| SDK | `cargo test --locked -p a3s-code-core --lib sdk_capabilities`, Rust/ACP suites |
 
 ## Non-goals
 

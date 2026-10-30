@@ -1,39 +1,31 @@
-//! Host-supplied embedding backend (BYO model engine).
+//! Embedding backend for trusted `workspace_retrieval.local_cpu` opt-in.
 //!
-//! The product ships no embedding model and no ONNX dependency. A host that
-//! wants semantic retrieval implements
-//! [`a3s_code_core::EmbeddingProvider`] and registers it through the
-//! `A3S_EMBEDDING_PROVIDER_LIB` factory before the first session opens a
-//! workspace-retrieval projection. Missing registration is the named
-//! `unregistered` refusal — never a download, never a fallback.
+//! A registered Rust host factory takes precedence. Without one, ACP loads
+//! the in-tree light tier from embedded assets; it does not download a model.
+//! A broken registered factory refuses instead of falling back silently.
 
 use std::fmt;
 use std::sync::{Arc, OnceLock};
 
 use a3s_code_core::EmbeddingProvider;
 
-const PROVIDER: &str = "host";
-
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) enum LocalEmbeddingSetupError {
-    #[allow(deadcode)]
-    Unregistered,
     InvalidFactory,
     LightTierLoad,
+    Cancelled,
+    WorkerFailed,
 }
 
 impl fmt::Display for LocalEmbeddingSetupError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
-            Self::Unregistered => {
-                "no host embedding provider is registered; semantic retrieval needs \
-                 A3S_EMBEDDING_PROVIDER_LIB to name a factory implementing \
-                 a3s_code_core::EmbeddingProvider"
-            }
             Self::InvalidFactory => {
                 "the registered embedding provider factory returned no provider"
             }
             Self::LightTierLoad => "the in-tree light tier failed to load from its embedded assets",
+            Self::Cancelled => "workspace embedding setup was cancelled",
+            Self::WorkerFailed => "workspace embedding setup worker failed",
         })
     }
 }
@@ -51,17 +43,23 @@ pub fn register_embedding_provider(factory: Factory) -> Result<(), String> {
 }
 
 pub(super) async fn local_embedding_provider(
-    _cancellation: tokio_util::sync::CancellationToken,
+    cancellation: tokio_util::sync::CancellationToken,
 ) -> Result<Arc<dyn EmbeddingProvider>, LocalEmbeddingSetupError> {
+    if cancellation.is_cancelled() {
+        return Err(LocalEmbeddingSetupError::Cancelled);
+    }
     // A registered host factory wins; otherwise the in-tree light tier
     // serves the trusted local_cpu opt-in (specs/013 P2 wiring).
-    match FACTORY.get() {
+    let load = tokio::task::spawn_blocking(|| match FACTORY.get() {
         Some(factory) => factory().ok_or(LocalEmbeddingSetupError::InvalidFactory),
-        None => {
-            let provider = a3s_embedding::LightTierProvider::load()
-                .map_err(|_| LocalEmbeddingSetupError::LightTierLoad)?;
-            Ok(Arc::new(provider) as Arc<dyn EmbeddingProvider>)
-        }
+        None => a3s_embedding::LightTierProvider::load()
+            .map(|provider| Arc::new(provider) as Arc<dyn EmbeddingProvider>)
+            .map_err(|_| LocalEmbeddingSetupError::LightTierLoad),
+    });
+    tokio::select! {
+        biased;
+        _ = cancellation.cancelled() => Err(LocalEmbeddingSetupError::Cancelled),
+        loaded = load => loaded.map_err(|_| LocalEmbeddingSetupError::WorkerFailed)?,
     }
 }
 
@@ -70,7 +68,7 @@ mod byo_factory_tests {
     use super::*;
     use a3s_code_core::{
         EmbeddingBatchRequest, EmbeddingBatchResponse, EmbeddingProviderDescriptor,
-        EmbeddingProviderError, EmbeddingVector,
+        EmbeddingProviderError,
     };
     use async_trait::async_trait;
 
@@ -107,36 +105,26 @@ mod byo_factory_tests {
         Some(Arc::new(FixtureProvider))
     }
 
-    // The OnceLock is process-global; a registration in one test excludes the
-    // others, so each scenario asserts against the one shared state machine.
+    // One test owns the process-global registration transition.
     #[tokio::test]
-    async fn the_registered_factory_serves_the_opt_in() {
-        // Whichever test registers first wins; both acceptable paths hold.
-        let _ = register_embedding_provider(good);
-        if FACTORY.get().is_some() {
-            let provider =
-                super::local_embedding_provider(tokio_util::sync::CancellationToken::new()).await;
-            assert!(provider.is_ok(), "a registered good factory serves");
-        }
-    }
-
-    #[tokio::test]
-    async fn a_missing_factory_is_a_named_refusal() {
-        // The OnceLock is process-global and tests run concurrently: when the
-        // sibling has not registered yet, the refusal is the named one; once
-        // any factory is registered the same call serves. Either observable
-        // state satisfies the contract.
-        let outcome =
-            super::local_embedding_provider(tokio_util::sync::CancellationToken::new()).await;
-        match outcome {
-            Err(error @ super::LocalEmbeddingSetupError::Unregistered) => {
-                assert!(error.to_string().contains("A3S_EMBEDDING_PROVIDER_LIB"));
-            }
-            Ok(_) => {}
-            Err(other) => panic!("unexpected setup error: {other}"),
-        }
-        assert!(super::LocalEmbeddingSetupError::Unregistered
-            .to_string()
-            .contains("A3S_EMBEDDING_PROVIDER_LIB"));
+    async fn embedded_light_then_registered_factory_serves_the_opt_in() {
+        let cancelled = tokio_util::sync::CancellationToken::new();
+        cancelled.cancel();
+        assert!(matches!(
+            local_embedding_provider(cancelled).await,
+            Err(LocalEmbeddingSetupError::Cancelled)
+        ));
+        let local = local_embedding_provider(tokio_util::sync::CancellationToken::new())
+            .await
+            .expect("embedded assets load without registration");
+        assert_eq!(local.descriptor().provider, "light");
+        assert!(local.descriptor().dimension > 0);
+        register_embedding_provider(good).expect("first registration");
+        let hosted = local_embedding_provider(tokio_util::sync::CancellationToken::new())
+            .await
+            .expect("registered host factory serves");
+        assert_eq!(hosted.descriptor().provider, "fixture");
+        assert_eq!(hosted.descriptor().dimension, 8);
+        assert!(register_embedding_provider(good).is_err());
     }
 }

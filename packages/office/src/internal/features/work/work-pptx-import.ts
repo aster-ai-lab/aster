@@ -1091,7 +1091,8 @@ function parseText(
         : undefined;
       runs.push({
         text,
-        fontSize: fontSize ? fontSize / 100 : undefined,
+        // DrawingML stores hundredths of a point; editor text sizes are CSS pixels.
+        fontSize: fontSize ? (fontSize / 100) * (96 / 72) : undefined,
         color,
         bold: runProperties ? booleanAttribute(runProperties, 'b') : undefined,
         italic: runProperties
@@ -1225,6 +1226,8 @@ function slideRelationshipId(
 }
 
 function readSlideName(document: Document, slideNumber: number): string {
+  const name = directChild(document.documentElement, 'cSld')?.getAttribute('name');
+  if (name != null) return name;
   const titleShape = descendants(document, 'sp').find((shape) => {
     const type = attribute(
       firstDescendant(directChild(shape, 'nvSpPr'), 'ph') ?? shape,

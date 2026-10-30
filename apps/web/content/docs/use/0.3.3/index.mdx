@@ -1,0 +1,57 @@
+export const meta = {
+  title: 'Aster Use 产品概览',
+  description: 'a3s-use 的 AIX 包、五类扩展表面、计划应用和宿主边界。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+`a3s-use` 是 AI Native Package Manager 和本机能力宿主。当前主包版本为 `0.3.3`，要求 Rust 1.85 或更新版本。
+
+Use 安装、升级和卸载扩展包，并通过审查后的计划启用能力。`.aix` 是当前原生包格式，使用 ACL manifest 描述包身份、版本和扩展表面。
+
+<UseArchitectureDiagram />
+
+## 五类扩展表面
+
+<DocTable caption="AIX 可以声明的扩展表面" headers={['表面', '用途', '典型内容']} rows={[
+  ['tool', '进程内或本机工具能力', 'CLI、HTTP Service、任务和服务工作负载'],
+  ['mcp', '标准 MCP 提供方', 'stdio 或 Streamable HTTP 启动合同'],
+  ['skill', '代理工作流指导', 'SKILL.md、依赖和宿主模式'],
+  ['okf', '领域知识包', '概念、引用、计算和知识索引'],
+  ['ui', '宿主界面扩展', 'HTML、样式、脚本和受控资源绑定'],
+]} />
+
+一个包可以声明多个表面和依赖。安装包不等于所有能力已经启用。启用、禁用和升级通过可审查计划执行。
+
+## 当前包版本
+
+<DocTable caption="Use 相关 crate" headers={['Crate', '当前版本', '职责']} rows={[
+  ['a3s-use', '0.3.3', 'CLI、包生命周期、运行时和 MCP 宿主'],
+  ['a3s-use-extension', '0.3.3', 'AIX manifest、Registry 和表面合同'],
+  ['a3s-use-core', '0.2.4', '跨域共享类型和错误合同'],
+  ['a3s-use-tool-acquire', '0.2.4', '本机命令行工具获取'],
+  ['a3s-use-reconcile', '0.2.10', 'Skill、OKF、UI、MCP 和 Tool 的单代际协调'],
+]} />
+
+默认 feature 是 `extensions` 和 `mcp`。`tool-acquire` 与 `reconcile` 是可选 feature。
+
+## 信任与宿主边界
+
+Use 校验包结构、manifest、文件清单、摘要和 Registry 目标身份。宿主仍负责工作区授权、秘密管理、进程生命周期和最终启用决定。
+
+本地 `.aix` 的 Schema 校验不代替 Registry 信任验证。Registry 使用 TUF 元数据、签名目录证据和目标摘要建立发布边界。
+
+`actions` 声明包可能请求的读、修改和执行能力。应用计划前必须审查这些声明、工具入口和外部依赖。
+
+## 文档入口
+
+- [AIX 包与接入](./aix/)：Manifest、包结构、Registry 和计划应用。
+- [运行与恢复](./operations/)：作用域、MCP、状态备份、恢复和验证。
+
+<ChapterCards />
+
+## 实现依据
+
+- [Use CLI 与公开模块](https://github.com/aster-ai-lab/aster/blob/main/crates/use/src/lib.rs)
+- [AIX Manifest 与扩展合同](https://github.com/aster-ai-lab/aster/blob/main/crates/use/extension/src/lib.rs)
+- [Use crate 配置](https://github.com/aster-ai-lab/aster/blob/main/crates/use/Cargo.toml)

@@ -19,7 +19,7 @@ import {
   readWorkOfficePdfCollaborationSource,
 } from '../../../collaboration/office-pdf-collaboration';
 import type { WorkPdfCollaborationContent } from '../../../collaboration/office-pdf-collaboration-types';
-import { Button, StateView } from '../../../design-system/primitives';
+import { DialogPresence, Button, StateView } from '../../../design-system/primitives';
 import { useDialogFocusScope } from '../../../design-system/primitives/overlay/dialog-focus-scope';
 import { officeMessage } from '../../../i18n/office-locale';
 import { useOfficeCollaborationLocationNavigator } from './office-collaboration-presence-context';
@@ -146,6 +146,16 @@ export function PdfViewer({
       }
     : undefined;
   const controller = usePdfViewerController(registry, collaborationHistory);
+  const persistPdf = useCallback(async (source: Blob | Promise<Blob>) => {
+    if (!onSave) return;
+    setSaveState('saving');
+    try {
+      const saved = await onSave(await source);
+      setSaveState(saved ? 'saved' : 'error');
+    } catch {
+      setSaveState('error');
+    }
+  }, [onSave]);
   const replacePageSource = useCallback(
     (source: Blob) => {
       const next = pdfBlob(source);
@@ -154,7 +164,6 @@ export function PdfViewer({
       setRegistry(null);
       setDocumentBytes(null);
       setLoadError(null);
-      setSaveState('idle');
       setMobilePageNavigationOpen(false);
       setPageOrganizerOpen(false);
       void next.arrayBuffer().then(
@@ -169,9 +178,9 @@ export function PdfViewer({
       );
       // Keep the host artifact blob in sync so Download/export reopens the
       // organized PDF rather than the pre-mutation source bytes.
-      if (onSave) void onSave(next);
+      void persistPdf(next);
     },
-    [onSave],
+    [persistPdf],
   );
   const pageOrganization = usePdfPageOrganization({
     enabled: pageOrganizationEnabled,
@@ -372,14 +381,16 @@ export function PdfViewer({
 
   const savePdf = useCallback(async () => {
     if (!onSave || saveState === 'saving') return;
-    setSaveState('saving');
-    try {
-      const saved = await onSave(await controller.saveAsCopy());
-      setSaveState(saved ? 'saved' : 'error');
-    } catch {
-      setSaveState('error');
+    // EmbedPDF commits text on blur; a keyboard save keeps focus in its editor.
+    const textEditor = pdfRootRef.current
+      ?.querySelector('.work-pdf-native-viewer')
+      ?.firstElementChild?.shadowRoot?.activeElement;
+    if (textEditor instanceof HTMLElement && textEditor.isContentEditable) {
+      textEditor.blur();
+      textEditor.focus({ preventScroll: true });
     }
-  }, [controller, onSave, saveState]);
+    await persistPdf(controller.saveAsCopy());
+  }, [controller, onSave, persistPdf, saveState]);
   const pdfExtensions = useMemo(createPdfEditorExtensions, []);
   const pdfEditor = useOfficeEditorRuntime(
     {
@@ -458,8 +469,13 @@ export function PdfViewer({
         role="alert"
         icon={<AlertCircle size={24} />}
         title={officeMessage(messages, 'pdf.viewer.openFailedTitle')}
-        description={officeMessage(messages, 'pdf.viewer.openFailedDesc')}
-        descriptionTitle={loadError}
+        description={
+          <>
+            {officeMessage(messages, 'pdf.viewer.openFailedDesc')}
+            <br />
+            {loadError}
+          </>
+        }
         actions={
           <Button onClick={() => setRetryCount((value) => value + 1)}>
             {officeMessage(messages, 'pdf.viewer.retry')}
@@ -508,26 +524,28 @@ export function PdfViewer({
         saveState={saveState}
         state={viewerController.state}
       />
-      {pageOrganizerOpen &&
-        viewerReady &&
-        registry &&
-        viewerController.state.totalPages > 0 && (
-          <PdfPageOrganizerDialog
-            busy={pageOrganization.state.busy}
-            can={pdfEditor.can()}
-            commands={pdfCommands}
-            currentPage={viewerController.state.currentPage}
-            diagnostics={pageOrganization.state.diagnostics}
-            error={pageOrganization.state.error}
-            registry={registry}
-            restoreFocusTarget={() =>
-              pdfPageOrganizerRestoreFocusTarget(pdfRootRef.current)
-            }
-            totalPages={viewerController.state.totalPages}
-            onClose={() => setPageOrganizerOpen(false)}
-            onDismissError={pageOrganization.dismissError}
-          />
-        )}
+      <DialogPresence>
+        {pageOrganizerOpen &&
+          viewerReady &&
+          registry &&
+          viewerController.state.totalPages > 0 && (
+            <PdfPageOrganizerDialog
+              busy={pageOrganization.state.busy}
+              can={pdfEditor.can()}
+              commands={pdfCommands}
+              currentPage={viewerController.state.currentPage}
+              diagnostics={pageOrganization.state.diagnostics}
+              error={pageOrganization.state.error}
+              registry={registry}
+              restoreFocusTarget={() =>
+                pdfPageOrganizerRestoreFocusTarget(pdfRootRef.current)
+              }
+              totalPages={viewerController.state.totalPages}
+              onClose={() => setPageOrganizerOpen(false)}
+              onDismissError={pageOrganization.dismissError}
+            />
+          )}
+      </DialogPresence>
       <div
         className="work-pdf-workspace"
         data-mobile-page-navigation={
@@ -590,8 +608,29 @@ export function PdfViewer({
               tabBar: 'never',
               theme: {
                 preference: themePreference,
-                light: { accent: { primary: '#2867d8' } },
-                dark: { accent: { primary: '#7da7ff' } },
+                light: {
+                  background: { app: 'var(--a3s-bg)' },
+                  accent: {
+                    primary: 'var(--a3s-ink)',
+                    primaryHover: 'var(--a3s-body)',
+                    primaryActive: 'var(--a3s-ink)',
+                    primaryLight: 'var(--spec-selected-row)',
+                    primaryForeground: 'var(--a3s-panel)',
+                  },
+                  interactive: {
+                    hover: 'var(--spec-hover-row)',
+                    active: 'var(--spec-selected-row)',
+                    selected: 'var(--spec-selected-row)',
+                    focus: 'var(--a3s-ink)',
+                    focusRing: 'rgb(0 0 0 / 10%)',
+                  },
+                  scrollbar: {
+                    track: 'var(--a3s-scrollbar-track)',
+                    thumb: 'var(--a3s-scrollbar-thumb)',
+                    thumbHover: 'var(--a3s-scrollbar-thumb-hover)',
+                  },
+                },
+                dark: { accent: { primary: 'var(--a3s-ink)' } },
               },
               i18n: { defaultLocale: 'zh-CN' },
               ui: { schema: a3sPdfUiSchema },

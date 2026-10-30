@@ -1,11 +1,11 @@
 export const meta = {
-  "title": "让并行任务遵守同一套预算",
+  "title": "并行任务与预算约束",
   "description": "子智能体、Worker、优先队列、程序目录和可恢复工作流。",
   "label": "任务、队列与程序",
   "updated": "2026-10-26"
 };
 
-## 先选一种执行方式
+## 执行方式
 
 | 需求 | 入口 | 谁负责推进 |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Rust 宿主通过 `register_worker_agent` 等公开入口注册 Worker。选择�
 
 配置 `with_queue_config` 后，用 `has_queue()` 判断是否接入。`queue_stats()` 查看各 lane 的排队、活动与外部任务，`queue_metrics()` 可能因未启用指标而返回 None。没有指标不是“零延迟”。
 
-`set_lane_handler` 为指定 lane 安装处理器；外部任务使用 `pending_external_tasks` 与 `complete_external_task` 对应原 task_id。重复、迟到或未知任务回执不能套给新任务。开启死信后用 `dead_letters()` 排查失败，不能无条件循环重放带副作用的任务。
+`set_lane_handler` 为指定 lane 安装处理器；外部任务使用 `pending_external_tasks` 与 `complete_external_task` 对应原 task_id。重复、迟到或未知任务回执不能套给新任务。启用死信后用 `dead_letters()` 排查失败，不能无条件循环重放带副作用的任务。
 
 ## program 怎样使用工具
 

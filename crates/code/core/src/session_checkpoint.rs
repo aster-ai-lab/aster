@@ -464,7 +464,7 @@ mod tests {
             agent_template_id: None,
             correlation_id: None,
             durable_memory_binding: None,
-            cognitive_package_binding: None,
+            package_binding: None,
             immutable_content_adapter_binding: None,
         })
     }
@@ -638,7 +638,7 @@ mod tests {
                 session_id: "session-with-resume".into(),
                 status: RunStatus::Executing,
                 prompt: "continue".into(),
-                cognitive_package_binding: None,
+                package_binding: None,
                 capability_binding: None,
                 created_at_ms: 1,
                 updated_at_ms: 1,

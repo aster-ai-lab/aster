@@ -41,17 +41,17 @@
 }
 
 .work-spreadsheet-sort-options > label:has(input:checked) {
-  border-color: var(--work-spreadsheet-accent, #159469);
+  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
   background: color-mix(
     in srgb,
-    var(--work-spreadsheet-accent, #159469) 10%,
+    var(--work-spreadsheet-accent, var(--a3s-ink)) 10%,
     var(--a3s-panel)
   );
 }
 
 .work-spreadsheet-sort-options input {
   margin-block-start: 3px;
-  accent-color: var(--work-spreadsheet-accent, #159469);
+  accent-color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-sort-options label > span {
@@ -65,7 +65,7 @@
 }
 
 .work-spreadsheet-sort-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
 
   width: min(820px, 100%);
 }
@@ -120,7 +120,7 @@
 
 .work-spreadsheet-sort-level legend {
   padding: 0 5px;
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
   font-size: 10px;
   font-weight: 700;
 }
@@ -244,9 +244,9 @@
 }
 
 .work-spreadsheet-sort-custom-list-editor textarea:focus-visible {
-  border-color: var(--work-spreadsheet-accent, #159469);
+  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 24%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 24%, transparent);
   outline-offset: 1px;
 }
 
@@ -270,7 +270,7 @@
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -284,7 +284,7 @@
 }
 
 .work-spreadsheet-sort-custom-list-manager {
-  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
 
   width: min(720px, 100%);
 }
@@ -312,7 +312,7 @@
   font-weight: 650;
 }
 
-.work-spreadsheet-sort-custom-list-manager select,
+.work-spreadsheet-sort-list,
 .work-spreadsheet-sort-custom-list-manager textarea {
   box-sizing: border-box;
   width: 100%;
@@ -328,6 +328,49 @@
   line-height: 1.5;
 }
 
+.work-spreadsheet-sort-custom-list-picker {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.work-spreadsheet-sort-list {
+  overflow: auto;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.work-spreadsheet-sort-list:focus-visible {
+  outline: 2px solid #171717;
+  outline-offset: 2px;
+}
+
+.work-spreadsheet-sort-list-group {
+  padding: 6px 10px;
+  color: var(--a3s-muted);
+  font-size: 12px;
+}
+
+.work-spreadsheet-sort-list [role="option"] {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.work-spreadsheet-sort-list [role="option"]:hover {
+  background: #f7f7f7;
+}
+
+.work-spreadsheet-sort-list [aria-selected="true"] {
+  background: #f2f3f5;
+  color: #171717;
+  font-weight: 500;
+}
+
 .work-spreadsheet-sort-custom-list-manager textarea {
   resize: vertical;
 }
@@ -337,11 +380,10 @@
   color: var(--a3s-muted);
 }
 
-.work-spreadsheet-sort-custom-list-manager select:focus-visible,
 .work-spreadsheet-sort-custom-list-manager textarea:focus-visible {
-  border-color: var(--work-spreadsheet-accent, #159469);
+  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
   outline: 2px solid
-    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 24%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 24%, transparent);
   outline-offset: 1px;
 }
 
@@ -381,7 +423,7 @@
 }
 
 .work-spreadsheet-sort-range-dialog {
-  --work-office-control-accent: var(--work-spreadsheet-accent, #159469);
+  --work-office-control-accent: var(--work-spreadsheet-accent, var(--a3s-ink));
 
   width: min(500px, 100%);
 }
@@ -414,9 +456,9 @@
 }
 
 .work-spreadsheet-sort-range-options > label:has(input:checked) {
-  border-color: var(--work-spreadsheet-accent, #159469);
+  border-color: var(--work-spreadsheet-accent, var(--a3s-ink));
   box-shadow: 0 0 0 1px
-    color-mix(in srgb, var(--work-spreadsheet-accent, #159469) 22%, transparent);
+    color-mix(in srgb, var(--work-spreadsheet-accent, var(--a3s-ink)) 22%, transparent);
 }
 
 .work-spreadsheet-sort-range-options > label:has(input:disabled) {
@@ -426,7 +468,7 @@
 
 .work-spreadsheet-sort-range-options input {
   margin: 2px 0 0;
-  accent-color: var(--work-spreadsheet-accent, #159469);
+  accent-color: var(--work-spreadsheet-accent, var(--a3s-ink));
 }
 
 .work-spreadsheet-sort-range-options label > span {
@@ -450,7 +492,7 @@
   width: fit-content;
   max-width: 100%;
   overflow: hidden;
-  color: var(--work-spreadsheet-accent, #159469);
+  color: var(--work-spreadsheet-accent, var(--a3s-ink));
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -470,7 +512,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .work-spreadsheet-sort-custom-list-manager select,
+  .work-spreadsheet-sort-list,
   .work-spreadsheet-sort-custom-list-manager textarea {
     min-height: 180px;
   }

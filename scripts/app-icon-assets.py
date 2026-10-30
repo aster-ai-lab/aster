@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Rasterise the Aster icon ladder and assemble the platform containers.
+"""Resize the sole Aster logo.png master and assemble platform containers.
 
-The three SVG sources from `scripts/app-icon.py` are a size ladder, so the
-rasters are not one drawing scaled down: 16–40 px come from the micro source,
-48–80 px from the small source, and 128 px and up from the master. `resvg`
-(through the Tauri CLI already vendored in `apps/studio/node_modules`) does the
-rasterising so the output does not depend on a system librsvg.
+The installed Tauri CLI produces every size from the same approved artwork.
+Light and dark names are compatibility exports of that same logo, not inverses.
+The macOS tray uses its background-free template silhouette.
 
 Outputs, all in `apps/web/public/tenant/aster/`:
 
@@ -13,8 +11,11 @@ Outputs, all in `apps/web/public/tenant/aster/`:
   icon.png            1024 px, the master raster
   icon.ico            multi-resolution Windows container
   icon.icns           multi-resolution macOS container, per-size frames
+  logo/mark/tray      the same artwork at each consumer's required size
+  favicon.png        browser tab icon
+  icon-assets.sha256 source and export digests for dependency-free verification
 
-`tauri.conf.json` bundles the last three; `just studio-desktop` installs the
+`tauri.conf.json` bundles the icon containers; `just studio-desktop` installs the
 ladder into the hicolor theme so a dock can find it by name.
 
 Usage:
@@ -24,6 +25,7 @@ Usage:
 
 from __future__ import annotations
 
+import hashlib
 import shutil
 import struct
 import subprocess
@@ -37,20 +39,7 @@ TENANT_DIR = REPO / "apps" / "web" / "public" / "tenant" / "aster"
 ICON_DIR = TENANT_DIR / "icons"
 TAURI_CLI = REPO / "apps" / "studio" / "node_modules" / ".bin" / "tauri"
 
-# size -> source without the `app-icon-` prefix and `.svg` suffix.
-LADDER = {
-    16: "micro",
-    24: "micro",
-    32: "micro",
-    40: "micro",
-    48: "small",
-    64: "small",
-    80: "small",
-    128: "full",
-    256: "full",
-    512: "full",
-    1024: "full",
-}
+LADDER = (16, 24, 32, 40, 48, 64, 80, 128, 256, 512, 1024)
 # Windows asks for the container to carry the small frames; Explorer and the
 # taskbar pick the frame that matches their own scale factor.
 ICO_SIZES = [16, 24, 32, 48, 64, 128, 256]
@@ -69,10 +58,14 @@ ICNS_FRAMES = [
     ("ic13", 256),
     ("ic14", 512),
 ]
-
-
-def source_name(level: str) -> str:
-    return "app-icon.svg" if level == "full" else f"app-icon-{level}.svg"
+MARK_SIZES = {
+    "logo-light.png": 512,
+    "logo-dark.png": 512,
+    "mark-light.png": 256,
+    "mark-dark.png": 256,
+    "tray.png": 32,
+    "favicon.png": 32,
+}
 
 
 def png_size(data: bytes) -> tuple[int, int]:
@@ -85,7 +78,7 @@ def png_size(data: bytes) -> tuple[int, int]:
 def png_pixels(data: bytes) -> tuple[int, int, bytes]:
     """Decode an 8-bit RGBA, non-interlaced PNG into raw RGBA bytes.
 
-    Only the shape `resvg` writes is supported, which keeps this dependency-free
+    Only the layout Tauri writes is supported, which keeps this dependency-free
     while still letting the verifier look at real alpha values instead of image
     dimensions alone.
     """
@@ -173,7 +166,7 @@ def write_icns(path: Path, frames: list[tuple[str, bytes]]) -> None:
 
 def verify() -> list[str]:
     problems: list[str] = []
-    for size, level in LADDER.items():
+    for size in LADDER:
         path = ICON_DIR / f"{size}x{size}.png"
         if not path.is_file():
             problems.append(f"missing {path.relative_to(REPO)}")
@@ -184,14 +177,12 @@ def verify() -> list[str]:
             problems.append(f"{path.name}: {width}x{height}, expected {size}")
             continue
         width, _, pixels = png_pixels(data)
-        # The plate keeps an optical margin, so the corners stay transparent at
-        # every size; a corner that fills means the safe area was lost.
-        if alpha_at(width, pixels, 1, 1) != 0:
+        # Resampling the generated master leaves up to 2/255 alpha at a corner.
+        if alpha_at(width, pixels, 1, 1) > 2:
             problems.append(f"{path.name}: corner is opaque, plate lost its margin")
-        # ... and the plate still covers the middle of the canvas.
         middle = alpha_at(width, pixels, size // 2, size // 2)
-        if middle != 255:
-            problems.append(f"{path.name}: centre alpha {middle}, expected opaque")
+        if middle < 250:
+            problems.append(f"{path.name}: centre alpha {middle}, expected at least 250")
     master = TENANT_DIR / "icon.png"
     if not master.is_file():
         problems.append("missing icon.png")
@@ -210,6 +201,34 @@ def verify() -> list[str]:
         problems.append("missing icon.icns")
     elif icns.read_bytes()[:4] != b"icns":
         problems.append("icon.icns has no icns magic")
+    for name, size in MARK_SIZES.items():
+        path = TENANT_DIR / name
+        if not path.is_file():
+            problems.append(f"missing {name}")
+            continue
+        try:
+            if png_size(path.read_bytes()) != (size, size):
+                problems.append(f"{name} is not {size}x{size}")
+        except ValueError as error:
+            problems.append(f"{name}: {error}")
+    tray = TENANT_DIR / "tray.png"
+    if tray.is_file():
+        width, height, pixels = png_pixels(tray.read_bytes())
+        opaque = sum(alpha > 128 for alpha in pixels[3::4])
+        solid = sum(alpha == 255 for alpha in pixels[3::4])
+        if not width * height / 5 < opaque < width * height / 2:
+            problems.append("tray.png must be a transparent glyph, not an app-icon tile")
+        if solid < width * height / 8:
+            problems.append("tray.png must have opaque strokes, not a faded raster mask")
+    for name, size in MARK_SIZES.items():
+        path = TENANT_DIR / name
+        frame = ICON_DIR / f"{size}x{size}.png"
+        if name != "tray.png" and size in LADDER and path.is_file() and frame.is_file():
+            if path.read_bytes() != frame.read_bytes():
+                problems.append(f"{name} differs from the shared {size}px icon")
+    receipt = TENANT_DIR / "icon-assets.sha256"
+    if not problems and (not receipt.is_file() or receipt.read_text() != asset_manifest()):
+        problems.append("icon exports differ from their generation receipt; run `just app-icons`")
     config = (REPO / "apps" / "studio" / "src-tauri" / "tauri.conf.json").read_text()
     for name in ("icon.icns", "icon.png", "icon.ico"):
         if f'tenant/aster/{name}"' not in config:
@@ -223,32 +242,19 @@ def render() -> None:
             f"missing {TAURI_CLI.relative_to(REPO)}; run the package install in apps/studio"
         )
     ICON_DIR.mkdir(parents=True, exist_ok=True)
-    by_level: dict[str, list[int]] = {}
-    for size, level in LADDER.items():
-        by_level.setdefault(level, []).append(size)
     with tempfile.TemporaryDirectory(dir=REPO / "target") as scratch:
         staging = Path(scratch)
-        for level, sizes in by_level.items():
-            source = TENANT_DIR / source_name(level)
-            if not source.is_file():
-                raise SystemExit(f"missing icon source {source.relative_to(REPO)}")
-            subprocess.run(
-                [
-                    str(TAURI_CLI),
-                    "icon",
-                    str(source),
-                    "-o",
-                    str(staging / level),
-                    "-p",
-                    ",".join(str(size) for size in sizes),
-                ],
-                cwd=REPO / "apps" / "studio",
-                check=True,
-                stdout=subprocess.DEVNULL,
-            )
+        subprocess.run(
+            [
+                str(TAURI_CLI), "icon", str(TENANT_DIR / "logo.png"),
+                "-o", str(staging), "-p", ",".join(map(str, LADDER)),
+            ],
+            cwd=REPO / "apps" / "studio",
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
         for size in LADDER:
-            level = LADDER[size]
-            rendered = staging / level / f"{size}x{size}.png"
+            rendered = staging / f"{size}x{size}.png"
             shutil.copyfile(rendered, ICON_DIR / f"{size}x{size}.png")
         shutil.copyfile(ICON_DIR / "1024x1024.png", TENANT_DIR / "icon.png")
         write_ico(
@@ -262,8 +268,32 @@ def render() -> None:
                 for tag, size in ICNS_FRAMES
             ],
         )
+        subprocess.run(
+            [
+                str(TAURI_CLI), "icon", str(TENANT_DIR / "tray-template.svg"),
+                "-o", str(staging / "tray"), "-p", "32",
+            ],
+            cwd=REPO / "apps" / "studio",
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+        for name, size in MARK_SIZES.items():
+            directory = staging / "tray" if name == "tray.png" else staging
+            shutil.copyfile(directory / f"{size}x{size}.png", TENANT_DIR / name)
+    (TENANT_DIR / "icon-assets.sha256").write_text(asset_manifest())
     print(f"rendered {len(LADDER)} rasters into {ICON_DIR.relative_to(REPO)}")
-    print("wrote icon.png, icon.ico, icon.icns")
+    print("wrote icon.png, icon.ico, icon.icns, logos, tray and favicon from logo.png")
+
+
+def asset_manifest() -> str:
+    names = [
+        "logo.png", "tray-template.svg", "icon.png", "icon.ico", "icon.icns", *MARK_SIZES,
+        *(f"icons/{size}x{size}.png" for size in LADDER),
+    ]
+    return "".join(
+        f"{hashlib.sha256((TENANT_DIR / name).read_bytes()).hexdigest()}  {name}\n"
+        for name in names
+    )
 
 
 def main(argv: list[str]) -> int:

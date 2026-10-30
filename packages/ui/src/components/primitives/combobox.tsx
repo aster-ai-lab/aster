@@ -1,6 +1,7 @@
 'use client'
 
 import { cva, type VariantProps } from 'class-variance-authority'
+import { useCommandState } from 'cmdk'
 import { Check, ChevronDown, X } from 'lucide-react'
 import * as React from 'react'
 
@@ -81,6 +82,7 @@ export type ComboboxOption<TExtra extends object = Record<never, never>> = {
 export type ComboboxSearchPlacement = 'content' | 'trigger'
 
 interface ComboboxOptionListProps<TExtra extends object> {
+  listRef: ((element: HTMLDivElement | null) => void) | null
   emptyText: string
   isSelected: (value: string) => boolean
   manualFilterEnabled: boolean
@@ -94,6 +96,7 @@ interface ComboboxOptionListProps<TExtra extends object> {
 }
 
 function ComboboxOptionList<TExtra extends object>({
+  listRef,
   emptyText,
   isSelected,
   manualFilterEnabled,
@@ -134,7 +137,7 @@ function ComboboxOptionList<TExtra extends object>({
   }
 
   return (
-    <CommandList aria-multiselectable={multiple || undefined}>
+    <CommandList ref={listRef} aria-multiselectable={multiple || undefined}>
       {manualFilterEnabled ? (
         visibleOptions.length === 0 ? (
           <div className={cn('py-6 text-center text-sm text-muted-foreground', emptyClassName)}>{emptyText}</div>
@@ -149,6 +152,20 @@ function ComboboxOptionList<TExtra extends object>({
       )}
     </CommandList>
   )
+}
+
+function ComboboxActiveDescendant({ list, onChange }: {
+  list: HTMLDivElement | null
+  onChange: (id: string | undefined) => void
+}) {
+  const value = useCommandState((state) => state.value)
+  React.useLayoutEffect(() => {
+    // cmdk owns row IDs, including when an external input controls its value.
+    const selected = Array.from(list?.querySelectorAll<HTMLElement>('[data-slot="command-item"]') ?? [])
+      .find((item) => item.getAttribute('data-value') === value)
+    onChange(selected?.id)
+  }, [value, list, onChange])
+  return null
 }
 
 export interface ComboboxProps<TExtra extends object = Record<never, never>> extends Omit<
@@ -212,6 +229,8 @@ export interface ComboboxProps<TExtra extends object = Record<never, never>> ext
 
   // Other
   name?: string
+  id?: string
+  'data-autofocus'?: 'true'
   'aria-labelledby'?: React.AriaAttributes['aria-labelledby']
 }
 
@@ -252,6 +271,8 @@ export function Combobox<TExtra extends object = Record<never, never>>({
   size,
   'aria-label': ariaLabel,
   name,
+  id,
+  'data-autofocus': autofocus,
   'aria-labelledby': ariaLabelledBy
 }: ComboboxProps<TExtra>) {
   // ==================== State ====================
@@ -263,6 +284,8 @@ export function Combobox<TExtra extends object = Record<never, never>>({
   const [activeValue, setActiveValue] = React.useState('')
   const triggerInputRef = React.useRef<HTMLInputElement>(null)
   const defaultValueLabelId = React.useId()
+  const [listElement, setListElement] = React.useState<HTMLDivElement | null>(null)
+  const [activeDescendant, setActiveDescendant] = React.useState<string>()
   const defaultTriggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${defaultValueLabelId}` : undefined
 
   const open = controlledOpen ?? internalOpen
@@ -287,20 +310,10 @@ export function Combobox<TExtra extends object = Record<never, never>>({
 
   const selectedOption = !multiple ? options.find((opt) => opt.value === value) : undefined
 
-  // Seed cmdk's active (highlighted) descendant to the current selection each
-  // time the list opens. Without this, cmdk defaults the highlight to the first
-  // option, making it look selected even when another option is the real value.
-  React.useEffect(() => {
-    if (open && !multiple && typeof value === 'string') {
-      setActiveValue(value)
-    }
-  }, [open, multiple, value])
-
   const triggerSearchEnabled = searchable && searchPlacement === 'trigger' && !multiple
   const contentSearchEnabled = searchable && !triggerSearchEnabled
   const manualFilterEnabled = triggerSearchEnabled || (contentSearchEnabled && Boolean(filterOption))
   const activeSearch = triggerSearchEnabled ? triggerSearch : contentSearch
-  const normalizedSearch = activeSearch.trim().toLowerCase()
   const debounceMs = Math.max(0, searchDebounceMs)
 
   React.useEffect(() => {
@@ -335,6 +348,18 @@ export function Combobox<TExtra extends object = Record<never, never>>({
 
     return options.filter((option) => matchesOption(option, effectiveSearch))
   }, [effectiveSearch, manualFilterEnabled, matchesOption, normalizedEffectiveSearch, options])
+
+  React.useEffect(() => {
+    if (open && !multiple && typeof value === 'string' && (!triggerSearchEnabled || !activeSearch)) {
+      setActiveValue(value)
+    }
+  }, [open, multiple, value, triggerSearchEnabled, activeSearch])
+
+  React.useEffect(() => {
+    if (!open || !triggerSearchEnabled) return
+    setActiveValue((current) => visibleOptions.some((option) => option.value === current && !option.disabled)
+      ? current : visibleOptions.find((option) => !option.disabled)?.value ?? '')
+  }, [open, triggerSearchEnabled, visibleOptions])
 
   const emittedSearchRef = React.useRef('')
   React.useEffect(() => {
@@ -434,41 +459,49 @@ export function Combobox<TExtra extends object = Record<never, never>>({
   const handleTriggerInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextSearch = event.target.value
     setTriggerSearch(nextSearch)
+    setActiveValue('')
     if (!open) {
       setOpen(true)
     }
   }
 
   const handleTriggerInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!triggerSearchEnabled) {
+    if (!triggerSearchEnabled || event.nativeEvent.isComposing) {
       return
     }
 
     if (event.key === 'Escape') {
+      event.preventDefault()
+      event.stopPropagation()
       handleOpenChange(false)
       return
     }
 
-    if (event.key === 'Enter') {
-      if (!normalizedSearch) {
-        event.preventDefault()
-        handleOpenChange(false)
-        return
-      }
+    if (event.key === 'Tab') {
+      handleOpenChange(false)
+      return
+    }
 
-      const firstEnabledOption = options.find((option) => !option.disabled && matchesOption(option, activeSearch))
-      if (firstEnabledOption) {
+    if (event.key === 'Enter' && open) {
+      const selected = visibleOptions.find((option) => option.value === activeValue && !option.disabled)
+      if (selected) {
         event.preventDefault()
-        handleSelect(firstEnabledOption.value)
+        handleSelect(selected.value)
       }
       return
     }
 
-    if (event.key === 'ArrowDown') {
+    if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
       event.preventDefault()
       if (!open) {
         handleOpenChange(true)
+        return
       }
+      const enabled = visibleOptions.filter((option) => !option.disabled)
+      const current = enabled.findIndex((option) => option.value === activeValue)
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? enabled.length - 1
+        : event.key === 'ArrowDown' ? Math.min(current + 1, enabled.length - 1) : Math.max(current - 1, 0)
+      if (enabled[next]) setActiveValue(enabled[next].value)
     }
   }
 
@@ -537,10 +570,12 @@ export function Combobox<TExtra extends object = Record<never, never>>({
 
     return (
       <PopoverAnchor asChild>
-        <div className="relative" style={{ width: triggerWidth }}>
+        <div className="ui-combobox-trigger relative" style={{ width: triggerWidth }}>
           <PopoverTrigger asChild>
             <Input
               ref={triggerInputRef}
+              id={id}
+              data-autofocus={autofocus}
               type="text"
               value={triggerInputValue}
               placeholder={triggerInputPlaceholder}
@@ -548,6 +583,10 @@ export function Combobox<TExtra extends object = Record<never, never>>({
               aria-label={ariaLabel}
               aria-labelledby={ariaLabelledBy}
               aria-expanded={open}
+              aria-haspopup="listbox"
+              aria-controls={open ? listElement?.id : undefined}
+              aria-activedescendant={open ? activeDescendant : undefined}
+              aria-autocomplete="list"
               aria-invalid={error}
               role="combobox"
               autoComplete="off"
@@ -586,6 +625,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
       <PopoverTrigger asChild>
         <div
           role="combobox"
+          id={id}
           tabIndex={disabled ? -1 : 0}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
@@ -649,6 +689,8 @@ export function Combobox<TExtra extends object = Record<never, never>>({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
+            id={id}
+            data-autofocus={autofocus}
             size={size}
             disabled={disabled}
             style={{ width: triggerWidth, ...triggerStyle }}
@@ -665,6 +707,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
         </PopoverTrigger>
       )}
       <PopoverContent
+        sideOffset={6}
         className={cn(
           'z-[240] rounded-[12px] border-[color:var(--color-border)] bg-[var(--color-bg-elevated)] p-0 text-[13px] text-[var(--color-ink)] shadow-[var(--shadow-elevated)]',
           popoverClassName
@@ -672,6 +715,14 @@ export function Combobox<TExtra extends object = Record<never, never>>({
         align={popoverAlign}
         portalContainer={portalContainer}
         style={{ width: popoverWidth }}
+        onMouseDown={(event) => {
+          // Editable comboboxes keep focus on the input while choosing a row.
+          if (triggerSearchEnabled) event.preventDefault()
+        }}
+        onCloseAutoFocus={(event) => {
+          // The external input retains focus; Tab must move to the next control.
+          if (triggerSearchEnabled) event.preventDefault()
+        }}
         onOpenAutoFocus={(event) => {
           if (!triggerSearchEnabled) {
             return
@@ -684,6 +735,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
           shouldFilter={!manualFilterEnabled}
           className={commandClassName}
           {...(!multiple ? { value: activeValue, onValueChange: setActiveValue } : {})}>
+          {triggerSearchEnabled && <ComboboxActiveDescendant list={listElement} onChange={setActiveDescendant} />}
           {contentSearchEnabled && (
             <CommandInput
               placeholder={searchPlaceholder}
@@ -693,6 +745,7 @@ export function Combobox<TExtra extends object = Record<never, never>>({
             />
           )}
           <ComboboxOptionList
+            listRef={triggerSearchEnabled ? setListElement : null}
             emptyText={emptyText}
             emptyClassName={emptyClassName}
             isSelected={isSelected}

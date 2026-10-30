@@ -177,11 +177,10 @@ Skills 提供操作说明，MCP 和动态工具提供实际调用能力；任何
 源码构建需要固定 Rust 工具链及仓库内私有组件的读取权限。
 准备方式、构建约定和检查要求见 [仓库约定](AGENTS.md)与[开发规范](docs/development-standards.md)。
 
-桌面开发运行 `just dev`（Aster）或 `just dev:toyou`（ToWork），保留进程即可使用前端热更新。
-原生开发缓存分别位于 `target/studio/aster` 和 `target/studio/toyou`，与普通 Cargo 检查、测试的构建锁分开。
-首次使用各自的目录需要建立缓存；显式指定 `CARGO_TARGET_DIR` 时仍使用指定目录。
+桌面开发运行 `just dev`（Aster），保留进程即可使用前端热更新。
+原生开发缓存位于 `target/studio/aster`，与普通 Cargo 检查、测试的构建锁分开。
+首次使用该目录需要建立缓存；显式指定 `CARGO_TARGET_DIR` 时仍使用指定目录。
 开发构建会自动使用 PATH 中已有的 `sccache`，并保留显式设置的 `RUSTC_WRAPPER`；设置为空可停用。
-已完成对应租户的原生构建、且开发服务器仍在运行时，可用 `just fork toyou 4319` 打开隔离副窗口而不执行 Cargo。
 Rust 修改仍需重新构建。性能测量与限制见[构建和启动验收记录](docs/evidence/desktop/2026-10-26-build-speed/OUTCOME.md)。
 
 | 修改方向 | 源码入口 |

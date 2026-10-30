@@ -124,7 +124,8 @@ export const pdfUiMessagesZhCN = {
   'pdf.organizer.closeError': '关闭错误提示',
   'pdf.organizer.workerHint': '页面操作在 Worker 中生成新 PDF，并由一个撤销记录恢复。签名、加密、表单、目录或标记结构无法安全重写时会明确停止。',
   'pdf.organizer.selectPageAria': '选择第 {page} 页',
-  'pdf.organizer.currentBadge': '当前'
+  'pdf.organizer.currentBadge': '当前',
+  'pdf.organizer.previewFailed': '无法生成缩略图'
 } as const;
 
 export type PdfUiMessageKey = keyof typeof pdfUiMessagesZhCN;

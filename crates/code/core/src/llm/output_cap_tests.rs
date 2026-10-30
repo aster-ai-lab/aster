@@ -52,8 +52,9 @@ fn clients(
         OpenAiClient::new("test-key".into(), "gpt-5.4".into()).with_http_client(http.clone());
     let mut zhipu =
         ZhipuClient::new("test-key".into(), "glm-5.3".into()).with_http_client(http.clone());
-    let mut deepseek =
-        OpenAiClient::new("test-key".into(), "deepseek-v4-flash".into()).with_http_client(http);
+    let mut deepseek = OpenAiClient::new("test-key".into(), "deepseek-v4-flash".into())
+        .with_provider_name("deepseek")
+        .with_http_client(http);
     if let Some(effort) = effort {
         anthropic = anthropic.with_reasoning_effort(effort);
         anthropic_glm = anthropic_glm.with_reasoning_effort(effort);

@@ -166,7 +166,7 @@ async fn cmd_list(
 ) -> Result<()> {
     let records: Vec<WorktreeRecord> = ext_call(
         tx,
-        "x.ai/git/worktree/list",
+        "a3s/git/worktree/list",
         &serde_json::json!({
             "repo": repo,
             "type": types,
@@ -185,7 +185,7 @@ async fn cmd_list(
 async fn cmd_show(tx: &a3s_acp_lib::AcpAgentTx, id_or_path: &str) -> Result<()> {
     let result: Result<Option<WorktreeRecord>> = ext_call(
         tx,
-        "x.ai/git/worktree/show",
+        "a3s/git/worktree/show",
         &serde_json::json!({ "idOrPath" : id_or_path }),
     )
     .await;
@@ -216,7 +216,7 @@ async fn cmd_rm(
     for id_or_path in &ids {
         let resp: Result<RemoveResponse> = ext_call(
             tx,
-            "x.ai/git/worktree/remove",
+            "a3s/git/worktree/remove",
             &serde_json::json!({
                 "idOrPath": id_or_path,
                 "force": force,
@@ -246,7 +246,7 @@ async fn cmd_gc(
 ) -> Result<()> {
     let report: GcReport = ext_call(
         tx,
-        "x.ai/git/worktree/gc",
+        "a3s/git/worktree/gc",
         &serde_json::json!({
             "dryRun": dry_run,
             "maxAge": max_age,
@@ -266,7 +266,7 @@ async fn cmd_gc(
 async fn cmd_db(tx: &a3s_acp_lib::AcpAgentTx, command: WorktreeDbCommand) -> Result<()> {
     match command {
         WorktreeDbCommand::Stats => {
-            let stats: DbStats = ext_call(tx, "x.ai/git/worktree/db/stats", &()).await?;
+            let stats: DbStats = ext_call(tx, "a3s/git/worktree/db/stats", &()).await?;
             let written = display::print_stats(&stats, &mut std::io::stdout().lock());
             Ok(crate::util::ignore_broken_pipe(written)?)
         }
@@ -275,12 +275,12 @@ async fn cmd_db(tx: &a3s_acp_lib::AcpAgentTx, command: WorktreeDbCommand) -> Res
             struct PathResp {
                 path: String,
             }
-            let resp: PathResp = ext_call(tx, "x.ai/git/worktree/db/path", &()).await?;
+            let resp: PathResp = ext_call(tx, "a3s/git/worktree/db/path", &()).await?;
             println!("{}", resp.path);
             Ok(())
         }
         WorktreeDbCommand::Rebuild => {
-            let report: RebuildReport = ext_call(tx, "x.ai/git/worktree/db/rebuild", &()).await?;
+            let report: RebuildReport = ext_call(tx, "a3s/git/worktree/db/rebuild", &()).await?;
             let written = display::print_rebuild(&report, &mut std::io::stdout().lock());
             Ok(crate::util::ignore_broken_pipe(written)?)
         }
@@ -292,7 +292,7 @@ mod tests {
     #[test]
     fn ext_request_builds_list_with_filters() {
         let req = ext_request(
-            "x.ai/git/worktree/list",
+            "a3s/git/worktree/list",
             &serde_json::json!({
                 "repo": "a3s",
                 "type": ["session"],
@@ -300,7 +300,7 @@ mod tests {
             }),
         )
         .unwrap();
-        assert_eq!(req.method.as_ref(), "x.ai/git/worktree/list");
+        assert_eq!(req.method.as_ref(), "a3s/git/worktree/list");
         let params: serde_json::Value = serde_json::from_str(req.params.get()).unwrap();
         assert_eq!(params.get("repo").and_then(|v| v.as_str()), Some("a3s"));
         assert_eq!(params.get("includeAll"), Some(&serde_json::json!(true)));
@@ -308,7 +308,7 @@ mod tests {
     #[test]
     fn ext_request_builds_gc_with_max_age_string() {
         let req = ext_request(
-            "x.ai/git/worktree/gc",
+            "a3s/git/worktree/gc",
             &serde_json::json!({
                 "dryRun": true,
                 "maxAge": "7d",
@@ -323,7 +323,7 @@ mod tests {
     #[test]
     fn ext_request_builds_remove_with_id_or_path() {
         let req = ext_request(
-            "x.ai/git/worktree/remove",
+            "a3s/git/worktree/remove",
             &serde_json::json!({
                 "idOrPath": "wt-abc123",
                 "force": true,
@@ -340,7 +340,7 @@ mod tests {
     #[test]
     fn ext_request_builds_show() {
         let req = ext_request(
-            "x.ai/git/worktree/show",
+            "a3s/git/worktree/show",
             &serde_json::json!({ "idOrPath": "/some/path" }),
         )
         .unwrap();
@@ -353,28 +353,28 @@ mod tests {
     #[test]
     fn ext_request_builds_detach_salvage_clean() {
         let d = ext_request(
-            "x.ai/git/worktree/detach",
+            "a3s/git/worktree/detach",
             &serde_json::json!({ "idOrPath": "/wt", "allowCopy": false }),
         )
         .unwrap();
-        assert_eq!(d.method.as_ref(), "x.ai/git/worktree/detach");
+        assert_eq!(d.method.as_ref(), "a3s/git/worktree/detach");
         let s = ext_request(
-            "x.ai/git/worktree/salvage",
+            "a3s/git/worktree/salvage",
             &serde_json::json!({ "idOrPath": "/wt", "out": "/out" }),
         )
         .unwrap();
-        assert_eq!(s.method.as_ref(), "x.ai/git/worktree/salvage");
+        assert_eq!(s.method.as_ref(), "a3s/git/worktree/salvage");
         let c = ext_request(
-            "x.ai/git/worktree/clean-artifacts",
+            "a3s/git/worktree/clean-artifacts",
             &serde_json::json!({ "idOrPath": "/wt" }),
         )
         .unwrap();
-        assert_eq!(c.method.as_ref(), "x.ai/git/worktree/clean-artifacts");
+        assert_eq!(c.method.as_ref(), "a3s/git/worktree/clean-artifacts");
     }
     #[test]
     fn ext_request_builds_db_stats_empty_params() {
-        let req = ext_request("x.ai/git/worktree/db/stats", &()).unwrap();
-        assert_eq!(req.method.as_ref(), "x.ai/git/worktree/db/stats");
+        let req = ext_request("a3s/git/worktree/db/stats", &()).unwrap();
+        assert_eq!(req.method.as_ref(), "a3s/git/worktree/db/stats");
     }
     #[test]
     fn remove_response_deserializes_with_resolved_path() {

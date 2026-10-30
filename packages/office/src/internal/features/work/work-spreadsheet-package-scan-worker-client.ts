@@ -476,10 +476,14 @@ function appendPlainXlsxCellChunk(
       const value = chunk.numericValues[numericIndex];
       if (!Number.isFinite(value)) return false;
       numericIndex += 1;
-      if (kind === PLAIN_XLSX_CELL_NUMBER) cell = Object.freeze({ v: value });
-      else if (kind === PLAIN_XLSX_CELL_BOOLEAN) {
+      if (kind === PLAIN_XLSX_CELL_NUMBER) {
+        cell = Object.freeze({ v: value, m: String(value) });
+      } else if (kind === PLAIN_XLSX_CELL_BOOLEAN) {
         if (value !== 0 && value !== 1) return false;
-        cell = Object.freeze({ v: value === 1 });
+        cell = Object.freeze({
+          v: value === 1,
+          m: value === 1 ? 'TRUE' : 'FALSE',
+        });
       } else if (kind === PLAIN_XLSX_CELL_ERROR) {
         const display = PLAIN_XLSX_ERROR_TEXT[value];
         if (!display) return false;

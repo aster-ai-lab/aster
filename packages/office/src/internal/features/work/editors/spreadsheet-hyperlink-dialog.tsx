@@ -95,6 +95,7 @@ export function SpreadsheetHyperlinkDialog({
 
   return (
     <Dialog
+      closeLabel={officeMessage(messages, 'office.dialog.close')}
       title={officeMessage(
         messages,
         source.hasHyperlink

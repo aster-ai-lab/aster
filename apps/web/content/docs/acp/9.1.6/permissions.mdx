@@ -1,8 +1,8 @@
 export const meta = {
-  "title": "让用户知道自己批准了什么",
+  "title": "工具确认与权限展示",
   "description": "权限姿态、逐项确认、可学习规则、业务提问与 MCP sampling。",
   "label": "权限、提问与表单",
-  "updated": "2026-10-26"
+  "updated": "2026-10-28"
 };
 
 ## 四种权限姿态
@@ -11,12 +11,14 @@ export const meta = {
 | --- | --- | --- |
 | default | 普通交互，修改前询问 | 显式 deny、工作区范围和沙箱 |
 | plan | 读取并制定计划，不写工作区 | 不能因计划要求而执行修改 |
-| auto | 已知读取可直接进行，修改仍按风险询问 | 风险判断与 deny 不消失 |
+| auto | 已知读取可直接执行，修改仍按风险询问 | 风险判断与 deny 不消失 |
 | yolo | 自动批准相应执行请求 | 显式 deny 和底层授权仍保留 |
 
-客户端通过 session/set_mode 或 `x.ai/permission_posture` 修改。后者还能传显式 deny。严格使用闭集值；不能根据按钮文案或模型文字猜 modeId。`a3sTurn.planFirst` 只限制本轮计划行为，不改掉存储的权限模式。
+客户端通过 session/set_mode 或 `a3s/permission_posture` 修改。后者还能传显式 deny。严格使用闭集值；不能根据按钮文案或模型文字猜 modeId。`a3sTurn.planFirst` 只限制本轮计划行为，不改掉存储的权限模式。
 
 ## 工具确认怎样展示
+
+<PeleAtlasDiagram name="permission-roundtrip" label="一次工具确认的往返" description="图示描述需要人工确认的调用。批准绑定原请求，原权限与沙箱约束仍成立；超时与断线不会产生批准。" />
 
 代理通过 ACP request_permission 请求用户选择。每项保留 sessionId、toolCallId、工具名、参数和风险原因。返回代理提供的 optionId，不要合成另一个“等价”选项。
 
@@ -30,6 +32,8 @@ export const meta = {
 
 用户关闭面板、超时或断线不是批准。多项确认各自按 ID 处理；旧面板的点击不能发送给新请求。
 
+请求装配见 <SourceRef path="crates/code/acp/src/agent/permission_ask.rs" match="pub(super) fn tool_permission_request(">tool_permission_request</SourceRef>；等待、超时与规则保存见 <SourceRef path="crates/code/acp/src/agent/permission_ask.rs" match="pub(super) async fn request_tool_permission(">request_tool_permission</SourceRef>。有效选项怎样被解释，见 <SourceRef path="crates/code/acp/src/agent/permission_ask.rs" match="pub(super) fn permission_response_approved(">permission_response_approved</SourceRef>。
+
 ## 业务提问和表单
 
 业务问题也可能借用 permission 通道，但 `_meta.question` 标记了 allowFreeText、hasChoices；这类请求收集答案，不是授予工具执行权。用户输入应绑定原 question_id。
@@ -37,6 +41,8 @@ export const meta = {
 `a3s/form/request` 是代理发给客户端的扩展请求，用于结构化表单。正常响应包含 values 对象；outcome 为 cancel 或 decline 时视为用户取消。未知字段、空值和校验失败按表单合同处理，不用默认答案替用户提交。
 
 客户端应区分三种控件：批准工具、回答业务问题、运行中追加指令。不要因为它们都可能弹出面板，就让“同意”走同一段执行逻辑。
+
+业务回答走 <SourceRef path="crates/code/acp/src/agent/permission_ask.rs" match="pub(super) async fn request_question_answer(">request_question_answer</SourceRef>，可与上面的工具确认入口对照阅读。
 
 ## MCP sampling 同意
 

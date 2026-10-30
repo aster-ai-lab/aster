@@ -143,7 +143,7 @@ pub fn catalog_prompt(items: &[CatalogItem], wiki_root: bool) -> String {
     let mut lines = vec!["Local assets:".to_string()];
     if wiki_root {
         lines.push(
-            "Choose the wiki sources this question needs. search_wiki scope=agent agent=<id> reads that agent's encyclopedia. scope=local reads personal notes. scope=team reads the organization encyclopedia. web_search reads the public web. Skip a source that the question does not need. A hit names the page and includes a short passage."
+            "Use search_wiki to retrieve the current workspace's published encyclopedia pages when relevant, within the scopes advertised by the tool. The host resolves workspace bindings; never supply filesystem roots. Personal notes are excluded. Hits name their page and include evidence passages; respect coverage and continuation fields before claiming no match."
                 .to_string(),
         );
     }

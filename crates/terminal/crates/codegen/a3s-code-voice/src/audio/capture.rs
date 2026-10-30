@@ -114,11 +114,14 @@ fn default_input_device() -> Result<cpal::Device, VoiceError> {
 /// Default input device without opening a stream ([`crate::probe::input_device_info`]).
 pub fn input_device_info() -> Result<crate::probe::InputDeviceInfo, VoiceError> {
     let device = default_input_device()?;
-    let name = device.name().unwrap_or_else(|_| "<unknown>".to_string());
+    let name = device
+        .description()
+        .map(|description| description.name().to_owned())
+        .unwrap_or_else(|_| "<unknown>".to_string());
     let detail = match device.default_input_config() {
         Ok(c) => format!(
             "{} Hz, {} ch, {:?}",
-            c.sample_rate().0,
+            c.sample_rate(),
             c.channels(),
             c.sample_format()
         ),
@@ -220,7 +223,10 @@ pub(super) fn open_capture_stream(
 ) -> Result<(cpal::Stream, String), VoiceError> {
     let device = default_input_device()?;
 
-    let device_name = device.name().unwrap_or_else(|_| "<unknown>".to_string());
+    let device_name = device
+        .description()
+        .map(|description| description.name().to_owned())
+        .unwrap_or_else(|_| "<unknown>".to_string());
 
     let default_config = device.default_input_config().map_err(|e| {
         VoiceError::Config(format!(
@@ -232,7 +238,7 @@ pub(super) fn open_capture_stream(
     // Fall back to the device default and the linear resampler when no native config matches
     let supported = native_rate_config(&device, sample_rate).unwrap_or(default_config);
 
-    let stream_rate = supported.sample_rate().0;
+    let stream_rate = supported.sample_rate();
     let in_channels = supported.channels();
     let sample_format = supported.sample_format();
     let stream_config: cpal::StreamConfig = supported.into();
@@ -328,7 +334,7 @@ fn native_rate_config(
     device: &cpal::Device,
     target_rate: u32,
 ) -> Option<cpal::SupportedStreamConfig> {
-    let target = cpal::SampleRate(target_rate);
+    let target = target_rate;
     let preferred_format = device
         .default_input_config()
         .ok()
@@ -366,7 +372,7 @@ where
 
     let stream = device
         .build_input_stream(
-            &stream_config,
+            stream_config,
             move |data: &[T], _: &cpal::InputCallbackInfo| {
                 if stop_cb.load(Ordering::Acquire) {
                     return;

@@ -33,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && <span className="ds-button-spinner" aria-hidden="true" />}
-        {children}
+        <span className="ds-button-content">{children}</span>
       </button>
     );
   },

@@ -18,7 +18,22 @@ impl A3sCodeAgent {
             if let Some(description) = description {
                 info = info.description(description);
             }
-            info = info.meta(Some(reasoning_effort_catalog_meta(&id)));
+            let mut meta = reasoning_effort_catalog_meta(&id);
+            let configured = (model.limit.context > 0).then_some(model.limit.context as usize);
+            let window = configured.or_else(|| a3s_code_core::documented_context_tokens(&id));
+            meta.insert("contextWindowKnown".into(), window.is_some().into());
+            if let Some(window) = window {
+                meta.insert("totalContextTokens".into(), window.into());
+            }
+            if !model.modalities.input.is_empty() {
+                meta.insert(
+                    "inputModalities".into(),
+                    serde_json::json!(model.modalities.input),
+                );
+            } else if model.attachment {
+                meta.insert("acceptsImages".into(), true.into());
+            }
+            info = info.meta(Some(meta));
             infos.push(info);
         }
         if infos.is_empty() && !self.launch.model_id.is_empty() {
@@ -127,8 +142,8 @@ pub(super) fn reasoning_effort_catalog_meta(
         "supportsReasoningEffort".into(),
         serde_json::Value::Bool(!levels.is_empty()),
     );
-    let efforts = levels
-        .iter()
+    let efforts = std::iter::once(&"default")
+        .chain(levels.iter())
         .map(|level| {
             let mut entry = serde_json::json!({
                 "value": level,
@@ -148,6 +163,7 @@ pub(super) fn reasoning_effort_catalog_meta(
 
 pub(super) fn effort_level_description(level: &str) -> &'static str {
     match level {
+        "default" => "Reset reasoning effort to the model default",
         "low" => "Faster, lighter reasoning",
         "medium" => "Balanced reasoning",
         "high" => "Heavy reasoning",

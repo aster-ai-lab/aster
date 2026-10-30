@@ -1,0 +1,38 @@
+{
+  "raw_request_allowed_files": [
+    "src-tauri/src/agent_plane/acp.rs",
+    "src-tauri/src/agent_plane/runtime_client.rs"
+  ],
+  "shared_attempt_driver": "crates/code/acp/src/agent/attempt.rs",
+  "shared_attempt_callers": [
+    "crates/code/acp/src/agent/turn.rs:drain_turn",
+    "crates/code/acp/src/agent/unattended_turn.rs:unattended_attempt"
+  ],
+  "plan_legacy_readers": [
+    "src/renderer/pages/agents/taskConversation/taskPlanProjection.ts",
+    "src/renderer/pages/agents/taskConversation/turn.ts",
+    "src/renderer/pages/agents/taskConversation/taskPlanMode.ts"
+  ],
+  "plan_raw_variant_files": [
+    "src/renderer/pages/agents/taskConversation/taskPlanProjection.ts",
+    "src/renderer/pages/agents/taskConversation/taskPlanMode.ts",
+    "src/renderer/pages/agents/components/AgentRightPane/agentRightPaneProjection.ts"
+  ],
+  "permission_predecision_allowed_files": [],
+  "alternate_ledger_allowed_files": [
+    "src-tauri/src/agent_plane/domain.rs",
+    "src-tauri/src/agent_plane/session_query.rs",
+    "src-tauri/src/agent_plane/store.rs",
+    "src-tauri/src/agent_plane/tasks.rs",
+    "src-tauri/src/agent_plane/turns.rs"
+  ],
+  "runtime_client_forbidden_symbols": [
+    "PlaneStore",
+    "save_message",
+    "save_session",
+    "save_tasks",
+    "save_runs",
+    "SessionExecution",
+    "TaskRun"
+  ]
+}

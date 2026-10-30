@@ -77,7 +77,7 @@ the same `components: [...]` list as `host:<id>`. Builtin registry ships
 view) for hermetic / Layer C proofs. Full custom trees use
 `HostHarnessAssembler` / `admit_component_tree` (Rust embedders).
 
-SDK surfaces pass **ids + config**, not JS/Python Effect runtimes.
+Rust sessions select registered host components through typed IDs and config.
 
 Nested host `infer([...])` mounts **do** namespace child keys under `infer/` so
 siblings cannot collide. CI / unit tests assert that discipline.
@@ -108,68 +108,12 @@ let recipe = HarnessComposeOptions::compose(
 )?;
 ```
 
-### SessionOptions (Core / SDKs)
+### Rust SessionOptions
 
-Omit `harness` → legacy `coding_actor`.
-
-```js
-// Node — prefer `components`
-agent.session('.', {
-  harness: Harness.compose({
-    components: [
-      Harness.system(),
-      Harness.tools(),
-      Harness.host('intent_stamp'),
-      Harness.budget(),
-      Harness.infer(),
-    ],
-    toolBudget: 4,
-    system: ['You are a careful coding agent.'],
-  }),
-});
-```
-
-```python
-# Python
-opts = SessionOptions()
-opts.harness = Harness.compose(
-    components=[
-        Harness.system(),
-        Harness.tools(),
-        Harness.host("intent_stamp"),
-        Harness.budget(),
-        Harness.infer(),
-    ],
-    tool_budget=4,
-    system=["You are a careful coding agent."],
-)
-```
-
-```go
-// Go
-budget := uint32(4)
-opts := &code.SessionOptions{
-	Harness: &code.HarnessOptions{
-		Components: []string{
-			code.HarnessSystem, code.HarnessTools, code.HarnessHost("intent_stamp"),
-			code.HarnessBudget, code.HarnessInfer,
-		},
-		ToolBudget: &budget,
-		System:     []string{"You are a careful coding agent."},
-	},
-}
-```
-
-`stepLimit` / `step_limit` and `modelAttempts` / `model_attempts` are optional and
-independent of `toolBudget`. Omit them to keep the derived step limit
-(`max_tool_rounds * 4`, at least 32) and 2 model attempts. Zero is rejected.
-
-Unknown part names fail closed when the session is created; unknown `host:<id>`
-values fail closed on the first run. Rust embedders supply
-`SessionOptions::with_host_harness_registry`. Node, Python, and Go sessions that
-set `harness` install `BuiltinHostHarnessRegistry`, so SDK `host:<id>` mounts
-resolve against Core's builtin components (currently `intent_stamp`); custom
-host components need a Rust embedder.
+A Rust host passes the composed harness through the original typed
+`SessionOptions`. Reuse `Harness` and `HarnessComponent` from Core; do not
+create another agent loop or a language bridge. See [the Rust API](../core/src/lib.rs)
+and [the local integration guide](USER_GUIDE.md).
 
 ## Verification
 
@@ -222,8 +166,7 @@ gate. Neither adds a component, driver or second log. See
 - Restoring `parallel_task` as a second orchestration engine.
 - Making `advanced-harness` the library default.
 - Embedding DSH / Cordis / a JavaScript Effect runtime.
-- Letting Node/Python author Moore `step`/`output` closures inside the SDK
-  (host factories stay Rust-side; SDKs pass `host:<id>` only).
+- Treating component IDs as permission to execute an unregistered host factory.
 
 ## Safety checks
 

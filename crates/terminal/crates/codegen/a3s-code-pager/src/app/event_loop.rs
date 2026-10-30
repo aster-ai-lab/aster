@@ -253,7 +253,7 @@ struct ReinitOutcome {
 struct AgentLoadOutcome {
     agent_id: super::agent::AgentId,
     success: bool,
-    /// `x.ai/runningPromptId` from the reload response: the turn another client is driving mid-reconnect.
+    /// `a3s/runningPromptId` from the reload response: the turn another client is driving mid-reconnect.
     /// Adopted at finalize (mirrors the `SessionLoaded` adoption in `dispatch.rs`).
     running_prompt_id: Option<String>,
     /// Persistent-memory implementation pinned by the re-spawned actor.
@@ -3757,16 +3757,26 @@ pub(super) fn is_bare_esc_press(ev: &Event) -> bool {
 /// Merge `Event::Paste` fragments and interleaved key events into a single `Event::Paste`.
 /// Non-paste, non-key events (Resize, Mouse, Focus) are preserved in order around the merged paste.
 fn merge_paste_fragments(events: Vec<TimedInputEvent>) -> Vec<TimedInputEvent> {
+    // A trailing Enter after a framed paste is submission, even in a resize batch.
+    let submit_index = events
+        .iter()
+        .rposition(|event| {
+            matches!(event.event, Event::Paste(_)) || is_pasteable_key_event(&event.event)
+        })
+        .filter(|&index| {
+            matches!(events.get(index), Some(event)
+                if matches!(&event.event, Event::Key(key) if key.code == KeyCode::Enter))
+        });
     let mut result = Vec::new();
     let mut merged_text = String::new();
     let mut merged_arrived_at = None;
-    for ev in events {
+    for (index, ev) in events.into_iter().enumerate() {
         match &ev.event {
             Event::Paste(text) => {
                 merged_arrived_at.get_or_insert(ev.arrived_at);
                 merged_text.push_str(text);
             }
-            Event::Key(ke) if is_pasteable_key_event(&ev.event) => {
+            Event::Key(ke) if is_pasteable_key_event(&ev.event) && Some(index) != submit_index => {
                 merged_arrived_at.get_or_insert(ev.arrived_at);
                 match ke.code {
                     KeyCode::Char(c) => merged_text.push(c),
@@ -3775,7 +3785,7 @@ fn merge_paste_fragments(events: Vec<TimedInputEvent>) -> Vec<TimedInputEvent> {
                     _ => {}
                 }
             }
-            Event::Key(_) => {}
+            Event::Key(_) if Some(index) != submit_index => {}
             _ => {
                 if !merged_text.is_empty() {
                     result.push(TimedInputEvent {
@@ -5858,20 +5868,7 @@ mod tests {
         let events = vec![TimedInputEvent::now(Event::Resize(80, 24))];
         assert!(!should_extend_for_paste(&events));
     }
-    #[test]
-    fn merge_paste_and_key_fragments() {
-        let events = vec![
-            TimedInputEvent::now(Event::Paste("hello\nwor".into())),
-            press(KeyCode::Char('l')),
-            press(KeyCode::Char('d')),
-        ];
-        let result = coalesce_rapid_keys(events);
-        assert_eq!(result.len(), 1);
-        assert_eq!(
-            nth(&result, 0).event,
-            Event::Paste("hello\nworld".to_string())
-        );
-    }
+    mod paste_submit;
     #[test]
     fn merge_multiple_paste_fragments() {
         let events = vec![

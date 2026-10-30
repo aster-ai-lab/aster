@@ -408,7 +408,7 @@ pub enum ContextProviderFailureMode {
     /// failed provider while other sources may continue.
     #[default]
     BestEffort,
-    /// Abort the turn. Used by exact-generation cognitive packages so a
+    /// Abort the turn. Used by exact-generation packages so a
     /// provider failure cannot silently fall back to memory, graph data, or an
     /// unpinned package.
     FailClosed,
@@ -473,14 +473,12 @@ pub trait ContextProvider: Send + Sync {
         ContextProviderFailureMode::BestEffort
     }
 
-    /// Exact cognitive-package identity, when this is Code's typed adapter.
+    /// Exact package identity, when this is Code's typed adapter.
     ///
     /// Hosts must install such an adapter through
-    /// [`SessionOptions::with_cognitive_context`](crate::SessionOptions::with_cognitive_context)
+    /// [`SessionOptions::with_package_context`](crate::SessionOptions::with_package_context)
     /// so the same value is persisted in the session snapshot.
-    fn cognitive_package_binding(
-        &self,
-    ) -> Option<&crate::cognitive_context::CognitivePackageBindingV1> {
+    fn package_binding(&self) -> Option<&crate::package_context::PackageBindingV1> {
         None
     }
 

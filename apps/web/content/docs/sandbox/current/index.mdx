@@ -1,0 +1,47 @@
+export const meta = {
+  title: 'Aster Sandbox 产品概览',
+  description: 'a3s-sandbox 与 a3s-box 的职责、隔离方式和接入选择。',
+  label: '产品概览',
+  updated: '2026-10-29',
+};
+
+Aster Sandbox 包含两个独立组件。`a3s-sandbox` 限制不可信命令的进程树。`a3s-box` 创建并管理基于 OCI 镜像的 Sandbox。
+
+两个组件不是同一接口的两个名称。它们解决的问题不同，也不互相替代。
+
+<SandboxArchitectureDiagram />
+
+## 组件选择
+
+<DocTable caption="Sandbox 组件与适用任务" headers={['需求', '选择', '原因']} rows={[
+  ['执行一个不可信 shell 命令', 'a3s-sandbox', '直接限制进程树、工作区、环境、网络和输出'],
+  ['运行 OCI 镜像中的任务', 'a3s-box', '管理镜像、根文件系统、命令和完整生命周期'],
+  ['保留长期运行的服务工作负载', 'a3s-box', '使用启动、停止、重启、日志、事件和资源管理'],
+  ['在 Rust 应用中管理 Sandbox', 'a3s-box-sdk', '使用类型化客户端，不通过 CLI 拼接命令'],
+  ['限制 Aster Code 的 Bash 工具', 'a3s-sandbox + Core', 'Core 通过 BashSandbox 接口使用原生边界'],
+]} />
+
+## 隔离方式
+
+`a3s-sandbox` 使用宿主操作系统的原生隔离机制。默认策略拒绝网络和宿主 Unix-domain socket，并限制写入范围。
+
+`a3s-box` 默认使用 MicroVM。共享内核 Sandbox 是显式选项，只适用于满足要求的 Linux 主机。命名桥接网络和端口发布仅由 MicroVM 支持。
+
+<DocTable caption="当前源码中的组件版本" headers={['组件', '版本', '源码位置']} rows={[
+  ['a3s-sandbox', '0.2.3', 'crates/sandbox'],
+  ['a3s-box core / runtime / CLI / SDK', '3.2.7', 'crates/box'],
+]} />
+
+## 文档入口
+
+- [a3s-sandbox 命令边界](./native/)：原生后端、默认策略、CLI 和 Rust 接口。
+- [a3s-box 生命周期与隔离](./box/)：OCI 镜像、隔离方式、生命周期和 CLI。
+- [Sandbox 接入与验证](./integration/)：Rust SDK、检查命令和故障验收。
+
+<ChapterCards />
+
+## 实现依据
+
+- [a3s-sandbox 安全模型](https://github.com/aster-ai-lab/aster/blob/main/crates/sandbox/THREAT_MODEL.md)
+- [a3s-box SDK 说明](https://github.com/aster-ai-lab/aster/blob/main/crates/box/sdk/README.md)
+- [a3s-box runtime 说明](https://github.com/aster-ai-lab/aster/blob/main/crates/box/runtime/README.md)

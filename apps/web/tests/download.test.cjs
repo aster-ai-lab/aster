@@ -12,7 +12,7 @@ const publicRequire = createRequire(path.join(root, 'packages/ui/package.json'))
 const { JSDOM } = process.env.JS_DOM_MODULE
   ? require(path.resolve(process.env.JS_DOM_MODULE))
   : publicRequire('jsdom');
-const publicRoot = path.join(root, 'apps/web/public');
+const publicRoot = path.join(root, 'apps/web/dist');
 const html = fs.readFileSync(path.join(publicRoot, 'download/index.html'), 'utf8');
 const script = fs.readFileSync(path.join(publicRoot, 'download/app.js'), 'utf8');
 const pageUrl = 'https://aster-ai-lab.github.io/aster/download/';
@@ -322,4 +322,8 @@ test('the real-screenshot FAQ is an ordinary disclosure and states the fixture b
   assert.equal(details.open, true);
   assert.match(text(details.querySelector('p')), /截图由实际 Aster 界面运行后采集/);
   assert.match(text(details.querySelector('p')), /不会运行 Office、调用模型或访问你的文件/);
+});
+
+test('download page loads the shared cross-document transitions', () => {
+  assert.match(html, /<link rel="stylesheet" href="\.\.\/transitions\.css" \/>/);
 });
